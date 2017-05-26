@@ -14,15 +14,18 @@ import com.huetoyou.chatexchange.R;
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements StackExchangeAuth.Listener {
 
+    private EditText mEmail;
+    private EditText mPassword;
+
     /**
      * Start the auth procedure (use StackExchangeAuth for now)
      */
     private void startAuth() {
-        String email = ((EditText) findViewById(R.id.auth_email)).getText().toString();
-        String password = ((EditText) findViewById(R.id.auth_password)).getText().toString();
-
-        // Begin the auth process
-        new StackExchangeAuth(email, password, this);
+        new StackExchangeAuth(
+                mEmail.getText().toString(),
+                mPassword.getText().toString(),
+                this
+        );
     }
 
     @Override
@@ -30,6 +33,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_authenticator);
+
+        mEmail = (EditText) findViewById(R.id.auth_email);
+        mPassword = (EditText) findViewById(R.id.auth_password);
 
         Button button = (Button) findViewById(R.id.auth_submit);
         button.setOnClickListener(new View.OnClickListener() {

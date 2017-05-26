@@ -4,6 +4,10 @@ import android.util.Log;
 
 import com.huetoyou.chatexchange.net.RequestFactory;
 
+import jodd.jerry.Jerry;
+
+import static jodd.jerry.Jerry.jerry;
+
 /**
  * Perform Stack Exchange login via email and password
  */
@@ -42,6 +46,7 @@ class StackExchangeAuth {
     private Listener mListener;
 
     private String mLoginUrl;
+    private String mNetworkFkey;
 
     /**
      * Implement the onFailed() method since it is always handled the same way
@@ -77,7 +82,13 @@ class StackExchangeAuth {
         mRequestFactory.get(mLoginUrl, new RequestListener() {
             @Override
             public void onSucceeded(String data) {
-                Log.i(TAG, "request succeeded!");
+                mListener.authProgress(40);
+                mNetworkFkey = jerry(data).$("#fkey").attr("value");
+                if (mNetworkFkey == null) {
+                    mListener.authFailed("unable to find network fkey");
+                } else {
+                    fetchAuthUrl();
+                }
             }
         });
     }
