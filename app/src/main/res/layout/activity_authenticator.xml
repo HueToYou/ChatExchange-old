@@ -38,7 +38,6 @@
         android:id="@+id/auth_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:hint="@string/activity_authenticator_email"
         android:inputType="text|textEmailAddress" />
 
@@ -46,7 +45,6 @@
         android:id="@+id/auth_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:hint="@string/activity_authenticator_password"
         android:inputType="textPassword" />
 

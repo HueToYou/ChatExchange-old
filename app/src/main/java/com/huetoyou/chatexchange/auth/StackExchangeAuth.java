@@ -4,8 +4,6 @@ import android.util.Log;
 
 import com.huetoyou.chatexchange.net.RequestFactory;
 
-import jodd.jerry.Jerry;
-
 import static jodd.jerry.Jerry.jerry;
 
 /**
