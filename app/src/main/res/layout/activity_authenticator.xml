@@ -12,24 +12,14 @@
     android:orientation="vertical"
     tools:context="com.huetoyou.chatexchange.auth.AuthenticatorActivity">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_stackexchange" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/activity_authenticator_stackexchange"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    </LinearLayout>
+        android:gravity="center_vertical"
+        android:text="@string/activity_authenticator_stackexchange"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:drawableStart="@drawable/ic_stackexchange"
+        android:drawableLeft="@drawable/ic_stackexchange"/>
 
     <View
         android:layout_width="wrap_content"
@@ -45,31 +35,31 @@
         android:layout_height="@dimen/activity_vertical_margin" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/auth_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
-        android:hint="@string/activity_authenticator_email" />
+        android:hint="@string/activity_authenticator_email"
+        android:inputType="text|textEmailAddress" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/auth_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPassword"
-        android:hint="@string/activity_authenticator_password" />
+        android:hint="@string/activity_authenticator_password"
+        android:inputType="textPassword" />
 
     <View
         android:layout_width="wrap_content"
         android:layout_height="@dimen/activity_vertical_margin" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/auth_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:textColor="#ffffff"
-        android:text="@string/activity_authenticator_submit" />
+        android:text="@string/activity_authenticator_submit"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
