@@ -7,8 +7,42 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimaryLight"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context="com.huetoyou.chatexchange.auth.AuthenticatorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_stackexchange" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/activity_authenticator_stackexchange"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_authenticator_description" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
 
     <EditText
         android:id="@+id/editText"
@@ -26,10 +60,16 @@
         android:inputType="textPassword"
         android:hint="@string/activity_authenticator_password" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
         android:text="@string/activity_authenticator_submit" />
 
 </LinearLayout>
