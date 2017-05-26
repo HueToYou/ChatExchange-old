@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.huetoyou.chatexchange">
 
+    <!-- For obvious reasons -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- For accessing account data -->
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:maxSdkVersion="22" />

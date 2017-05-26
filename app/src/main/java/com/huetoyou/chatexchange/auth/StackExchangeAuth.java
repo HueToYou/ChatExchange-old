@@ -1,5 +1,7 @@
 package com.huetoyou.chatexchange.auth;
 
+import android.util.Log;
+
 import com.huetoyou.chatexchange.net.Request;
 
 /**
@@ -12,7 +14,7 @@ public class StackExchangeAuth {
     /**
      * Callbacks for activity during the login process
      */
-    interface AuthenticationListener {
+    interface Listener {
 
         /**
          * Authentication succeeded
@@ -44,41 +46,51 @@ public class StackExchangeAuth {
 
     private String mEmail;
     private String mPassword;
-    private AuthenticationListener mListener;
+    private Listener mListener;
 
     private State mState = State.FetchLoginUrl;
+
+    /**
+     * Implement the onFailed() method since it is always handled the same way
+     */
+    private abstract class RequestListener implements Request.Listener {
+        @Override
+        public void onFailed(String message) {
+            Log.e(TAG, message);
+            mListener.authFailed(message);
+        }
+    }
 
     /**
      * Retrieve the URL of the page that contains the login form
      */
     private void fetchLoginUrl() {
-        Request.create(Request.METHOD_GET, Request.DOMAIN_STACKEXCHANGE, "/users/signin", null, new Request.Listener() {
-
+        Log.d(TAG, "fetching login URL...");
+        Request.create(Request.METHOD_GET, Request.DOMAIN_STACKEXCHANGE, "/users/signin", null, new RequestListener() {
             @Override
             public void onSucceeded(String data) {
-                //...
-            }
-
-            @Override
-            public void onFailed(String message) {
-                mListener.authFailed(message);
+                Log.i(TAG, "request succeeded!");
             }
         });
     }
 
     private void fetchNetworkFkey() {
+        Log.d(TAG, "fetching network fkey...");
         //...
     }
 
     private void fetchAuthUrl() {
+        Log.d(TAG, "fetching auth URL...");
         //...
     }
 
     private void confirmOpenId() {
+        Log.d(TAG, "confirming OpenID...");
         //...
     }
 
     private void fetchChatFkey() {
+        Log.d(TAG, "fetching chat fkey...");
         //...
     }
 
@@ -116,7 +128,7 @@ public class StackExchangeAuth {
      * @param password account password obtained from the user
      * @param listener callback listener
      */
-    StackExchangeAuth(String email, String password, AuthenticationListener listener) {
+    StackExchangeAuth(String email, String password, Listener listener) {
         mEmail = email;
         mPassword = password;
         mListener = listener;
