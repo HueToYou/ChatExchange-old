@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange.network;
+package com.huetoyou.chatexchange.net;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -26,25 +26,25 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
 
-    public static final String SE_DOMAIN = "stackexchange.com";
-    public static final String CHAT_DOMAIN = "chat.stackexchange.com";
+    public static final String DOMAIN_STACKEXCHANGE = "stackexchange.com";
+    public static final String DOMAIN_CHAT_SE = "chat.stackexchange.com";
 
     /**
      * Parameters for the request
      */
-    public class Params {
-        String method = METHOD_POST;
-        String domain = CHAT_DOMAIN;
-        String path;
-        Map<String, String> form = new HashMap<>();
+    public static class Params {
+        public String method = METHOD_POST;
+        public String domain = DOMAIN_CHAT_SE;
+        public String path;
+        public Map<String, String> form = new HashMap<>();
     }
 
     /**
      * Response data for the request
      */
-    public class Response {
-        boolean succeeded = false;
-        String data;
+    public static class Response {
+        public boolean succeeded = false;
+        public String data;
     }
 
     /**

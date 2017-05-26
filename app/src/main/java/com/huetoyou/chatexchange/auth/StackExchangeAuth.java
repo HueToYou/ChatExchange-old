@@ -19,6 +19,12 @@ public class StackExchangeAuth {
         void authSucceeded(String authToken);
 
         /**
+         * Indicate progress of authentication
+         * @param progress value between 0 and 100 inclusive
+         */
+        void authProgress(int progress);
+
+        /**
          * Authentication failed
          * @param message descriptive error
          */
