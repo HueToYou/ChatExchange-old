@@ -2,7 +2,7 @@
     <string name="app_name">Chat Exchange</string>
 
     <!-- Login activity -->
-    <string name="activity_login_email">Email</string>
-    <string name="activity_login_password">Password</string>
-    <string name="activity_login_submit">Submit</string>
+    <string name="activity_authenticator_email">Email</string>
+    <string name="activity_authenticator_password">Password</string>
+    <string name="activity_authenticator_submit">Submit</string>
 </resources>

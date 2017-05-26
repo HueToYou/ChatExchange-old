@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.huetoyou.chatexchange.LoginActivity">
+    tools:context="com.huetoyou.chatexchange.auth.AuthenticatorActivity">
 
     <EditText
         android:id="@+id/editText"
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:hint="@string/activity_login_email" />
+        android:hint="@string/activity_authenticator_email" />
 
     <EditText
         android:id="@+id/editText2"
@@ -24,12 +24,12 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
-        android:hint="@string/activity_login_password" />
+        android:hint="@string/activity_authenticator_password" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/activity_login_submit" />
+        android:text="@string/activity_authenticator_submit" />
 
 </LinearLayout>

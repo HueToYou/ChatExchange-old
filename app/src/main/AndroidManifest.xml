@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.huetoyou.chatexchange">
 
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+        android:maxSdkVersion="22" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,8 +22,18 @@
             </intent-filter>
         </activity>
 
-        <!-- Login activity -->
-        <activity android:name=".LoginActivity" />
+        <!-- Authenticator activity -->
+        <activity android:name=".auth.AuthenticatorActivity" />
+
+        <!-- Authenticator service -->
+        <service android:name=".auth.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
 
     </application>
 
