@@ -1,5 +1,7 @@
 package com.huetoyou.chatexchange.auth;
 
+import com.huetoyou.chatexchange.net.Request;
+
 /**
  * Perform Stack Exchange login via email and password
  */
@@ -46,8 +48,22 @@ public class StackExchangeAuth {
 
     private State mState = State.FetchLoginUrl;
 
+    /**
+     * Retrieve the URL of the page that contains the login form
+     */
     private void fetchLoginUrl() {
-        //...
+        Request.create(Request.METHOD_GET, Request.DOMAIN_STACKEXCHANGE, "/users/signin", null, new Request.Listener() {
+
+            @Override
+            public void onSucceeded(String data) {
+                //...
+            }
+
+            @Override
+            public void onFailed(String message) {
+                mListener.authFailed(message);
+            }
+        });
     }
 
     private void fetchNetworkFkey() {

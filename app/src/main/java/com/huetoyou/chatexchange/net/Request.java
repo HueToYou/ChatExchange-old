@@ -14,7 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,22 +29,42 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
     public static final String DOMAIN_CHAT_SE = "chat.stackexchange.com";
 
     /**
+     * Listener for request events
+     */
+    public interface Listener {
+
+        /**
+         * Indicate the request succeeded
+         * @param data response body
+         */
+        void onSucceeded(String data);
+
+        /**
+         * Indicate the request failed
+         * @param message descriptive error message
+         */
+        void onFailed(String message);
+    }
+
+    /**
      * Parameters for the request
      */
-    public static class Params {
-        public String method = METHOD_POST;
-        public String domain = DOMAIN_CHAT_SE;
+    static class Params {
+        public String method;
+        public String domain;
         public String path;
-        public Map<String, String> form = new HashMap<>();
+        public Map<String, String> form;
     }
 
     /**
      * Response data for the request
      */
-    public static class Response {
+    static class Response {
         public boolean succeeded = false;
         public String data;
     }
+
+    private Listener mListener;
 
     /**
      * Generate an error response
@@ -129,5 +148,35 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         response.succeeded = true;
         response.data = responseData;
         return response;
+    }
+
+    @Override
+    protected void onPostExecute(Response response) {
+        if (response.succeeded) {
+            mListener.onSucceeded(response.data);
+        } else {
+            mListener.onFailed(response.data);
+        }
+    }
+
+    private Request(Listener listener) {
+        mListener = listener;
+    }
+
+    /**
+     * Create a new request with the specified parameters
+     * @param method request method (such as METHOD_GET)
+     * @param domain request domain (such as DOMAIN_SE_CHAT)
+     * @param path request path
+     * @param form request form data (for non-GET requests)
+     * @param listener listener for request events
+     */
+    public static void create(String method, String domain, String path, Map<String, String> form, Listener listener) {
+        Params params = new Params();
+        params.method = method;
+        params.domain = domain;
+        params.path = path;
+        params.form = form;
+        new Request(listener).execute(params);
     }
 }
