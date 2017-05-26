@@ -31,7 +31,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         setContentView(R.layout.activity_authenticator);
 
-        Button button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.auth_submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
