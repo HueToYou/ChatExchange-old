@@ -10,10 +10,18 @@ import android.support.annotation.Nullable;
  */
 public class AuthenticatorService extends Service {
 
+    private Authenticator mAuthenticator;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mAuthenticator = new Authenticator(this);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Authenticator authenticator = new Authenticator(this);
-        return authenticator.getIBinder();
+        return mAuthenticator.getIBinder();
     }
 }
