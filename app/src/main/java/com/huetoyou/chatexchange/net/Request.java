@@ -20,48 +20,29 @@ import java.util.Map;
 /**
  * Perform a network request in a secondary thread and invoke a callback with the response
  */
-public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
+class Request extends AsyncTask<Request.Params, Void, Request.Response> {
 
-    public static final String METHOD_GET = "GET";
-    public static final String METHOD_POST = "POST";
-
-    public static final String DOMAIN_STACKEXCHANGE = "stackexchange.com";
-    public static final String DOMAIN_CHAT_SE = "chat.stackexchange.com";
-
-    /**
-     * Listener for request events
-     */
-    public interface Listener {
-
-        /**
-         * Indicate the request succeeded
-         * @param data response body
-         */
-        void onSucceeded(String data);
-
-        /**
-         * Indicate the request failed
-         * @param message descriptive error message
-         */
-        void onFailed(String message);
+    interface Listener {
+        void onResponse(Response response);
     }
 
     /**
      * Parameters for the request
      */
     static class Params {
-        public String method;
-        public String domain;
-        public String path;
-        public Map<String, String> form;
+        String method;
+        String url;
+        String cookies;
+        Map<String, String> form;
     }
 
     /**
      * Response data for the request
      */
     static class Response {
-        public boolean succeeded = false;
-        public String data;
+        boolean succeeded = false;
+        String cookies;
+        String data;
     }
 
     private Listener mListener;
@@ -101,14 +82,14 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         Params params = paramList[0];
         HttpURLConnection connection;
         try {
-            URL url = new URL(String.format("https://%s%s", params.domain, params.path));
+            URL url = new URL(params.url);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(params.method);
         } catch (IOException e) {
             return error(e.getMessage());
         }
         connection.setDoInput(true);
-        if (!params.method.equals(METHOD_GET)) {
+        if (!params.method.equals("GET")) {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             try {
@@ -130,6 +111,9 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         try {
             responseCode = connection.getResponseCode();
             responseMessage = connection.getResponseMessage();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return error(responseMessage);
+            }
             InputStream stream = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             String body = "";
@@ -141,42 +125,19 @@ public class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         } catch (IOException e) {
             return error(e.getMessage());
         }
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            return error(responseMessage);
-        }
         Response response = new Response();
         response.succeeded = true;
+        response.cookies = connection.getHeaderField("Set-Cookie");
         response.data = responseData;
         return response;
     }
 
     @Override
     protected void onPostExecute(Response response) {
-        if (response.succeeded) {
-            mListener.onSucceeded(response.data);
-        } else {
-            mListener.onFailed(response.data);
-        }
+        mListener.onResponse(response);
     }
 
-    private Request(Listener listener) {
+    Request(Listener listener) {
         mListener = listener;
-    }
-
-    /**
-     * Create a new request with the specified parameters
-     * @param method request method (such as METHOD_GET)
-     * @param domain request domain (such as DOMAIN_SE_CHAT)
-     * @param path request path
-     * @param form request form data (for non-GET requests)
-     * @param listener listener for request events
-     */
-    public static void create(String method, String domain, String path, Map<String, String> form, Listener listener) {
-        Params params = new Params();
-        params.method = method;
-        params.domain = domain;
-        params.path = path;
-        params.form = form;
-        new Request(listener).execute(params);
     }
 }

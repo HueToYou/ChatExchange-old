@@ -2,12 +2,12 @@ package com.huetoyou.chatexchange.auth;
 
 import android.util.Log;
 
-import com.huetoyou.chatexchange.net.Request;
+import com.huetoyou.chatexchange.net.RequestFactory;
 
 /**
  * Perform Stack Exchange login via email and password
  */
-public class StackExchangeAuth {
+class StackExchangeAuth {
 
     private static final String TAG = "StackExchangeAuth";
 
@@ -35,53 +35,23 @@ public class StackExchangeAuth {
         void authFailed(String message);
     }
 
-    private enum State {
-        FetchLoginUrl,
-        FetchNetworkFkey,
-        FetchAuthUrl,
-        ConfirmOpenId,
-        FetchChatFkey,
-        Finished,
-    }
+    private RequestFactory mRequestFactory = new RequestFactory();
 
     private String mEmail;
     private String mPassword;
     private Listener mListener;
 
-    private State mState = State.FetchLoginUrl;
+    private String mLoginUrl;
 
     /**
      * Implement the onFailed() method since it is always handled the same way
      */
-    private abstract class RequestListener implements Request.Listener {
+    private abstract class RequestListener implements RequestFactory.Listener {
         @Override
         public void onFailed(String message) {
             Log.e(TAG, message);
             mListener.authFailed(message);
         }
-    }
-
-    /**
-     * Retrieve the URL of the page that contains the login form
-     */
-    private void fetchLoginUrl() {
-        Log.d(TAG, "fetching login URL...");
-        Request.create(Request.METHOD_GET, Request.DOMAIN_STACKEXCHANGE, "/users/signin", null, new RequestListener() {
-            @Override
-            public void onSucceeded(String data) {
-                Log.i(TAG, "request succeeded!");
-            }
-        });
-    }
-
-    private void fetchNetworkFkey() {
-        Log.d(TAG, "fetching network fkey...");
-        //...
-    }
-
-    private void fetchAuthUrl() {
-        Log.d(TAG, "fetching auth URL...");
-        //...
     }
 
     private void confirmOpenId() {
@@ -94,32 +64,37 @@ public class StackExchangeAuth {
         //...
     }
 
+    private void fetchAuthUrl() {
+        Log.d(TAG, "fetching auth URL...");
+        //...
+    }
+
     /**
-     * Perform the next step in the authentication process
+     * Retrieve the network fkey from the login form
      */
-    private void nextStep() {
-        switch (mState) {
-            case FetchLoginUrl:
-                fetchLoginUrl();
-                break;
-            case FetchNetworkFkey:
+    private void fetchNetworkFkey() {
+        Log.d(TAG, "fetching network fkey...");
+        mRequestFactory.get(mLoginUrl, new RequestListener() {
+            @Override
+            public void onSucceeded(String data) {
+                Log.i(TAG, "request succeeded!");
+            }
+        });
+    }
+
+    /**
+     * Retrieve the URL of the page that contains the login form
+     */
+    private void fetchLoginUrl() {
+        Log.d(TAG, "fetching login URL...");
+        mRequestFactory.get("https://stackexchange.com/users/signin", new RequestListener() {
+            @Override
+            public void onSucceeded(String data) {
+                mListener.authProgress(20);
+                mLoginUrl = data;
                 fetchNetworkFkey();
-                break;
-            case FetchAuthUrl:
-                fetchAuthUrl();
-                break;
-            case ConfirmOpenId:
-                confirmOpenId();
-                break;
-            case FetchChatFkey:
-                fetchChatFkey();
-                break;
-            case Finished:
-
-                // TODO: invoke the callback
-
-                break;
-        }
+            }
+        });
     }
 
     /**
@@ -134,6 +109,6 @@ public class StackExchangeAuth {
         mListener = listener;
 
         // Start the authentication process
-        nextStep();
+        fetchLoginUrl();
     }
 }
