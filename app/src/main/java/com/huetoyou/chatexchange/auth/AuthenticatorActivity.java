@@ -37,7 +37,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         new StackExchangeAuth(
                 mEmail.getText().toString(),
                 mPassword.getText().toString(),
-                this
+                this,
+                getApplicationContext()
         );
     }
 

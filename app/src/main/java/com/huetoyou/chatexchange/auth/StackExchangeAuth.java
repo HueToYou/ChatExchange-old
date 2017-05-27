@@ -1,7 +1,11 @@
 package com.huetoyou.chatexchange.auth;
 
+import android.content.ContentProviderOperation;
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 
 import java.net.URL;
@@ -55,6 +59,8 @@ class StackExchangeAuth {
     private String mSessionId;
     private String mSessionFkey;
 
+    private Context mContext;
+
     /**
      * Implement the onFailed() method since it is always handled the same way
      */
@@ -85,7 +91,7 @@ class StackExchangeAuth {
                     public void onSucceeded(URL url, String data) {
                         mListener.authProgress(90);
                         if (!url.getPath().equals("/")) {
-                            mListener.authFailed("unable to confirm OpenID transaction");
+                            mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_confirm_openid).toString());
                         } else {
                             mListener.authSucceeded(mRequestFactory.cookies());
                         }
@@ -109,7 +115,7 @@ class StackExchangeAuth {
                     mSessionFkey = doc.$("input[name=fkey]").attr("value");
                     if (mSessionId == null || mSessionId.isEmpty() ||
                             mSessionFkey == null || mSessionId.isEmpty()) {
-                        mListener.authFailed("unable to read session information");
+                        mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_session).toString());
                     } else {
                         confirmOpenId();
                     }
@@ -139,7 +145,7 @@ class StackExchangeAuth {
                         mListener.authProgress(60);
                         mAuthUrl = jerry(data).$("noscript a").attr("href");
                         if (mAuthUrl == null || mAuthUrl.isEmpty()) {
-                            mListener.authFailed("unable to read auth URL");
+                            mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_url).toString());
                         } else {
                             completeLogin();
                         }
@@ -159,7 +165,7 @@ class StackExchangeAuth {
                 mListener.authProgress(40);
                 mNetworkFkey = jerry(data).$("#fkey").attr("value");
                 if (mNetworkFkey == null || mNetworkFkey.isEmpty()) {
-                    mListener.authFailed("unable to read network fkey");
+                    mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_fkey).toString());
                 } else {
                     fetchAuthUrl();
                 }
@@ -192,10 +198,11 @@ class StackExchangeAuth {
      * @param password account password obtained from the user
      * @param listener callback listener
      */
-    StackExchangeAuth(String email, String password, Listener listener) {
+    StackExchangeAuth(String email, String password, Listener listener, Context context) {
         mEmail = email;
         mPassword = password;
         mListener = listener;
+        mContext = context;
 
         // Start the authentication process
         fetchLoginUrl();
