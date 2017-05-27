@@ -4,8 +4,11 @@ import android.util.Log;
 
 import com.huetoyou.chatexchange.net.RequestFactory;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import jodd.jerry.Jerry;
 
 import static jodd.jerry.Jerry.jerry;
 
@@ -49,6 +52,8 @@ class StackExchangeAuth {
     private String mLoginUrl;
     private String mNetworkFkey;
     private String mAuthUrl;
+    private String mSessionId;
+    private String mSessionFkey;
 
     /**
      * Implement the onFailed() method since it is always handled the same way
@@ -61,14 +66,58 @@ class StackExchangeAuth {
         }
     }
 
+    /**
+     * Confirm the OpenID transaction
+     *
+     * Occasionally, a second page is shown after POSTing the credentials
+     * requiring the user to confirm the OpenID transaction.
+     */
     private void confirmOpenId() {
         Log.d(TAG, "confirming OpenID...");
-        //...
+        Map<String, String> form = new HashMap<>();
+        form.put("session", mSessionId);
+        form.put("fkey", mSessionFkey);
+        mRequestFactory.post(
+                "https://openid.stackexchange.com/account/prompt/submit",
+                form,
+                new RequestListener() {
+                    @Override
+                    public void onSucceeded(URL url, String data) {
+                        mListener.authProgress(90);
+                        if (!url.getPath().equals("/")) {
+                            mListener.authFailed("unable to confirm OpenID transaction");
+                        } else {
+                            mListener.authSucceeded(mRequestFactory.cookies());
+                        }
+                    }
+                }
+        );
     }
 
-    private void fetchChatFkey() {
-        Log.d(TAG, "fetching chat fkey...");
-        //...
+    /**
+     * Attempt to complete the login process
+     */
+    private void completeLogin() {
+        Log.d(TAG, "completing login...");
+        mRequestFactory.get(mAuthUrl, true, new RequestListener() {
+            @Override
+            public void onSucceeded(URL url, String data) {
+                mListener.authProgress(80);
+                if (url.getPath().equals("/account/prompt")) {
+                    Jerry doc = jerry(data);
+                    mSessionId = doc.$("input[name=session]").attr("value");
+                    mSessionFkey = doc.$("input[name=fkey]").attr("value");
+                    if (mSessionId == null || mSessionId.isEmpty() ||
+                            mSessionFkey == null || mSessionId.isEmpty()) {
+                        mListener.authFailed("unable to read session information");
+                    } else {
+                        confirmOpenId();
+                    }
+                } else if (url.getPath().equals("/")) {
+                    mListener.authSucceeded(mRequestFactory.cookies());
+                }
+            }
+        });
     }
 
     /**
@@ -86,13 +135,13 @@ class StackExchangeAuth {
                 form,
                 new RequestListener() {
                     @Override
-                    public void onSucceeded(String data) {
+                    public void onSucceeded(URL url, String data) {
                         mListener.authProgress(60);
                         mAuthUrl = jerry(data).$("noscript a").attr("href");
                         if (mAuthUrl == null || mAuthUrl.isEmpty()) {
                             mListener.authFailed("unable to read auth URL");
                         } else {
-                            fetchChatFkey();
+                            completeLogin();
                         }
                     }
                 }
@@ -104,9 +153,9 @@ class StackExchangeAuth {
      */
     private void fetchNetworkFkey() {
         Log.d(TAG, "fetching network fkey...");
-        mRequestFactory.get(mLoginUrl, new RequestListener() {
+        mRequestFactory.get(mLoginUrl, true, new RequestListener() {
             @Override
-            public void onSucceeded(String data) {
+            public void onSucceeded(URL url, String data) {
                 mListener.authProgress(40);
                 mNetworkFkey = jerry(data).$("#fkey").attr("value");
                 if (mNetworkFkey == null || mNetworkFkey.isEmpty()) {
@@ -123,14 +172,18 @@ class StackExchangeAuth {
      */
     private void fetchLoginUrl() {
         Log.d(TAG, "fetching login URL...");
-        mRequestFactory.get("https://stackexchange.com/users/signin", new RequestListener() {
-            @Override
-            public void onSucceeded(String data) {
-                mListener.authProgress(20);
-                mLoginUrl = data;
-                fetchNetworkFkey();
-            }
-        });
+        mRequestFactory.get(
+                "https://stackexchange.com/users/signin",
+                true,
+                new RequestListener() {
+                    @Override
+                    public void onSucceeded(URL url, String data) {
+                        mListener.authProgress(20);
+                        mLoginUrl = data;
+                        fetchNetworkFkey();
+                    }
+                }
+        );
     }
 
     /**

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -21,9 +22,10 @@ public class RequestFactory {
 
         /**
          * Indicate the request succeeded
+         * @param url final request URL
          * @param data response body
          */
-        void onSucceeded(String data);
+        void onSucceeded(URL url, String data);
 
         /**
          * Indicate the request failed
@@ -67,12 +69,13 @@ public class RequestFactory {
     /**
      * Create a request from the supplied parameters and start it
      */
-    private void newRequest(String method, String url, Map<String, String> form, final Listener listener) {
+    private void newRequest(String method, String url, Map<String, String> form, boolean followRedirects, final Listener listener) {
         Request.Params params = new Request.Params();
         params.method = method;
         params.url = url;
         params.cookies = cookies();
         params.form = form;
+        params.followRedirects = followRedirects;
         new Request(new Request.Listener() {
             @Override
             public void onResponse(Request.Response response) {
@@ -80,7 +83,7 @@ public class RequestFactory {
                     if (response.cookies != null) {
                         addCookies(response.cookies);
                     }
-                    listener.onSucceeded(response.data);
+                    listener.onSucceeded(response.finalUrl, response.data);
                 } else {
                     listener.onFailed(response.data);
                 }
@@ -91,10 +94,11 @@ public class RequestFactory {
     /**
      * Create a new GET request
      * @param url request URL
+     * @param followRedirects true to follow HTTP redirects
      * @param listener listener for request completion
      */
-    public void get(String url, Listener listener) {
-        newRequest("GET", url, null, listener);
+    public void get(String url, boolean followRedirects, Listener listener) {
+        newRequest("GET", url, null, followRedirects, listener);
     }
 
     /**
@@ -104,6 +108,6 @@ public class RequestFactory {
      * @param listener listener for request completion
      */
     public void post(String url, Map<String, String> form, Listener listener) {
-        newRequest("POST", url, form, listener);
+        newRequest("POST", url, form, false, listener);
     }
 }

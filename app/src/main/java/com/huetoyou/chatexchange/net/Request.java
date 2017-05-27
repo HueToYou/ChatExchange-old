@@ -34,6 +34,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         String url;
         String cookies;
         Map<String, String> form;
+        boolean followRedirects;
     }
 
     /**
@@ -41,6 +42,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
      */
     static class Response {
         boolean succeeded = false;
+        URL finalUrl;
         String cookies;
         String data;
     }
@@ -105,6 +107,8 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             } catch (IOException e) {
                 return error(e.getMessage());
             }
+        } else {
+            connection.setInstanceFollowRedirects(params.followRedirects);
         }
         int responseCode;
         String responseMessage;
@@ -128,6 +132,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         }
         Response response = new Response();
         response.succeeded = true;
+        response.finalUrl = connection.getURL();
         response.cookies = connection.getHeaderField("Set-Cookie");
         response.data = responseData;
         return response;

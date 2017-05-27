@@ -10,6 +10,6 @@
     <string name="activity_authenticator_progress_title">Signing In</string>
     <string name="activity_authenticator_error_ok">OK</string>
     <string name="activity_authenticator_error_title">Error</string>
-    <string name="activity_authenticator_error_message">An unexpected error has occurred.\n\nTechnical details: %1$s.</string>
+    <string name="activity_authenticator_error_message">An unexpected error has occurred. This may be caused by invalid credentials.\n\nTechnical details: %1$s.</string>
 
 </resources>

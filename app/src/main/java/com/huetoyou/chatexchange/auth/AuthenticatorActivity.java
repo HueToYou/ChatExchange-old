@@ -58,7 +58,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     @Override
     public void authSucceeded(String authToken) {
+        mProgressDialog.cancel();
 
+        // TODO: store the auth token
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override
