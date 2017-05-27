@@ -88,6 +88,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         } catch (IOException e) {
             return error(e.getMessage());
         }
+        connection.setRequestProperty("Cookie", params.cookies);
         connection.setDoInput(true);
         if (!params.method.equals("GET")) {
             connection.setDoOutput(true);
@@ -112,7 +113,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             responseCode = connection.getResponseCode();
             responseMessage = connection.getResponseMessage();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return error(responseMessage);
+                return error(String.format("HTTP response: %s", responseMessage));
             }
             InputStream stream = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
