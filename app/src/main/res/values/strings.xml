@@ -7,5 +7,9 @@
     <string name="activity_authenticator_email">Email</string>
     <string name="activity_authenticator_password">Password</string>
     <string name="activity_authenticator_submit">Submit</string>
+    <string name="activity_authenticator_progress_title">Signing In</string>
+    <string name="activity_authenticator_error_ok">OK</string>
+    <string name="activity_authenticator_error_title">Error</string>
+    <string name="activity_authenticator_error_message">An unexpected error has occurred.\n\nTechnical details: %1$s.</string>
 
 </resources>

@@ -1,6 +1,8 @@
 package com.huetoyou.chatexchange.auth;
 
 import android.accounts.AccountAuthenticatorActivity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,8 @@ import com.huetoyou.chatexchange.R;
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements StackExchangeAuth.Listener {
 
+    private ProgressDialog mProgressDialog;
+
     private EditText mEmail;
     private EditText mPassword;
 
@@ -21,6 +25,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      * Start the auth procedure (use StackExchangeAuth for now)
      */
     private void startAuth() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getText(R.string.activity_authenticator_progress_title));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setProgressNumberFormat(null);
+        mProgressDialog.setProgressPercentFormat(null);
+        mProgressDialog.show();
         new StackExchangeAuth(
                 mEmail.getText().toString(),
                 mPassword.getText().toString(),
@@ -53,11 +63,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     @Override
     public void authProgress(int progress) {
-
+        mProgressDialog.setProgress(progress);
     }
 
     @Override
     public void authFailed(String message) {
-
+        mProgressDialog.cancel();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.activity_authenticator_error_title)
+                .setMessage(getString(R.string.activity_authenticator_error_message, message))
+                .setPositiveButton(getText(R.string.activity_authenticator_error_ok), null)
+                .create()
+                .show();
     }
 }
