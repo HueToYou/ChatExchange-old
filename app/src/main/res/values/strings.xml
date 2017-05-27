@@ -11,10 +11,13 @@
     <string name="activity_authenticator_error_ok">OK</string>
     <string name="activity_authenticator_error_title">Error</string>
     <string name="activity_authenticator_error_message">An unexpected error has occurred. This may be caused by invalid credentials.\n\nTechnical details: %1$s.</string>
+    <string name="activity_authenticator_email_required">Email Required</string>
+    <string name="activity_authenticator_password_required">Password Required</string>
 
     <string name="se_auth_unable_to_read_url">unable to read auth URL</string>
     <string name="se_auth_unable_to_read_fkey">unable to read network fkey</string>
     <string name="se_auth_unable_to_confirm_openid">unable to confirm OpenID transaction</string>
     <string name="se_auth_unable_to_read_session">unable to read session information</string>
+    <string name="activity_authenticator_show_password">Show Password</string>
 
 </resources>

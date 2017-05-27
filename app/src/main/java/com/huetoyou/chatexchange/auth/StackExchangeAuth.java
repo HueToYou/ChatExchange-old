@@ -1,8 +1,6 @@
 package com.huetoyou.chatexchange.auth;
 
-import android.content.ContentProviderOperation;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.huetoyou.chatexchange.R;
@@ -197,6 +195,7 @@ class StackExchangeAuth {
      * @param email account email obtained from the user
      * @param password account password obtained from the user
      * @param listener callback listener
+     * @param context app context for string resources
      */
     StackExchangeAuth(String email, String password, Listener listener, Context context) {
         mEmail = email;

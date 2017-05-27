@@ -3,15 +3,23 @@ package com.huetoyou.chatexchange.auth;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.huetoyou.chatexchange.R;
+
+import android.text.Html;
 
 /**
  * Activity shown when the account needs to be authenticated
@@ -47,15 +55,41 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_authenticator);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         mEmail = (EditText) findViewById(R.id.auth_email);
         mPassword = (EditText) findViewById(R.id.auth_password);
 
-        Button button = (Button) findViewById(R.id.auth_submit);
-        button.setOnClickListener(new View.OnClickListener() {
+        CheckBox showPassword = (CheckBox) findViewById(R.id.show_password);
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPassword.setInputType(isChecked ? InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+        });
+
+        Button submit = (Button) findViewById(R.id.auth_submit);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAuth();
+                if (mEmail.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
+                    if (mEmail.getText().toString().isEmpty()) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
+                            mEmail.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_email_required) + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                        else
+                            //noinspection deprecation
+                            mEmail.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_email_required) + "</font>"));
+                    }
+                    if (mPassword.getText().toString().isEmpty()) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
+                            mPassword.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_password_required) + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                        else
+                            //noinspection deprecation
+                            mPassword.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_password_required) + "</font>"));
+                    }
+                } else {
+                    startAuth();
+                }
             }
         });
     }
