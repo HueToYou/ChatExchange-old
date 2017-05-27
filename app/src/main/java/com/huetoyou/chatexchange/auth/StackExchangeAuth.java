@@ -4,6 +4,9 @@ import android.util.Log;
 
 import com.huetoyou.chatexchange.net.RequestFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static jodd.jerry.Jerry.jerry;
 
 /**
@@ -45,6 +48,7 @@ class StackExchangeAuth {
 
     private String mLoginUrl;
     private String mNetworkFkey;
+    private String mAuthUrl;
 
     /**
      * Implement the onFailed() method since it is always handled the same way
@@ -67,9 +71,32 @@ class StackExchangeAuth {
         //...
     }
 
+    /**
+     * Submit the credentials the user supplied
+     */
     private void fetchAuthUrl() {
         Log.d(TAG, "fetching auth URL...");
-        //...
+        Map<String, String> form = new HashMap<>();
+        form.put("email", mEmail);
+        form.put("password", mPassword);
+        form.put("affId", "11");
+        form.put("fkey", mNetworkFkey);
+        mRequestFactory.post(
+                "https://openid.stackexchange.com/affiliate/form/login/submit",
+                form,
+                new RequestListener() {
+                    @Override
+                    public void onSucceeded(String data) {
+                        mListener.authProgress(60);
+                        mAuthUrl = jerry(data).$("noscript a").attr("href");
+                        if (mAuthUrl == null || mAuthUrl.isEmpty()) {
+                            mListener.authFailed("unable to read auth URL");
+                        } else {
+                            fetchChatFkey();
+                        }
+                    }
+                }
+        );
     }
 
     /**
@@ -82,8 +109,8 @@ class StackExchangeAuth {
             public void onSucceeded(String data) {
                 mListener.authProgress(40);
                 mNetworkFkey = jerry(data).$("#fkey").attr("value");
-                if (mNetworkFkey == null) {
-                    mListener.authFailed("unable to find network fkey");
+                if (mNetworkFkey == null || mNetworkFkey.isEmpty()) {
+                    mListener.authFailed("unable to read network fkey");
                 } else {
                     fetchAuthUrl();
                 }
