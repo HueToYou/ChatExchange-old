@@ -1,8 +1,11 @@
 package com.huetoyou.chatexchange.auth;
 
+import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -60,9 +63,25 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     public void authSucceeded(String authToken) {
         mProgressDialog.cancel();
 
-        // TODO: store the auth token
+        String accountName = mEmail.getText().toString();
 
-        setResult(RESULT_OK);
+        // Create a new account of the specified type and add it
+        Account account = new Account(accountName, Authenticator.ACCOUNT_TYPE);
+        AccountManager accountManager = AccountManager.get(this);
+        accountManager.addAccountExplicitly(
+                account,
+                mPassword.getText().toString(),
+                null
+        );
+
+        // Create the intent for returning to the caller
+        Intent intent = new Intent();
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, accountName);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Authenticator.ACCOUNT_TYPE);
+        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authToken);
+
+        setAccountAuthenticatorResult(intent.getExtras());
+        setResult(RESULT_OK, intent);
         finish();
     }
 

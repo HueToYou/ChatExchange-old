@@ -18,6 +18,8 @@ import android.os.Bundle;
  */
 public class Authenticator extends AbstractAccountAuthenticator {
 
+    static final String ACCOUNT_TYPE = "com.huetoyou.chatexchange";
+
     private Context mContext;
 
     /**
