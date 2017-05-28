@@ -34,9 +34,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mEmail;
     private EditText mPassword;
     private AccountManager mAccountManager;
-    private LinearLayout mLogin;
-    private ScrollView mSelectAccount;
-
     /**
      * Start the auth procedure (use StackExchangeAuth for now)
      */
@@ -64,42 +61,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         mEmail = (EditText) findViewById(R.id.auth_email);
         mPassword = (EditText) findViewById(R.id.auth_password);
-        mLogin = (LinearLayout) findViewById(R.id.auth_layout);
-        mSelectAccount = (ScrollView) findViewById(R.id.select_account);
 
         mAccountManager = AccountManager.get(this);
-        if (mAccountManager.getAccounts().length > 0) {
-            Account[] accounts = mAccountManager.getAccounts();
-            mLogin.setVisibility(View.GONE);
-
-            LinearLayout accountLayout = (LinearLayout) findViewById(R.id.select_account_lin);
-
-            for (final Account account : accounts) {
-                final Button acc = new AppCompatButton(this);
-                acc.setText(account.name);
-                acc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onAuthFinish(account.name, mAccountManager.peekAuthToken(account, "com.android.AccountManager.ACCOUNT_ACCESS_TOKEN_TYPE"));
-                    }
-                });
-                accountLayout.addView(acc);
-            }
-
-            Button newAccount = new AppCompatButton(this);
-            newAccount.setText(getResources().getText(R.string.activity_authenticator_add_account));
-            newAccount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mSelectAccount.setVisibility(View.GONE);
-                    mLogin.setVisibility(View.VISIBLE);
-                }
-            });
-
-            accountLayout.addView(newAccount);
-        } else {
-            mSelectAccount.setVisibility(View.GONE);
-        }
 
         CheckBox showPassword = (CheckBox) findViewById(R.id.show_password);
         showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

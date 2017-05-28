@@ -18,92 +18,62 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.huetoyou.chatexchange.auth.AuthenticatorActivity">
 
-
-    <LinearLayout
-        android:id="@+id/auth_layout"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:drawableLeft="@drawable/ic_stackexchange"
+        android:drawableStart="@drawable/ic_stackexchange"
+        android:gravity="center_vertical"
+        android:text="@string/activity_authenticator_stackexchange"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_stackexchange"
-            android:drawableStart="@drawable/ic_stackexchange"
-            android:gravity="center_vertical"
-            android:text="@string/activity_authenticator_stackexchange"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+    <View
+        android:id="@+id/view6"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
 
-        <View
-            android:id="@+id/view6"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/activity_vertical_margin" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_authenticator_description" />
-
-        <View
-            android:id="@+id/view5"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/activity_vertical_margin" />
-
-        <EditText
-            android:id="@+id/auth_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/activity_authenticator_email"
-            android:inputType="text|textEmailAddress" />
-
-        <EditText
-            android:id="@+id/auth_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/activity_authenticator_password"
-            android:inputType="textPassword" />
-
-        <CheckBox
-            android:id="@+id/show_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_authenticator_show_password" />
-
-        <View
-            android:id="@+id/view4"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/activity_vertical_margin" />
-
-        <Button
-            android:id="@+id/auth_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="@string/activity_authenticator_submit"
-            android:textColor="#ffffff" />
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/select_account"
+    <TextView
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:text="@string/activity_authenticator_description" />
 
-        <LinearLayout
-            android:id="@+id/select_account_lin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical" >
+    <View
+        android:id="@+id/view5"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/activity_authenticator_select_account" />
-        </LinearLayout>
-    </ScrollView>
+    <EditText
+        android:id="@+id/auth_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/activity_authenticator_email"
+        android:inputType="text|textEmailAddress" />
 
+    <EditText
+        android:id="@+id/auth_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/activity_authenticator_password"
+        android:inputType="textPassword" />
+
+    <CheckBox
+        android:id="@+id/show_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_authenticator_show_password" />
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin" />
+
+    <Button
+        android:id="@+id/auth_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/activity_authenticator_submit"
+        android:textColor="#ffffff" />
 </LinearLayout>
