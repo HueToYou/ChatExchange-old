@@ -14,6 +14,7 @@
     <string name="activity_authenticator_email_required">Email Required</string>
     <string name="activity_authenticator_password_required">Password Required</string>
     <string name="activity_authenticator_add_account">Add New Account</string>
+    <string name="activity_authenticator_add_chat">Add Chat</string>
 
     <string name="se_auth_unable_to_read_url">unable to read auth URL</string>
     <string name="se_auth_unable_to_read_fkey">unable to read network fkey</string>
