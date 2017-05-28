@@ -60,7 +60,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 mEmail.getText().toString(),
                 mPassword.getText().toString(),
                 this,
-                getApplicationContext()
+                this
         );
     }
 
@@ -89,7 +89,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 acc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onAuthFinish(account.name, mAccountManager.peekAuthToken(account, AccountManager.ACCOUNT_ACCESS_TOKEN_TYPE));
+                        onAuthFinish(account.name, mAccountManager.peekAuthToken(account, "com.android.AccountManager.ACCOUNT_ACCESS_TOKEN_TYPE"));
                     }
                 });
                 accounts.addView(acc);
