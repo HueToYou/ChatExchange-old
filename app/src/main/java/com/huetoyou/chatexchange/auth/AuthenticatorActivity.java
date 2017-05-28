@@ -77,7 +77,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mSelectAccount = (ScrollView) findViewById(R.id.select_account);
 
         mAccountManager = AccountManager.get(this);
-        if (mAccountManager != null) {
+        if (mAccountManager.getAccounts().length > 0) {
             mAccounts = mAccountManager.getAccounts();
             mLogin.setVisibility(View.GONE);
 
