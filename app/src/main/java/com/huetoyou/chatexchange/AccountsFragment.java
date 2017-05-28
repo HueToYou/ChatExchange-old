@@ -54,6 +54,7 @@ public class AccountsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().startActivity(new Intent(getActivity(), AuthenticatorActivity.class));
+                getActivity().finish();
             }
         });
 

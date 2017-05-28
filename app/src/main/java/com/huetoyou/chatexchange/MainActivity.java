@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             setFragment(tabIndex);
         } else {
             startActivity(new Intent(this, AuthenticatorActivity.class));
+            finish();
         }
 
         tabListener();

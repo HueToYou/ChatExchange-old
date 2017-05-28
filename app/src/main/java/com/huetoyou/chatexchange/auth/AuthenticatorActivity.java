@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.huetoyou.chatexchange.MainActivity;
 import com.huetoyou.chatexchange.R;
 
 import android.text.Html;
@@ -124,6 +125,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
