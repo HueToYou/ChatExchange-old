@@ -2,23 +2,27 @@ package com.huetoyou.chatexchange;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
-
-import org.w3c.dom.Text;
 
 public class AccountsFragment extends Fragment {
 
@@ -56,7 +60,7 @@ public class AccountsFragment extends Fragment {
         }
 
         Button newAccount = new AppCompatButton(getActivity());
-        newAccount.setText(getResources().getText(R.string.activity_authenticator_add_account));
+        newAccount.setText(getResources().getText(R.string.activity_main_add_account));
         newAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,12 +71,31 @@ public class AccountsFragment extends Fragment {
         accountLayout.addView(newAccount);
 
         Button newChat = new AppCompatButton(getActivity());
-        newChat.setText(getResources().getText(R.string.activity_authenticator_add_chat));
+        newChat.setText(getResources().getText(R.string.activity_main_add_chat));
         newChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).addTab("https://chat.stackexchange.com/rooms/201/ask-ubuntu-general-room");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getResources().getText(R.string.activity_main_chat_url));
+
+                    final EditText input = new EditText(getActivity());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+                    builder.setView(input);
+                    builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((MainActivity) getActivity()).addTab(input.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
                 }
             }
         });

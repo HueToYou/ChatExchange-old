@@ -7,7 +7,7 @@ android {
         applicationId "com.huetoyou.chatexchange"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 4
+        versionCode 5
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -29,5 +29,6 @@ dependencies {
     compile 'org.jodd:jodd-lagarto:3.4.2'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'org.jsoup:jsoup:1.10.2'
     testCompile 'junit:junit:4.12'
 }
