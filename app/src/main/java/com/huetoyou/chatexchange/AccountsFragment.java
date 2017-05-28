@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -58,6 +59,10 @@ public class AccountsFragment extends Fragment {
             });
             accountLayout.addView(acc);
         }
+
+        Space spacer = new Space(getActivity());
+        spacer.setMinimumHeight(70);
+        accountLayout.addView(spacer);
 
         Button newAccount = new AppCompatButton(getActivity());
         newAccount.setText(getResources().getText(R.string.activity_main_add_account));
