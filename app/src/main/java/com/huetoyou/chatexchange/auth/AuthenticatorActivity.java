@@ -3,18 +3,13 @@ package com.huetoyou.chatexchange.auth;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,9 +22,6 @@ import com.huetoyou.chatexchange.R;
 import android.text.Html;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
-
-import java.io.IOException;
 
 /**
  * Activity shown when the account needs to be authenticated
@@ -42,7 +34,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mEmail;
     private EditText mPassword;
     private AccountManager mAccountManager;
-    private Account[] mAccounts;
     private LinearLayout mLogin;
     private ScrollView mSelectAccount;
 
@@ -78,12 +69,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
-            mAccounts = mAccountManager.getAccounts();
+            Account[] accounts = mAccountManager.getAccounts();
             mLogin.setVisibility(View.GONE);
 
-            LinearLayout accounts = (LinearLayout) findViewById(R.id.select_account_lin);
+            LinearLayout accountLayout = (LinearLayout) findViewById(R.id.select_account_lin);
 
-            for (final Account account : mAccounts) {
+            for (final Account account : accounts) {
                 final Button acc = new AppCompatButton(this);
                 acc.setText(account.name);
                 acc.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +83,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                         onAuthFinish(account.name, mAccountManager.peekAuthToken(account, AccountManager.ACCOUNT_ACCESS_TOKEN_TYPE));
                     }
                 });
-                accounts.addView(acc);
+                accountLayout.addView(acc);
             }
 
             Button newAccount = new AppCompatButton(this);
@@ -105,7 +96,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 }
             });
 
-            accounts.addView(newAccount);
+            accountLayout.addView(newAccount);
         } else {
             mSelectAccount.setVisibility(View.GONE);
         }
