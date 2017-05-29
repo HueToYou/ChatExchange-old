@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
@@ -60,9 +63,13 @@ public class AccountsFragment extends Fragment {
             accountLayout.addView(acc);
         }
 
-        Space spacer = new Space(getActivity());
-        spacer.setMinimumHeight(70);
-        accountLayout.addView(spacer);
+        View v = new View(getActivity());
+        v.setMinimumHeight(2);
+        v.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(40, 40, 40, 40);
+        v.setLayoutParams(params);
+        accountLayout.addView(v);
 
         Button newAccount = new AppCompatButton(getActivity());
         newAccount.setText(getResources().getText(R.string.activity_main_add_account));

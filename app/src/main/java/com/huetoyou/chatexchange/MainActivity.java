@@ -1,15 +1,13 @@
 package com.huetoyou.chatexchange;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,21 +16,11 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
@@ -46,9 +34,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -68,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Set<String> mChatUrls = new HashSet<>();
 
+    private boolean mUseDark;
+    private boolean mTabAdded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +66,25 @@ public class MainActivity extends AppCompatActivity {
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
 
+        mEditor.putInt("tabIndex", 0).apply();
+
+        mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
+
+        mFragmentManager = getFragmentManager();
+
+        setup();
+    }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        setContentView(R.layout.activity_main);
+//
+//        mChatUrls = new HashSet<>();
+//        setup();
+//    }
+
+    private void setup() {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
             mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(R.drawable.ic_stackexchange));
@@ -85,25 +93,24 @@ public class MainActivity extends AppCompatActivity {
         }
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        mFragmentManager = getFragmentManager();
+        for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
+            addTab(s);
+//            while (!mTabAdded);
+        }
 
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
             int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            setFragment(mTabLayout.getTabAt(tabIndex));
+            setFragmentByTab(mTabLayout.getTabAt(tabIndex));
         } else {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
         }
 
-        for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
-            addTab(s);
-        }
-
         tabListener();
     }
 
-    private void setFragment(TabLayout.Tab tab) {
+    private void setFragmentByTab(TabLayout.Tab tab) {
         Fragment fragment;
 
         switch (tab.getPosition()) {
@@ -114,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new ChatFragment();
                 break;
         }
+
+        mEditor.putInt("tabIndex", tab.getPosition()).apply();
 
         if (fragment instanceof ChatFragment) {
             if (tab.getText() != null) mEditor.putString("chatTitle", tab.getText().toString());
@@ -127,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                setFragment(tab);
+                setFragmentByTab(tab);
             }
 
             @Override
@@ -140,12 +149,12 @@ public class MainActivity extends AppCompatActivity {
                 if (tab.getPosition() != 0) {
                     Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     // Vibrate for 500 milliseconds
-                    vib.vibrate(200);
+                    vib.vibrate(100);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_AppCompat))
+                            new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, mUseDark ? R.style.Theme_AppCompat : R.style.Theme_AppCompat_Light))
                                     .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
                                     .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
                                     .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
@@ -174,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addTab(final String chatUrl) {
+        mTabAdded = false;
         if (!mChatUrls.contains(chatUrl)) {
             mChatUrls.add(chatUrl);
             mEditor.putStringSet("chatURLs", mChatUrls);
@@ -207,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    mTabAdded = true;
                 }
             }).start();
         } else {
