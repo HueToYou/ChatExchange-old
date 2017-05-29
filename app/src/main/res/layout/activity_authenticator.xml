@@ -22,10 +22,10 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_stackexchange"
-        android:drawableStart="@drawable/ic_stackexchange"
+        android:drawableLeft="@mipmap/ic_launcher"
+        android:drawableStart="@mipmap/ic_launcher"
         android:gravity="center_vertical"
-        android:text="@string/activity_authenticator_stackexchange"
+        android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <View

@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Vibrator;
@@ -21,6 +22,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private Set<String> mChatUrls = new HashSet<>();
 
     private boolean mUseDark;
-    private boolean mTabAdded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,19 +78,34 @@ public class MainActivity extends AppCompatActivity {
         setup();
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        setContentView(R.layout.activity_main);
-//
-//        mChatUrls = new HashSet<>();
-//        setup();
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_about:
+                Toast.makeText(this, "A", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        return true;
+    }
 
     private void setup() {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
-            mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(R.drawable.ic_stackexchange));
+            mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
         for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
             addTab(s);
-//            while (!mTabAdded);
         }
 
         mAccountManager = AccountManager.get(this);
@@ -183,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addTab(final String chatUrl) {
-        mTabAdded = false;
         if (!mChatUrls.contains(chatUrl)) {
             mChatUrls.add(chatUrl);
             mEditor.putStringSet("chatURLs", mChatUrls);
@@ -217,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    mTabAdded = true;
                 }
             }).start();
         } else {

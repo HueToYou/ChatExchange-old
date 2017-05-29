@@ -2,29 +2,21 @@ package com.huetoyou.chatexchange;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Space;
-import android.widget.TableLayout;
-import android.widget.TextView;
 
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 
@@ -63,14 +55,6 @@ public class AccountsFragment extends Fragment {
             accountLayout.addView(acc);
         }
 
-        View v = new View(getActivity());
-        v.setMinimumHeight(2);
-        v.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
-        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(40, 40, 40, 40);
-        v.setLayoutParams(params);
-        accountLayout.addView(v);
-
         Button newAccount = new AppCompatButton(getActivity());
         newAccount.setText(getResources().getText(R.string.activity_main_add_account));
         newAccount.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +64,19 @@ public class AccountsFragment extends Fragment {
             }
         });
 
+        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 20, 0, 0);
+        newAccount.setLayoutParams(params);
+
         accountLayout.addView(newAccount);
+
+        View v = new View(getActivity());
+        v.setMinimumHeight(2);
+        v.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+        ViewGroup.MarginLayoutParams vparams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        vparams.setMargins(40, 40, 40, 40);
+        v.setLayoutParams(vparams);
+        accountLayout.addView(v);
 
         Button newChat = new AppCompatButton(getActivity());
         newChat.setText(getResources().getText(R.string.activity_main_add_chat));
