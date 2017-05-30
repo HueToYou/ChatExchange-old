@@ -7,13 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Vibrator;
@@ -22,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -54,11 +54,17 @@ public class MainActivity extends AppCompatActivity {
     private AccountManager mAccountManager;
 
     private TabLayout mTabLayout;
+    private ArrayList<TabLayout.Tab> mTabs = new ArrayList<>();
+
     private FragmentManager mFragmentManager;
+
+    private Intent mIntent;
 
     private Set<String> mChatUrls = new HashSet<>();
 
     private boolean mUseDark;
+    private boolean mDoneAddingChats = false;
+    private Thread mAddTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
 
         mFragmentManager = getFragmentManager();
+
+        mIntent = getIntent();
 
         setup();
     }
@@ -102,10 +110,15 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private void setup() {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
-            mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))));
+            mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))).setTag("home"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,39 +127,84 @@ public class MainActivity extends AppCompatActivity {
         for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
             addTab(s);
         }
+        mDoneAddingChats = true;
 
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
-            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            setFragmentByTab(mTabLayout.getTabAt(tabIndex));
+//            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
+            setFragmentByTab(mTabLayout.getTabAt(0));
         } else {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
         }
 
         tabListener();
+
+        final String action = mIntent.getAction();
+
+        if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (mAddTab.isAlive());
+                    Log.e("test", "RECEIVED");
+                    Bundle extras = mIntent.getExtras();
+                    Object o = null;
+                    if (extras != null) o = extras.get("chatURL");
+                    String url = "";
+                    if (o != null) url = o.toString();
+                    url = url.replace("http://", "").replace("https://", "");
+                    Log.e("url", url);
+                    final TabLayout.Tab tab = getTabByURL(url);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setFragmentByTab(tab);
+                        }
+                    });
+                }
+            }).start();
+        }
+    }
+
+    private TabLayout.Tab getTabByURL(String url) {
+        for (TabLayout.Tab tab : mTabs) {
+
+            String tabTag = tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
+            url = url.replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
+
+            if ((url.contains(tabTag) || tabTag.contains(url)) && url.length() > 0) return tab;
+        }
+
+        return null;
     }
 
     private void setFragmentByTab(TabLayout.Tab tab) {
-        Fragment fragment;
+        if (tab != null) {
+            Fragment fragment;
 
-        switch (tab.getPosition()) {
-            case 0:
-                fragment = new AccountsFragment();
-                break;
-            default:
-                fragment = new ChatFragment();
-                break;
+            switch (tab.getPosition()) {
+                case 0:
+                    fragment = new AccountsFragment();
+                    break;
+                default:
+                    fragment = new ChatFragment();
+                    break;
+            }
+
+            if (!tab.isSelected()) {
+                tab.select();
+            }
+
+//            mEditor.putInt("tabIndex", tab.getPosition()).apply();
+
+            if (fragment instanceof ChatFragment) {
+                if (tab.getText() != null) mEditor.putString("chatTitle", tab.getText().toString());
+                mEditor.apply();
+            }
+
+            mFragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
-
-        mEditor.putInt("tabIndex", tab.getPosition()).apply();
-
-        if (fragment instanceof ChatFragment) {
-            if (tab.getText() != null) mEditor.putString("chatTitle", tab.getText().toString());
-            mEditor.apply();
-        }
-
-        mFragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 
     private void tabListener() {
@@ -205,7 +263,8 @@ public class MainActivity extends AppCompatActivity {
             mEditor.putStringSet("chatURLs", mChatUrls);
             mEditor.apply();
 
-            new Thread(new Runnable() {
+            //noinspection deprecation
+            mAddTab = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     TabLayout.Tab tab = null;
@@ -230,11 +289,13 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 mTabLayout.addTab(tab1);
+                                mTabs.add(tab1);
                             }
                         });
                     }
                 }
-            }).start();
+            });
+            mAddTab.start();
         } else {
             Toast.makeText(this, getResources().getText(R.string.activity_main_chat_already_added).toString(), Toast.LENGTH_SHORT).show();
         }
