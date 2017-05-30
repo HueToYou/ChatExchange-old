@@ -149,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (mAddTab.isAlive());
+                    if (mAddTab != null) {
+                        while (mAddTab.isAlive());
+                    }
                     Log.e("test", "RECEIVED");
                     Bundle extras = mIntent.getExtras();
                     Object o = null;
