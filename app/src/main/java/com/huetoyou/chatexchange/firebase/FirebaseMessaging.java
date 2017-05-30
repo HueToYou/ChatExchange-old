@@ -1,17 +1,27 @@
 package com.huetoyou.chatexchange.firebase;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.huetoyou.chatexchange.MainActivity;
+import com.huetoyou.chatexchange.R;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
     private final String TAG = "ChatExchange";
+
+    private final int NOTIF_ID = 100;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -34,5 +44,33 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+
+        sendNotification(remoteMessage.getNotification().getBody());
+    }
+
+    //this won't work until we use the API
+    private void sendNotification(String messageBody) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Event tracker")
+                .setContentText("Events received");
+
+        NotificationCompat.InboxStyle inboxStyle =
+                new NotificationCompat.InboxStyle();
+        String[] events = new String[6];
+        events[0] = messageBody;
+
+        inboxStyle.setBigContentTitle("Event tracker details:");
+
+        for (String s : events) {
+            inboxStyle.addLine(s);
+        }
+
+        mBuilder.setStyle(inboxStyle);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mNotificationManager.notify(NOTIF_ID, mBuilder.build());
     }
 }
