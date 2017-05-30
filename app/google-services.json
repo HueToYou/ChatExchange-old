@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "956628284799",
+    "firebase_url": "https://chatexchange-b0d13.firebaseio.com",
+    "project_id": "chatexchange-b0d13",
+    "storage_bucket": "chatexchange-b0d13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956628284799:android:54bbd317a7bbc4e2",
+        "android_client_info": {
+          "package_name": "com.huetoyou.chatexchange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956628284799-0tipm1uiktmo8v6ui2a7t9j0n69qtkqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huetoyou.chatexchange",
+            "certificate_hash": "6cdaf7135ab324d00b1d0e68b5890cd3610ce308"
+          }
+        },
+        {
+          "client_id": "956628284799-mria35lmp5vfvbl01efvhutj02rqm1u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIPH6z1EEIGLrLvQWKRpIkoM1iz3N7p5g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956628284799-mria35lmp5vfvbl01efvhutj02rqm1u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

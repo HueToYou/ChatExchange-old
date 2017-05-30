@@ -3,7 +3,9 @@ package com.huetoyou.chatexchange.firebase;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -11,11 +13,9 @@ import com.google.firebase.messaging.RemoteMessage;
 public class FirebaseMessaging extends FirebaseMessagingService {
     private final String TAG = "ChatExchange";
 
-    public FirebaseMessaging() {
-    }
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        Looper.prepare();
         // ...
 
         // TODO(developer): Handle FCM messages here.
