@@ -143,32 +143,31 @@ public class MainActivity extends AppCompatActivity {
 
         tabListener();
 
-        final String action = mIntent.getAction();
-
-        if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mAddTab != null) {
-                        while (mAddTab.isAlive());
+        if (mAddTab != null && mIntent != null) {
+            final String action = mIntent.getAction();
+            if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (mAddTab.isAlive()) ;
+                        Log.e("test", "RECEIVED");
+                        Bundle extras = mIntent.getExtras();
+                        Object o = null;
+                        if (extras != null) o = extras.get("chatURL");
+                        String url = "";
+                        if (o != null) url = o.toString();
+                        url = url.replace("http://", "").replace("https://", "");
+                        Log.e("url", url);
+                        final TabLayout.Tab tab = getTabByURL(url);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setFragmentByTab(tab);
+                            }
+                        });
                     }
-                    Log.e("test", "RECEIVED");
-                    Bundle extras = mIntent.getExtras();
-                    Object o = null;
-                    if (extras != null) o = extras.get("chatURL");
-                    String url = "";
-                    if (o != null) url = o.toString();
-                    url = url.replace("http://", "").replace("https://", "");
-                    Log.e("url", url);
-                    final TabLayout.Tab tab = getTabByURL(url);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setFragmentByTab(tab);
-                        }
-                    });
-                }
-            }).start();
+                }).start();
+            }
         }
     }
 
