@@ -51,6 +51,9 @@
                 android:resource="@xml/authenticator" />
         </service>
 
+        <!-- Backend service -->
+        <service android:name=".backend.BackendService" />
+
         <!-- Firebase services -->
         <service
             android:name=".firebase.FirebaseService">
