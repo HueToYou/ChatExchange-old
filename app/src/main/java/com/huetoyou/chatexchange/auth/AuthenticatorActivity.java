@@ -53,11 +53,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     }
 
     /**
-     * Set the hint for an EditText to the specified string
+     * Set the hint for an EditText to the specified string on error
      * @param editText edit widget
      * @param resId string resource
      */
-    private void setHint(EditText editText, @StringRes int resId) {
+    private void setErrorHint(EditText editText, @StringRes int resId) {
         String html = "<font color='#ff0000'>" + getResources().getText(resId) + "</font>";
         CharSequence hint;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
@@ -93,10 +93,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEmail.getText().toString().isEmpty()) {
-                    setHint(mEmail, R.string.activity_authenticator_email_required);
-                } else if (mPassword.getText().toString().isEmpty()) {
-                    setHint(mPassword, R.string.activity_authenticator_password_required);
+                boolean emptyEmail = mEmail.getText().toString().isEmpty();
+                boolean emptyPassword = mPassword.getText().toString().isEmpty();
+
+                if (emptyEmail || emptyPassword) {
+                    if (emptyEmail) setErrorHint(mEmail, R.string.activity_authenticator_email_required);
+                    if (emptyPassword) setErrorHint(mPassword, R.string.activity_authenticator_password_required);
                 } else {
                     startAuth();
                 }
