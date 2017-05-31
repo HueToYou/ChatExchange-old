@@ -8,7 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
+import android.support.annotation.StringRes;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,8 +21,6 @@ import com.huetoyou.chatexchange.MainActivity;
 import com.huetoyou.chatexchange.R;
 
 import android.text.Html;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 /**
  * Activity shown when the account needs to be authenticated
@@ -35,6 +33,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mEmail;
     private EditText mPassword;
     private AccountManager mAccountManager;
+
     /**
      * Start the auth procedure (use StackExchangeAuth for now)
      */
@@ -51,6 +50,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 this,
                 this
         );
+    }
+
+    /**
+     * Set the hint for an EditText to the specified string
+     * @param editText edit widget
+     * @param resId string resource
+     */
+    private void setHint(EditText editText, @StringRes int resId) {
+        String html = "<font color='#ff0000'>" + getResources().getText(resId) + "</font>";
+        CharSequence hint;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            hint = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            //noinspection deprecation
+            hint = Html.fromHtml(html);
+        }
+        editText.setHint(hint);
     }
 
     @Override
@@ -77,21 +93,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEmail.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
-                    if (mEmail.getText().toString().isEmpty()) {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
-                            mEmail.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_email_required) + "</font>", Html.FROM_HTML_MODE_LEGACY));
-                        else
-                            //noinspection deprecation
-                            mEmail.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_email_required) + "</font>"));
-                    }
-                    if (mPassword.getText().toString().isEmpty()) {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
-                            mPassword.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_password_required) + "</font>", Html.FROM_HTML_MODE_LEGACY));
-                        else
-                            //noinspection deprecation
-                            mPassword.setHint(Html.fromHtml("<font color='#ff0000'>" + getResources().getText(R.string.activity_authenticator_password_required) + "</font>"));
-                    }
+                if (mEmail.getText().toString().isEmpty()) {
+                    setHint(mEmail, R.string.activity_authenticator_email_required);
+                } else if (mPassword.getText().toString().isEmpty()) {
+                    setHint(mPassword, R.string.activity_authenticator_password_required);
                 } else {
                     startAuth();
                 }
