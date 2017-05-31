@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private void setup() {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
-            mTabLayout.addTab(mTabLayout.newTab().setText("Accounts").setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))).setTag("home"));
+            mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.generic_accounts)).setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))).setTag("home"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,28 +144,46 @@ public class MainActivity extends AppCompatActivity {
 
         tabListener();
 
-        if (mAddTab != null && mIntent != null) {
+        if (mAddTab != null && mIntent != null && mIntent.getAction() != null) {
             final String action = mIntent.getAction();
             if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while (mAddTab.isAlive()) ;
+                        Looper.prepare();
+                        while (mAddTab.isAlive());
                         Log.e("test", "RECEIVED");
                         Bundle extras = mIntent.getExtras();
                         Object o = null;
                         if (extras != null) o = extras.get("chatURL");
                         String url = "";
                         if (o != null) url = o.toString();
-                        url = url.replace("http://", "").replace("https://", "");
                         Log.e("url", url);
-                        final TabLayout.Tab tab = getTabByURL(url);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setFragmentByTab(tab);
+                        TabLayout.Tab tab = getTabByURL(url);
+
+                        if (tab != null) {
+                            final TabLayout.Tab t2 = tab;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setFragmentByTab(t2);
+                                }
+                            });
+                        } else {
+                            addTab(url);
+                            tab = null;
+                            while (tab == null) {
+                                tab = getTabByURL(url);
                             }
-                        });
+                            final TabLayout.Tab t2 = tab;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setFragmentByTab(t2);
+                                }
+                            });
+                        }
                     }
                 }).start();
             }

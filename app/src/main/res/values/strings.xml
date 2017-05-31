@@ -35,6 +35,9 @@
     <string name="generic_no">No</string>
     <string name="generic_ok">OK</string>
     <string name="generic_cancel">Cancel</string>
+    <string name="generic_accounts">Accounts</string>
+
+
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
