@@ -43,6 +43,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,10 +129,16 @@ public class MainActivity extends AppCompatActivity {
         }
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
-            addTab(s);
-        }
-        mDoneAddingChats = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
+                    addTab(s);
+                    while (mAddTab.isAlive());
+                }
+                mDoneAddingChats = true;
+            }
+        }).start();
 
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
@@ -151,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Looper.prepare();
-                        while (mAddTab.isAlive());
+                        while (!mDoneAddingChats);
                         Log.e("test", "RECEIVED");
                         Bundle extras = mIntent.getExtras();
                         Object o = null;
@@ -161,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("url", url);
                         TabLayout.Tab tab = getTabByURL(url);
 
-                        if (tab == null) addTab(url);
+                        if (tab != null) addTab(url);
                         while (tab == null) tab = getTabByURL(url);
 
                         final TabLayout.Tab t2 = tab;
@@ -171,30 +178,6 @@ public class MainActivity extends AppCompatActivity {
                                 setFragmentByTab(t2);
                             }
                         });
-
-//                        if (tab != null) {
-//                            final TabLayout.Tab t2 = tab;
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    setFragmentByTab(t2);
-//                                }
-//                            });
-//                        } else {
-//                            addTab(url);
-//                            tab = null;
-//                            while (tab == null) {
-//                                tab = getTabByURL(url);
-//                            }
-//                            final TabLayout.Tab t2 = tab;
-//
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    setFragmentByTab(t2);
-//                                }
-//                            });
-//                        }
                     }
                 }).start();
             }
@@ -202,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private TabLayout.Tab getTabByURL(String url) {
-        for (TabLayout.Tab tab : mTabs) {
-
+        for (int i = 0; i < mTabs.size(); i++) {
+            TabLayout.Tab tab = mTabs.get(i);
             String tabTag = tab.getTag() != null ? tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "") : "";
             url = url.replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
 
