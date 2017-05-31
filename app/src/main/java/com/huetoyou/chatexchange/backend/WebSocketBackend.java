@@ -88,21 +88,10 @@ public class WebSocketBackend {
             .registerTypeAdapter(WsMessage.class, new WsMessageDeserializer())
             .create();
 
-    /**
-     * Listener for chat events as they occur
-     */
-    public interface Listener {
-
-        /**
-         * Indicate an event was received
-         * @param event newly received event
-         */
-        void onEvent(Event event);
-    }
 
     private RequestFactory mRequestFactory;
     private int mRoomId;
-    private Listener mListener;
+    private BackendService.Broadcaster mBroadcaster;
 
     private WebSocketClient mWebSocketClient;
 
@@ -123,7 +112,7 @@ public class WebSocketBackend {
             @Override
             public void onMessage(String s) {
                 for (Event event : mGson.fromJson(s, WsMessage.class).events) {
-                    mListener.onEvent(event);
+                    mBroadcaster.broadcastEvent(event);
                 }
             }
 
@@ -181,12 +170,12 @@ public class WebSocketBackend {
      * Create a new WebSocket backend
      * @param requestFactory factory for creating the WebSocket requests
      * @param roomId ID of the initial room to join
-     * @param listener event listener
+     * @param broadcaster event broadcaster
      */
-    public WebSocketBackend(RequestFactory requestFactory, int roomId, Listener listener) {
+    public WebSocketBackend(RequestFactory requestFactory, int roomId, BackendService.Broadcaster broadcaster) {
         mRequestFactory = requestFactory;
         mRoomId = roomId;
-        mListener = listener;
+        mBroadcaster = broadcaster;
 
         // Connect immediately
         connect();

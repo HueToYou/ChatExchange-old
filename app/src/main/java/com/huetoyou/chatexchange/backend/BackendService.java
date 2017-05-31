@@ -10,6 +10,30 @@ import android.support.annotation.Nullable;
  */
 public class BackendService extends Service {
 
+    private static final String TAG = "BackendService";
+
+    /**
+     * Broadcast for new events being received
+     */
+    public static final String EVENT_RECEIVED = "com.huetoyou.chatexchange.EVENT_RECEIVED";
+    public static final String EXTRA_EVENT = "com.huetoyou.chatexchange.EVENT";
+
+    /**
+     * Broadcaster for chat events
+     */
+    class Broadcaster {
+
+        /**
+         * Broadcast the specified event
+         */
+        void broadcastEvent(Event event) {
+            Intent intent = new Intent();
+            intent.setAction(EVENT_RECEIVED);
+            intent.putExtra(EXTRA_EVENT, event);
+            BackendService.this.sendBroadcast(intent);
+        }
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
