@@ -161,29 +161,40 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("url", url);
                         TabLayout.Tab tab = getTabByURL(url);
 
-                        if (tab != null) {
-                            final TabLayout.Tab t2 = tab;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setFragmentByTab(t2);
-                                }
-                            });
-                        } else {
-                            addTab(url);
-                            tab = null;
-                            while (tab == null) {
-                                tab = getTabByURL(url);
-                            }
-                            final TabLayout.Tab t2 = tab;
+                        if (tab == null) addTab(url);
+                        while (tab == null) tab = getTabByURL(url);
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setFragmentByTab(t2);
-                                }
-                            });
-                        }
+                        final TabLayout.Tab t2 = tab;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setFragmentByTab(t2);
+                            }
+                        });
+
+//                        if (tab != null) {
+//                            final TabLayout.Tab t2 = tab;
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    setFragmentByTab(t2);
+//                                }
+//                            });
+//                        } else {
+//                            addTab(url);
+//                            tab = null;
+//                            while (tab == null) {
+//                                tab = getTabByURL(url);
+//                            }
+//                            final TabLayout.Tab t2 = tab;
+//
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    setFragmentByTab(t2);
+//                                }
+//                            });
+//                        }
                     }
                 }).start();
             }
@@ -193,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout.Tab getTabByURL(String url) {
         for (TabLayout.Tab tab : mTabs) {
 
-            String tabTag = tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
+            String tabTag = tab.getTag() != null ? tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "") : "";
             url = url.replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
 
             if ((url.contains(tabTag) || tabTag.contains(url)) && url.length() > 0) return tab;
@@ -261,7 +272,8 @@ public class MainActivity extends AppCompatActivity {
                                             if (tab.getTag() != null) {
                                                 mChatUrls.remove(tab.getTag().toString());
                                                 mEditor.putStringSet("chatURLs", mChatUrls).apply();
-                                                if (mTabLayout.getTabAt(tab.getPosition() - 1) != null) mTabLayout.getTabAt(tab.getPosition() - 1).select();
+                                                TabLayout.Tab prev = mTabLayout.getTabAt(tab.getPosition() - 1);
+                                                if (prev != null) prev.select();
                                                 mTabLayout.removeTab(tab);
                                             }
                                         }
