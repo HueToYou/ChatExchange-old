@@ -2,9 +2,7 @@ package com.huetoyou.chatexchange;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -14,15 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,34 +68,72 @@ public class ChatFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String html = "";
+                Document html = new Document("");
                 SparseArray<String> names = new SparseArray<>();
 
-                URL url;
-                InputStream is = null;
-                BufferedReader br;
-                String line;
+                String users;
 
                 try {
-                    html = Jsoup.connect(params[0]).get().html();
-                    Log.e("HTML", html);
+                    html = Jsoup.connect(params[0]).get();
+//                    Log.e("HTML", html.html());
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        if (is != null) is.close();
-                    } catch (IOException ioe) {
-                        // nothing to see here
+                }
+
+                Elements el = html.select("script");
+                if (el.hasAttr("type")) el = html.select("script");
+
+                ArrayList<String> data = new ArrayList<>();
+
+                users = el.html();
+                String users2 = "";
+
+                Pattern p = Pattern.compile("\\{id:(.*?)\\}");
+                Matcher m = p.matcher(users);
+
+                while (!m.hitEnd()) {
+                    if (m.find()) {
+                        try {
+                            data.add(m.group());
+                            users2 = users2.concat(m.group());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-                Pattern p = Pattern.compile("<li class=\"present-user user-container(.+?)\"(.+?)>(.+?)</li>");
-                Matcher m = p.matcher(html);
-                String name = null;
+
+                users2 = "{\"users\": ["
+                        .concat(users2)
+                        .concat("]}")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replace("id:", "\"id\":")
+                        .replace("name", "\"name\"")
+                        .replace("email_hash", "\"email_hash\"")
+                        .replace("reputation", "\"reputation\"")
+                        .replace("last_post", "\"last_post\"")
+                        .replace("is_moderator", "\"is_moderator\"")
+                        .replace("is_owner", "\"is_owner\"")
+                        .replace("true", "\"true\"")
+                        .replace("}{", "},{")
+                        .replace("!", "");
 
                 try {
-                    boolean idk = m.find();
-                    name = m.group();
-                    Log.e("T", name);
+                    JSONObject object = new JSONObject(users2);
+                    JSONArray jArray = object.getJSONArray("users");
+
+                    for (int i = 0; i < jArray.length(); i++)
+                    {
+                        JSONObject jsonObject = jArray.getJSONObject(i);
+
+                        String id = jsonObject.getString("id");
+                        String name = jsonObject.getString("name");
+                        String icon = jsonObject.getString("email_hash");
+                        if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+                        if (name.equals("Android Dev")) Log.e("ICON", icon);
+
+                        addUser(name, icon);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

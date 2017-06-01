@@ -83,7 +83,7 @@ public class UserTileFragment extends Fragment {
                 InputStream is = (InputStream) new URL(params[0]).getContent();
                 Bitmap b = BitmapFactory.decodeStream(is);
 
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(b, 144, 144, true));
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(b, 64, 64, true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

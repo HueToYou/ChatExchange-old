@@ -35,6 +35,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -329,63 +330,36 @@ public class MainActivity extends AppCompatActivity {
     private class GetName extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            URL url;
-            InputStream is = null;
-            BufferedReader br;
-            String line;
-            String html = "";
-
             try {
-                url = new URL(params[0]);
-                is = url.openStream();  // throws an IOException
-                br = new BufferedReader(new InputStreamReader(is));
-
-                while ((line = br.readLine()) != null) {
-                    html += line;
-                }
+                return Jsoup.connect(params[0]).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (is != null) is.close();
-                } catch (IOException ioe) {
-                    // nothing to see here
-                }
+                return null;
             }
-            Pattern p = Pattern.compile("<title>(.+?)</title>");
-            Matcher m = p.matcher(html);
-            String title = null;
-            try {
-                boolean idk = m.find();
-                title = m.group().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return title;
         }
     }
 
     private class GetIcon extends AsyncTask<String, Void, Drawable> {
         @Override
         protected Drawable doInBackground(String... params) {
-            Bitmap bmp;
             try {
-                if (!params[0].contains("http")) params[0] = "https://".concat(params[0]);
-                Connection con2= Jsoup.connect(params[0]);
-                Document doc = con2.get();
-                Element e = doc.head().select("link[href~=.*\\.ico]").first();
-                String ico = e.attr("href");
-                ico = ico.replace("?v=da", "");
-                if (!ico.contains("http")) ico = "https:".concat(ico);
+                Document document = Jsoup.connect(params[0]).get();
+                Element head = document.head();
+                Element link = head.select("link").first();
 
-                URL url = new URL(ico);
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                String fav = link.attr("href");
+                if (!fav.contains("http")) fav = "https:".concat(fav);
+                Log.e("FAV", fav);
+                URL url = new URL(fav);
+
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
                 return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, 144, 144, true));
             } catch (Exception e) {
                 e.printStackTrace();
-                return null;
             }
+
+            return null;
         }
     }
 }
