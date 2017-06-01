@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, PreferencesActivity.class));
                 break;
             case R.id.action_about:
                 Intent intent = new Intent(getApplicationContext(), AboutActivity.class);

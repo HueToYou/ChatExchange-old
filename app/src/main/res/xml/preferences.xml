@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="FOO">
+
+        <CheckBoxPreference
+            android:key="checkBoxPref"
+            android:title="check it out"
+            android:summary="click this little box"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="FOO2">
+
+        <CheckBoxPreference
+            android:key="checkBoxPref2"
+            android:title="check it out"
+            android:summary="click this little box"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
