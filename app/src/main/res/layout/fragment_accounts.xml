@@ -31,6 +31,11 @@
                 android:text="@string/activity_main_select_account"
                 android:textAlignment="center"
                 android:textSize="18sp" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/accountsSpinner" />
         </LinearLayout>
     </ScrollView>
 

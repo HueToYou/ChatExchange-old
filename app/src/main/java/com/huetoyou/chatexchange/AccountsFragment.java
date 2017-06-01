@@ -14,11 +14,16 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountsFragment extends Fragment {
 
@@ -43,17 +48,14 @@ public class AccountsFragment extends Fragment {
 
         LinearLayout accountLayout = (LinearLayout) view.findViewById(R.id.select_account_lin);
 
+        List<String> spinnerArray =  new ArrayList<String>();
         for (final Account account : accounts) {
-            final Button acc = new AppCompatButton(getActivity());
-            acc.setText(account.name);
-            acc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-            accountLayout.addView(acc);
+            spinnerArray.add(account.name);
         }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner sItems = (Spinner) accountLayout.findViewById(R.id.accountsSpinner);
+        sItems.setAdapter(adapter);
 
         Button newAccount = new AppCompatButton(getActivity());
         newAccount.setText(getResources().getText(R.string.activity_main_add_account));
