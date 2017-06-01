@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.frags;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -20,7 +20,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;

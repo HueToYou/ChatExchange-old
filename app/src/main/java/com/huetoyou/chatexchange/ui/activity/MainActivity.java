@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
 import android.app.Fragment;
@@ -28,6 +28,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.huetoyou.chatexchange.ui.frags.AccountsFragment;
+import com.huetoyou.chatexchange.ui.frags.ChatFragment;
+import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 
 import io.fabric.sdk.android.Fabric;
@@ -43,7 +46,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

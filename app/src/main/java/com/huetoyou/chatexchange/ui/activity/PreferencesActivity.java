@@ -1,7 +1,10 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.activity;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.AppCompatPreferenceActivity;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
     @Override

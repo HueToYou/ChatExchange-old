@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.huetoyou.chatexchange.AboutActivity">
+    tools:context="com.huetoyou.chatexchange.ui.activity.AboutActivity">
 
     <TextView
         android:text="Some useful info here...\n\nThis non-functional app was developed by:\nNathan Osman\nTheWanderer\nAndroid Dev"

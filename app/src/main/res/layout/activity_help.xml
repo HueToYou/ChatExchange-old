@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.huetoyou.chatexchange.HelpActivity">
+    tools:context="com.huetoyou.chatexchange.ui.activity.HelpActivity">
 
     <TextView
         android:text="FAQ:\n\nQ: Why is this app so buggy?\nA: Because @GeorgeTheDev worked on it\n\nQ: Why doesn't this app's core functionality (participating in SE chatrooms) work?\nA: Because @TheWanderer was constantly pinging @NathanOsman to work on it, and Nathan didn't want to so he went and hid in @ThomasWard's basement, where he would have easy access to LAZORS in order to terminate @TheWanderer's annoying pings\n\nQ: Why am I even wasting my time to write this nonsense?\nA: *shrugs*"

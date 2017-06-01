@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

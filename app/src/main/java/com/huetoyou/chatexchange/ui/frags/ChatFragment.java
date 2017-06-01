@@ -1,10 +1,8 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.frags;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -14,15 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.huetoyou.chatexchange.R;
+
 import org.jsoup.Jsoup;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
