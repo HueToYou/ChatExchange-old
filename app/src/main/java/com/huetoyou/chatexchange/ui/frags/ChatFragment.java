@@ -120,7 +120,7 @@ public class ChatFragment extends Fragment {
                         .replace("last_post", "\"last_post\"")
                         .replace("is_moderator", "\"is_moderator\"")
                         .replace("is_owner", "\"is_owner\"")
-                        .replace("true", "\"true\"")
+//                        .replace("true", "\"true\"")
                         .replace("}{", "},{")
                         .replace("!", "");
 
@@ -132,13 +132,20 @@ public class ChatFragment extends Fragment {
                     {
                         JSONObject jsonObject = jArray.getJSONObject(i);
 
-                        String id = jsonObject.getString("id");
+                        int id = jsonObject.getInt("id");
+                        int lastPost = jsonObject.getInt("last_post");
+                        int rep = jsonObject.getInt("reputation");
+
+                        boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
+                        boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
+
                         String name = jsonObject.getString("name");
                         String icon = jsonObject.getString("email_hash");
+
                         if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
                         if (name.equals("Android Dev")) Log.e("ICON", icon);
 
-                        addUser(name, icon);
+                        addUser(name, icon, id, lastPost, rep, isMod, isOwner, params[0]);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,15 +154,23 @@ public class ChatFragment extends Fragment {
         }).start();
     }
 
-    private void addUser(String name, String imgUrl) {
+    private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
         Bundle args = new Bundle();
         args.putString("userName", name);
         args.putString("userAvatarUrl", imgUrl);
+        args.putString("chatUrl", chatUrl);
+
+        args.putInt("id", id);
+        args.putInt("lastPost", lastPost);
+        args.putInt("rep", rep);
+
+        args.putBoolean("isMod", isMod);
+        args.putBoolean("isOwner", isOwner);
 
         UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
 
-        FragmentManager fragmentManager = getFragmentManager();
+        final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().add(R.id.users_scroll, userTileFragment).commit();
     }
 }
