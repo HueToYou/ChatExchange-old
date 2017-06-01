@@ -13,6 +13,11 @@
             android:summary="Choose a custom color for the action bar"
             android:title="Action bar color"/>
 
+        <CheckBoxPreference
+            android:key="dynamic_bar_color"
+            android:id="@+id/app_bar_color_change"
+            android:title="Dynamically change AppBar color"
+            android:summary="Change AppBar color based on color of current chat" />
 
     </PreferenceCategory>
 

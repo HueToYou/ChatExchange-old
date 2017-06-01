@@ -13,12 +13,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -83,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        setActionBarColor();
-
         mSharedPrefs = getSharedPreferences(getResources().getText(R.string.app_name).toString(), MODE_PRIVATE);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         mIntent = getIntent();
 
         setup();
+        setActionBarColor();
 
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setFragmentByTab(tab);
+                if (tab.getPosition() == 0) setActionBarColor();
             }
 
             @Override
@@ -256,39 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(final TabLayout.Tab tab) {
-                if (tab.getPosition() != 0) {
-                    Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    // Vibrate for 500 milliseconds
-                    vib.vibrate(100);
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, mUseDark ? R.style.Theme_AppCompat : R.style.Theme_AppCompat_Light))
-                                    .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
-                                    .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
-                                    .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (tab.getTag() != null) {
-                                                mChatUrls.remove(tab.getTag().toString());
-                                                mEditor.putStringSet("chatURLs", mChatUrls).apply();
-                                                TabLayout.Tab prev = mTabLayout.getTabAt(tab.getPosition() - 1);
-                                                if (prev != null) prev.select();
-                                                mTabLayout.removeTab(tab);
-                                            }
-                                        }
-                                    })
-                                    .setNegativeButton(getResources().getText(R.string.generic_no), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                                    .show();
-                        }
-                    });
-                }
             }
         });
     }
@@ -382,5 +353,41 @@ public class MainActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
         bar.setBackgroundDrawable(cd);
+    }
+
+    public void confirmClose(View v) {
+        if (mTabLayout.getSelectedTabPosition() != 0) {
+            Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            vib.vibrate(100);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, mUseDark ? R.style.Theme_AppCompat : R.style.Theme_AppCompat_Light))
+                            .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
+                            .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
+                            .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getTag() != null) {
+                                        mChatUrls.remove(mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getTag().toString());
+                                        mEditor.putStringSet("chatURLs", mChatUrls).apply();
+                                        TabLayout.Tab prev = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition() - 1);
+                                        mTabLayout.removeTab(mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()));
+                                        if (prev != null) prev.select();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(getResources().getText(R.string.generic_no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
+                }
+            });
+        }
     }
 }

@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -158,7 +159,7 @@ public class UserTileFragment extends Fragment {
                 return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(b, 64, 64, true));
             } catch (Exception e) {
                 e.printStackTrace();
-                return getResources().getDrawable(R.drawable.ic_help_outline_black_24dp);
+                return VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
             }
         }
 

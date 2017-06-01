@@ -1,21 +1,29 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.CheckBox;
 
 import com.huetoyou.chatexchange.R;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
+    private SharedPreferences mSharedPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
 
-        setActionBarColor();
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        setActionBarColor();
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
@@ -23,17 +31,42 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
+            CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("dynamic_bar_color");
+            setAppBarColorChange(checkBoxPreference);
+        }
+
+        private void setAppBarColorChange(CheckBoxPreference checkBoxPreference) {
+            checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean pref = Boolean.parseBoolean(newValue.toString());
+
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    sharedPreferences.edit().putBoolean("dynamicallyColorBar", pref).apply();
+
+                    return true;
+                }
+            });
         }
     }
 
     private void setActionBarColor()
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int initialColor = prefs.getInt("default_color", 0xFF000000);
+        int initialColor = mSharedPrefs.getInt("default_color", 0xFF000000);
         System.out.println(initialColor);
 
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
         bar.setBackgroundDrawable(cd);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        super.onBackPressed();
     }
 }

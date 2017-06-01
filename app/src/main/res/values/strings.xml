@@ -116,4 +116,7 @@
     <string name="current_users">Current Users</string>
     <string name="loading">Loading&#8230;</string>
     <string name="user_info">User Info</string>
+    <string name="show_users">Show Users</string>
+    <string name="browser">Browser</string>
+    <string name="close_chat">Close Chat</string>
 </resources>

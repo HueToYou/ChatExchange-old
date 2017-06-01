@@ -1,16 +1,29 @@
 package com.huetoyou.chatexchange.ui.frags;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,8 +32,11 @@ import com.huetoyou.chatexchange.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +44,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 public class ChatFragment extends Fragment {
 
@@ -35,6 +54,10 @@ public class ChatFragment extends Fragment {
     private View view;
 
     private LinearLayout mUsersLayout;
+    private ToggleButton mShowUsers;
+    private Button mOpenInBrowser;
+
+    private @ColorInt int mAppBarColor;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -45,14 +68,32 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
-        mSharedPreferences = getActivity().getSharedPreferences(getResources().getText(R.string.app_name).toString(), Context.MODE_PRIVATE);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        mUsersLayout = (LinearLayout) view.findViewById(R.id.users_scroll);
+        boolean usersShown = mSharedPreferences.getBoolean("showUserList", false);
+
+        mUsersLayout = (LinearLayout) view.findViewById(R.id.user_list_layout);
+        mUsersLayout.setVisibility(usersShown ? View.VISIBLE : View.GONE);
+
+        mShowUsers = (ToggleButton) view.findViewById(R.id.show_user_list);
+        mShowUsers.setChecked(usersShown);
+
+        mOpenInBrowser = (Button) view.findViewById(R.id.open_in_browser);
 
         Bundle args = getArguments();
+        String chatUrl = args.getString("chatUrl", "ERROR");
 
-        parseUsers(args.getString("chatUrl", "ERROR"));
-        Log.e("ChatURL", args.getString("chatUrl"));
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+            try {
+                new GetColorInt().execute(chatUrl);
+            } catch (Exception e) {
+                mAppBarColor = -1;
+                e.printStackTrace();
+            }
+        }
+
+        addChatButtons(chatUrl);
+        parseUsers(chatUrl);
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
 
@@ -172,5 +213,98 @@ public class ChatFragment extends Fragment {
 
         final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().add(R.id.users_scroll, userTileFragment).commit();
+    }
+
+    private void addChatButtons(final String url) {
+        mShowUsers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mUsersLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                mSharedPreferences.edit().putBoolean("showUserList", isChecked).apply();
+            }
+        });
+
+        mOpenInBrowser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
+    }
+
+    private class GetColorInt extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... params) {
+            String url = params[0];
+
+            try {
+                Document doc = Jsoup.connect(url).get();
+
+                Elements styles = doc.select("link");
+                Element element = new Element("hue");
+
+                for (int i = 0; i < styles.size(); i++) {
+                    Element current = styles.get(i);
+
+                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
+                        element = current;
+                        break;
+                    }
+                }
+
+                String link = "";
+                if (element.hasAttr("href")) {
+                    link = element.attr("href");
+                    if (!(link.contains("http://") || link.contains("https://"))) link = "https:".concat(link);
+                }
+
+                Log.e("L", link);
+
+                URL url1 = new URL(link);
+
+                InputStream inStr = url1.openStream();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
+                String line;
+                String css = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    css = css.concat(line);
+                }
+
+                Log.e("In", css);
+
+                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
+                Matcher m = p.matcher(css);
+                String a = "";
+
+                if (m.find()) {
+                    a = m.group();
+                    Log.e("A", a);
+                }
+
+                p = Pattern.compile("color:(.*?);");
+                m = p.matcher(a);
+
+                String colorHex = "#000000";
+
+                if (m.find()) {
+                    Log.e("MGROUP", m.group());
+                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
+                }
+
+                return Color.parseColor(colorHex);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Color.parseColor("#000000");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mAppBarColor = integer;
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+        }
     }
 }
