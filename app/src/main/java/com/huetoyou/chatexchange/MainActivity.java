@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.action_about:
-                Toast.makeText(this, "A", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivity(intent);
                 break;
         }
 
