@@ -221,8 +221,10 @@ public class MainActivity extends AppCompatActivity {
 //            mEditor.putInt("tabIndex", tab.getPosition()).apply();
 
             if (fragment instanceof ChatFragment) {
-                if (tab.getText() != null) mEditor.putString("chatTitle", tab.getText().toString());
-                mEditor.apply();
+                Bundle args = new Bundle();
+                if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
+                if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
+                fragment.setArguments(args);
             }
 
             mFragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();

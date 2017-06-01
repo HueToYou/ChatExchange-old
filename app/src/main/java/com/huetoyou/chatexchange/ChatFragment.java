@@ -2,13 +2,29 @@ package com.huetoyou.chatexchange;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import org.jsoup.Jsoup;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatFragment extends Fragment {
 
@@ -30,7 +46,12 @@ public class ChatFragment extends Fragment {
 
         mUsersLayout = (LinearLayout) view.findViewById(R.id.users_scroll);
 
-        getActivity().setTitle(mSharedPreferences.getString("chatTitle", "Chat"));
+        Bundle args = getArguments();
+
+        parseUsers(args.getString("chatUrl", "ERROR"));
+        Log.e("ChatURL", args.getString("chatUrl"));
+
+        getActivity().setTitle(args.getString("chatTitle", "Error"));
 
         //call addUser() here somehow....
         return view;
@@ -44,6 +65,45 @@ public class ChatFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void parseUsers(final String... params) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String html = "";
+                SparseArray<String> names = new SparseArray<>();
+
+                URL url;
+                InputStream is = null;
+                BufferedReader br;
+                String line;
+
+                try {
+                    html = Jsoup.connect(params[0]).get().html();
+                    Log.e("HTML", html);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (is != null) is.close();
+                    } catch (IOException ioe) {
+                        // nothing to see here
+                    }
+                }
+                Pattern p = Pattern.compile("<li class=\"present-user user-container(.+?)\"(.+?)>(.+?)</li>");
+                Matcher m = p.matcher(html);
+                String name = null;
+
+                try {
+                    boolean idk = m.find();
+                    name = m.group();
+                    Log.e("T", name);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void addUser(String name, String imgUrl) {
