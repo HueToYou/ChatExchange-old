@@ -11,11 +11,13 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        setActionBarColor();
 
         mSharedPrefs = getSharedPreferences(getResources().getText(R.string.app_name).toString(), MODE_PRIVATE);
         mEditor = mSharedPrefs.edit();
@@ -390,5 +394,16 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
+    }
+
+    private void setActionBarColor()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int initialColor = prefs.getInt("default_color", 0xFF000000);
+        System.out.println(initialColor);
+
+        android.support.v7.app.ActionBar bar = getSupportActionBar();
+        ColorDrawable cd = new ColorDrawable(initialColor);
+        bar.setBackgroundDrawable(cd);
     }
 }
