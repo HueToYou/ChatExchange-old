@@ -75,13 +75,11 @@
             android:name="io.fabric.ApiKey"
             android:value="96d80cfeac7fcf7aec8fc104086331c45258ab0e" />
 
-        <activity android:name=".AboutActivity"></activity>
-
+        <activity android:name=".AboutActivity" />
         <activity
-            android:name="com.huetoyou.chatexchange.PreferencesActivity"
-            android:label="Preferences">
-        </activity>
-
+            android:name=".PreferencesActivity"
+            android:label="Preferences"></activity>
+        <activity android:name=".HelpActivity"></activity>
     </application>
 
 </manifest>

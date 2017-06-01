@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_help:
+                Intent startHelpActivity = new Intent(getApplicationContext(), HelpActivity.class);
+                startActivity(startHelpActivity);
+                break;
         }
 
         return true;

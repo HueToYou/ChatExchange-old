@@ -6,6 +6,9 @@
             android:id="@+id/action_settings"
             android:title="@string/options_menu_settings" />
         <item
+            android:id="@+id/action_help"
+            android:title="Help" />
+        <item
             android:id="@+id/action_about"
             android:title="@string/options_menu_about" />
     </group>
