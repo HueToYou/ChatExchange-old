@@ -4,22 +4,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="FOO">
+        android:title="Appearance">
 
-        <CheckBoxPreference
-            android:key="checkBoxPref"
-            android:title="check it out"
-            android:summary="click this little box"/>
+        <com.jrummyapps.android.colorpicker.ColorPreference
+            android:key="default_color"
+            android:id="@+id/actionBarColorPicker"
+            android:defaultValue="@color/colorPrimary"
+            android:summary="Choose a custom color for the action bar"
+            android:title="Action bar color"/>
+
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="FOO2">
+        android:title="Backend">
 
         <CheckBoxPreference
-            android:key="checkBoxPref2"
-            android:title="check it out"
-            android:summary="click this little box"/>
+            android:key="backend"
+            android:title="Listen for any new messages"
+            android:summary="Listen for all messages, not just pings"/>
 
     </PreferenceCategory>
 

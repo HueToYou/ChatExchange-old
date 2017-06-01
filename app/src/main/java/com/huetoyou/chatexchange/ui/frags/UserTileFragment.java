@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.frags;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.huetoyou.chatexchange.R;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

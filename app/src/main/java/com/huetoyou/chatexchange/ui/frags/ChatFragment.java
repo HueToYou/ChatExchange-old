@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.frags;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -15,11 +15,17 @@ import android.widget.LinearLayout;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import com.huetoyou.chatexchange.R;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

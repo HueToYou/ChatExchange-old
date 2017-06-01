@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('colorpicker-2.1.6.aar'))
