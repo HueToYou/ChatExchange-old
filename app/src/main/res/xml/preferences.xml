@@ -21,6 +21,11 @@
             android:title="check it out"
             android:summary="click this little box"/>
 
+        <com.jrummyapps.android.colorpicker.ColorPreference
+            android:key="default_color"
+            android:summary="Summary"
+            android:title="Test"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

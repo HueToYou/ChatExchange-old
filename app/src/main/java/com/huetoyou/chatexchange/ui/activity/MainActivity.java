@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
 
 import android.text.Html;
 import android.text.Spanned;
-
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPrefs;
@@ -91,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         mIntent = getIntent();
 
         setup();
+
+        //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
 
     @Override
