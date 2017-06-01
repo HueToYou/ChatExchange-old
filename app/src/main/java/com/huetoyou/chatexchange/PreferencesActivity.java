@@ -1,16 +1,14 @@
 package com.huetoyou.chatexchange;
 
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
-import com.huetoyou.chatexchange.R;
-
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
