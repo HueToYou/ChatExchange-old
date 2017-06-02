@@ -83,13 +83,11 @@ public class ChatFragment extends Fragment {
         Bundle args = getArguments();
         String chatUrl = args.getString("chatUrl", "ERROR");
 
-        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            try {
-                new GetColorInt().execute(chatUrl);
-            } catch (Exception e) {
-                mAppBarColor = -1;
-                e.printStackTrace();
-            }
+        try {
+            new GetColorInt().execute(chatUrl);
+        } catch (Exception e) {
+            mAppBarColor = -1;
+            e.printStackTrace();
         }
 
         addChatButtons(chatUrl);
@@ -304,7 +302,9 @@ public class ChatFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer integer) {
             mAppBarColor = integer;
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+            if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+            }
         }
     }
 
@@ -314,12 +314,7 @@ public class ChatFragment extends Fragment {
         super.onResume();
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            try {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
-            } catch (Exception e) {
-                mAppBarColor = -1;
-                e.printStackTrace();
-            }
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
         }
     }
 }
