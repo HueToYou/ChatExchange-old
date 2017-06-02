@@ -55,10 +55,11 @@ public class ChatFragment extends Fragment {
     private View view;
 
     private LinearLayout mUsersLayout;
-    private ToggleButton mShowUsers;
+    private Button mShowUsers;
     private Button mOpenInBrowser;
 
     private @ColorInt int mAppBarColor;
+    private SlidingMenu mSlidingMenu;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -72,24 +73,17 @@ public class ChatFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         // configure the SlidingMenu
-        SlidingMenu menu = new SlidingMenu(getActivity());
-        menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
-        menu.setMenu(R.layout.users_slideout);
+        mSlidingMenu = new SlidingMenu(getActivity());
+        mSlidingMenu.setMode(SlidingMenu.RIGHT);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        mSlidingMenu.setFadeDegree(0.35f);
+        mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
+        mSlidingMenu.setMenu(R.layout.users_slideout);
 
-        boolean usersShown = mSharedPreferences.getBoolean("showUserList", false);
-
-        mUsersLayout = (LinearLayout) view.findViewById(R.id.user_list_layout);
-        mUsersLayout.setVisibility(usersShown ? View.VISIBLE : View.GONE);
-
-        mShowUsers = (ToggleButton) view.findViewById(R.id.show_user_list);
-        mShowUsers.setChecked(usersShown);
-
+        mShowUsers = (Button) view.findViewById(R.id.show_user_list);
         mOpenInBrowser = (Button) view.findViewById(R.id.open_in_browser);
 
         Bundle args = getArguments();
@@ -219,11 +213,10 @@ public class ChatFragment extends Fragment {
     }
 
     private void addChatButtons(final String url) {
-        mShowUsers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mShowUsers.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mUsersLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                mSharedPreferences.edit().putBoolean("showUserList", isChecked).apply();
+            public void onClick(View v) {
+                mSlidingMenu.toggle();
             }
         });
 
