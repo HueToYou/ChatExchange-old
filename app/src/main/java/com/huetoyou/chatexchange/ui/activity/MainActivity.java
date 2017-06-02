@@ -397,7 +397,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        SharedPreferences mSharedPreferences;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (mTabLayout.getSelectedTabPosition() == 0) {
+            setActionBarColor();
+        }
+        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+        {
             setActionBarColor();
         }
         super.onActivityResult(requestCode, resultCode, data);
