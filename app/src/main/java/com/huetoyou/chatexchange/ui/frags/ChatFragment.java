@@ -307,4 +307,19 @@ public class ChatFragment extends Fragment {
             ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
         }
     }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+            try {
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+            } catch (Exception e) {
+                mAppBarColor = -1;
+                e.printStackTrace();
+            }
+        }
+    }
 }
