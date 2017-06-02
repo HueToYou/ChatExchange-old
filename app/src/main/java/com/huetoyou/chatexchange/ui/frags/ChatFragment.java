@@ -1,7 +1,6 @@
 package com.huetoyou.chatexchange.ui.frags;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,9 +9,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -127,7 +127,6 @@ public class ChatFragment extends Fragment {
 
                 try {
                     html = Jsoup.connect(params[0]).get();
-//                    Log.e("HTML", html.html());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -189,7 +188,6 @@ public class ChatFragment extends Fragment {
                         String icon = jsonObject.getString("email_hash");
 
                         if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
-                        if (name.equals("Android Dev")) Log.e("ICON", icon);
 
                         addUser(name, icon, id, lastPost, rep, isMod, isOwner, params[0]);
                     }
