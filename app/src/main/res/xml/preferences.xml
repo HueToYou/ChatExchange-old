@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:title="Appearance">
@@ -11,7 +11,9 @@
             android:id="@+id/actionBarColorPicker"
             android:defaultValue="@color/colorPrimary"
             android:summary="Choose a custom color for the action bar"
-            android:title="Action bar color"/>
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            android:title="Action bar color" />
 
         <CheckBoxPreference
             android:key="dynamic_bar_color"
