@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -72,13 +73,20 @@ public class ChatFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
         mSlidingMenu.setMode(SlidingMenu.RIGHT);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+//        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+//        mSlidingMenu.setBehindOffset((int)(dpWidth + getResources().getDimension(R.dimen.user_tile_width)));
+//        mSlidingMenu.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
         mSlidingMenu.setMenu(R.layout.users_slideout);

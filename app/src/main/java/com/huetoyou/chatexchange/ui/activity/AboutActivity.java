@@ -11,6 +11,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class AboutActivity extends AppCompatActivity {
 
+    private SlidingMenu mSlidingMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,15 +21,16 @@ public class AboutActivity extends AppCompatActivity {
         setActionBarColor();
 
         // configure the SlidingMenu
-        SlidingMenu menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        menu.setMenu(R.layout.users_slideout);
+        mSlidingMenu = new SlidingMenu(this);
+        mSlidingMenu.setMode(SlidingMenu.RIGHT);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+//        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
+        mSlidingMenu.setFadeDegree(0.35f);
+        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        mSlidingMenu.setMenu(R.layout.users_slideout);
     }
 
     private void setActionBarColor()
