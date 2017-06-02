@@ -2,7 +2,6 @@ package com.huetoyou.chatexchange.ui.frags;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -15,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -35,7 +33,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Zacha on 5/31/2017.
@@ -78,8 +75,7 @@ public class UserTileFragment extends Fragment {
 
         setUserName(name);
         setAvatar(url);
-        setIsMod(isMod);
-        setIsOwner(isOwner);
+        setIsModOwner(isMod, isOwner);
 
         displayInfoOnTap(id, lastPost, rep);
 
@@ -95,12 +91,9 @@ public class UserTileFragment extends Fragment {
         new GetIcon().execute(url);
     }
 
-    private void setIsMod(boolean isMod) {
+    private void setIsModOwner(boolean isMod, boolean isOwner) {
         if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
-    }
-
-    private void setIsOwner(boolean isOwner) {
-        if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
+        else if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
     }
 
     private void displayInfoOnTap(final int id, final int lastPost, final int rep) {

@@ -73,10 +73,6 @@ public class ChatFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
         mSlidingMenu.setMode(SlidingMenu.RIGHT);
