@@ -14,23 +14,36 @@
         android:layout_weight="1"
         android:orientation="vertical"></LinearLayout>
 
-    <HorizontalScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <Button
+            android:id="@+id/add_chat_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_margin="10dp"
+            android:text="@string/activity_main_add_chat" />
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/main_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom">
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            </android.support.design.widget.TabLayout>
-        </LinearLayout>
-    </HorizontalScrollView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/main_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom">
+
+                </android.support.design.widget.TabLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
 
 </LinearLayout>

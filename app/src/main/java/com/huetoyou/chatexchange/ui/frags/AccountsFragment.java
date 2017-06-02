@@ -88,26 +88,7 @@ public class AccountsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() instanceof MainActivity) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getResources().getText(R.string.activity_main_chat_url));
-
-                    final EditText input = new EditText(getActivity());
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-                    builder.setView(input);
-                    builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ((MainActivity) getActivity()).addTab(input.getText().toString());
-                        }
-                    });
-                    builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    builder.show();
+                    ((MainActivity)getActivity()).showAddTabDialog();
                 }
             }
         });

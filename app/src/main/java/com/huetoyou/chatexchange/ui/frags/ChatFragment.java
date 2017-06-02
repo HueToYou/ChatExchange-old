@@ -83,12 +83,7 @@ public class ChatFragment extends Fragment {
         Bundle args = getArguments();
         String chatUrl = args.getString("chatUrl", "ERROR");
 
-        try {
-            new GetColorInt().execute(chatUrl);
-        } catch (Exception e) {
-            mAppBarColor = -1;
-            e.printStackTrace();
-        }
+        mAppBarColor = args.getInt("AppBarColor", -1);
 
         addChatButtons(chatUrl);
         parseUsers(chatUrl);
@@ -231,90 +226,18 @@ public class ChatFragment extends Fragment {
         });
     }
 
-    private class GetColorInt extends AsyncTask<String, Void, Integer> {
-        @Override
-        protected Integer doInBackground(String... params) {
-            String url = params[0];
-
-            try {
-                Document doc = Jsoup.connect(url).get();
-
-                Elements styles = doc.select("link");
-                Element element = new Element("hue");
-
-                for (int i = 0; i < styles.size(); i++) {
-                    Element current = styles.get(i);
-
-                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
-                        element = current;
-                        break;
-                    }
-                }
-
-                String link = "";
-                if (element.hasAttr("href")) {
-                    link = element.attr("href");
-                    if (!(link.contains("http://") || link.contains("https://"))) link = "https:".concat(link);
-                }
-
-                Log.e("L", link);
-
-                URL url1 = new URL(link);
-
-                InputStream inStr = url1.openStream();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
-                String line;
-                String css = "";
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    css = css.concat(line);
-                }
-
-                Log.e("In", css);
-
-                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
-                Matcher m = p.matcher(css);
-                String a = "";
-
-                if (m.find()) {
-                    a = m.group();
-                    Log.e("A", a);
-                }
-
-                p = Pattern.compile("color:(.*?);");
-                m = p.matcher(a);
-
-                String colorHex = "#000000";
-
-                if (m.find()) {
-                    Log.e("MGROUP", m.group());
-                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
-                }
-
-                return Color.parseColor(colorHex);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Color.parseColor("#000000");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            mAppBarColor = integer;
-            if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
-            }
-        }
-    }
-
     @Override
     public void onResume()
     {
         super.onResume();
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+            if (getActivity() != null) {
+                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+                if (actionBar != null)
+                    actionBar.setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+            }
         }
     }
 }

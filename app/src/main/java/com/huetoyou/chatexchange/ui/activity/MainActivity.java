@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -25,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean mDoneAddingChats = false;
     private Thread mAddTab;
 
+    private final int HOME_INDEX = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
 
-        mEditor.putInt("tabIndex", 0).apply();
+//        mEditor.putInt("tabIndex", 0).apply();
 
         mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
 
@@ -143,11 +148,34 @@ public class MainActivity extends AppCompatActivity {
     private void setup() {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
-            mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.generic_accounts)).setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true))).setTag("home"));
+            TabLayout.Tab home = mTabLayout.newTab()
+                    .setText(getResources().getText(R.string.generic_accounts))
+                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
+                    .setTag("home");
+
+//            TabLayout.Tab add = mTabLayout.newTab()
+//                    .setText(getResources()
+//                            .getText(R.string.activity_main_add_chat))
+//                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
+//                    .setTag("add");
+
+
+//            mTabLayout.addTab(add);
+            mTabLayout.addTab(home);
+
+//            home.select();
         } catch (Exception e) {
             e.printStackTrace();
         }
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        Button addChatButton = (Button) findViewById(R.id.add_chat_button);
+        addChatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTabDialog();
+            }
+        });
 
         new Thread(new Runnable() {
             @Override
@@ -163,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
 //            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            setFragmentByTab(mTabLayout.getTabAt(0));
+            setFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
         } else {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
@@ -220,17 +248,13 @@ public class MainActivity extends AppCompatActivity {
         if (tab != null) {
             Fragment fragment;
 
-            switch (tab.getPosition()) {
-                case 0:
+            switch (tab.getTag().toString()) {
+                case "home":
                     fragment = new AccountsFragment();
                     break;
                 default:
                     fragment = new ChatFragment();
                     break;
-            }
-
-            if (!tab.isSelected()) {
-                tab.select();
             }
 
 //            mEditor.putInt("tabIndex", tab.getPosition()).apply();
@@ -239,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle args = new Bundle();
                 if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
                 if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
+                if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
                 fragment.setArguments(args);
             }
 
@@ -251,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setFragmentByTab(tab);
-                if (tab.getPosition() == 0) setActionBarColor();
+                if (tab.getPosition() == HOME_INDEX) setActionBarColor();
             }
 
             @Override
@@ -264,6 +289,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void showAddTabDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getText(R.string.activity_main_chat_url));
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+        builder.setView(input);
+        builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                addTab(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public void addTab(final String chatUrl) {
@@ -287,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                             //noinspection deprecation
                             name = Html.fromHtml(chatName);
                         }
-                        tab = mTabLayout.newTab().setText(name).setIcon(new GetIcon().execute(chatUrl).get()).setTag(chatUrl);
+                        tab = mTabLayout.newTab().setText(name).setIcon(new GetIcon().execute(chatUrl).get()).setTag(chatUrl).setContentDescription(String.valueOf(new GetColorInt().execute(chatUrl).get()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -318,6 +366,77 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            }
+        }
+    }
+
+    private class GetColorInt extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... params) {
+            String url = params[0];
+
+            try {
+                Document doc = Jsoup.connect(url).get();
+
+                Elements styles = doc.select("link");
+                Element element = new Element("hue");
+
+                for (int i = 0; i < styles.size(); i++) {
+                    Element current = styles.get(i);
+
+                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
+                        element = current;
+                        break;
+                    }
+                }
+
+                String link = "";
+                if (element.hasAttr("href")) {
+                    link = element.attr("href");
+                    if (!(link.contains("http://") || link.contains("https://")))
+                        link = "https:".concat(link);
+                }
+
+                Log.e("L", link);
+
+                URL url1 = new URL(link);
+
+                InputStream inStr = url1.openStream();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
+                String line;
+                String css = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    css = css.concat(line);
+                }
+
+                Log.e("In", css);
+
+                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
+                Matcher m = p.matcher(css);
+                String a = "";
+
+                if (m.find()) {
+                    a = m.group();
+                    Log.e("A", a);
+                }
+
+                p = Pattern.compile("color:(.*?);");
+                m = p.matcher(a);
+
+                String colorHex = "#000000";
+
+                if (m.find()) {
+                    Log.e("MGROUP", m.group());
+                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
+                }
+
+                mSharedPrefs.edit().putInt(params[0] + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Color.parseColor("#000000");
             }
         }
     }
@@ -356,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
-        bar.setBackgroundDrawable(cd);
+        if (bar != null) bar.setBackgroundDrawable(cd);
     }
 
     public void confirmClose(View v) {
