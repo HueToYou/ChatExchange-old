@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        mSharedPrefs = getSharedPreferences(getResources().getText(R.string.app_name).toString(), MODE_PRIVATE);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
 
@@ -118,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
-                startActivity(new Intent(this, PreferencesActivity.class));
+                Intent prefIntent = new Intent(this, PreferencesActivity.class);
+                int requestCode = 1; // Or some number you choose
+                startActivityForResult(prefIntent, requestCode);
                 break;
             case R.id.action_about:
                 Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
@@ -350,6 +352,8 @@ public class MainActivity extends AppCompatActivity {
         int initialColor = prefs.getInt("default_color", 0xFF000000);
         System.out.println(initialColor);
 
+        Log.e("SET", "SET)");
+
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
         bar.setBackgroundDrawable(cd);
@@ -389,5 +393,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mTabLayout.getSelectedTabPosition() == 0) {
+            setActionBarColor();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

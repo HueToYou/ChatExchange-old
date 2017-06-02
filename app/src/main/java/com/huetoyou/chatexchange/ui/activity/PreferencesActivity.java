@@ -1,5 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.widget.CheckBox;
 
 import com.huetoyou.chatexchange.R;
+import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
     private SharedPreferences mSharedPrefs;
@@ -51,7 +53,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    private void setActionBarColor()
+    public void setActionBarColor()
     {
         int initialColor = mSharedPrefs.getInt("default_color", 0xFF000000);
         System.out.println(initialColor);
@@ -61,12 +63,21 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         bar.setBackgroundDrawable(cd);
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        Intent i = getBaseContext().getPackageManager()
+//                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(i);
+//        super.onBackPressed();
+//    }
+
+
     @Override
-    public void onBackPressed() {
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        super.onBackPressed();
+    protected void onDestroy() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
+        super.onDestroy();
     }
 }
