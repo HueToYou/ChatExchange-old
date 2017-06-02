@@ -1,8 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,28 +12,27 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -45,14 +42,13 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 
 import io.fabric.sdk.android.Fabric;
-import org.jsoup.Connection;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -72,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout mTabLayout;
     private ArrayList<TabLayout.Tab> mTabs = new ArrayList<>();
+    private SparseArray<Fragment> mCurrentFragments = new SparseArray<>();
 
     private FragmentManager mFragmentManager;
 
@@ -99,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
 
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
 
         mIntent = getIntent();
 
@@ -191,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
 //            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            setFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
+            addFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
         } else {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
@@ -207,13 +204,11 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         Looper.prepare();
                         while (!mDoneAddingChats);
-                        Log.e("test", "RECEIVED");
                         Bundle extras = mIntent.getExtras();
                         Object o = null;
                         if (extras != null) o = extras.get("chatURL");
                         String url = "";
                         if (o != null) url = o.toString();
-                        Log.e("url", url);
                         TabLayout.Tab tab = getTabByURL(url);
 
                         if (tab != null) addTab(url);
@@ -223,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                setFragmentByTab(t2);
+                                addFragmentByTab(t2);
                             }
                         });
                     }
@@ -245,29 +240,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragmentByTab(TabLayout.Tab tab) {
+        String tag = "";
+        if (tab.getTag() != null) tag = tab.getTag().toString();
+
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+
+        for (Fragment fragment1 : mFragmentManager.getFragments()) {
+            if (!fragment1.isDetached()) mFragmentManager.beginTransaction().hide(fragment1).commit();
+        }
+
+        if (fragment != null) {
+            mFragmentManager.beginTransaction().show(fragment).commit();
+        }
+    }
+
+    private void addFragmentByTab(TabLayout.Tab tab) {
         if (tab != null) {
             Fragment fragment;
 
-            switch (tab.getTag().toString()) {
-                case "home":
-                    fragment = new AccountsFragment();
-                    break;
-                default:
-                    fragment = new ChatFragment();
-                    break;
+            if (mCurrentFragments.get(tab.getPosition()) != null) {
+                fragment = mCurrentFragments.get(tab.getPosition());
+            } else {
+                switch (tab.getTag().toString()) {
+                    case "home":
+                        fragment = new AccountsFragment();
+                        break;
+                    default:
+                        fragment = new ChatFragment();
+                        break;
+                }
+                mCurrentFragments.put(tab.getPosition(), fragment);
+
+                if (fragment instanceof ChatFragment) {
+                    Bundle args = new Bundle();
+                    if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
+                    if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
+                    if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
+                    fragment.setArguments(args);
+                }
+
             }
 
-//            mEditor.putInt("tabIndex", tab.getPosition()).apply();
+            String tag = "";
+            if (tab.getTag() != null) tag = tab.getTag().toString();
 
-            if (fragment instanceof ChatFragment) {
-                Bundle args = new Bundle();
-                if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
-                if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
-                if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
-                fragment.setArguments(args);
+            if (mFragmentManager.findFragmentByTag(fragment.getTag()) == null) {
+                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).hide(fragment).commit();
             }
 
-            mFragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+            if (tab.getPosition() == HOME_INDEX) {
+                mFragmentManager.beginTransaction().show(fragment).commit();
+            }
+
+            mFragmentManager.executePendingTransactions();
         }
     }
 
@@ -275,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                addFragmentByTab(tab);
                 setFragmentByTab(tab);
                 if (tab.getPosition() == HOME_INDEX) setActionBarColor();
             }
@@ -397,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
                         link = "https:".concat(link);
                 }
 
-                Log.e("L", link);
 
                 URL url1 = new URL(link);
 
@@ -411,7 +436,6 @@ public class MainActivity extends AppCompatActivity {
                     css = css.concat(line);
                 }
 
-                Log.e("In", css);
 
                 Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
                 Matcher m = p.matcher(css);
@@ -419,7 +443,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (m.find()) {
                     a = m.group();
-                    Log.e("A", a);
                 }
 
                 p = Pattern.compile("color:(.*?);");
@@ -428,7 +451,6 @@ public class MainActivity extends AppCompatActivity {
                 String colorHex = "#000000";
 
                 if (m.find()) {
-                    Log.e("MGROUP", m.group());
                     colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
                 }
 
@@ -451,7 +473,6 @@ public class MainActivity extends AppCompatActivity {
 
                 String fav = link.attr("href");
                 if (!fav.contains("http")) fav = "https:".concat(fav);
-                Log.e("FAV", fav);
                 URL url = new URL(fav);
 
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
@@ -471,7 +492,6 @@ public class MainActivity extends AppCompatActivity {
         int initialColor = prefs.getInt("default_color", 0xFF000000);
         System.out.println(initialColor);
 
-        Log.e("SET", "SET)");
 
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
