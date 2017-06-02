@@ -246,11 +246,11 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
 
         for (Fragment fragment1 : mFragmentManager.getFragments()) {
-            if (!fragment1.isDetached()) mFragmentManager.beginTransaction().hide(fragment1).commit();
+            if (!fragment1.isDetached()) mFragmentManager.beginTransaction().detach(fragment1).commit();
         }
 
         if (fragment != null) {
-            mFragmentManager.beginTransaction().show(fragment).commit();
+            mFragmentManager.beginTransaction().attach(fragment).commit();
         }
     }
 
@@ -285,11 +285,11 @@ public class MainActivity extends AppCompatActivity {
             if (tab.getTag() != null) tag = tab.getTag().toString();
 
             if (mFragmentManager.findFragmentByTag(fragment.getTag()) == null) {
-                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).hide(fragment).commit();
+                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
             }
 
             if (tab.getPosition() == HOME_INDEX) {
-                mFragmentManager.beginTransaction().show(fragment).commit();
+                mFragmentManager.beginTransaction().attach(fragment).commit();
             }
 
             mFragmentManager.executePendingTransactions();
