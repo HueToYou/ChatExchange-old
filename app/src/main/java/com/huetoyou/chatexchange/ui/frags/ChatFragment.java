@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import com.huetoyou.chatexchange.R;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -69,6 +70,17 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        // configure the SlidingMenu
+        SlidingMenu menu = new SlidingMenu(getActivity());
+        menu.setMode(SlidingMenu.RIGHT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setShadowWidthRes(R.dimen.shadow_width);
+        menu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
+        menu.setMenu(R.layout.users_slideout);
 
         boolean usersShown = mSharedPreferences.getBoolean("showUserList", false);
 
@@ -205,7 +217,7 @@ public class ChatFragment extends Fragment {
         userTileFragment.setArguments(args);
 
         final FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.users_scroll, userTileFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
     }
 
     private void addChatButtons(final String url) {
