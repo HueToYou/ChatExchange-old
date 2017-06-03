@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jrummyapps.android.colorpicker.ColorPanelView;
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 import com.jrummyapps.android.colorpicker.ColorPickerView;
@@ -30,6 +31,8 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
     private ColorPickerView colorPickerView;
     private ColorPanelView newColorPanelView;
 
+    static HueUtils hueUtils = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,9 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        setActionBarColor();
+        hueUtils = new HueUtils();
+
+        hueUtils.setActionBarColorDefault(this);
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
@@ -49,8 +54,9 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
             ColorPreference colorPreference = (ColorPreference) findPreference("default_color");
             colorPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    ((PreferencesActivity)getActivity()).setActionBarColor();
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    hueUtils.setActionBarColorDefault(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });
@@ -74,39 +80,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    private void setActionBarColor()
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int initialColor = prefs.getInt("default_color", 0xFF000000);
-        System.out.println(initialColor);
-
-        android.support.v7.app.ActionBar bar = getSupportActionBar();
-        ColorDrawable cd = new ColorDrawable(initialColor);
-        bar.setBackgroundDrawable(cd);
-
-        // finally change the color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-
-            // clear FLAG_TRANSLUCENT_STATUS flag:
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
-        }
-    }
-
-    public static int manipulateColor(int color, float factor) {
-        int a = Color.alpha(color);
-        int r = Math.round(Color.red(color) * factor);
-        int g = Math.round(Color.green(color) * factor);
-        int b = Math.round(Color.blue(color) * factor);
-        return Color.argb(a,
-                Math.min(r,255),
-                Math.min(g,255),
-                Math.min(b,255));
-    }
 
 //    @Override
 //    public void onBackPressed() {

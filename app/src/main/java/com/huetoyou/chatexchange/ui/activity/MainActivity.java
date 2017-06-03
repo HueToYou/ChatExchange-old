@@ -42,6 +42,7 @@ import com.huetoyou.chatexchange.ui.frags.AccountsFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.HueUtils;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -84,11 +85,15 @@ public class MainActivity extends AppCompatActivity {
 
     private final int HOME_INDEX = 0;
 
+    HueUtils hueUtils = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        hueUtils = new HueUtils();
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPrefs.edit();
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         mIntent = getIntent();
 
         setup();
-        setActionBarColor();
+        hueUtils.setActionBarColorDefault(this);
 
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
@@ -304,7 +309,10 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 addFragmentByTab(tab);
                 setFragmentByTab(tab);
-                if (tab.getPosition() == HOME_INDEX) setActionBarColor();
+                if (tab.getPosition() == HOME_INDEX)
+                {
+                    //hueUtils.setActionBarColorDefault((AppCompatActivity) MainActivity.getAc);
+                }
             }
 
             @Override
@@ -488,40 +496,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setActionBarColor()
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int initialColor = prefs.getInt("default_color", 0xFF000000);
-        System.out.println(initialColor);
-
-        android.support.v7.app.ActionBar bar = getSupportActionBar();
-        ColorDrawable cd = new ColorDrawable(initialColor);
-        bar.setBackgroundDrawable(cd);
-
-        // finally change the color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-
-            // clear FLAG_TRANSLUCENT_STATUS flag:
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
-        }
-    }
-
-    public static int manipulateColor(int color, float factor) {
-        int a = Color.alpha(color);
-        int r = Math.round(Color.red(color) * factor);
-        int g = Math.round(Color.green(color) * factor);
-        int b = Math.round(Color.blue(color) * factor);
-        return Color.argb(a,
-                Math.min(r,255),
-                Math.min(g,255),
-                Math.min(b,255));
-    }
-
     public void confirmClose(View v) {
         if (mTabLayout.getSelectedTabPosition() != 0) {
             Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -565,11 +539,11 @@ public class MainActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (mTabLayout.getSelectedTabPosition() == 0) {
-            setActionBarColor();
+            hueUtils.setActionBarColorDefault(this);
         }
         else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
         {
-            setActionBarColor();
+            hueUtils.setActionBarColorDefault(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

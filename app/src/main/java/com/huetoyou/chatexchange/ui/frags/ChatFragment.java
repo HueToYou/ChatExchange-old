@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
@@ -65,6 +66,8 @@ public class ChatFragment extends Fragment {
     private @ColorInt int mAppBarColor;
     private SlidingMenu mSlidingMenu;
 
+    private HueUtils hueUtils = null;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -75,6 +78,8 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        hueUtils = new HueUtils();
 
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
@@ -269,74 +274,12 @@ public class ChatFragment extends Fragment {
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
             System.out.println("hue.....");
-            setActionBarColor();
+            hueUtils.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
         }
 
         else
         {
-            setActionBarColorDefault();
+            hueUtils.setActionBarColorDefault((AppCompatActivity) getActivity());
         }
-    }
-
-    private void setActionBarColor()
-    {
-        if (getActivity() != null)
-        {
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-            if (actionBar != null)
-            {
-                actionBar.setBackgroundDrawable(new ColorDrawable(mAppBarColor));
-
-                //Change status bar color too
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window window = ((AppCompatActivity) getActivity()).getWindow();
-
-                    // clear FLAG_TRANSLUCENT_STATUS flag:
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(manipulateColor(mAppBarColor, 0.7f));
-                }
-            }
-        }
-    }
-
-    private void setActionBarColorDefault()
-    {
-        if (getActivity() != null)
-        {
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-            if (actionBar != null)
-            {
-                int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-                actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
-
-                //Change status bar color too
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window window = ((AppCompatActivity) getActivity()).getWindow();
-
-                    // clear FLAG_TRANSLUCENT_STATUS flag:
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
-                }
-            }
-        }
-    }
-
-    public static int manipulateColor(int color, float factor) {
-        int a = Color.alpha(color);
-        int r = Math.round(Color.red(color) * factor);
-        int g = Math.round(Color.green(color) * factor);
-        int b = Math.round(Color.blue(color) * factor);
-        return Color.argb(a,
-                Math.min(r,255),
-                Math.min(g,255),
-                Math.min(b,255));
     }
 }
