@@ -82,9 +82,9 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-//        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-//        mSlidingMenu.setBehindOffset((int)(dpWidth + getResources().getDimension(R.dimen.user_tile_width)));
-//        mSlidingMenu.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        //        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        //        mSlidingMenu.setBehindOffset((int)(dpWidth + getResources().getDimension(R.dimen.user_tile_width)));
+        //        mSlidingMenu.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
