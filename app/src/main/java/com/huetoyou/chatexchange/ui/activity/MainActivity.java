@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         HandleAdds handleAdds = new HandleAdds();
         CancelTask cancel = new CancelTask(handleAdds);
         mHandler.postDelayed(cancel, 10000);
-        handleAdds.execute();
+        handleAdds.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0) {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 ReAddTabs reAddTabs = new ReAddTabs();
                 CancelTask cancelTask = new CancelTask(reAddTabs);
                 mHandler.postDelayed(cancelTask, 10000);
-                reAddTabs.execute();
+                reAddTabs.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     }
@@ -263,15 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 if (fragment instanceof ChatFragment) {
                     Bundle args = new Bundle();
                     if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
-                    if (tab.getTag() != null) {
-                        args.putString("chatUrl", tab.getTag().toString());
-                        try {
-                            args.putString("chatDesc", new GetDesc().execute(tab.getTag().toString()).get());
-                            args.putStringArrayList("chatTags", new GetTags().execute((tab.getTag().toString())).get());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
                     if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
                     fragment.setArguments(args);
 
@@ -355,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
             AddTab addTab = new AddTab();
             CancelTask cancelTask = new CancelTask(addTab);
             mHandler.postDelayed(cancelTask, 10000);
-            addTab.execute(chatUrl);
+            addTab.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
 
         } else {
             Toast.makeText(this, getResources().getText(R.string.activity_main_chat_already_added).toString(), Toast.LENGTH_SHORT).show();
@@ -429,52 +421,6 @@ public class MainActivity extends AppCompatActivity {
                             .show();
                 }
             });
-        }
-    }
-
-    private class GetDesc extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div");
-
-                for (Element e : divs) {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomdesc")) return e.html();
-                }
-
-                return null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-    private class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
-        @Override
-        protected ArrayList<String> doInBackground(String... params) {
-            try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div");
-                Element tags = null;
-                ArrayList<String> tagList = new ArrayList<>();
-
-                for (Element e : divs) {
-                    if (e.hasAttr("id") && e.attr("id").equals("room-tags")) {
-                        tags = e;
-                        break;
-                    }
-                }
-
-                if (tags != null) {
-                    for (Element e : tags.select("a")) {
-                        tagList.add(e.html());
-                    }
-                }
-
-                return tagList;
-            } catch (Exception e) {
-                return null;
-            }
         }
     }
 
