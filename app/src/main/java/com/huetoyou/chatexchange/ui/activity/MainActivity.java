@@ -212,22 +212,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        SharedPreferences mSharedPreferences;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if (mTabLayout.getSelectedTabPosition() == 0) {
-            setActionBarColor();
-        }
-        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
-        {
-            setActionBarColor();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     private TabLayout.Tab getTabByURL(String url) {
         for (int i = 0; i < mTabs.size(); i++) {
             TabLayout.Tab tab = mTabs.get(i);
