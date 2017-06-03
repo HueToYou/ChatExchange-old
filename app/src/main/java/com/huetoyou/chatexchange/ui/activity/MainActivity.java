@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final int HOME_INDEX = 0;
 
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
+        mHandler = new Handler();
 
 //        mEditor.putInt("tabIndex", 0).apply();
 
@@ -106,6 +110,65 @@ public class MainActivity extends AppCompatActivity {
         setActionBarColor();
 
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
+    }
+
+    private void setup() {
+        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        try {
+            TabLayout.Tab home = mTabLayout.newTab()
+                    .setText(getResources().getText(R.string.generic_accounts))
+                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
+                    .setTag("home");
+
+//            TabLayout.Tab add = mTabLayout.newTab()
+//                    .setText(getResources()
+//                            .getText(R.string.activity_main_add_chat))
+//                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
+//                    .setTag("add");
+
+
+//            mTabLayout.addTab(add);
+            mTabLayout.addTab(home);
+
+//            home.select();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        Button addChatButton = (Button) findViewById(R.id.add_chat_button);
+        addChatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTabDialog();
+            }
+        });
+
+        HandleAdds handleAdds = new HandleAdds();
+        CancelTask cancel = new CancelTask(handleAdds);
+        mHandler.postDelayed(cancel, 10000);
+        handleAdds.execute();
+
+        mAccountManager = AccountManager.get(this);
+        if (mAccountManager.getAccounts().length > 0) {
+//            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
+            addFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
+        } else {
+            startActivity(new Intent(this, AuthenticatorActivity.class));
+            finish();
+        }
+
+        tabListener();
+
+        if (mAddTab != null && mIntent != null && mIntent.getAction() != null) {
+            final String action = mIntent.getAction();
+            if (action.equals(Intent.ACTION_MAIN)) {
+                ReAddTabs reAddTabs = new ReAddTabs();
+                CancelTask cancelTask = new CancelTask(reAddTabs);
+                mHandler.postDelayed(cancelTask, 10000);
+                reAddTabs.execute();
+            }
+        }
     }
 
     @Override
@@ -144,89 +207,20 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void setup() {
-        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
-        try {
-            TabLayout.Tab home = mTabLayout.newTab()
-                    .setText(getResources().getText(R.string.generic_accounts))
-                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
-                    .setTag("home");
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//            TabLayout.Tab add = mTabLayout.newTab()
-//                    .setText(getResources()
-//                            .getText(R.string.activity_main_add_chat))
-//                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
-//                    .setTag("add");
+        SharedPreferences mSharedPreferences;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-
-//            mTabLayout.addTab(add);
-            mTabLayout.addTab(home);
-
-//            home.select();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (mTabLayout.getSelectedTabPosition() == 0) {
+            setActionBarColor();
         }
-        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
-        Button addChatButton = (Button) findViewById(R.id.add_chat_button);
-        addChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddTabDialog();
-            }
-        });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
-                    addTab(s);
-                    while (mAddTab.isAlive());
-                }
-                mDoneAddingChats = true;
-            }
-        }).start();
-
-        mAccountManager = AccountManager.get(this);
-        if (mAccountManager.getAccounts().length > 0) {
-//            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            addFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
-        } else {
-            startActivity(new Intent(this, AuthenticatorActivity.class));
-            finish();
+        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+        {
+            setActionBarColor();
         }
-
-        tabListener();
-
-        if (mAddTab != null && mIntent != null && mIntent.getAction() != null) {
-            final String action = mIntent.getAction();
-            if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        while (!mDoneAddingChats);
-                        Bundle extras = mIntent.getExtras();
-                        Object o = null;
-                        if (extras != null) o = extras.get("chatURL");
-                        String url = "";
-                        if (o != null) url = o.toString();
-                        TabLayout.Tab tab = getTabByURL(url);
-
-                        if (tab != null) addTab(url);
-                        while (tab == null) tab = getTabByURL(url);
-
-                        final TabLayout.Tab t2 = tab;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                addFragmentByTab(t2);
-                            }
-                        });
-                    }
-                }).start();
-            }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private TabLayout.Tab getTabByURL(String url) {
@@ -349,142 +343,13 @@ public class MainActivity extends AppCompatActivity {
             mEditor.apply();
 
             //noinspection deprecation
-            mAddTab = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    TabLayout.Tab tab = null;
+            AddTab addTab = new AddTab();
+            CancelTask cancelTask = new CancelTask(addTab);
+            mHandler.postDelayed(cancelTask, 10000);
+            addTab.execute(chatUrl);
 
-                    try {
-                        String chatName = new GetName().execute(chatUrl).get();
-                        Spanned name;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            name = Html.fromHtml(chatName, Html.FROM_HTML_MODE_LEGACY);
-                        } else {
-                            //noinspection deprecation
-                            name = Html.fromHtml(chatName);
-                        }
-                        tab = mTabLayout.newTab().setText(name).setIcon(new GetIcon().execute(chatUrl).get()).setTag(chatUrl).setContentDescription(String.valueOf(new GetColorInt().execute(chatUrl).get()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (tab != null && !chatUrl.isEmpty()) {
-                        final TabLayout.Tab tab1 = tab;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTabLayout.addTab(tab1);
-                                mTabs.add(tab1);
-                            }
-                        });
-                    }
-                }
-            });
-            mAddTab.start();
         } else {
             Toast.makeText(this, getResources().getText(R.string.activity_main_chat_already_added).toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private class GetName extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                return Jsoup.connect(params[0]).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-    private class GetColorInt extends AsyncTask<String, Void, Integer> {
-        @Override
-        protected Integer doInBackground(String... params) {
-            String url = params[0];
-
-            try {
-                Document doc = Jsoup.connect(url).get();
-
-                Elements styles = doc.select("link");
-                Element element = new Element("hue");
-
-                for (int i = 0; i < styles.size(); i++) {
-                    Element current = styles.get(i);
-
-                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
-                        element = current;
-                        break;
-                    }
-                }
-
-                String link = "";
-                if (element.hasAttr("href")) {
-                    link = element.attr("href");
-                    if (!(link.contains("http://") || link.contains("https://")))
-                        link = "https:".concat(link);
-                }
-
-
-                URL url1 = new URL(link);
-
-                InputStream inStr = url1.openStream();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
-                String line;
-                String css = "";
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    css = css.concat(line);
-                }
-
-
-                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
-                Matcher m = p.matcher(css);
-                String a = "";
-
-                if (m.find()) {
-                    a = m.group();
-                }
-
-                p = Pattern.compile("color:(.*?);");
-                m = p.matcher(a);
-
-                String colorHex = "#000000";
-
-                if (m.find()) {
-                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
-                }
-
-                mSharedPrefs.edit().putInt(params[0] + "Color", Color.parseColor(colorHex)).apply();
-                return Color.parseColor(colorHex);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Color.parseColor("#000000");
-            }
-        }
-    }
-
-    private class GetIcon extends AsyncTask<String, Void, Drawable> {
-        @Override
-        protected Drawable doInBackground(String... params) {
-            try {
-                Document document = Jsoup.connect(params[0]).get();
-                Element head = document.head();
-                Element link = head.select("link").first();
-
-                String fav = link.attr("href");
-                if (!fav.contains("http")) fav = "https:".concat(fav);
-                URL url = new URL(fav);
-
-                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, 144, 144, true));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
         }
     }
 
@@ -558,19 +423,187 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private class AddTab extends AsyncTask<String, Void, Void> {
+        private Spanned name;
+        private Drawable chatIcon;
+        private int colorInt;
+        private String chatUrl;
 
-        SharedPreferences mSharedPreferences;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        @Override
+        protected Void doInBackground(String... params) {
+            chatUrl = params[0];
 
-        if (mTabLayout.getSelectedTabPosition() == 0) {
-            setActionBarColor();
+            try {
+                String chatName = getName(chatUrl);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    name = Html.fromHtml(chatName, Html.FROM_HTML_MODE_LEGACY);
+                } else {
+                    //noinspection deprecation
+                    name = Html.fromHtml(chatName);
+                }
+                chatIcon = getIcon(chatUrl);
+                colorInt = getColorInt(chatUrl);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
-        {
-            setActionBarColor();
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            TabLayout.Tab tab = mTabLayout.newTab().setText(name).setIcon(chatIcon).setTag(chatUrl).setContentDescription(String.valueOf(colorInt));
+            if (!chatUrl.isEmpty()) {
+                mTabLayout.addTab(tab);
+                mTabs.add(tab);
+            }
+            super.onPostExecute(aVoid);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
+        private String getName(String url) {
+            try {
+                return Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        private Drawable getIcon(String chatUrl) {
+            try {
+                Document document = Jsoup.connect(chatUrl).get();
+                Element head = document.head();
+                Element link = head.select("link").first();
+
+                String fav = link.attr("href");
+                if (!fav.contains("http")) fav = "https:".concat(fav);
+                URL url = new URL(fav);
+
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, 144, 144, true));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        private int getColorInt(String url) {
+            try {
+                Document doc = Jsoup.connect(url).get();
+
+                Elements styles = doc.select("link");
+                Element element = new Element("hue");
+
+                for (int i = 0; i < styles.size(); i++) {
+                    Element current = styles.get(i);
+
+                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
+                        element = current;
+                        break;
+                    }
+                }
+
+                String link = "";
+                if (element.hasAttr("href")) {
+                    link = element.attr("href");
+                    if (!(link.contains("http://") || link.contains("https://")))
+                        link = "https:".concat(link);
+                }
+
+
+                URL url1 = new URL(link);
+
+                InputStream inStr = url1.openStream();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
+                String line;
+                String css = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    css = css.concat(line);
+                }
+
+
+                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
+                Matcher m = p.matcher(css);
+                String a = "";
+
+                if (m.find()) {
+                    a = m.group();
+                }
+
+                p = Pattern.compile("color:(.*?);");
+                m = p.matcher(a);
+
+                String colorHex = "#000000";
+
+                if (m.find()) {
+                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
+                }
+
+                mSharedPrefs.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Color.parseColor("#000000");
+            }
+        }
+    }
+
+    private class CancelTask implements Runnable {
+        private AsyncTask task;
+
+        public CancelTask(AsyncTask task) {
+            this.task = task;
+        }
+
+        @Override
+        public void run() {
+            if (task.getStatus() == AsyncTask.Status.RUNNING )
+                task.cancel(true);
+        }
+    }
+
+    private class HandleAdds extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
+                addTab(s);
+//                while (mAddTab.isAlive());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mDoneAddingChats = true;
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private class ReAddTabs extends AsyncTask<Void, Void, Void> {
+        private TabLayout.Tab tab;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (!mDoneAddingChats);
+            Bundle extras = mIntent.getExtras();
+            Object o = null;
+            if (extras != null) o = extras.get("chatURL");
+            String url = "";
+            if (o != null) url = o.toString();
+            tab = getTabByURL(url);
+
+            if (tab != null) addTab(url);
+            while (tab == null) tab = getTabByURL(url);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            addFragmentByTab(tab);
+            super.onPostExecute(aVoid);
+        }
     }
 }
