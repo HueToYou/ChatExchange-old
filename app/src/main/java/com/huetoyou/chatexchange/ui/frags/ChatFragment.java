@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
@@ -21,6 +22,8 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -239,12 +242,75 @@ public class ChatFragment extends Fragment {
         super.onResume();
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            if (getActivity() != null) {
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            System.out.println("hue.....");
+            setActionBarColor();
+        }
 
-                if (actionBar != null)
-                    actionBar.setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+        else
+        {
+            setActionBarColorDefault();
+        }
+    }
+
+    private void setActionBarColor()
+    {
+        if (getActivity() != null)
+        {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+            if (actionBar != null)
+            {
+                actionBar.setBackgroundDrawable(new ColorDrawable(mAppBarColor));
+
+                //Change status bar color too
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = ((AppCompatActivity) getActivity()).getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.setStatusBarColor(manipulateColor(mAppBarColor, 0.7f));
+                }
             }
         }
+    }
+
+    private void setActionBarColorDefault()
+    {
+        if (getActivity() != null)
+        {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+            if (actionBar != null)
+            {
+                int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+                actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
+
+                //Change status bar color too
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = ((AppCompatActivity) getActivity()).getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
+                }
+            }
+        }
+    }
+
+    public static int manipulateColor(int color, float factor) {
+        int a = Color.alpha(color);
+        int r = Math.round(Color.red(color) * factor);
+        int g = Math.round(Color.green(color) * factor);
+        int b = Math.round(Color.blue(color) * factor);
+        return Color.argb(a,
+                Math.min(r,255),
+                Math.min(g,255),
+                Math.min(b,255));
     }
 }
