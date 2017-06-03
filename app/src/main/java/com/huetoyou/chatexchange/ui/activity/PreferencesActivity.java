@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -18,8 +19,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.BackendService;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jrummyapps.android.colorpicker.ColorPanelView;
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
@@ -46,10 +49,15 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
+
+        private SharedPreferences mSharedPreferences;
+
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
             ColorPreference colorPreference = (ColorPreference) findPreference("default_color");
             colorPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -63,6 +71,9 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
 
             CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("dynamic_bar_color");
             setAppBarColorChange(checkBoxPreference);
+
+            ListPreference listPreference = (ListPreference) findPreference("backend_type");
+            setBackendMethod(listPreference);
         }
 
         private void setAppBarColorChange(CheckBoxPreference checkBoxPreference) {
@@ -71,10 +82,39 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     boolean pref = Boolean.parseBoolean(newValue.toString());
 
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    sharedPreferences.edit().putBoolean("dynamicallyColorBar", pref).apply();
+                    mSharedPreferences.edit().putBoolean("dynamicallyColorBar", pref).apply();
 
                     return true;
+                }
+            });
+        }
+
+        private void setBackendMethod(final ListPreference listPreference) {
+            String currentSelected = mSharedPreferences.getString("backend_selected", "None");
+            int index = listPreference.findIndexOfValue(currentSelected);
+            listPreference.setValueIndex(index != -1 ? index : 0);
+
+            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_LONG).show();
+
+                    String prefVal = "";
+
+                    switch (newValue.toString().toLowerCase()) {
+                        case "websocket":
+                            prefVal = BackendService.BACKEND_WEBSOCKET;
+                            break;
+                        case "none":
+                            prefVal = BackendService.BACKEND_NONE;
+                            break;
+                    }
+                    mSharedPreferences.edit().putString("backend_type", prefVal).apply();
+                    mSharedPreferences.edit().putString("backend_selected", newValue.toString()).apply();
+
+                    int index = listPreference.findIndexOfValue(newValue.toString());
+                    listPreference.setValueIndex(index != -1 ? index : 0);
+                    return false;
                 }
             });
         }

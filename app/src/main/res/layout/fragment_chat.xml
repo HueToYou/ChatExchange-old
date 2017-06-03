@@ -6,11 +6,12 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/close_chat_frag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="confirmClose"
+        android:tint="#fff"
         app:elevation="4dp"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_close_black_24dp"
@@ -32,6 +33,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:onClick="confirmClose"
+            android:tint="#fff"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
@@ -44,6 +46,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:onClick="confirmClose"
+            android:tint="#fff"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_supervisor_account_black_24dp"

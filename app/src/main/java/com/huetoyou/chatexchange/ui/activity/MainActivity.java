@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         setup();
         hueUtils.setActionBarColorDefault(this);
+        hueUtils.setAddChatFabColorDefault(this);
 
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
@@ -264,6 +265,10 @@ public class MainActivity extends AppCompatActivity {
                     if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
                     if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
                     fragment.setArguments(args);
+
+                    if (mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
+                        hueUtils.setAddChatFabColor(this, Integer.decode(tab.getContentDescription().toString()));
+                    }
                 }
 
             }
@@ -291,7 +296,8 @@ public class MainActivity extends AppCompatActivity {
                 setFragmentByTab(tab);
                 if (tab.getPosition() == HOME_INDEX)
                 {
-                    //hueUtils.setActionBarColorDefault((AppCompatActivity) MainActivity.getAc);
+                    hueUtils.setActionBarColorDefault(MainActivity.this);
+                    hueUtils.setAddChatFabColorDefault(MainActivity.this);
                 }
             }
 

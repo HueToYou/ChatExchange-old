@@ -54,6 +54,7 @@ public class AccountsFragment extends Fragment {
         for (final Account account : accounts) {
             spinnerArray.add(account.name);
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner sItems = (Spinner) accountLayout.findViewById(R.id.accountsSpinner);

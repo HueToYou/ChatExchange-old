@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="backend_types">
+        <item>None</item>
+        <item>WebSocket</item>
+    </array>
+</resources>

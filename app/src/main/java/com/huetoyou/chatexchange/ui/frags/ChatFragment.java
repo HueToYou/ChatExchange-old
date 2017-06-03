@@ -273,11 +273,15 @@ public class ChatFragment extends Fragment {
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
             System.out.println("hue.....");
             hueUtils.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
+            hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            hueUtils.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
         }
 
         else
         {
             hueUtils.setActionBarColorDefault((AppCompatActivity) getActivity());
+            hueUtils.setChatFragmentFabColorDefault((AppCompatActivity) getActivity());
+            hueUtils.setAddChatFabColorDefault((AppCompatActivity) getActivity());
         }
     }
 }

@@ -31,6 +31,12 @@
             android:title="Listen for any new messages"
             android:summary="Listen for all messages, not just pings"/>
 
+        <ListPreference
+            android:key="backend_type"
+            android:title="Choose Backend Method"
+            android:entries="@array/backend_types"
+            android:entryValues="@array/backend_types" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
