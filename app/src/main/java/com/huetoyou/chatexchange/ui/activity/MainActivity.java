@@ -43,6 +43,7 @@ import com.huetoyou.chatexchange.ui.frags.AccountsFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.HueUtils;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -87,11 +88,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler;
 
+    private HueUtils hueUtils = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        hueUtils = new HueUtils();
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPrefs.edit();
@@ -107,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         mIntent = getIntent();
 
         setup();
-        setActionBarColor();
+        hueUtils.setActionBarColorDefault(this);
 
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
@@ -298,7 +303,10 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 addFragmentByTab(tab);
                 setFragmentByTab(tab);
-                if (tab.getPosition() == HOME_INDEX) setActionBarColor();
+                if (tab.getPosition() == HOME_INDEX)
+                {
+                    //hueUtils.setActionBarColorDefault((AppCompatActivity) MainActivity.getAc);
+                }
             }
 
             @Override
@@ -605,5 +613,21 @@ public class MainActivity extends AppCompatActivity {
             addFragmentByTab(tab);
             super.onPostExecute(aVoid);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        SharedPreferences mSharedPreferences;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (mTabLayout.getSelectedTabPosition() == 0) {
+            hueUtils.setActionBarColorDefault(this);
+        }
+        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+        {
+            hueUtils.setActionBarColorDefault(this);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
