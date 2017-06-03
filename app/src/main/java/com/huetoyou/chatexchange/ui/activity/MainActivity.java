@@ -14,16 +14,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private Thread mAddTab;
 
     private final int HOME_INDEX = 0;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
+
+        mHandler = new Handler();
 
 //        mEditor.putInt("tabIndex", 0).apply();
 
@@ -179,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
                     addTab(s);
-                    while (mAddTab.isAlive());
+//                    while (mAddTab.isAlive());
                 }
                 mDoneAddingChats = true;
             }
@@ -199,40 +205,74 @@ public class MainActivity extends AppCompatActivity {
         if (mAddTab != null && mIntent != null && mIntent.getAction() != null) {
             final String action = mIntent.getAction();
             if (action.equals(Intent.ACTION_OPEN_DOCUMENT) || action.equals(Intent.ACTION_MAIN)) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        while (!mDoneAddingChats);
-                        Bundle extras = mIntent.getExtras();
-                        Object o = null;
-                        if (extras != null) o = extras.get("chatURL");
-                        String url = "";
-                        if (o != null) url = o.toString();
-                        TabLayout.Tab tab = getTabByURL(url);
-
-                        if (tab != null) addTab(url);
-                        while (tab == null) tab = getTabByURL(url);
-
-                        final TabLayout.Tab t2 = tab;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                addFragmentByTab(t2);
-                            }
-                        });
-                    }
-                }).start();
+                try {
+                    StartUp startUp = new StartUp();
+                    CancelTask cancelTask = new CancelTask(startUp);
+                    mHandler.postDelayed(cancelTask, 10000);
+                    startUp.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        }
+    }
+
+    private class CancelTask implements Runnable {
+        private AsyncTask task;
+
+        public CancelTask(AsyncTask task) {
+            this.task = task;
+        }
+
+        @Override
+        public void run() {
+            if (task.getStatus() == AsyncTask.Status.RUNNING )
+                task.cancel(true);
+        }
+    }
+
+    private class StartUp extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (!mDoneAddingChats);
+            Bundle extras = mIntent.getExtras();
+            Object o = null;
+            if (extras != null) o = extras.get("chatURL");
+            String url = "";
+            if (o != null) url = o.toString();
+            TabLayout.Tab tab = getTabByURL(url);
+
+            if (tab != null) addTab(url);
+            for (int i = 0; i < 10; i++) {
+                tab = getTabByURL(url);
+                if (tab != null) break;
+            }
+
+            final TabLayout.Tab t2 = tab;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    addFragmentByTab(t2);
+                }
+            });
+            return null;
         }
     }
 
     private TabLayout.Tab getTabByURL(String url) {
         for (int i = 0; i < mTabs.size(); i++) {
             TabLayout.Tab tab = mTabs.get(i);
-            String tabTag = tab.getTag() != null ? tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "") : "";
-            url = url.replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
+            String tabTag = tab.getTag() != null ? tab.getTag().toString()
+                    .replace("http://", "")
+                    .replace("https://", "")
+                    .replace("/", "")
+                    .replace("#", "") : "";
 
+            url = url
+                    .replace("http://", "")
+                    .replace("https://", "")
+                    .replace("/", "")
+                    .replace("#", "");
             if ((url.contains(tabTag) || tabTag.contains(url)) && url.length() > 0) return tab;
         }
 
@@ -493,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(initialColor);
 
 
-        android.support.v7.app.ActionBar bar = getSupportActionBar();
+        ActionBar bar = getSupportActionBar();
         ColorDrawable cd = new ColorDrawable(initialColor);
         if (bar != null) bar.setBackgroundDrawable(cd);
     }

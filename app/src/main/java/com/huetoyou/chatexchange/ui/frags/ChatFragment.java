@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
@@ -96,7 +97,11 @@ public class ChatFragment extends Fragment {
         mAppBarColor = args.getInt("AppBarColor", -1);
 
         addChatButtons(chatUrl);
-        parseUsers(chatUrl);
+        ParseUsers asyncTask = new ParseUsers();
+        CancelTask canceller = new CancelTask(asyncTask);
+        Handler handler = new Handler();
+        handler.postDelayed(canceller, 10000);
+        asyncTask.execute(chatUrl);
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
 
@@ -114,87 +119,109 @@ public class ChatFragment extends Fragment {
         super.onDetach();
     }
 
-    private void parseUsers(final String... params) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Document html = new Document("");
-                SparseArray<String> names = new SparseArray<>();
+    private class CancelTask implements Runnable {
+        private AsyncTask task;
 
-                String users;
+        public CancelTask(AsyncTask task) {
+            this.task = task;
+        }
 
-                try {
-                    html = Jsoup.connect(params[0]).get();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        @Override
+        public void run() {
+            if (task.getStatus() == AsyncTask.Status.RUNNING )
+                task.cancel(true);
+        }
+    }
 
-                Elements el = html.select("script");
-                if (el.hasAttr("type")) el = html.select("script");
+    private class ParseUsers extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            Document html = new Document("");
+            SparseArray<String> names = new SparseArray<>();
 
-                ArrayList<String> data = new ArrayList<>();
+            String users;
 
-                users = el.html();
-                String users2 = "";
+            try {
+                html = Jsoup.connect(params[0]).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                Pattern p = Pattern.compile("\\{id:(.*?)\\}");
-                Matcher m = p.matcher(users);
+            Elements el = html.select("script");
+            if (el.hasAttr("type")) el = html.select("script");
 
-                while (!m.hitEnd()) {
-                    if (m.find()) {
-                        try {
-                            data.add(m.group());
-                            users2 = users2.concat(m.group());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+            ArrayList<String> data = new ArrayList<>();
+
+            users = el.html();
+            String users2 = "";
+
+            Pattern p = Pattern.compile("\\{id:(.*?)\\}");
+            Matcher m = p.matcher(users);
+
+            while (!m.hitEnd()) {
+                if (m.find()) {
+                    try {
+                        data.add(m.group());
+                        users2 = users2.concat(m.group());
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
-
-                users2 = "{\"users\": ["
-                        .concat(users2)
-                        .concat("]}")
-                        .replace("(", "")
-                        .replace(")", "")
-                        .replace("id:", "\"id\":")
-                        .replace("name", "\"name\"")
-                        .replace("email_hash", "\"email_hash\"")
-                        .replace("reputation", "\"reputation\"")
-                        .replace("last_post", "\"last_post\"")
-                        .replace("is_moderator", "\"is_moderator\"")
-                        .replace("is_owner", "\"is_owner\"")
-//                        .replace("true", "\"true\"")
-                        .replace("}{", "},{")
-                        .replace("!", "");
-
-                try {
-                    JSONObject object = new JSONObject(users2);
-                    JSONArray jArray = object.getJSONArray("users");
-
-                    for (int i = 0; i < jArray.length(); i++)
-                    {
-                        JSONObject jsonObject = jArray.getJSONObject(i);
-
-                        int id = jsonObject.getInt("id");
-                        int lastPost = jsonObject.getInt("last_post");
-                        int rep = jsonObject.getInt("reputation");
-
-                        boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
-                        boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
-
-                        String name = jsonObject.getString("name");
-                        String icon = jsonObject.getString("email_hash");
-
-                        if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
-
-                        addUser(name, icon, id, lastPost, rep, isMod, isOwner, params[0]);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
-        }).start();
+
+            users2 = "{\"users\": ["
+                    .concat(users2)
+                    .concat("]}")
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replace("id:", "\"id\":")
+                    .replace("name", "\"name\"")
+                    .replace("email_hash", "\"email_hash\"")
+                    .replace("reputation", "\"reputation\"")
+                    .replace("last_post", "\"last_post\"")
+                    .replace("is_moderator", "\"is_moderator\"")
+                    .replace("is_owner", "\"is_owner\"")
+//                        .replace("true", "\"true\"")
+                    .replace("}{", "},{")
+                    .replace("!", "");
+
+            try {
+                JSONObject object = new JSONObject(users2);
+                JSONArray jArray = object.getJSONArray("users");
+
+                for (int i = 0; i < jArray.length(); i++)
+                {
+                    JSONObject jsonObject = jArray.getJSONObject(i);
+
+                    int id = jsonObject.getInt("id");
+                    int lastPost = jsonObject.getInt("last_post");
+                    int rep = jsonObject.getInt("reputation");
+
+                    boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
+                    boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
+
+                    String name = jsonObject.getString("name");
+                    String icon = jsonObject.getString("email_hash");
+
+                    if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+
+                    addUser(name, icon, id, lastPost, rep, isMod, isOwner, params[0]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
+
+//    private void parseUsers(final String... params) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        }).start();
+//    }
 
     private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
         Bundle args = new Bundle();
