@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -59,10 +60,6 @@ public class ChatFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private View view;
 
-    private LinearLayout mUsersLayout;
-    private Button mShowUsers;
-    private Button mOpenInBrowser;
-
     private @ColorInt int mAppBarColor;
     private SlidingMenu mSlidingMenu;
 
@@ -94,9 +91,6 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
         mSlidingMenu.setMenu(R.layout.users_slideout);
-
-        mShowUsers = (Button) view.findViewById(R.id.show_user_list);
-        mOpenInBrowser = (Button) view.findViewById(R.id.open_in_browser);
 
         Bundle args = getArguments();
         String chatUrl = args.getString("chatUrl", "ERROR");
@@ -251,14 +245,18 @@ public class ChatFragment extends Fragment {
     }
 
     private void addChatButtons(final String url) {
-        mShowUsers.setOnClickListener(new View.OnClickListener() {
+
+        FloatingActionButton showUsers = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
+        FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
+
+        showUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSlidingMenu.toggle();
             }
         });
 
-        mOpenInBrowser.setOnClickListener(new View.OnClickListener() {
+        openInBrowser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
