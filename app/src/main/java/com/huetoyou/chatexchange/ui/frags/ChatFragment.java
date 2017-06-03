@@ -41,8 +41,6 @@ import android.widget.ToggleButton;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-
-import com.google.android.util.AbstractMessageParser;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
