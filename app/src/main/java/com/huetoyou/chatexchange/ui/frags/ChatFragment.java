@@ -79,7 +79,7 @@ public class ChatFragment extends Fragment {
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
         mSlidingMenu.setMode(SlidingMenu.RIGHT);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
 //        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
