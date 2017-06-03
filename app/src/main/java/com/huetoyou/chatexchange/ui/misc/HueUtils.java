@@ -162,6 +162,7 @@ public class HueUtils
         FloatingActionButton closeChat = (FloatingActionButton) activity.findViewById(R.id.close_chat_frag);
         FloatingActionButton openBrowser = (FloatingActionButton) activity.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton showUsers = (FloatingActionButton) activity.findViewById(R.id.show_users_fab);
+        FloatingActionButton roomInfo = (FloatingActionButton) activity.findViewById(R.id.room_info_fab);
 
         ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
 
@@ -171,6 +172,8 @@ public class HueUtils
         openBrowser.setBackgroundTintList(colorStateList);
         showUsers.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
         showUsers.setBackgroundTintList(colorStateList);
+        roomInfo.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
+        roomInfo.setBackgroundTintList(colorStateList);
     }
 
     public void setChatFragmentFabColorDefault(AppCompatActivity activity) {

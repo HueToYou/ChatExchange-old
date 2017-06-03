@@ -16,8 +16,15 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.text.util.LinkifyCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -28,11 +35,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
+import com.google.android.util.AbstractMessageParser;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -41,6 +51,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Text;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -64,6 +75,9 @@ public class ChatFragment extends Fragment {
     private SlidingMenu mSlidingMenu;
 
     private HueUtils hueUtils = null;
+    private Spanned mChatDesc;
+    private ArrayList<String> mChatTags = new ArrayList<>();
+    private Spanned mChatTagsSpanned;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -93,6 +107,18 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.setMenu(R.layout.users_slideout);
 
         Bundle args = getArguments();
+        mChatDesc = Html.fromHtml("<b>Desc: </b>" + args.getString("chatDesc", "ERROR"));
+        mChatTags = args.getStringArrayList("chatTags");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (String s : mChatTags) {
+//                    mChatTagsSpanned = mChatTagsSpanned. Html.fromHtml(s);
+                }
+            }
+        }).start();
+
         String chatUrl = args.getString("chatUrl", "ERROR");
 
         mAppBarColor = args.getInt("AppBarColor", -1);
@@ -248,6 +274,7 @@ public class ChatFragment extends Fragment {
 
         FloatingActionButton showUsers = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
         FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
+        FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
 
         showUsers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +288,22 @@ public class ChatFragment extends Fragment {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(browserIntent);
+            }
+        });
+
+        roomInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog d = new AlertDialog.Builder(getActivity())
+                        .setTitle("Info")
+                        .setView(R.layout.room_desc)
+                        .setPositiveButton(getResources().getText(R.string.generic_ok), null)
+                        .create();
+                d.show();
+
+                TextView desc = (TextView) d.findViewById(R.id.desc_text);
+                desc.setText(mChatDesc);
+                desc.setMovementMethod(LinkMovementMethod.getInstance());
             }
         });
     }
