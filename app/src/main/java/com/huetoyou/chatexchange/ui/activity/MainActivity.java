@@ -27,6 +27,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
+import android.util.AtomicFile;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +63,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,10 +85,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> chatroomArrayList;
     private ArrayAdapter<String> chatroomArrayAdapter;
 
-    private SparseArray<String> chatroomNames = new SparseArray<>();
-    private SparseArray<String> chatroomDescs = new SparseArray<>();
-    private SparseArray<Drawable> chatroomIcons = new SparseArray<>();
-    private int chatroomArrayIndex = 0;
+    private ArrayList<String> chatroomNames = new ArrayList<>();
+    private ArrayList<String> chatroomDescs = new ArrayList<>();
+    private ArrayList<Drawable> chatroomIcons = new ArrayList<>();
 
     private FragmentManager mFragmentManager;
 
@@ -471,9 +473,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            chatroomNames.put(chatroomArrayIndex, chatName);
-            chatroomIcons.put(chatroomArrayIndex, chatIcon);
-            chatroomDescs.put(chatroomArrayIndex, "HUE");
+            chatroomNames.add(chatName);
+            chatroomIcons.add(chatIcon);
+            chatroomDescs.add("HUE");
+
+            Log.e("T", chatroomNames.toString());
+
+            setupChatRoomList(chatroomNames, chatroomDescs, chatroomIcons);
 
             TabLayout.Tab tab = mTabLayout.newTab().setText(name).setIcon(chatIcon).setTag(chatUrl).setContentDescription(String.valueOf(colorInt));
             if (!chatUrl.isEmpty()) {
@@ -597,16 +603,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
 
-            chatroomArrayIndex = 0;
-            boolean firstTab = true;
-
             for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
                 addTab(s);
-                if(!firstTab)
-                {
-                    chatroomArrayIndex++;
-                }
-                firstTab = false;
 //                while (mAddTab.isAlive());
             }
 
@@ -615,15 +613,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }*/
-
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setupChatRoomList(chatroomNames, chatroomDescs, chatroomIcons);
-                }
-            });
 
 
             return null;
@@ -677,7 +666,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setupChatRoomList(SparseArray<String> chatroomNames, SparseArray<String> chatroomDescs, SparseArray<Drawable> icons)
+    private void setupChatRoomList(ArrayList<String> chatroomNames, ArrayList<String> chatroomDescs, ArrayList<Drawable> icons)
     {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);
@@ -685,7 +674,7 @@ public class MainActivity extends AppCompatActivity {
         mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
+        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
         mChatroomSlidingMenu.setFadeDegree(0.35f);
         mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
@@ -699,10 +688,18 @@ public class MainActivity extends AppCompatActivity {
 
         if(chatroomNames != null && chatroomDescs != null && icons != null)
         {
-            System.out.println("Chatroom names: " + chatroomNames);
+            System.out.println("Chatroom names: " + chatroomNames.toString());
 
+            String[] names = new String[chatroomNames.size()];
+            names = chatroomNames.toArray(names);
 
-            chatroomArrayAdapter = new ImgTextArrayAdapter(this, chatroomNames, chatroomDescs, icons);
+            String[] descs = new String[chatroomDescs.size()];
+            descs = chatroomDescs.toArray(descs);
+
+            Drawable[] ico = new Drawable[icons.size()];
+            ico = icons.toArray(ico);
+
+            chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, descs, ico);
 
             // Here, you set the data in your ListView
             chatroomsList.setAdapter(chatroomArrayAdapter);
@@ -717,5 +714,13 @@ public class MainActivity extends AppCompatActivity {
         {
             System.out.println("Hue :(");
         }
+    }
+
+    private static <C> List<C> asList(SparseArray<C> sparseArray) {
+        if (sparseArray == null) return null;
+        List<C> arrayList = new ArrayList<C>(sparseArray.size());
+        for (int i = 0; i < sparseArray.size(); i++)
+            arrayList.add(sparseArray.valueAt(i));
+        return arrayList;
     }
 }

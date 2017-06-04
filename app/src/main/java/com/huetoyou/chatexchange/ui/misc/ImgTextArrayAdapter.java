@@ -19,13 +19,13 @@ import java.util.List;
 public class ImgTextArrayAdapter extends ArrayAdapter<String>
 {
     private final Activity context;
-    private final SparseArray<String> chatroomNames;
-    private final SparseArray<String> chatroomDescs;
-    private final SparseArray<Drawable> icons;
+    private final String[] chatroomNames;
+    private final String[] chatroomDescs;
+    private final Drawable[] icons;
 
-    public ImgTextArrayAdapter(Activity context, SparseArray<String> chatroomNames, SparseArray<String> chatroomDescs, SparseArray<Drawable> icons)
+    public ImgTextArrayAdapter(Activity context, String[] chatroomNames, String[] chatroomDescs, Drawable[] icons)
     {
-        super(context, R.layout.chatroom_list_item, asList(chatroomNames));
+        super(context, R.layout.chatroom_list_item,  chatroomNames);
         // TODO Auto-generated constructor stub
 
         this.context = context;
@@ -52,9 +52,9 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
         ImageView chatroomIconImgView = (ImageView) row.findViewById(R.id.chatroomImg);
         TextView chatroomDescTextView = (TextView) row.findViewById(R.id.chatroomDesc);
 
-        chatroomNameTextView.setText(chatroomNames.get(position));
-        chatroomIconImgView.setImageDrawable(icons.get(position));
-        chatroomDescTextView.setText(chatroomDescs.get(position));
+        chatroomNameTextView.setText(chatroomNames[position]);
+        chatroomIconImgView.setImageDrawable(icons[position]);
+        chatroomDescTextView.setText(chatroomDescs[position]);
         return row;
     };
 }
