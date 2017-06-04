@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> chatroomArrayList;
     private ArrayAdapter<String> chatroomArrayAdapter;
 
-    private String[] chatroomNames = new String[2];
-    private String[] chatroomDescs = new String[2];
-    private Drawable[] chatroomIcons = new Drawable[2];
+    private ArrayList<String> chatroomNames = new ArrayList<>();
+    private ArrayList<String> chatroomDescs = new ArrayList<>();
+    private ArrayList<Drawable> chatroomIcons = new ArrayList<>();
     private int chatroomArrayIndex = 0;
 
     private FragmentManager mFragmentManager;
@@ -463,9 +463,9 @@ public class MainActivity extends AppCompatActivity {
                 chatIcon = getIcon(chatUrl);
                 colorInt = getColorInt(chatUrl);
 
-                chatroomNames[chatroomArrayIndex] = chatName;
-                chatroomIcons[chatroomArrayIndex] = chatIcon;
-                chatroomDescs[chatroomArrayIndex] = "Hue to you!";
+                chatroomNames.set(chatroomArrayIndex, chatName);
+                chatroomIcons.set(chatroomArrayIndex, chatIcon);
+                chatroomDescs.set(chatroomArrayIndex, "HUE");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -676,7 +676,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setupChatRoomList(String[] chatroomNames, String[] chatroomDescs, Drawable[] icons)
+    private void setupChatRoomList(ArrayList<String> chatroomNames, ArrayList<String> chatroomDescs, ArrayList<Drawable> icons)
     {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);

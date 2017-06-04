@@ -11,14 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.huetoyou.chatexchange.R;
 
+import java.util.ArrayList;
+
 public class ImgTextArrayAdapter extends ArrayAdapter<String>
 {
     private final Activity context;
-    private final String[] chatroomNames;
-    private final String[] chatroomDescs;
-    private final Drawable[] icons;
+    private final ArrayList<String> chatroomNames;
+    private final ArrayList<String> chatroomDescs;
+    private final ArrayList<Drawable> icons;
 
-    public ImgTextArrayAdapter(Activity context, String[] chatroomNames, String[] chatroomDescs, Drawable[] icons)
+    public ImgTextArrayAdapter(Activity context, ArrayList<String> chatroomNames, ArrayList<String> chatroomDescs, ArrayList<Drawable> icons)
     {
         super(context, R.layout.chatroom_list_item, chatroomNames);
         // TODO Auto-generated constructor stub
@@ -39,9 +41,9 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
         ImageView chatroomIconImgView = (ImageView) row.findViewById(R.id.chatroomImg);
         TextView chatroomDescTextView = (TextView) row.findViewById(R.id.chatroomDesc);
 
-        chatroomNameTextView.setText(chatroomNames[position]);
-        chatroomIconImgView.setImageDrawable(icons[position]);
-        chatroomDescTextView.setText(chatroomDescs[position]);
+        chatroomNameTextView.setText(chatroomNames.get(position));
+        chatroomIconImgView.setImageDrawable(icons.get(position));
+        chatroomDescTextView.setText(chatroomDescs.get(position));
         return row;
     };
 }
