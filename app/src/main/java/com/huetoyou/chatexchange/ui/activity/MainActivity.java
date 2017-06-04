@@ -441,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
         private Drawable chatIcon;
         private int colorInt;
         private String chatUrl;
+        private String chatName;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -448,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
             try
             {
-                String chatName = getName(chatUrl);
+                chatName = getName(chatUrl);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 {
@@ -462,10 +463,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 chatIcon = getIcon(chatUrl);
                 colorInt = getColorInt(chatUrl);
-
-                chatroomNames.set(chatroomArrayIndex, chatName);
-                chatroomIcons.set(chatroomArrayIndex, chatIcon);
-                chatroomDescs.set(chatroomArrayIndex, "HUE");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -474,6 +471,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            chatroomNames.set(chatroomArrayIndex, chatName);
+            chatroomIcons.set(chatroomArrayIndex, chatIcon);
+            chatroomDescs.set(chatroomArrayIndex, "HUE");
+
             TabLayout.Tab tab = mTabLayout.newTab().setText(name).setIcon(chatIcon).setTag(chatUrl).setContentDescription(String.valueOf(colorInt));
             if (!chatUrl.isEmpty()) {
                 mTabLayout.addTab(tab);
