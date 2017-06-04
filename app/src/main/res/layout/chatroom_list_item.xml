@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Definig a container for you List Item-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <!-- Defining where should text be placed. You set you text color here-->
+    <ImageView
+        android:id="@+id/chatroomImg"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/chatroomName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="left"
+            android:text="Ask Ubuntu General Room"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/chatroomDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Huehuehuehue" />
+    </LinearLayout>
+
+
+</LinearLayout>

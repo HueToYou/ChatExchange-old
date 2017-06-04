@@ -1,6 +1,7 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -27,7 +27,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,18 +34,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.gson.JsonIOException;
 import com.huetoyou.chatexchange.ui.frags.AccountsFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -59,7 +59,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.security.DomainCombiner;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ArrayList<TabLayout.Tab> mTabs = new ArrayList<>();
     private SparseArray<Fragment> mCurrentFragments = new SparseArray<>();
+
+    private SlidingMenu mChatroomSlidingMenu;
+    private ListView chatroomsList;
+    private ArrayList<String> chatroomArrayList;
+    private ArrayAdapter<String> chatroomArrayAdapter;
+
+    private String[] chatroomNames = new String[2];
+    private String[] chatroomDescs = new String[2];
+    private Drawable[] chatroomIcons = new Drawable[2];
+    private int chatroomArrayIndex = 0;
 
     private FragmentManager mFragmentManager;
 
@@ -169,9 +178,12 @@ public class MainActivity extends AppCompatActivity {
 
         tabListener();
 
-        if (mIntent != null && mIntent.getAction() != null) {
+        if (mIntent != null && mIntent.getAction() != null)
+        {
             final String action = mIntent.getAction();
-            if (action.equals(Intent.ACTION_MAIN)) {
+
+            if (action.equals(Intent.ACTION_MAIN))
+            {
                 ReAddTabs reAddTabs = new ReAddTabs();
                 CancelTask cancelTask = new CancelTask(reAddTabs);
                 mHandler.postDelayed(cancelTask, 10000);
@@ -434,17 +446,26 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             chatUrl = params[0];
 
-            try {
+            try
+            {
                 String chatName = getName(chatUrl);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                {
                     name = Html.fromHtml(chatName, Html.FROM_HTML_MODE_LEGACY);
-                } else {
+                }
+
+                else
+                {
                     //noinspection deprecation
                     name = Html.fromHtml(chatName);
                 }
                 chatIcon = getIcon(chatUrl);
                 colorInt = getColorInt(chatUrl);
 
+                chatroomNames[chatroomArrayIndex] = chatName;
+                chatroomIcons[chatroomArrayIndex] = chatIcon;
+                chatroomDescs[chatroomArrayIndex] = "Hue to you!";
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -574,10 +595,36 @@ public class MainActivity extends AppCompatActivity {
     private class HandleAdds extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+
+            chatroomArrayIndex = 0;
+            boolean firstTab = true;
+
             for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
                 addTab(s);
+                if(!firstTab)
+                {
+                    chatroomArrayIndex++;
+                }
+                firstTab = false;
 //                while (mAddTab.isAlive());
             }
+
+            /*try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    setupChatRoomList(chatroomNames, chatroomDescs, chatroomIcons);
+                }
+            });
+
+
             return null;
         }
 
@@ -627,5 +674,47 @@ public class MainActivity extends AppCompatActivity {
             hueUtils.setActionBarColorDefault(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setupChatRoomList(String[] chatroomNames, String[] chatroomDescs, Drawable[] icons)
+    {
+        // configure the SlidingMenu
+        mChatroomSlidingMenu = new SlidingMenu(this);
+        mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
+        mChatroomSlidingMenu.setFadeDegree(0.35f);
+        mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
+
+        chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
+        chatroomArrayList = new ArrayList<String>();
+
+        // Adapter: You need three parameters 'the context, id of the layout (it will be where the data is shown),
+        // and the array that contains the data
+        //chatroomArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.chatroom_list_item, R.id.chatroomName, chatroomArrayList);
+
+        if(chatroomNames != null && chatroomDescs != null && icons != null)
+        {
+            System.out.println("Chatroom names: " + chatroomNames);
+
+
+            chatroomArrayAdapter = new ImgTextArrayAdapter(this, chatroomNames, chatroomDescs, icons);
+
+            // Here, you set the data in your ListView
+            chatroomsList.setAdapter(chatroomArrayAdapter);
+
+            // this line adds the data of your EditText and puts in your array
+            //chatroomArrayList.add("Text");
+            //chatroomArrayList.add("Text 2");
+            // next thing you have to do is check if your adapter has changed
+            //chatroomArrayAdapter.notifyDataSetChanged();
+        }
+        else
+        {
+            System.out.println("Hue :(");
+        }
     }
 }
