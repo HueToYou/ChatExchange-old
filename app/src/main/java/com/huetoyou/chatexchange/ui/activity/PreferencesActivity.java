@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.backend.BackendService;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jrummyapps.android.colorpicker.ColorPanelView;
@@ -81,6 +82,15 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
 
             ListPreference account = (ListPreference) findPreference("account_select");
             setAccount(account);
+
+            Preference addAcc = findPreference("add_account");
+            addAcc.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    startActivity(new Intent(getActivity(), AuthenticatorActivity.class));
+                    return false;
+                }
+            });
 
         }
 

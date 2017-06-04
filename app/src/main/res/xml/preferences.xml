@@ -47,6 +47,11 @@
             android:title="Current Account"
             android:summary="Select which account to use for chat" />
 
+        <Preference
+            android:key="add_account"
+            android:title="@string/activity_main_add_account"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
