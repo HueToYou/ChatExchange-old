@@ -1,6 +1,7 @@
 package com.huetoyou.chatexchange.ui.misc;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
@@ -13,48 +14,53 @@ import android.widget.TextView;
 import com.huetoyou.chatexchange.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ImgTextArrayAdapter extends ArrayAdapter<String>
 {
     private final Activity context;
     private final String[] chatroomNames;
-    private final String[] chatroomDescs;
+    private final String[] chatroomUrls;
+    private final Integer[] chatroomColors;
     private final Drawable[] icons;
 
-    public ImgTextArrayAdapter(Activity context, String[] chatroomNames, String[] chatroomDescs, Drawable[] icons)
+    public ImgTextArrayAdapter(Activity context, String[] chatroomNames, String[] chatroomUrls, Drawable[] icons, Integer[] chatroomColors)
     {
         super(context, R.layout.chatroom_list_item,  chatroomNames);
         // TODO Auto-generated constructor stub
 
         this.context = context;
         this.chatroomNames = chatroomNames;
-        this.chatroomDescs = chatroomDescs;
+        this.chatroomUrls = chatroomUrls;
         this.icons = icons;
-    }
-
-    public static <C> List<C> asList(SparseArray<C> sparseArray) {
-        if (sparseArray == null) return null;
-        List<C> arrayList = new ArrayList<C>(sparseArray.size());
-        for (int i = 0; i < sparseArray.size(); i++)
-            arrayList.add(sparseArray.valueAt(i));
-        return arrayList;
+        this.chatroomColors = chatroomColors;
     }
 
     @NonNull
     public View getView(int position, View view, @NonNull ViewGroup parent)
     {
-        LayoutInflater inflater = context.getLayoutInflater();
-        View row = inflater.inflate(R.layout.chatroom_list_item, null,true);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        TextView chatroomNameTextView = (TextView) row.findViewById(R.id.chatroomName);
-        ImageView chatroomIconImgView = (ImageView) row.findViewById(R.id.chatroomImg);
-        TextView chatroomDescTextView = (TextView) row.findViewById(R.id.chatroomDesc);
+        if (view == null) view = inflater.inflate(R.layout.chatroom_list_item, null, false);
+
+        TextView chatroomNameTextView = (TextView) view.findViewById(R.id.chatroomName);
+        ImageView chatroomIconImgView = (ImageView) view.findViewById(R.id.chatroomImg);
 
         chatroomNameTextView.setText(chatroomNames[position]);
         chatroomIconImgView.setImageDrawable(icons[position]);
-        chatroomDescTextView.setText(chatroomDescs[position]);
-        return row;
-    };
+
+        return view;
+    }
+
+    public String[] getNames() {
+        return chatroomNames;
+    }
+
+    public String[] getUrls() {
+        return chatroomUrls;
+    }
+
+    public Integer[] getColors() {
+        return chatroomColors;
+    }
 }

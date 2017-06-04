@@ -49,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -122,7 +123,7 @@ public class ChatFragment extends Fragment {
         new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
 //        new GetStars().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
 
-        mAppBarColor = args.getInt("AppBarColor", -1);
+        mAppBarColor = args.getInt("chatColor", -1);
 
         addChatButtons(mChatUrl);
         ParseUsers parseUsers = new ParseUsers();
@@ -262,6 +263,7 @@ public class ChatFragment extends Fragment {
         FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = (FloatingActionButton) view.findViewById(R.id.star_fab);
+        FloatingActionButton showChats = (FloatingActionButton) view.findViewById(R.id.show_chats_fab);
 
         showUsers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,6 +307,14 @@ public class ChatFragment extends Fragment {
                 intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
                 intent.setAction(Intent.ACTION_VIEW);
                 startActivity(intent);
+            }
+        });
+
+        showChats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.getmChatroomSlidingMenu().toggle();
             }
         });
     }
@@ -377,8 +387,11 @@ public class ChatFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String tags = mChatTags.toString();
-                    tags = tags.replace("[", "").replace("]", "");
+                    String tags = "";
+                    if (mChatTags != null) {
+                        tags = mChatTags.toString();
+                        tags = tags.replace("[", "").replace("]", "");
+                    }
 
                     mChatTagsSpanned = Html.fromHtml("<b>Tags: </b>" + tags);
                 }

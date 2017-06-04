@@ -1,7 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +15,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
-import android.util.AtomicFile;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -36,8 +36,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -62,6 +64,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,18 +79,9 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor mEditor;
     private AccountManager mAccountManager;
 
-    private TabLayout mTabLayout;
-    private ArrayList<TabLayout.Tab> mTabs = new ArrayList<>();
-    private SparseArray<Fragment> mCurrentFragments = new SparseArray<>();
-
     private SlidingMenu mChatroomSlidingMenu;
     private ListView chatroomsList;
-    private ArrayList<String> chatroomArrayList;
-    private ArrayAdapter<String> chatroomArrayAdapter;
-
-    private ArrayList<String> chatroomNames = new ArrayList<>();
-    private ArrayList<String> chatroomDescs = new ArrayList<>();
-    private ArrayList<Drawable> chatroomIcons = new ArrayList<>();
+    private ImgTextArrayAdapter chatroomArrayAdapter;
 
     private FragmentManager mFragmentManager;
 
@@ -96,13 +90,13 @@ public class MainActivity extends AppCompatActivity {
     private Set<String> mChatUrls = new HashSet<>();
 
     private boolean mUseDark;
-    private boolean mDoneAddingChats = false;
 
-    private final int HOME_INDEX = 0;
+    private final String CHAT_URLS_KEY = "URLS";
 
     private Handler mHandler;
 
     private HueUtils hueUtils = null;
+    private String mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +106,15 @@ public class MainActivity extends AppCompatActivity {
 
         hueUtils = new HueUtils();
 
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
         mHandler = new Handler();
+
+        mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
+        Log.e("URLS", mChatUrls.toString());
+
+        new AddListItemsFromURLList().execute(mChatUrls);
 
 //        mEditor.putInt("tabIndex", 0).apply();
 
@@ -126,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
         mIntent = getIntent();
 
         setup();
+
+        setupChatRoomMenu();
         hueUtils.setActionBarColorDefault(this);
         hueUtils.setAddChatFabColorDefault(this);
 
@@ -133,33 +134,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
-        try {
-            TabLayout.Tab home = mTabLayout.newTab()
-                    .setText(getResources().getText(R.string.app_name))
-                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
-                    .setTag("home");
-
-            chatroomNames.add(getResources().getText(R.string.app_name).toString());
-            chatroomIcons.add(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)));
-            chatroomDescs.add("HUE");
-
-//            TabLayout.Tab add = mTabLayout.newTab()
-//                    .setText(getResources()
-//                            .getText(R.string.activity_main_add_chat))
-//                    .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
-//                    .setTag("add");
-
-
-//            mTabLayout.addTab(add);
-            mTabLayout.addTab(home);
-
-//            home.select();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,33 +142,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        HandleAdds handleAdds = new HandleAdds();
-        CancelTask cancel = new CancelTask(handleAdds);
-        mHandler.postDelayed(cancel, 10000);
-        handleAdds.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         mAccountManager = AccountManager.get(this);
-        if (mAccountManager.getAccounts().length > 0) {
-//            int tabIndex = mSharedPrefs.getInt("tabIndex", 0);
-            addFragmentByTab(mTabLayout.getTabAt(HOME_INDEX));
-        } else {
+        if (mAccountManager.getAccounts().length < 1) {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
-        }
-
-        tabListener();
-
-        if (mIntent != null && mIntent.getAction() != null)
-        {
-            final String action = mIntent.getAction();
-
-            if (action.equals(Intent.ACTION_MAIN))
-            {
-                ReAddTabs reAddTabs = new ReAddTabs();
-                CancelTask cancelTask = new CancelTask(reAddTabs);
-                mHandler.postDelayed(cancelTask, 10000);
-                reAddTabs.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
         }
     }
 
@@ -234,104 +185,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private TabLayout.Tab getTabByURL(String url) {
-        for (int i = 0; i < mTabs.size(); i++) {
-            TabLayout.Tab tab = mTabs.get(i);
-            String tabTag = tab.getTag() != null ? tab.getTag().toString().replace("http://", "").replace("https://", "").replace("/", "").replace("#", "") : "";
-            url = url.replace("http://", "").replace("https://", "").replace("/", "").replace("#", "");
-
-            if ((url.contains(tabTag) || tabTag.contains(url)) && url.length() > 0) return tab;
-        }
-
-        return null;
-    }
-
-    private void setFragmentByTab(TabLayout.Tab tab) {
-        String tag = "";
-        if (tab.getTag() != null) tag = tab.getTag().toString();
-
-        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-
-        for (Fragment fragment1 : mFragmentManager.getFragments()) {
-            if (!fragment1.isDetached()) mFragmentManager.beginTransaction().detach(fragment1).commit();
-        }
-
-        if (fragment != null) {
-            mFragmentManager.beginTransaction().attach(fragment).commit();
-        }
-    }
-
-    private void addFragmentByTab(TabLayout.Tab tab) {
-        if (tab != null) {
-            Fragment fragment;
-
-            if (mCurrentFragments.get(tab.getPosition()) != null) {
-                fragment = mCurrentFragments.get(tab.getPosition());
-            } else {
-                switch (tab.getTag().toString()) {
-                    case "home":
-                        fragment = new AccountsFragment();
-                        break;
-                    default:
-                        fragment = new ChatFragment();
-                        break;
-                }
-                mCurrentFragments.put(tab.getPosition(), fragment);
-
-                if (fragment instanceof ChatFragment) {
-                    Bundle args = new Bundle();
-                    if (tab.getText() != null) args.putString("chatTitle", tab.getText().toString());
-                    if (tab.getTag() != null) args.putString("chatUrl", tab.getTag().toString());
-                    if (tab.getContentDescription() != null) args.putInt("AppBarColor", Integer.decode(tab.getContentDescription().toString()));
-                    fragment.setArguments(args);
-
-                    if (mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
-                        hueUtils.setAddChatFabColor(this, Integer.decode(tab.getContentDescription().toString()));
-                    }
-                }
-
-            }
-
-            String tag = "";
-            if (tab.getTag() != null) tag = tab.getTag().toString();
-
-            if (mFragmentManager.findFragmentByTag(fragment.getTag()) == null) {
-                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
-            }
-
-            if (tab.getPosition() == HOME_INDEX) {
-                mFragmentManager.beginTransaction().attach(fragment).commit();
-            }
-
-            mFragmentManager.executePendingTransactions();
-        }
-    }
-
-    private void tabListener() {
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                addFragmentByTab(tab);
-                setFragmentByTab(tab);
-                if (tab.getPosition() == HOME_INDEX)
-                {
-                    hueUtils.setActionBarColorDefault(MainActivity.this);
-                    hueUtils.setAddChatFabColorDefault(MainActivity.this);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(final TabLayout.Tab tab) {
-
-            }
-        });
-    }
-
     public void showAddTabDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getText(R.string.activity_main_chat_url));
@@ -342,7 +195,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addTab(input.getText().toString());
+                mChatUrls.add(input.getText().toString());
+                mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
+                mEditor.apply();
+                Log.e("URLSA", mChatUrls.toString());
+                new AddListItemsFromURLList().execute(mChatUrls);
             }
         });
         builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
@@ -355,59 +212,8 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void addTab(final String chatUrl) {
-        if (!mChatUrls.contains(chatUrl)) {
-            mChatUrls.add(chatUrl);
-            mEditor.putStringSet("chatURLs", mChatUrls);
-            mEditor.apply();
-
-            //noinspection deprecation
-            AddTab addTab = new AddTab();
-            CancelTask cancelTask = new CancelTask(addTab);
-            mHandler.postDelayed(cancelTask, 10000);
-            addTab.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
-
-        } else {
-            Toast.makeText(this, getResources().getText(R.string.activity_main_chat_already_added).toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void setActionBarColor()
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int initialColor = prefs.getInt("default_color", 0xFF000000);
-        System.out.println(initialColor);
-
-        android.support.v7.app.ActionBar bar = getSupportActionBar();
-        ColorDrawable cd = new ColorDrawable(initialColor);
-        bar.setBackgroundDrawable(cd);
-
-        // finally change the color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-
-            // clear FLAG_TRANSLUCENT_STATUS flag:
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
-        }
-    }
-
-    public static int manipulateColor(int color, float factor) {
-        int a = Color.alpha(color);
-        int r = Math.round(Color.red(color) * factor);
-        int g = Math.round(Color.green(color) * factor);
-        int b = Math.round(Color.blue(color) * factor);
-        return Color.argb(a,
-                Math.min(r,255),
-                Math.min(g,255),
-                Math.min(b,255));
-    }
-
     public void confirmClose(View v) {
-        if (mTabLayout.getSelectedTabPosition() != 0) {
+        if (chatroomsList.getSelectedItemPosition() != 0) {
             Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
             vib.vibrate(100);
@@ -421,78 +227,84 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getTag() != null) {
-                                        mChatUrls.remove(mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getTag().toString());
-                                        mEditor.putStringSet("chatURLs", mChatUrls).apply();
-                                        TabLayout.Tab prev = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition() - 1);
-                                        mTabLayout.removeTab(mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()));
-                                        if (prev != null) prev.select();
-                                    }
+                                    Fragment remFrag = mFragmentManager.findFragmentByTag(mCurrentFragment);
+                                    mChatUrls.remove(remFrag.getTag());
+                                    Log.e("TAG", remFrag.getTag());
+                                    setFragmentByTag("home");
+                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
+                                    mEditor.apply();
+                                    Log.e("URLSR", mChatUrls.toString());
+                                    new AddListItemsFromURLList().execute(mChatUrls);
                                 }
                             })
-                            .setNegativeButton(getResources().getText(R.string.generic_no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
+                            .setNegativeButton(getResources().getText(R.string.generic_no), null)
                             .show();
                 }
             });
         }
     }
 
-    private class AddTab extends AsyncTask<String, Void, Void> {
-        private Spanned name;
-        private Drawable chatIcon;
-        private int colorInt;
-        private String chatUrl;
-        private String chatName;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (chatroomsList.getSelectedItemPosition() == 0) {
+            hueUtils.setActionBarColorDefault(this);
+        }
+        else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false))
+        {
+            hueUtils.setActionBarColorDefault(this);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public SlidingMenu getmChatroomSlidingMenu() {
+        return mChatroomSlidingMenu;
+    }
+
+    private class AddListItemsFromURLList extends AsyncTask<Set<String>, Void, Void> {
+        private ArrayList<String> chatNames = new ArrayList<>();
+        private ArrayList<String> chatUrls = new ArrayList<>();
+        private ArrayList<Drawable> chatIcons = new ArrayList<>();
+        private ArrayList<Integer> chatColors = new ArrayList<>();
+        private ArrayList<Fragment> chatFragments = new ArrayList<>();
 
         @Override
-        protected Void doInBackground(String... params) {
-            chatUrl = params[0];
+        protected Void doInBackground(Set<String>... params) {
+            chatNames = new ArrayList<>();
+            chatUrls = new ArrayList<>();
+            chatIcons = new ArrayList<>();
+            chatColors = new ArrayList<>();
+            chatFragments = new ArrayList<>();
 
-            try
-            {
-                chatName = getName(chatUrl);
+            Set<String> urls = params[0];
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                {
-                    name = Html.fromHtml(chatName, Html.FROM_HTML_MODE_LEGACY);
-                }
-
-                else
-                {
-                    //noinspection deprecation
-                    name = Html.fromHtml(chatName);
-                }
-                chatIcon = getIcon(chatUrl);
-                colorInt = getColorInt(chatUrl);
-            } catch (Exception e) {
-                e.printStackTrace();
+            for (String s : urls) {
+                addTab(s);
+                publishProgress();
             }
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            chatroomNames.add(chatName);
-            chatroomIcons.add(chatIcon);
-            chatroomDescs.add("HUE");
-
-            Log.e("T", chatroomNames.toString());
-
-            setupChatRoomList(chatroomNames, chatroomDescs, chatroomIcons);
-
-            TabLayout.Tab tab = mTabLayout.newTab().setText(name).setIcon(chatIcon).setTag(chatUrl).setContentDescription(String.valueOf(colorInt));
-            if (!chatUrl.isEmpty()) {
-                mTabLayout.addTab(tab);
-                mTabs.add(tab);
-            }
-            super.onPostExecute(aVoid);
+        protected void onProgressUpdate(Void... values) {
+            initiateCurrentFragments(chatFragments);
+            addFragmentsToList(chatNames, chatUrls, chatIcons, chatColors, chatFragments);
+            super.onProgressUpdate(values);
         }
 
+        private void addTab(String url) {
+            String name = getName(url);
+            Drawable icon = getIcon(url);
+            Integer color = getColorInt(url);
+            chatNames.add(name);
+            chatUrls.add(url);
+            chatIcons.add(icon);
+            chatColors.add(color);
+            chatFragments.add(addFragment(url, name, color));
+        }
+
+        @Nullable
         private String getName(String url) {
             try {
                 Elements spans = Jsoup.connect(url).get().select("span");
@@ -507,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @Nullable
         private Drawable getIcon(String chatUrl) {
             try {
                 Document document = Jsoup.connect(chatUrl).get();
@@ -580,97 +393,92 @@ public class MainActivity extends AppCompatActivity {
                     colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
                 }
 
-                mSharedPrefs.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                mEditor.putInt(url + "Color", Color.parseColor(colorHex));
+                mEditor.apply();
                 return Color.parseColor(colorHex);
             } catch (Exception e) {
                 e.printStackTrace();
                 return Color.parseColor("#000000");
             }
         }
-    }
 
-    private class CancelTask implements Runnable {
-        private AsyncTask task;
+        private Fragment addFragment(String url, String name, Integer color) {
+            Fragment fragment;
+            if (mFragmentManager.findFragmentByTag(url) != null) {
+                fragment = mFragmentManager.findFragmentByTag(url);
+            } else {
+                fragment = new ChatFragment();
+                Bundle args = new Bundle();
+                args.putString("chatTitle", name);
+                args.putString("chatUrl", url);
+                args.putInt("chatColor", color);
 
-        public CancelTask(AsyncTask task) {
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            if (task.getStatus() == AsyncTask.Status.RUNNING )
-                task.cancel(true);
-        }
-    }
-
-    private class HandleAdds extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            for (String s : mSharedPrefs.getStringSet("chatURLs", new HashSet<String>())) {
-                addTab(s);
-//                while (mAddTab.isAlive());
+                fragment.setArguments(args);
             }
 
-            /*try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mDoneAddingChats = true;
-            super.onPostExecute(aVoid);
+            return fragment;
         }
     }
 
-    private class ReAddTabs extends AsyncTask<Void, Void, Void> {
-        private TabLayout.Tab tab;
+    private void initiateCurrentFragments(ArrayList<Fragment> fragments) {
+        for (int i = 0; i < fragments.size(); i++) {
+            Fragment fragment = fragments.get(i);
+            String tag = fragment.getArguments().getString("chatUrl");
+            if (mFragmentManager.findFragmentByTag(tag) == null) {
+                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+            }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            while (!mDoneAddingChats);
-            Bundle extras = mIntent.getExtras();
-            Object o = null;
-            if (extras != null) o = extras.get("chatURL");
-            String url = "";
-            if (o != null) url = o.toString();
-            tab = getTabByURL(url);
+            if (mCurrentFragment == null || mCurrentFragment.equals("home")) {
+                mFragmentManager.beginTransaction().add(R.id.content_main, new AccountsFragment(), "home").commit();
+            }
 
-            if (tab != null) addTab(url);
-            while (tab == null) tab = getTabByURL(url);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            addFragmentByTab(tab);
-            super.onPostExecute(aVoid);
+            mFragmentManager.executePendingTransactions();
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private void addFragmentsToList(ArrayList<String> chatroomNames,
+                                    ArrayList<String> chatUrls,
+                                    ArrayList<Drawable> chatIcons,
+                                    ArrayList<Integer> chatColors,
+                                    ArrayList<Fragment> chatFragments) {
 
-        SharedPreferences mSharedPreferences;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String[] names = new String[chatroomNames.size()];
+        names = chatroomNames.toArray(names);
 
-        if (mTabLayout.getSelectedTabPosition() == 0) {
-            hueUtils.setActionBarColorDefault(this);
-        }
-        else if (!mSharedPreferences.getBoolean("dynamicallyColorBar", false))
-        {
-            hueUtils.setActionBarColorDefault(this);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        String[] urls = new String[chatUrls.size()];
+        urls = chatUrls.toArray(urls);
+
+        Drawable[] ico = new Drawable[chatIcons.size()];
+        ico = chatIcons.toArray(ico);
+
+        Integer[] colors = new Integer[chatColors.size()];
+        colors = chatColors.toArray(colors);
+
+        chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
+
+        chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
+        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        // Here, you set the data in your ListView
+        chatroomsList.setAdapter(chatroomArrayAdapter);
+
+        chatroomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                chatroomsList.requestFocusFromTouch();
+                chatroomsList.setSelection(position);
+                chatroomsList.requestFocus();
+
+                mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
+
+                setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+
+                getmChatroomSlidingMenu().toggle();
+            }
+        });
     }
 
-    private void setupChatRoomList(ArrayList<String> chatroomNames, ArrayList<String> chatroomDescs, ArrayList<Drawable> icons)
+    private void setupChatRoomMenu()
     {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);
@@ -683,48 +491,26 @@ public class MainActivity extends AppCompatActivity {
         mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
 
-        chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
-        chatroomArrayList = new ArrayList<String>();
+        FloatingActionButton home = (FloatingActionButton) mChatroomSlidingMenu.findViewById(R.id.home_button);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragmentByTag("home");
+            }
+        });
+    }
 
-        // Adapter: You need three parameters 'the context, id of the layout (it will be where the data is shown),
-        // and the array that contains the data
-        //chatroomArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.chatroom_list_item, R.id.chatroomName, chatroomArrayList);
-
-        if(chatroomNames != null && chatroomDescs != null && icons != null)
-        {
-            System.out.println("Chatroom names: " + chatroomNames.toString());
-
-            String[] names = new String[chatroomNames.size()];
-            names = chatroomNames.toArray(names);
-
-            String[] descs = new String[chatroomDescs.size()];
-            descs = chatroomDescs.toArray(descs);
-
-            Drawable[] ico = new Drawable[icons.size()];
-            ico = icons.toArray(ico);
-
-            chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, descs, ico);
-
-            // Here, you set the data in your ListView
-            chatroomsList.setAdapter(chatroomArrayAdapter);
-
-            // this line adds the data of your EditText and puts in your array
-            //chatroomArrayList.add("Text");
-            //chatroomArrayList.add("Text 2");
-            // next thing you have to do is check if your adapter has changed
-            //chatroomArrayAdapter.notifyDataSetChanged();
+    private void setFragmentByTag(String tag) {
+        for (Fragment fragment : mFragmentManager.getFragments()) {
+            if (!fragment.isDetached()) mFragmentManager.beginTransaction().detach(fragment).commit();
         }
-        else
-        {
-            System.out.println("Hue :(");
+
+        mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
+
+        if (tag.equals("home")) {
+            hueUtils.setAddChatFabColorDefault(this);
+            hueUtils.setActionBarColorDefault(this);
         }
     }
 
-    private static <C> List<C> asList(SparseArray<C> sparseArray) {
-        if (sparseArray == null) return null;
-        List<C> arrayList = new ArrayList<C>(sparseArray.size());
-        for (int i = 0; i < sparseArray.size(); i++)
-            arrayList.add(sparseArray.valueAt(i));
-        return arrayList;
-    }
 }

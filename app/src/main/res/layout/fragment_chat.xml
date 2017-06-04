@@ -5,85 +5,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/close_chat_frag"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="confirmClose"
-        android:tint="#fff"
-        app:elevation="4dp"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/ic_close_black_24dp"
-        app:useCompatPadding="true" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:orientation="horizontal"
-        android:translationZ="1dp"
-        tools:targetApi="lollipop"
-        tools:ignore="RtlHardcoded">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/star_fab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="confirmClose"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_star_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/room_info_fab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="confirmClose"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_info_outline_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/open_in_browser_fab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="confirmClose"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/show_users_fab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="confirmClose"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
-            app:useCompatPadding="true" />
-    </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -102,9 +27,100 @@
                 <TextView
                     android:id="@+id/chat_body"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            tools:targetApi="lollipop">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/show_chats_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_chat_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/close_chat_frag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_close_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/star_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_star_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/room_info_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_info_outline_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/open_in_browser_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/show_users_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:onClick="confirmClose"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
+                app:useCompatPadding="true" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </FrameLayout>
