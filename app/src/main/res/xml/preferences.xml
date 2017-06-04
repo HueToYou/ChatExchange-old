@@ -39,4 +39,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Accounts">
+
+        <ListPreference
+            android:key="account_select"
+            android:title="Current Account"
+            android:summary="Select which account to use for chat" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

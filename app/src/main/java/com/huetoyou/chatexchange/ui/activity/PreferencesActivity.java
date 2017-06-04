@@ -1,38 +1,33 @@
 package com.huetoyou.chatexchange.ui.activity;
 
-import android.content.DialogInterface;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.backend.BackendService;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jrummyapps.android.colorpicker.ColorPanelView;
-import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 import com.jrummyapps.android.colorpicker.ColorPickerView;
 import com.jrummyapps.android.colorpicker.ColorPreference;
+
+import java.util.ArrayList;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
     private SharedPreferences mSharedPrefs;
     private ColorPickerView colorPickerView;
     private ColorPanelView newColorPanelView;
+    private AccountManager mAccountManager;
+    private Account[] mAccounts;
+    private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
 
     static HueUtils hueUtils = null;
 
@@ -46,6 +41,15 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         hueUtils = new HueUtils();
 
         hueUtils.setActionBarColorDefault(this);
+
+        mAccountManager = AccountManager.get(this);
+        if (mAccountManager.getAccounts().length > 0) {
+            mAccounts = mAccountManager.getAccounts();
+
+            for (Account a : mAccounts) {
+                mAccountNames.add(a.name);
+            }
+        }
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
@@ -72,8 +76,12 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
             CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("dynamic_bar_color");
             setAppBarColorChange(checkBoxPreference);
 
-            ListPreference listPreference = (ListPreference) findPreference("backend_type");
-            setBackendMethod(listPreference);
+            ListPreference backend = (ListPreference) findPreference("backend_type");
+            setBackendMethod(backend);
+
+            ListPreference account = (ListPreference) findPreference("account_select");
+            setAccount(account);
+
         }
 
         private void setAppBarColorChange(CheckBoxPreference checkBoxPreference) {
@@ -114,6 +122,30 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
 
                     int index = listPreference.findIndexOfValue(newValue.toString());
                     listPreference.setValueIndex(index != -1 ? index : 0);
+                    return false;
+                }
+            });
+        }
+
+        private void setAccount(final ListPreference listPrefernece) {
+            ArrayList<CharSequence> accnames = ((PreferencesActivity)getActivity()).mAccountNames;
+
+            CharSequence[] names = new CharSequence[accnames.size()];
+            names = accnames.toArray(names);
+
+            listPrefernece.setEntries(names);
+            listPrefernece.setEntryValues(names);
+
+            String currentSelected = mSharedPreferences.getString("account_selected", "None");
+            int index = listPrefernece.findIndexOfValue(currentSelected);
+            listPrefernece.setValueIndex(index != -1 ? index : 0);
+
+            listPrefernece.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    mSharedPreferences.edit().putString("account_selected", newValue.toString()).apply();
+                    int index = listPrefernece.findIndexOfValue(newValue.toString());
+                    listPrefernece.setValueIndex(index != -1 ? index : 0);
                     return false;
                 }
             });
