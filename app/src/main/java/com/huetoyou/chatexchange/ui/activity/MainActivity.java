@@ -246,13 +246,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (chatroomsList.getSelectedItemPosition() == 0) {
-            hueUtils.setActionBarColorDefault(this);
-        }
-        else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false))
-        {
-            hueUtils.setActionBarColorDefault(this);
+        if (chatroomsList != null) {
+            if (chatroomsList.getSelectedItemPosition() == 0) {
+                hueUtils.setActionBarColorDefault(this);
+            } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
+                hueUtils.setActionBarColorDefault(this);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -502,11 +501,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragmentByTag(String tag) {
-        for (Fragment fragment : mFragmentManager.getFragments()) {
-            if (!fragment.isDetached()) mFragmentManager.beginTransaction().detach(fragment).commit();
+        if (mFragmentManager.getFragments() != null) {
+            for (Fragment fragment : mFragmentManager.getFragments()) {
+                if (!fragment.isDetached())
+                    mFragmentManager.beginTransaction().detach(fragment).commit();
+            }
+            mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
         }
-
-        mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
 
         if (tag.equals("home")) {
             hueUtils.setAddChatFabColorDefault(this);
