@@ -27,6 +27,19 @@
         tools:ignore="RtlHardcoded">
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/star_fab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="confirmClose"
+            android:tint="#fff"
+            app:elevation="4dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_star_black_24dp"
+            app:useCompatPadding="true" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/room_info_fab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

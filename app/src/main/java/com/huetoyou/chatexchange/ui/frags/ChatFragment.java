@@ -3,9 +3,15 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -43,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -52,8 +59,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.w3c.dom.Text;
 
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,6 +73,8 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
+import jodd.io.filter.RegExpFileFilter;
 
 public class ChatFragment extends Fragment {
 
@@ -77,6 +88,8 @@ public class ChatFragment extends Fragment {
     private Spanned mChatDesc;
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
+    private String mChatUrl;
+    //    private Spanned mStarsSpanned;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -103,19 +116,20 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.setMenu(R.layout.users_slideout);
 
         Bundle args = getArguments();
-        String chatUrl = args.getString("chatUrl", "ERROR");
+        mChatUrl = args.getString("chatUrl", "ERROR");
 
-        new GetDesc().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
-        new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
+        new GetDesc().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
+        new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
+//        new GetStars().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
 
         mAppBarColor = args.getInt("AppBarColor", -1);
 
-        addChatButtons(chatUrl);
+        addChatButtons(mChatUrl);
         ParseUsers parseUsers = new ParseUsers();
 //        CancelTask canceller = new CancelTask(asyncTask);
 //        Handler handler = new Handler();
 //        handler.postDelayed(canceller, 10000);
-        parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
+        parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
         return view;
@@ -223,8 +237,6 @@ public class ChatFragment extends Fragment {
     }
 
     private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
-        Log.e("ADDING", "USER");
-
         Bundle args = new Bundle();
         args.putString("userName", name);
         args.putString("userAvatarUrl", imgUrl);
@@ -249,6 +261,7 @@ public class ChatFragment extends Fragment {
         FloatingActionButton showUsers = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
         FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
+        FloatingActionButton stars = (FloatingActionButton) view.findViewById(R.id.star_fab);
 
         showUsers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,6 +297,16 @@ public class ChatFragment extends Fragment {
                 tag.setMovementMethod(LinkMovementMethod.getInstance());
             }
         });
+
+        stars.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
+                intent.setAction(Intent.ACTION_VIEW);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -309,7 +332,7 @@ public class ChatFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div").attr("id", "roomdesc");
+                Elements divs = Jsoup.connect(params[0]).get().select("div");
 
                 for (Element e : divs) {
                     if (e.hasAttr("id") && e.attr("id").equals("roomdesc")) return e.html();
@@ -332,13 +355,12 @@ public class ChatFragment extends Fragment {
         @Override
         protected ArrayList<String> doInBackground(String... params) {
             try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div").select("a").attr("class", "tag");
+                Elements divs = Jsoup.connect(params[0]).get().select("div").select("a");
                 ArrayList<String> tagList = new ArrayList<>();
 
                 for (Element e : divs) {
                     if (e.hasAttr("class") && e.attr("class").equals("tag")) {
                         tagList.add(e.html());
-                        break;
                     }
                 }
 
@@ -355,12 +377,41 @@ public class ChatFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mChatTagsSpanned = Html.fromHtml("<b>Tags: </b>");
-                    for (String s : mChatTags) {
-                        mChatTagsSpanned = Html.fromHtml(TextUtils.concat(mChatTagsSpanned, " , ", s).toString());
-                    }
+                    String tags = mChatTags.toString();
+                    tags = tags.replace("[", "").replace("]", "");
+
+                    mChatTagsSpanned = Html.fromHtml("<b>Tags: </b>" + tags);
                 }
             }).start();
         }
     }
+
+//    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {
+//        @Override
+//        protected ArrayList<String> doInBackground(String... params) {
+//            String chatUrl = params[0];
+//            String starUrl = chatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars");
+//
+//            ArrayList<String> ret = new ArrayList<>();
+//
+//            try {
+//                Elements monologues = Jsoup.connect(starUrl).get().select("div");
+//                for (Element e : monologues) {
+//                    if (e.hasAttr("class") && e.attr("class").contains("monologue")) ret.add(e.toString());
+//                }
+//
+//                return ret;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<String> strings) {
+//            String stars = strings.toString().replace("[", "").replace("]", "").replace(">,", ">-----").replace("href=\"//", "href=\"http://");
+//            mStarsSpanned = Html.fromHtml(stars);
+//        }
+//    }
 }
