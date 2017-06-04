@@ -6,5 +6,5 @@
     <dimen name="shadow_width">1dp</dimen>
     <dimen name="user_tile_width">100dp</dimen>
     <dimen name="sliding_menu_width">150dp</dimen>
-    <dimen name="sliding_menu_chats_width">200dp</dimen>
+    <dimen name="sliding_menu_chats_width">250dp</dimen>
 </resources>

@@ -136,9 +136,13 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         try {
             TabLayout.Tab home = mTabLayout.newTab()
-                    .setText(getResources().getText(R.string.generic_accounts))
+                    .setText(getResources().getText(R.string.app_name))
                     .setIcon(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)))
                     .setTag("home");
+
+            chatroomNames.add(getResources().getText(R.string.app_name).toString());
+            chatroomIcons.add(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), 144, 144, true)));
+            chatroomDescs.add("HUE");
 
 //            TabLayout.Tab add = mTabLayout.newTab()
 //                    .setText(getResources()

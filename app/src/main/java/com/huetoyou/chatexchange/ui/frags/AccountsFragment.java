@@ -46,56 +46,6 @@ public class AccountsFragment extends Fragment {
 
         mAccountManager = AccountManager.get(getActivity());
 
-        Account[] accounts = mAccountManager.getAccounts();
-
-        LinearLayout accountLayout = (LinearLayout) view.findViewById(R.id.select_account_lin);
-
-        List<String> spinnerArray =  new ArrayList<String>();
-        for (final Account account : accounts) {
-            spinnerArray.add(account.name);
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) accountLayout.findViewById(R.id.accountsSpinner);
-        sItems.setAdapter(adapter);
-
-        Button newAccount = new AppCompatButton(getActivity());
-        newAccount.setText(getResources().getText(R.string.activity_main_add_account));
-        newAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().startActivity(new Intent(getActivity(), AuthenticatorActivity.class));
-            }
-        });
-
-        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0, 20, 0, 0);
-        newAccount.setLayoutParams(params);
-
-        accountLayout.addView(newAccount);
-
-        View v = new View(getActivity());
-        v.setMinimumHeight(2);
-        v.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
-        ViewGroup.MarginLayoutParams vparams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        vparams.setMargins(40, 40, 40, 40);
-        v.setLayoutParams(vparams);
-        accountLayout.addView(v);
-
-        Button newChat = new AppCompatButton(getActivity());
-        newChat.setText(getResources().getText(R.string.activity_main_add_chat));
-        newChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity)getActivity()).showAddTabDialog();
-                }
-            }
-        });
-
-        accountLayout.addView(newChat);
-
         return view;
     }
 
