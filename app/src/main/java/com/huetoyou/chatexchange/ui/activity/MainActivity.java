@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> chatroomArrayList;
     private ArrayAdapter<String> chatroomArrayAdapter;
 
-    private ArrayList<String> chatroomNames = new ArrayList<>();
-    private ArrayList<String> chatroomDescs = new ArrayList<>();
-    private ArrayList<Drawable> chatroomIcons = new ArrayList<>();
+    private SparseArray<String> chatroomNames = new SparseArray<>();
+    private SparseArray<String> chatroomDescs = new SparseArray<>();
+    private SparseArray<Drawable> chatroomIcons = new SparseArray<>();
     private int chatroomArrayIndex = 0;
 
     private FragmentManager mFragmentManager;
@@ -471,9 +471,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            chatroomNames.set(chatroomArrayIndex, chatName);
-            chatroomIcons.set(chatroomArrayIndex, chatIcon);
-            chatroomDescs.set(chatroomArrayIndex, "HUE");
+            chatroomNames.put(chatroomArrayIndex, chatName);
+            chatroomIcons.put(chatroomArrayIndex, chatIcon);
+            chatroomDescs.put(chatroomArrayIndex, "HUE");
 
             TabLayout.Tab tab = mTabLayout.newTab().setText(name).setIcon(chatIcon).setTag(chatUrl).setContentDescription(String.valueOf(colorInt));
             if (!chatUrl.isEmpty()) {
@@ -677,7 +677,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setupChatRoomList(ArrayList<String> chatroomNames, ArrayList<String> chatroomDescs, ArrayList<Drawable> icons)
+    private void setupChatRoomList(SparseArray<String> chatroomNames, SparseArray<String> chatroomDescs, SparseArray<Drawable> icons)
     {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);
