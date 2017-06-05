@@ -294,6 +294,15 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+            setFragmentByTag("home");
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public SlidingMenu getmChatroomSlidingMenu() {
         return mChatroomSlidingMenu;
     }
