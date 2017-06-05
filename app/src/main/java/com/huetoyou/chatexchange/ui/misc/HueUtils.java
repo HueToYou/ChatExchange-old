@@ -13,6 +13,7 @@ import android.support.design.internal.ForegroundLinearLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -132,6 +133,19 @@ public class HueUtils
 
         if (addChat != null) {
             addChat.setBackgroundTintList(colorStateList);
+        }
+    }
+
+    public void showAddChatFab(AppCompatActivity activity, boolean show)
+    {
+        FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
+        if(show)
+        {
+            addChat.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            addChat.setVisibility(View.INVISIBLE);
         }
     }
 

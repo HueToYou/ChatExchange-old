@@ -1,10 +1,11 @@
-package com.huetoyou.chatexchange;
+package com.huetoyou.chatexchange.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.huetoyou.chatexchange.R;
 
 public class TutorialActivity extends AppCompatActivity
 {

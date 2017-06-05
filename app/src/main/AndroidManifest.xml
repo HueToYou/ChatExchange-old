@@ -78,7 +78,7 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".TutorialActivity" />
+        <activity android:name=".ui.activity.TutorialActivity" />
     </application>
 
 </manifest>
