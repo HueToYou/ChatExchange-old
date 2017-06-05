@@ -18,6 +18,12 @@
             android:gravity="center_horizontal"
             android:text="@string/chatrooms" />
 
+        <ProgressBar
+            android:id="@+id/loading_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ListView
             android:id="@+id/chatroomsListView"
             android:layout_width="match_parent"

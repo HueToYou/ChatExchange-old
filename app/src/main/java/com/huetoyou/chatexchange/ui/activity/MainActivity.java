@@ -41,6 +41,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -266,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         private ArrayList<Drawable> chatIcons = new ArrayList<>();
         private ArrayList<Integer> chatColors = new ArrayList<>();
         private ArrayList<Fragment> chatFragments = new ArrayList<>();
+        private ProgressBar loading;
 
         @Override
         protected Void doInBackground(Set<String>... params) {
@@ -274,6 +277,14 @@ public class MainActivity extends AppCompatActivity {
             chatIcons = new ArrayList<>();
             chatColors = new ArrayList<>();
             chatFragments = new ArrayList<>();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loading = (ProgressBar) mChatroomSlidingMenu.findViewById(R.id.loading_progress);
+                    loading.setVisibility(View.VISIBLE);
+                }
+            });
 
             Set<String> urls = params[0];
 
@@ -290,6 +301,12 @@ public class MainActivity extends AppCompatActivity {
             initiateCurrentFragments(chatFragments);
             addFragmentsToList(chatNames, chatUrls, chatIcons, chatColors, chatFragments);
             super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            loading.setVisibility(View.GONE);
+            super.onPostExecute(aVoid);
         }
 
         private void addTab(String url) {
@@ -463,14 +480,20 @@ public class MainActivity extends AppCompatActivity {
 
         chatroomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 chatroomsList.requestFocusFromTouch();
                 chatroomsList.setSelection(position);
                 chatroomsList.requestFocus();
 
                 mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
 
-                setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+
+                    }
+                }, 350);
 
                 getmChatroomSlidingMenu().toggle();
             }
@@ -494,8 +517,15 @@ public class MainActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFragmentByTag("home");
                 mChatroomSlidingMenu.toggle();
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFragmentByTag("home");
+                    }
+                }, 350);
+
             }
         });
     }
