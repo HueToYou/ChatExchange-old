@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
     private void setChatButtonTint() {
         mHueUtils = new HueUtils();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+        int initialColor = mSharedPreferences.getInt("default_color", getResources().getColor(R.color.colorPrimary));
         ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
         mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
     }

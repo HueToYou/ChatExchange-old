@@ -19,6 +19,7 @@ import android.view.WindowManager;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.AppCompatPreferenceActivity;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 public class HueUtils
 {
@@ -68,7 +69,7 @@ public class HueUtils
 
             if (actionBar != null)
             {
-                int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+                int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
                 actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
 
                 //Change status bar color too
@@ -101,7 +102,7 @@ public class HueUtils
 
             if (actionBar != null)
             {
-                int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+                int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
                 actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
 
 
@@ -158,7 +159,7 @@ public class HueUtils
         if (activity != null) {
             FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
 
-            int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+            int initialColor = mSharedPreferences.getInt("default_color",activity.getResources().getColor(R.color.colorPrimary));
             ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
 
             if (addChat != null) {
@@ -188,7 +189,7 @@ public class HueUtils
 
         if (activity != null)
         {
-            int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+            int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
             ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
             tints(colorStateList, activity);
         }
