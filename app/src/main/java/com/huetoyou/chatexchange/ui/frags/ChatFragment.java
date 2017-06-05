@@ -245,6 +245,7 @@ public class ChatFragment extends Fragment {
         FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = (FloatingActionButton) view.findViewById(R.id.star_fab);
         FloatingActionButton showChats = (FloatingActionButton) view.findViewById(R.id.show_chats_fab);
+        FloatingActionButton users = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
 
         openInBrowser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,6 +290,14 @@ public class ChatFragment extends Fragment {
             public void onClick(View v) {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.getmChatroomSlidingMenu().toggle();
+            }
+        });
+
+        users.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity) getActivity();
+                mSlidingMenu.toggle();
             }
         });
     }
