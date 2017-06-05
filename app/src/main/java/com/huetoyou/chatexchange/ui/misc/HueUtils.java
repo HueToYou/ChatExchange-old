@@ -70,8 +70,6 @@ public class HueUtils
                 int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
                 actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
 
-                ColorStateList colorStateList = new ColorStateList(new int[][] { new int[] { android.R.attr.state_enabled }}, new int[] { initialColor });
-
                 //Change status bar color too
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
@@ -130,7 +128,7 @@ public class HueUtils
 
         FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
 
-        ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
+        ColorStateList colorStateList = ColorStateList.valueOf(appBarColor);
 
         if (addChat != null) {
             addChat.setBackgroundTintList(colorStateList);
@@ -143,17 +141,17 @@ public class HueUtils
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        if (activity != null)
-        {
+        if (activity != null) {
             FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
 
             int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
+            ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
 
-            if (addChat != null)
-            {
+            if (addChat != null) {
                 addChat.setBackgroundTintList(colorStateList);
             }
+
+            showChatsTint(colorStateList, activity);
 
         }
     }
@@ -164,7 +162,7 @@ public class HueUtils
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
+        ColorStateList colorStateList = ColorStateList.valueOf(appBarColor);
         tints(colorStateList, activity);
     }
 
@@ -177,7 +175,7 @@ public class HueUtils
         if (activity != null)
         {
             int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
+            ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
             tints(colorStateList, activity);
         }
     }
