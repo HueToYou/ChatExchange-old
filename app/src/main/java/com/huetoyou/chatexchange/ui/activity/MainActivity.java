@@ -594,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);
         mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
-        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
         mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
