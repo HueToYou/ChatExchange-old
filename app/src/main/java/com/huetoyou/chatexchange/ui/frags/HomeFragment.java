@@ -38,9 +38,7 @@ public class HomeFragment extends Fragment {
         mHueUtils = new HueUtils();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-        ColorStateList colorStateList = new ColorStateList(new int[][] { new int[] { android.R.attr.state_enabled }}, new int[] { initialColor });
-        mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
+        setChatButtonTint();
 
         mAccountManager = AccountManager.get(getActivity());
 
@@ -49,11 +47,26 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        setChatButtonTint();
         super.onAttach(context);
+    }
+
+    @Override
+    public void onResume() {
+        setChatButtonTint();
+        super.onResume();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void setChatButtonTint() {
+        mHueUtils = new HueUtils();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+        ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
+        mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
     }
 }
