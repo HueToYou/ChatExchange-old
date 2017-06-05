@@ -116,6 +116,13 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
         mSlidingMenu.setMenu(R.layout.users_slideout);
 
+        mSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+            @Override
+            public void onOpened() {
+                if (((MainActivity)getActivity()).getmChatroomSlidingMenu().isMenuShowing()) ((MainActivity)getActivity()).getmChatroomSlidingMenu().showContent(true);
+            }
+        });
+
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");
 

@@ -601,6 +601,15 @@ public class MainActivity extends AppCompatActivity {
         mChatroomSlidingMenu.setFadeDegree(0.35f);
         mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
+
+        mChatroomSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+            @Override
+            public void onOpened() {
+                for (Fragment fragment : mFragmentManager.getFragments()) {
+                    if (!fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                }
+            }
+        });
     }
 
     private void setFragmentByTag(String tag)
