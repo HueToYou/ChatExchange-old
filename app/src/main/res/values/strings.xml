@@ -132,4 +132,6 @@
     <string name="user_id">User ID:</string>
     <string name="user_last_talked">Last Talk Time:</string>
     <string name="user_rep">Reputation:</string>
+
+    <string name="cant_add_chat">Can\'t add a chat right now. Please try again in a bit.</string>
 </resources>

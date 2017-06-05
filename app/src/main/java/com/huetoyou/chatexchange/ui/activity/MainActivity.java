@@ -45,6 +45,8 @@ import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
+import android.widget.Toast;
 import io.fabric.sdk.android.Fabric;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
     private HueUtils hueUtils = null;
     private String mCurrentFragment;
+
+    private boolean mCanAddChat = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,70 +198,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showAddTabDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
+        if (mCanAddChat) {
 
-        View view = View.inflate(this, R.layout.add_chat_dialog, null);
-        final EditText input = (EditText) view.findViewById(R.id.url_edittext);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
 
-        final Spinner domains = (Spinner) view.findViewById(R.id.domain_spinner);
+            View view = View.inflate(this, R.layout.add_chat_dialog, null);
+            final EditText input = (EditText) view.findViewById(R.id.url_edittext);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.domain_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            final Spinner domains = (Spinner) view.findViewById(R.id.domain_spinner);
 
-        domains.setAdapter(adapter);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                    R.array.domain_spinner, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
-                    input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-                } else {
-                    input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-            }
+            domains.setAdapter(adapter);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        builder.setView(view);
-        builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String inputText = input.getText().toString();
-                String url;
-
-
-                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
-                    url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
-                } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
-                    url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
-                } else {
-                    url = inputText;
+            domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
+                        input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
+                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+                    } else {
+                        input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    }
                 }
 
-                mChatUrls.add(url);
-                mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
-                mEditor.apply();
-                Log.e("URLSA", mChatUrls.toString());
-                new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
-            }
-        });
-        builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-        AlertDialog al = builder.create();
-        al.show();
+                }
+            });
+
+            builder.setView(view);
+            builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String inputText = input.getText().toString();
+                    String url;
+
+
+                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
+                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
+                    } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
+                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
+                    } else {
+                        url = inputText;
+                    }
+
+                    mChatUrls.add(url);
+                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
+                    mEditor.apply();
+                    Log.e("URLSA", mChatUrls.toString());
+                    new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+                }
+            });
+            builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog al = builder.create();
+            al.show();
+        } else {
+            Toast.makeText(this, getResources().getText(R.string.cant_add_chat), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void confirmClose(View v) {
@@ -327,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Set<String>... params) {
+            mCanAddChat = false;
             chatNames = new ArrayList<>();
             chatUrls = new ArrayList<>();
             chatIcons = new ArrayList<>();
@@ -368,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mCanAddChat = true;
             loading.setVisibility(View.GONE);
             super.onPostExecute(aVoid);
         }
