@@ -36,6 +36,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.crashlytics.android.Crashlytics;
+import com.huetoyou.chatexchange.TutorialActivity;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
@@ -97,6 +98,28 @@ public class MainActivity extends AppCompatActivity {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
+
+        if(mSharedPrefs.getBoolean("firstRun", true))
+        {
+            SharedPreferences.Editor editor = mSharedPrefs.edit();
+            editor.putBoolean("firstRun", false);
+            editor.apply();
+
+            AlertDialog.Builder builder;
+            builder = new AlertDialog.Builder(this);
+            builder.setTitle("Tutorial")
+                    .setMessage("Here's a quick tutorial to show you what all the buttons do")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_menu_info_details)
+                    .show();
+        }
+
         mHandler = new Handler();
 
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());

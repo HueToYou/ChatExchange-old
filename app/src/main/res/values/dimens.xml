@@ -7,4 +7,9 @@
     <dimen name="user_tile_width">100dp</dimen>
     <dimen name="sliding_menu_width">150dp</dimen>
     <dimen name="sliding_menu_chats_width">250dp</dimen>
+
+    <dimen name="showcase_radius">35dp</dimen>
+    <dimen name="showcase_radius_inner">35dp</dimen>
+    <dimen name="showcase_radius_outer">60dp</dimen>
+
 </resources>

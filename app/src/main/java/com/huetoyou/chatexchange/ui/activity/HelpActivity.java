@@ -1,5 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -7,10 +8,12 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.TutorialActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 
 public class HelpActivity extends AppCompatActivity {
@@ -22,5 +25,11 @@ public class HelpActivity extends AppCompatActivity {
 
         HueUtils hueUtils = new HueUtils();
         hueUtils.setActionBarColorDefault(this);
+    }
+
+    public void showTutorial(View v)
+    {
+        Intent intent = new Intent(this, TutorialActivity.class);
+        startActivity(intent);
     }
 }

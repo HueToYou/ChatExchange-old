@@ -78,9 +78,11 @@
         <activity android:name=".ui.activity.WebViewActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+        <activity android:name=".TutorialActivity"></activity>
     </application>
 
 </manifest>
