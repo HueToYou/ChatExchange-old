@@ -79,6 +79,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.TutorialActivity" />
+        <activity android:name=".ui.activity.IntroActivity" />
     </application>
 
 </manifest>
