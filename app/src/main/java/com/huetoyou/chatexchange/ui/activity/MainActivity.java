@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -125,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
         Log.e("URLS", mChatUrls.toString());
 
-        new AddListItemsFromURLList().execute(mChatUrls);
-
 //        mEditor.putInt("tabIndex", 0).apply();
 
         mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
@@ -135,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
 
         mIntent = getIntent();
 
+        setupChatRoomMenu();
         setup();
 
-        setupChatRoomMenu();
         hueUtils.setActionBarColorDefault(this);
         hueUtils.setAddChatFabColorDefault(this);
 
@@ -157,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
         if (mAccountManager.getAccounts().length < 1) {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
+        } else {
+            mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+            new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
         }
     }
 
@@ -185,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_help:
                 Intent startHelpActivity = new Intent(getApplicationContext(), HelpActivity.class);
                 startActivity(startHelpActivity);
+                break;
+            default:
+                setFragmentByTag("home");
                 break;
         }
 
@@ -231,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                 mEditor.apply();
                 Log.e("URLSA", mChatUrls.toString());
-                new AddListItemsFromURLList().execute(mChatUrls);
+                new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
             }
         });
         builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
@@ -267,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                                     mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                                     mEditor.apply();
                                     Log.e("URLSR", mChatUrls.toString());
-                                    new AddListItemsFromURLList().execute(mChatUrls);
+                                    new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
                                 }
                             })
                             .setNegativeButton(getResources().getText(R.string.generic_no), null)
@@ -319,6 +324,10 @@ public class MainActivity extends AppCompatActivity {
 
             Set<String> urls = params[0];
 
+            if (urls.size() < 1) {
+                publishProgress();
+            }
+
             for (String s : urls) {
                 addTab(s);
                 publishProgress();
@@ -329,8 +338,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            initiateCurrentFragments(chatFragments);
-            addFragmentsToList(chatNames, chatUrls, chatIcons, chatColors, chatFragments);
+            if (chatFragments.size() > 0) {
+                initiateCurrentFragments(chatFragments);
+                addFragmentsToList(chatNames, chatUrls, chatIcons, chatColors, chatFragments);
+            } else {
+                removeAllFragmentsFromList();
+            }
             super.onProgressUpdate(values);
         }
 
@@ -380,7 +393,10 @@ public class MainActivity extends AppCompatActivity {
 
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, 144, 144, true));
+                Resources r = getResources();
+                int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -476,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                 mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
             }
 
-            if (mCurrentFragment == null || mCurrentFragment.equals("home")) {
+            if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
                 mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             }
 
@@ -503,6 +519,8 @@ public class MainActivity extends AppCompatActivity {
         colors = chatColors.toArray(colors);
 
         chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
+        if (names.length < 1) chatroomArrayAdapter.clear();
+        Log.e("LE", names.length + "");
 
         chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
         chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -531,6 +549,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void removeAllFragmentsFromList() {
+        if (chatroomsList != null) chatroomsList.setAdapter(null);
+    }
+
     private void setupChatRoomMenu()
     {
         // configure the SlidingMenu
@@ -543,22 +565,6 @@ public class MainActivity extends AppCompatActivity {
         mChatroomSlidingMenu.setFadeDegree(0.35f);
         mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
-
-        FloatingActionButton home = (FloatingActionButton) mChatroomSlidingMenu.findViewById(R.id.home_button);
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChatroomSlidingMenu.toggle();
-
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setFragmentByTag("home");
-                    }
-                }, 400);
-
-            }
-        });
     }
 
     private void setFragmentByTag(String tag)
@@ -577,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
             if(tag.equals("home"))
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                hueUtils.showAddChatFab(this, true);
+//                hueUtils.showAddChatFab(this, true);
                 hueUtils.setAddChatFabColorDefault(this);
                 hueUtils.setActionBarColorDefault(this);
 
@@ -585,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                hueUtils.showAddChatFab(this, false);
+//                hueUtils.showAddChatFab(this, false);
             }
         }
     }

@@ -53,16 +53,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_chat_fab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|end"
-        android:clickable="true"
-        android:tint="#fff"
-        app:elevation="4dp"
-        app:srcCompat="@drawable/ic_add_black_24dp"
-        app:useCompatPadding="true"
-        tools:ignore="RtlHardcoded" />
-
 </FrameLayout>

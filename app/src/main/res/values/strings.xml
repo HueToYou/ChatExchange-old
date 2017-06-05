@@ -127,4 +127,8 @@
     <string name="stackexchange">https://chat.stackexchange.com/</string>
     <string name="enter_full_url">Enter full URL</string>
     <string name="show_chats">Show Chats</string>
+
+    <string name="user_id">User ID:</string>
+    <string name="user_last_talked">Last Talk Time:</string>
+    <string name="user_rep">Reputation:</string>
 </resources>
