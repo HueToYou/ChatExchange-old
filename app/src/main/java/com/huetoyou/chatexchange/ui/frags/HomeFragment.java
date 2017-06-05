@@ -27,12 +27,12 @@ import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountsFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
     private AccountManager mAccountManager;
     private View view;
 
-    public AccountsFragment() {
+    public HomeFragment() {
         // Required empty public constructor
     }
 

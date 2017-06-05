@@ -13,14 +13,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -29,24 +26,17 @@ import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.huetoyou.chatexchange.ui.frags.AccountsFragment;
+import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
@@ -66,15 +56,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.text.Html;
-import android.text.Spanned;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPrefs;
@@ -445,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (mCurrentFragment == null || mCurrentFragment.equals("home")) {
-                mFragmentManager.beginTransaction().add(R.id.content_main, new AccountsFragment(), "home").commit();
+                mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             }
 
             mFragmentManager.executePendingTransactions();
