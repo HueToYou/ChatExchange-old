@@ -278,14 +278,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (chatroomsList != null) {
-            if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
-                hueUtils.setActionBarColorDefault(this);
-                hueUtils.setAddChatFabColorDefault(this);
-            } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
-                hueUtils.setActionBarColorDefault(this);
-                hueUtils.setAddChatFabColorDefault(this);
-            }
+        if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
+            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setAddChatFabColorDefault(this);
+        } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
+            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setAddChatFabColorDefault(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
