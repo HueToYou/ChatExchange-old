@@ -132,13 +132,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAccountManager = AccountManager.get(this);
-        if (mAccountManager.getAccounts().length < 1)
-        {
-            startActivity(new Intent(this, AuthenticatorActivity.class));
-            finish();
-        }
 
-        else if(mSharedPrefs.getBoolean("isFirstRun", true))
+        if(mSharedPrefs.getBoolean("isFirstRun", true))
         {
             mEditor.putBoolean("isFirstRun", false);
             mEditor.apply();
@@ -146,6 +141,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, IntroActivity.class);
             startActivity(intent);
 
+            finish();
+        }
+
+        else if (mAccountManager.getAccounts().length < 1)
+        {
+            startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
         }
 
