@@ -43,8 +43,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.json.JSONArray;
@@ -87,6 +91,9 @@ public class ChatFragment extends Fragment {
     private @ColorInt int mAppBarColor;
     private SlidingMenu mSlidingMenu;
 
+    private EditText messageToSend;
+    private HorizontalScrollView pingSuggestionsScrollView;
+
     private HueUtils hueUtils = null;
     private Spanned mChatDesc;
     private ArrayList<String> mChatTags = new ArrayList<>();
@@ -114,6 +121,23 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        messageToSend = (EditText) view.findViewById(R.id.messageToSend);
+        pingSuggestionsScrollView = (HorizontalScrollView) view.findViewById(R.id.pingSuggestionsScrollView);
+
+        messageToSend.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    Toast.makeText(getActivity(), "Got focus",
+                            Toast.LENGTH_LONG).show();
+                    pingSuggestionsScrollView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         hueUtils = new HueUtils();
 
@@ -255,10 +279,14 @@ public class ChatFragment extends Fragment {
         UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
 
+        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();
+        pingFragment.setArguments(args);
+
         mUserInfo.add(args);
 
         final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.pingSuggestions, pingFragment).commit();
     }
 
     private void addChatButtons(final String url) {

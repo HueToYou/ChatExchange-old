@@ -27,16 +27,16 @@
             android:id="@+id/close_chat_frag"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/show_chats_fab"
+            android:layout_toRightOf="@+id/show_chats_fab"
             android:clickable="true"
-            android:tint="#fff"
             android:onClick="confirmClose"
+            android:tint="#fff"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_close_black_24dp"
-            app:useCompatPadding="true"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/show_chats_fab"
-            android:layout_toEndOf="@+id/show_chats_fab" />
+            app:useCompatPadding="true" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/star_fab"
@@ -94,26 +94,66 @@
             app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
             app:useCompatPadding="true" />
 
-    </RelativeLayout>
+        <ImageButton
+            android:id="@+id/sendMessageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_send"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="UselessParent">
-
-        <LinearLayout
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:inputType="textMultiLine"
+            android:id="@+id/messageToSend"
+            android:layout_alignBottom="@id/sendMessageBtn"
+            android:layout_toLeftOf="@id/sendMessageBtn"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-            <TextView
-                android:id="@+id/chat_body"
+        <HorizontalScrollView
+            android:visibility="invisible"
+            android:id="@+id/pingSuggestionsScrollView"
+            android:layout_width="match_parent"
+            android:layout_above="@id/sendMessageBtn"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:id="@+id/pingSuggestions"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+
+        </HorizontalScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_below="@id/show_chats_fab"
+            android:layout_above="@id/pingSuggestionsScrollView"
+            android:layout_height="match_parent"
+            tools:ignore="UselessParent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </ScrollView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:id="@+id/chat_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </ScrollView>
+
+
+    </RelativeLayout>
 </LinearLayout>
