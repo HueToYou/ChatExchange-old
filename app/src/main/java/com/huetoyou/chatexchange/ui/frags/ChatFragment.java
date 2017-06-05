@@ -92,6 +92,7 @@ public class ChatFragment extends Fragment {
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
     private String mChatUrl;
+    ArrayList<Bundle> mUserInfo = new ArrayList<>();
     //    private Spanned mStarsSpanned;
 
     public ChatFragment() {
@@ -138,6 +139,7 @@ public class ChatFragment extends Fragment {
         parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
+
         return view;
     }
 
@@ -243,6 +245,8 @@ public class ChatFragment extends Fragment {
 
         UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
+
+        mUserInfo.add(args);
 
         final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
