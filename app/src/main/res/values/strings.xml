@@ -26,7 +26,8 @@
     <string name="activity_main_delete_chat_title">Remove Chat?</string>
     <string name="activity_main_delete_chat_message">Are you sure you want to remove this chat?</string>
     <string name="activity_main_chat_url">Choose root domain</string>
-    <string name="activity_main_chat_url_hint">Enter URL beginning with "rooms/"</string>
+    <string name="activity_main_chat_url_hint">Enter chat ID</string>
+    <string name="activity_main_chat_full_url_hint">Enter full URL</string>
     <string name="activity_main_loading_notification">It may take a while for chats to load.</string>
 
     <string name="options_menu_settings">Settings</string>

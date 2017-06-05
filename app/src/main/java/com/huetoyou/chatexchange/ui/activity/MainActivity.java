@@ -207,6 +207,19 @@ public class MainActivity extends AppCompatActivity {
 
         domains.setAdapter(adapter);
 
+        domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
+                else input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         builder.setView(view);
         builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -216,9 +229,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
-                    url = getResources().getText(R.string.stackoverflow).toString().concat(inputText);
+                    url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
                 } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
-                    url = getResources().getText(R.string.stackexchange).toString().concat(inputText);
+                    url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
                 } else {
                     url = inputText;
                 }
