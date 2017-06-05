@@ -569,19 +569,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setFragmentByTag(String tag) {
-        if (mFragmentManager.getFragments() != null) {
-            for (Fragment fragment : mFragmentManager.getFragments()) {
+    private void setFragmentByTag(String tag)
+    {
+        if (mFragmentManager.getFragments() != null)
+        {
+            for (Fragment fragment : mFragmentManager.getFragments())
+            {
                 if (!fragment.isDetached())
+                {
                     mFragmentManager.beginTransaction().detach(fragment).commit();
+                }
             }
             mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
+
+            if(!tag.equals("home"))
+            {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+            else
+            {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
         }
 
         if (tag.equals("home")) {
             hueUtils.setAddChatFabColorDefault(this);
             hueUtils.setActionBarColorDefault(this);
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setFragmentByTag("home");
+            }
+        }, 400);
+        return true;
     }
 
     public void toggleChatsSlide(View v) {
