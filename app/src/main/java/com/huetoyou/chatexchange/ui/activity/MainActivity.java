@@ -317,6 +317,12 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mFragmentManager.findFragmentByTag("home").isDetached()) {
             setFragmentByTag("home");
+            for (Fragment fragment : mFragmentManager.getFragments()) {
+                if (!fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+            }
+            if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
+        } else if (mChatroomSlidingMenu.isMenuShowing()) {
+            mChatroomSlidingMenu.showContent(true);
         } else {
             super.onBackPressed();
         }
@@ -588,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
         // configure the SlidingMenu
         mChatroomSlidingMenu = new SlidingMenu(this);
         mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
-        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
         mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);

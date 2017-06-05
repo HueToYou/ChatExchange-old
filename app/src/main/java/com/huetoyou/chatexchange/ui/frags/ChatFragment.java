@@ -108,7 +108,7 @@ public class ChatFragment extends Fragment {
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
         mSlidingMenu.setMode(SlidingMenu.RIGHT);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
         mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
@@ -380,6 +380,10 @@ public class ChatFragment extends Fragment {
                 }
             }).start();
         }
+    }
+
+    public SlidingMenu getmSlidingMenu() {
+        return mSlidingMenu;
     }
 
 //    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {

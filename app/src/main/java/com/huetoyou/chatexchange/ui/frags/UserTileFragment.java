@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.Executor;
 
 import android.text.Html;
 
@@ -59,6 +58,7 @@ public class UserTileFragment extends Fragment {
     private String mChatUrl;
     private Bundle mArgs;
     private ImageView user_image_info;
+    private Bitmap mIconBitmap;
 
     @Nullable
     @Override
@@ -170,15 +170,17 @@ public class UserTileFragment extends Fragment {
         @Override
         protected Drawable doInBackground(String... params) {
             try {
-                InputStream is = (InputStream) new URL(params[0]).getContent();
-                Bitmap b = BitmapFactory.decodeStream(is);
+                if (mIconBitmap == null) {
+                    InputStream is = (InputStream) new URL(params[0]).getContent();
+                    mIconBitmap = BitmapFactory.decodeStream(is);
+                }
 
                 int p = Integer.decode(params[1]);
 
                 Resources r = getResources();
                 int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
 
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(b, px, px, true));
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
@@ -200,15 +202,17 @@ public class UserTileFragment extends Fragment {
         @Override
         protected Drawable doInBackground(String... params) {
             try {
-                InputStream is = (InputStream) new URL(params[0]).getContent();
-                Bitmap b = BitmapFactory.decodeStream(is);
+                if (mIconBitmap == null) {
+                    InputStream is = (InputStream) new URL(params[0]).getContent();
+                    mIconBitmap = BitmapFactory.decodeStream(is);
+                }
 
                 int p = Integer.decode(params[1]);
 
                 Resources r = getResources();
                 int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
 
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(b, px, px, true));
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
