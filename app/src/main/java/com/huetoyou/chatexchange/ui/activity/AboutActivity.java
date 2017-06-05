@@ -32,10 +32,5 @@ public class AboutActivity extends AppCompatActivity {
 
         HueUtils hueUtils = new HueUtils();
         hueUtils.setActionBarColorDefault(this);
-
-        Button button = (Button) findViewById(R.id.buttonIntroTest);
-
-        Intent intent = new Intent(this, TutorialActivity.class);
-        startActivity(intent);
     }
 }

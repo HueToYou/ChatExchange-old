@@ -19,23 +19,5 @@
         android:layout_alignParentStart="true"
         android:id="@+id/textView5" />
 
-    <Button
-        android:id="@+id/buttonIntroTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView5"
-        android:text="Button" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5"
-        android:layout_toEndOf="@+id/buttonIntroTest"
-        android:layout_toRightOf="@+id/buttonIntroTest"
-        android:text="Button" />
-
 
 </RelativeLayout>
