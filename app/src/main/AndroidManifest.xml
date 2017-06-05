@@ -62,10 +62,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="96d80cfeac7fcf7aec8fc104086331c45258ab0e" />
@@ -82,7 +78,7 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".TutorialActivity"></activity>
+        <activity android:name=".TutorialActivity" />
     </application>
 
 </manifest>
