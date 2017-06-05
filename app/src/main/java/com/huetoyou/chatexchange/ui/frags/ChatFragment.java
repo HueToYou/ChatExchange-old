@@ -34,7 +34,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -108,7 +110,7 @@ public class ChatFragment extends Fragment {
         // configure the SlidingMenu
         mSlidingMenu = new SlidingMenu(getActivity());
         mSlidingMenu.setMode(SlidingMenu.RIGHT);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
         mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
@@ -116,9 +118,9 @@ public class ChatFragment extends Fragment {
         mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
         mSlidingMenu.setMenu(R.layout.users_slideout);
 
-        mSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+        mSlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener() {
             @Override
-            public void onOpened() {
+            public void onOpen() {
                 if (((MainActivity)getActivity()).getmChatroomSlidingMenu().isMenuShowing()) ((MainActivity)getActivity()).getmChatroomSlidingMenu().showContent(true);
             }
         });
