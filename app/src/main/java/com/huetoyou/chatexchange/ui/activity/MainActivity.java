@@ -36,7 +36,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-
 import com.crashlytics.android.Crashlytics;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
@@ -45,14 +44,11 @@ import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
 import io.fabric.sdk.android.Fabric;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
