@@ -100,27 +100,6 @@ public class MainActivity extends AppCompatActivity {
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
 
-        if(mSharedPrefs.getBoolean("firstRun", true))
-        {
-            SharedPreferences.Editor editor = mSharedPrefs.edit();
-            editor.putBoolean("firstRun", false);
-            editor.apply();
-
-            AlertDialog.Builder builder;
-            builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tutorial")
-                    .setMessage("Here's a quick tutorial to show you what all the buttons do")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_menu_info_details)
-                    .show();
-        }
-
         mHandler = new Handler();
 
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
@@ -153,10 +132,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAccountManager = AccountManager.get(this);
-        if (mAccountManager.getAccounts().length < 1) {
+        if (mAccountManager.getAccounts().length < 1)
+        {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
-        } else {
+        }
+
+        else if(mSharedPrefs.getBoolean("isFirstRun", true))
+        {
+            mEditor.putBoolean("isFirstRun", false);
+            mEditor.apply();
+
+            Intent intent = new Intent(this, IntroActivity.class);
+            startActivity(intent);
+
+            finish();
+        }
+
+        else
+        {
             mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
         }

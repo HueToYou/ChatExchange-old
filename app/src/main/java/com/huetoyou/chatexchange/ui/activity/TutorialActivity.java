@@ -1,5 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -137,6 +138,8 @@ public class TutorialActivity extends AppCompatActivity
                     @Override
                     public void onShowcaseViewDidHide(ShowcaseView showcaseView)
                     {
+                        Intent intent = new Intent(TutorialActivity.this, MainActivity.class);
+                        startActivity(intent);
                         finish();
                     }
 
