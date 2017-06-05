@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -26,14 +27,21 @@ import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.huetoyou.chatexchange.TutorialActivity;
@@ -198,15 +206,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void showAddTabDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getText(R.string.activity_main_chat_url));
+        builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
 
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-        builder.setView(input);
+        View view = View.inflate(this, R.layout.add_chat_dialog, null);
+        final EditText input = (EditText) view.findViewById(R.id.url_edittext);
+
+        final Spinner domains = (Spinner) view.findViewById(R.id.domain_spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.domain_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        domains.setAdapter(adapter);
+
+        builder.setView(view);
         builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mChatUrls.add(input.getText().toString());
+                String inputText = input.getText().toString();
+                String url;
+
+
+                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
+                    url = getResources().getText(R.string.stackoverflow).toString().concat(inputText);
+                } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
+                    url = getResources().getText(R.string.stackexchange).toString().concat(inputText);
+                } else {
+                    url = inputText;
+                }
+
+                mChatUrls.add(url);
                 mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                 mEditor.apply();
                 Log.e("URLSA", mChatUrls.toString());
@@ -220,7 +249,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        builder.show();
+        AlertDialog al = builder.create();
+        al.show();
     }
 
     public void confirmClose(View v) {
@@ -322,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
             String name = getName(url);
             Drawable icon = getIcon(url);
             Integer color = getColorInt(url);
+
             chatNames.add(name);
             chatUrls.add(url);
             chatIcons.add(icon);
@@ -500,9 +531,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
-
                     }
-                }, 350);
+                }, 400);
 
                 getmChatroomSlidingMenu().toggle();
             }
@@ -533,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         setFragmentByTag("home");
                     }
-                }, 350);
+                }, 400);
 
             }
         });
@@ -552,6 +582,10 @@ public class MainActivity extends AppCompatActivity {
             hueUtils.setAddChatFabColorDefault(this);
             hueUtils.setActionBarColorDefault(this);
         }
+    }
+
+    public void toggleChatsSlide(View v) {
+        mChatroomSlidingMenu.toggle();
     }
 
 }

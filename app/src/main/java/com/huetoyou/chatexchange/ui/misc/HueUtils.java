@@ -70,6 +70,8 @@ public class HueUtils
                 int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
                 actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
 
+                ColorStateList colorStateList = new ColorStateList(new int[][] { new int[] { android.R.attr.state_enabled }}, new int[] { initialColor });
+
                 //Change status bar color too
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
@@ -82,6 +84,7 @@ public class HueUtils
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                     window.setStatusBarColor(manipulateColor(initialColor, 0.7f));
                 }
+
             }
         }
     }
@@ -101,6 +104,7 @@ public class HueUtils
             {
                 int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
                 actionBar.setBackgroundDrawable(new ColorDrawable(initialColor));
+
 
                 //Change status bar color too
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -126,9 +130,9 @@ public class HueUtils
 
         FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
 
-        if (addChat != null) {
-            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
+        ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
 
+        if (addChat != null) {
             addChat.setBackgroundTintList(colorStateList);
         }
     }
@@ -143,13 +147,14 @@ public class HueUtils
         {
             FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
 
+            int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
+
             if (addChat != null)
             {
-                int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-
-                ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
                 addChat.setBackgroundTintList(colorStateList);
             }
+
         }
     }
 
@@ -159,14 +164,30 @@ public class HueUtils
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
+        ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
+        tints(colorStateList, activity);
+    }
+
+    public void setChatFragmentFabColorDefault(AppCompatActivity activity) {
+        if(mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (activity != null)
+        {
+            int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
+            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
+            tints(colorStateList, activity);
+        }
+    }
+
+    private void tints(ColorStateList colorStateList, AppCompatActivity activity) {
         FloatingActionButton closeChat = (FloatingActionButton) activity.findViewById(R.id.close_chat_frag);
         FloatingActionButton openBrowser = (FloatingActionButton) activity.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton showUsers = (FloatingActionButton) activity.findViewById(R.id.show_users_fab);
         FloatingActionButton roomInfo = (FloatingActionButton) activity.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = (FloatingActionButton) activity.findViewById(R.id.star_fab);
-        FloatingActionButton showChats = (FloatingActionButton) activity.findViewById(R.id.show_chats_fab);
-
-        ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {appBarColor});
 
         if (closeChat != null) {
             closeChat.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
@@ -188,40 +209,13 @@ public class HueUtils
             stars.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
             stars.setBackgroundTintList(colorStateList);
         }
-        if (showChats != null) {
-            showChats.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            showChats.setBackgroundTintList(colorStateList);
-        }
+
+        showChatsTint(colorStateList, activity);
     }
 
-    public void setChatFragmentFabColorDefault(AppCompatActivity activity) {
-        if(mSharedPreferences == null)
-        {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        }
-
-        if (activity != null)
-        {
-            FloatingActionButton closeChat = (FloatingActionButton) activity.findViewById(R.id.close_chat_frag);
-            FloatingActionButton openBrowser = (FloatingActionButton) activity.findViewById(R.id.open_in_browser_fab);
-            FloatingActionButton showUsers = (FloatingActionButton) activity.findViewById(R.id.show_users_fab);
-            FloatingActionButton roomInfo = (FloatingActionButton) activity.findViewById(R.id.room_info_fab);
-            FloatingActionButton stars = (FloatingActionButton) activity.findViewById(R.id.star_fab);
-            FloatingActionButton showChats = (FloatingActionButton) activity.findViewById(R.id.show_chats_fab);
-
-            int initialColor = mSharedPreferences.getInt("default_color", 0xFF000000);
-            ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}}, new int[] {initialColor});
-
-            closeChat.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            closeChat.setBackgroundTintList(colorStateList);
-            openBrowser.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            openBrowser.setBackgroundTintList(colorStateList);
-            showUsers.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            showUsers.setBackgroundTintList(colorStateList);
-            roomInfo.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            roomInfo.setBackgroundTintList(colorStateList);
-            stars.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-            stars.setBackgroundTintList(colorStateList);
+    public void showChatsTint(ColorStateList colorStateList, AppCompatActivity activity) {
+        FloatingActionButton showChats = (FloatingActionButton) activity.findViewById(R.id.show_chats_fab);
+        if (showChats != null) {
             showChats.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
             showChats.setBackgroundTintList(colorStateList);
         }

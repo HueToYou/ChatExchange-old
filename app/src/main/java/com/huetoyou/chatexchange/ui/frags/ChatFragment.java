@@ -121,15 +121,11 @@ public class ChatFragment extends Fragment {
 
         new GetDesc().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
         new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
-//        new GetStars().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, chatUrl);
 
         mAppBarColor = args.getInt("chatColor", -1);
 
         addChatButtons(mChatUrl);
         ParseUsers parseUsers = new ParseUsers();
-//        CancelTask canceller = new CancelTask(asyncTask);
-//        Handler handler = new Handler();
-//        handler.postDelayed(canceller, 10000);
         parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
@@ -144,20 +140,6 @@ public class ChatFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    private class CancelTask implements Runnable {
-        private AsyncTask task;
-
-        public CancelTask(AsyncTask task) {
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            if (task.getStatus() == AsyncTask.Status.RUNNING )
-                task.cancel(true);
-        }
     }
 
     private class ParseUsers extends AsyncTask<String, Void, Void> {
@@ -259,18 +241,10 @@ public class ChatFragment extends Fragment {
 
     private void addChatButtons(final String url) {
 
-        FloatingActionButton showUsers = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
         FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = (FloatingActionButton) view.findViewById(R.id.star_fab);
         FloatingActionButton showChats = (FloatingActionButton) view.findViewById(R.id.show_chats_fab);
-
-        showUsers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSlidingMenu.toggle();
-            }
-        });
 
         openInBrowser.setOnClickListener(new View.OnClickListener() {
             @Override
