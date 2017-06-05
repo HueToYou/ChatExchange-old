@@ -95,6 +95,15 @@ public class ChatFragment extends Fragment {
     ArrayList<Bundle> mUserInfo = new ArrayList<>();
     //    private Spanned mStarsSpanned;
 
+    public static final String USER_NAME_KEY = "userName";
+    public static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
+    public static final String USER_URL_KEY = "chatUrl";
+    public static final String USER_ID_KEY = "id";
+    public static final String USER_LAST_POST_KEY = "lastPost";
+    public static final String USER_REP_KEY = "rep";
+    public static final String USER_IS_MOD_KEY = "isMod";
+    public static final String USER_IS_OWNER_KEY = "isOwner";
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -232,16 +241,16 @@ public class ChatFragment extends Fragment {
 
     private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
         Bundle args = new Bundle();
-        args.putString("userName", name);
-        args.putString("userAvatarUrl", imgUrl);
-        args.putString("chatUrl", chatUrl);
+        args.putString(USER_NAME_KEY, name);
+        args.putString(USER_AVATAR_URL_KEY, imgUrl);
+        args.putString(USER_URL_KEY, chatUrl);
 
-        args.putInt("id", id);
-        args.putInt("lastPost", lastPost);
-        args.putInt("rep", rep);
+        args.putInt(USER_ID_KEY, id);
+        args.putInt(USER_LAST_POST_KEY, lastPost);
+        args.putInt(USER_REP_KEY, rep);
 
-        args.putBoolean("isMod", isMod);
-        args.putBoolean("isOwner", isOwner);
+        args.putBoolean(USER_IS_MOD_KEY, isMod);
+        args.putBoolean(USER_IS_OWNER_KEY, isOwner);
 
         UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
@@ -397,6 +406,10 @@ public class ChatFragment extends Fragment {
 
     public SlidingMenu getmSlidingMenu() {
         return mSlidingMenu;
+    }
+
+    public ArrayList<Bundle> getmUserInfo() {
+        return mUserInfo;
     }
 
 //    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {
