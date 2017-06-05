@@ -25,11 +25,20 @@ public class HelpActivity extends AppCompatActivity {
 
         HueUtils hueUtils = new HueUtils();
         hueUtils.setActionBarColorDefault(this);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void showTutorial(View v)
     {
         Intent intent = new Intent(this, TutorialActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        finish();
+        return true;
     }
 }
