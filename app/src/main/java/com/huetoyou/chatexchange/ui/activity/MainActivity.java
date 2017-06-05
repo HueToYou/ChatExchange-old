@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -210,8 +211,13 @@ public class MainActivity extends AppCompatActivity {
         domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
-                else input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
+                    input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+                } else {
+                    input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                }
             }
 
             @Override
