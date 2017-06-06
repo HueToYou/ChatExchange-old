@@ -227,7 +227,7 @@ public class ChatFragment extends Fragment {
 
         while (!m.hitEnd()) {
             if (m.find() && name.toLowerCase().contains(m.group().replace("@", ""))) {
-                String before = currentText.substring(0, currentText.indexOf(m.group()));
+                String before = currentText.substring(0, currentText.lastIndexOf(m.group()));
                 String after = currentText.substring(currentText.lastIndexOf(m.group()) + m.group().length());
                 String middle = "@" + name;
 
