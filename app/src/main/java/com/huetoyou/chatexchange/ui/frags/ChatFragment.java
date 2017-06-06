@@ -172,7 +172,7 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ArrayList<UsernameTilePingFragment> fragments = new ArrayList<UsernameTilePingFragment>();
+                ArrayList<UsernameTilePingFragment> fragments = new ArrayList<>();
 
                 if (s.toString().contains("@")) {
 

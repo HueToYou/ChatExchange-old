@@ -10,7 +10,10 @@
     android:layout_marginStart="5dp"
     android:orientation="vertical"
     android:paddingEnd="5dp"
-    android:paddingStart="5dp">
+    android:paddingStart="5dp"
+    tools:targetApi="lollipop"
+    android:foreground="@drawable/ping_suggestion_selector"
+    android:stateListAnimator="@animator/ping_suggestion_sla">
 
     <TextView
         android:id="@+id/user_info_tile"

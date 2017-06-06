@@ -467,6 +467,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
+//                Log.e("UR", link);
                 URL url1 = new URL(link);
 
                 InputStream inStr = url1.openStream();
