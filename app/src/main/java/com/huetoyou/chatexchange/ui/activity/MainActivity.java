@@ -118,9 +118,6 @@ public class MainActivity extends AppCompatActivity {
         setupChatRoomMenu();
         setup();
 
-        hueUtils.setActionBarColorDefault(this);
-        hueUtils.setAddChatFabColorDefault(this);
-
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
 
@@ -538,6 +535,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
                     mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+                    hueUtils.setActionBarColorDefault(this);
+                    hueUtils.setAddChatFabColorDefault(this);
                 }
 
                 mFragmentManager.executePendingTransactions();
