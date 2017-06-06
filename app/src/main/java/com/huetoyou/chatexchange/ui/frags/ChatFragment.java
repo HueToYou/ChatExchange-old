@@ -202,7 +202,7 @@ public class ChatFragment extends Fragment {
 //                            e.printStackTrace()
                         }
 
-                        if (name.replace(" ", "").toLowerCase().contains(currentName.toLowerCase())) {
+                        if (name.replace(" ", "").toLowerCase().startsWith(currentName.toLowerCase())) {
                             fragments.add(pingFragment);
                         }
                     }
