@@ -606,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOpen() {
                 for (Fragment fragment : mFragmentManager.getFragments()) {
-                    if (!fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
                 }
             }
         });

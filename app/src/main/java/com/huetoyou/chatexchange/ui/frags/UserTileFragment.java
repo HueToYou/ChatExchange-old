@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -43,7 +45,7 @@ import android.text.Html;
  * Created by Zacha on 5/31/2017.
  */
 
-public class UserTileFragment extends Fragment {
+public class UserTileFragment extends Fragment implements Parcelable {
     private View mView;
     private SharedPreferences mSharedPreferences;
     private TextView mUserInfo;
@@ -59,6 +61,18 @@ public class UserTileFragment extends Fragment {
     private Bundle mArgs;
     private ImageView user_image_info;
     private Bitmap mIconBitmap;
+
+    private String CREATOR;
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     @Nullable
     @Override
@@ -102,6 +116,10 @@ public class UserTileFragment extends Fragment {
     private void setIsModOwner(boolean isMod, boolean isOwner) {
         if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
         else if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
+    }
+
+    public Bitmap getmIconBitmap() {
+        return mIconBitmap;
     }
 
     private void displayInfoOnTap(final int id, final int lastPost, final int rep) {

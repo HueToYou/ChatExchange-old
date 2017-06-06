@@ -63,6 +63,7 @@ public class ChatFragment extends Fragment {
     private Spanned mChatTagsSpanned;
     private String mChatUrl;
     ArrayList<Bundle> mUserInfo = new ArrayList<>();
+    ArrayList<UserTileFragment> mUserTiles = new ArrayList<>();
     //    private Spanned mStarsSpanned;
 
     public static final String USER_NAME_KEY = "userName";
@@ -74,6 +75,7 @@ public class ChatFragment extends Fragment {
     public static final String USER_IS_MOD_KEY = "isMod";
     public static final String USER_IS_OWNER_KEY = "isOwner";
     private FragmentManager mFragmentManager;
+    private EditText mMessage;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -155,9 +157,9 @@ public class ChatFragment extends Fragment {
     }
 
     private void setupMessagePingList() {
-        EditText message = (EditText) view.findViewById(R.id.messageToSend);
+        mMessage = (EditText) view.findViewById(R.id.messageToSend);
 
-        message.addTextChangedListener(new TextWatcher() {
+        mMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
 
@@ -170,42 +172,73 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+                ArrayList<UsernameTilePingFragment> fragments = new ArrayList<UsernameTilePingFragment>();
 
                 if (s.toString().contains("@")) {
-                    for (Bundle args : mUserInfo) {
-                        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();
+
+                    for (UserTileFragment tile : mUserTiles) {
+                        Bundle args = tile.getArguments();
+                        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment(tile, new SetTabCompleteName() {
+                            @Override
+                            public void setName(UsernameTilePingFragment usernameTilePingFragment) {
+                                setTabCompleteName(usernameTilePingFragment);
+                            }
+                        });
                         pingFragment.setArguments(args);
                         String name = args.getString(USER_NAME_KEY);
                         String currentName = s.toString();
 
-                        Pattern p = Pattern.compile("\\.*@(.+?).*");
+                        Pattern p = Pattern.compile("\\B@(.+?)\\b");
                         Matcher m = p.matcher(currentName);
 
                         try {
                             while (!m.hitEnd()) {
                                 if (m.find()) {
                                     currentName = m.group().replace("@", "");
-                                    Log.e("NAME", currentName);
+//                                    Log.e("NAME", currentName);
                                 }
                             }
                         } catch (IllegalStateException e) {
 //                            e.printStackTrace()
                         }
 
-                        if (name.replace(" ", "").toLowerCase().contains(currentName)) {
+                        if (name.replace(" ", "").toLowerCase().contains(currentName.toLowerCase())) {
                             fragments.add(pingFragment);
                         }
                     }
                 }
-
                 mFragmentManager.beginTransaction().replace(R.id.pingSuggestions, new Fragment()).commit();
 
-                for (Fragment f : fragments) {
+                for (UsernameTilePingFragment f : fragments) {
                     mFragmentManager.beginTransaction().add(R.id.pingSuggestions, f, "pingFrag").commit();
                 }
             }
         });
+    }
+
+    public void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment) {
+        Toast.makeText(getActivity(), usernameTilePingFragment.getmUsername(), Toast.LENGTH_SHORT).show();
+        String name = usernameTilePingFragment.getmUsername();
+        name = name.replace(" ", "");
+        String currentText = mMessage.getText().toString();
+
+        Pattern p = Pattern.compile("\\B@(.+?)\\b");
+        Matcher m = p.matcher(currentText);
+
+        while (!m.hitEnd()) {
+            if (m.find() && name.toLowerCase().contains(m.group().replace("@", ""))) {
+                String before = currentText.substring(0, currentText.indexOf(m.group()));
+                String after = currentText.substring(currentText.lastIndexOf(m.group()) + m.group().length());
+                String middle = "@" + name;
+
+                mMessage.setText(before.concat(middle).concat(after));
+                mMessage.setSelection(mMessage.getText().toString().length());
+            }
+        }
+    }
+
+    public interface SetTabCompleteName {
+        void setName(UsernameTilePingFragment usernameTilePingFragment);
     }
 
     private class ParseUsers extends AsyncTask<String, Void, Void> {
@@ -302,6 +335,7 @@ public class ChatFragment extends Fragment {
         userTileFragment.setArguments(args);
 
         mUserInfo.add(args);
+        mUserTiles.add(userTileFragment);
         mFragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
     }
 

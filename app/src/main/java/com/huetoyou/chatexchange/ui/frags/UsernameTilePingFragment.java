@@ -1,14 +1,18 @@
 package com.huetoyou.chatexchange.ui.frags;
 
-import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 
@@ -18,15 +22,14 @@ public class UsernameTilePingFragment extends Fragment
     private Bundle mArgs;
     private TextView usernameTextView;
     private ImageView userAvatar;
+    private UserTileFragment mUserTileFragment;
+    private String mUsername;
+    private ChatFragment.SetTabCompleteName mSetTabCompleteName;
 
-    public static final String USER_NAME_KEY = "userName";
-    public static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
-    public static final String USER_URL_KEY = "chatUrl";
-    public static final String USER_ID_KEY = "id";
-    public static final String USER_LAST_POST_KEY = "lastPost";
-    public static final String USER_REP_KEY = "rep";
-    public static final String USER_IS_MOD_KEY = "isMod";
-    public static final String USER_IS_OWNER_KEY = "isOwner";
+    public UsernameTilePingFragment(UserTileFragment fragment, ChatFragment.SetTabCompleteName setTabCompleteName) {
+        mUserTileFragment = fragment;
+        mSetTabCompleteName = setTabCompleteName;
+    }
 
     @Nullable
     @Override
@@ -37,16 +40,30 @@ public class UsernameTilePingFragment extends Fragment
         userAvatar = (ImageView)  mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
         mArgs = getArguments();
 
-        final String username = mArgs.getString(USER_NAME_KEY, "HueToYou");
-        final String avatar_url = mArgs.getString(USER_AVATAR_URL_KEY, "");
+        mUsername = mArgs.getString(ChatFragment.USER_NAME_KEY, "HueToYou");
+
+        Resources r = getResources();
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, r.getDisplayMetrics());
+
+        userAvatar.setImageDrawable(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mUserTileFragment.getmIconBitmap(), px, px, true)));
 
         if(usernameTextView != null)
         {
-            usernameTextView.setText(username);
+            usernameTextView.setText(mUsername);
         }
 
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSetTabCompleteName.setName(UsernameTilePingFragment.this);
+            }
+        });
 
         return mView;
+    }
+
+    public String getmUsername() {
+        return mUsername;
     }
 
 }
