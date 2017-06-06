@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
         Log.e("URLS", mChatUrls.toString());
 
-//        mEditor.putInt("tabIndex", 0).apply();
+        //mEditor.putInt("tabIndex", 0).apply();
 
         mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
 
