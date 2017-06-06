@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         if (mFragmentManager.findFragmentByTag("home").isDetached()) {
             setFragmentByTag("home");
             for (Fragment fragment : mFragmentManager.getFragments()) {
-                if (!fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
             }
             if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
         } else if (mChatroomSlidingMenu.isMenuShowing()) {
