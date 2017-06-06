@@ -52,7 +52,8 @@ public class UsernameTilePingFragment extends Fragment
         Resources r = getResources();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, r.getDisplayMetrics());
 
-        userAvatar.setImageDrawable(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mUserTileFragment.getmIconBitmap(), px, px, true)));
+        Bitmap bmp = mUserTileFragment.getmIconBitmap();
+        if (bmp != null) userAvatar.setImageDrawable(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true)));
 
         if(usernameTextView != null)
         {
