@@ -567,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
 
         chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
         if (names.length < 1) chatroomArrayAdapter.clear();
-        Log.e("LE", names.length + "");
+//        Log.e("LE", names.length + "");
 
         chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
         chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
