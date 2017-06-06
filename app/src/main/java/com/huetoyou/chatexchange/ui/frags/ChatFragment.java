@@ -98,8 +98,8 @@ public class ChatFragment extends Fragment {
             {
                 if(hasFocus)
                 {
-                    Toast.makeText(getActivity(), "Got focus",
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "Got focus",
+//                            Toast.LENGTH_LONG).show();
                     pingSuggestionsScrollView.setVisibility(View.VISIBLE);
                 }
             }
@@ -178,7 +178,7 @@ public class ChatFragment extends Fragment {
 
                     for (UserTileFragment tile : mUserTiles) {
                         Bundle args = tile.getArguments();
-                        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment(tile, new SetTabCompleteName() {
+                        UsernameTilePingFragment pingFragment = UsernameTilePingFragment.newInstance(tile, new SetTabCompleteName() {
                             @Override
                             public void setName(UsernameTilePingFragment usernameTilePingFragment) {
                                 setTabCompleteName(usernameTilePingFragment);
@@ -217,7 +217,7 @@ public class ChatFragment extends Fragment {
     }
 
     public void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment) {
-        Toast.makeText(getActivity(), usernameTilePingFragment.getmUsername(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), usernameTilePingFragment.getmUsername(), Toast.LENGTH_SHORT).show();
         String name = usernameTilePingFragment.getmUsername();
         name = name.replace(" ", "");
         String currentText = mMessage.getText().toString();
