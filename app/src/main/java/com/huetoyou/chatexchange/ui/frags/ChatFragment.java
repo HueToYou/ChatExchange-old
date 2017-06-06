@@ -1,59 +1,36 @@
 package com.huetoyou.chatexchange.ui.frags;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.text.util.LinkifyCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONStringer;
+
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
@@ -64,24 +41,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.w3c.dom.Text;
 
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import jodd.io.filter.RegExpFileFilter;
 
 public class ChatFragment extends Fragment {
 
@@ -110,6 +73,7 @@ public class ChatFragment extends Fragment {
     public static final String USER_REP_KEY = "rep";
     public static final String USER_IS_MOD_KEY = "isMod";
     public static final String USER_IS_OWNER_KEY = "isOwner";
+    private FragmentManager mFragmentManager;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -138,6 +102,8 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
+
+        mFragmentManager = getFragmentManager();
 
         hueUtils = new HueUtils();
 
@@ -173,6 +139,8 @@ public class ChatFragment extends Fragment {
 
         getActivity().setTitle(args.getString("chatTitle", "Error"));
 
+        setupMessagePingList();
+
         return view;
     }
 
@@ -184,6 +152,60 @@ public class ChatFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void setupMessagePingList() {
+        EditText message = (EditText) view.findViewById(R.id.messageToSend);
+
+        message.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+
+                if (s.toString().contains("@")) {
+                    for (Bundle args : mUserInfo) {
+                        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();
+                        pingFragment.setArguments(args);
+                        String name = args.getString(USER_NAME_KEY);
+                        String currentName = s.toString();
+
+                        Pattern p = Pattern.compile("\\.*@(.+?).*");
+                        Matcher m = p.matcher(currentName);
+
+                        try {
+                            while (!m.hitEnd()) {
+                                if (m.find()) {
+                                    currentName = m.group().replace("@", "");
+                                    Log.e("NAME", currentName);
+                                }
+                            }
+                        } catch (IllegalStateException e) {
+//                            e.printStackTrace();
+                        }
+
+                        if (name.replace(" ", "").toLowerCase().contains(currentName)) {
+                            fragments.add(pingFragment);
+                        }
+                    }
+                }
+
+                mFragmentManager.beginTransaction().replace(R.id.pingSuggestions, new Fragment()).commit();
+
+                for (Fragment f : fragments) {
+                    mFragmentManager.beginTransaction().add(R.id.pingSuggestions, f, "pingFrag").commit();
+                }
+            }
+        });
     }
 
     private class ParseUsers extends AsyncTask<String, Void, Void> {
@@ -279,14 +301,8 @@ public class ChatFragment extends Fragment {
         UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
 
-        UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();
-        pingFragment.setArguments(args);
-
         mUserInfo.add(args);
-
-        final FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.pingSuggestions, pingFragment).commit();
+        mFragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
     }
 
     private void addChatButtons(final String url) {
@@ -322,6 +338,10 @@ public class ChatFragment extends Fragment {
                 TextView tag = (TextView) d.findViewById(R.id.tag_text);
                 tag.setText(mChatTagsSpanned);
                 tag.setMovementMethod(LinkMovementMethod.getInstance());
+
+                TextView url = (TextView) d.findViewById(R.id.url_text);
+                url.setText(Html.fromHtml("<b>URL: </b><a href=\"".concat(mChatUrl).concat("\">").concat(mChatUrl).concat("</a>")));
+                url.setMovementMethod(LinkMovementMethod.getInstance());
             }
         });
 
