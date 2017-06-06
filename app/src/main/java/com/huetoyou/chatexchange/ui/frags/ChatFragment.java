@@ -190,7 +190,7 @@ public class ChatFragment extends Fragment {
                                 }
                             }
                         } catch (IllegalStateException e) {
-//                            e.printStackTrace();
+//                            e.printStackTrace()
                         }
 
                         if (name.replace(" ", "").toLowerCase().contains(currentName)) {
