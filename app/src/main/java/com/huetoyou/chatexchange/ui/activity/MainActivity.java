@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
         {
             for (Fragment fragment : mFragmentManager.getFragments())
             {
-                if (!fragment.isDetached())
+                if (fragment != null && !fragment.isDetached())
                 {
                     mFragmentManager.beginTransaction().detach(fragment).commit();
                 }
