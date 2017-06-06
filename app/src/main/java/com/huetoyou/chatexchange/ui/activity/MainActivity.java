@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private String mCurrentFragment;
 
     private boolean mCanAddChat = true;
+    private AddListItemsFromURLList mAddListItemsFromURLList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-            new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+            mAddListItemsFromURLList = new AddListItemsFromURLList();
+            mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
         }
     }
 
@@ -194,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
+            mAddListItemsFromURLList.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -252,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                     mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                     mEditor.apply();
                     Log.e("URLSA", mChatUrls.toString());
-                    new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+                    mAddListItemsFromURLList = new AddListItemsFromURLList();
+                    mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
                 }
             });
             builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
@@ -291,7 +297,8 @@ public class MainActivity extends AppCompatActivity {
                                     mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                                     mEditor.apply();
                                     Log.e("URLSR", mChatUrls.toString());
-                                    new AddListItemsFromURLList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+                                    mAddListItemsFromURLList = new AddListItemsFromURLList();
+                                    mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
                                 }
                             })
                             .setNegativeButton(getResources().getText(R.string.generic_no), null)
@@ -522,17 +529,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void initiateCurrentFragments(ArrayList<Fragment> fragments) {
         for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            String tag = fragment.getArguments().getString("chatUrl");
-            if (mFragmentManager.findFragmentByTag(tag) == null) {
-                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
-            }
+            try {
+                Fragment fragment = fragments.get(i);
+                String tag = fragment.getArguments().getString("chatUrl");
+                if (mFragmentManager.findFragmentByTag(tag) == null) {
+                    mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+                }
 
-            if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
-                mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-            }
+                if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
+                    mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+                }
 
-            mFragmentManager.executePendingTransactions();
+                mFragmentManager.executePendingTransactions();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -631,7 +642,6 @@ public class MainActivity extends AppCompatActivity {
 //                hueUtils.showAddChatFab(this, true);
                 hueUtils.setAddChatFabColorDefault(this);
                 hueUtils.setActionBarColorDefault(this);
-
             }
             else
             {
@@ -657,4 +667,18 @@ public class MainActivity extends AppCompatActivity {
         mChatroomSlidingMenu.toggle();
     }
 
+    @Override
+    protected void onPause() {
+        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
+            mAddListItemsFromURLList.cancel(true);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        mAddListItemsFromURLList = new AddListItemsFromURLList();
+        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+        super.onResume();
+    }
 }
