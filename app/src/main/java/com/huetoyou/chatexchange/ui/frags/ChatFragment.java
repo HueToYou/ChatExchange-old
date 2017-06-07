@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -166,18 +167,8 @@ public class ChatFragment extends Fragment {
         mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
             @Override
             public void onSucceeded(final URL url, final String data) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String data = Jsoup.connect(mChatUrl).get().html();
+                processMessageViews(url, data);
 
-                            processMessageViews(url, data);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
             }
 
             @Override
@@ -278,9 +269,9 @@ public class ChatFragment extends Fragment {
         Matcher m = p.matcher(currentText);
 
         while (!m.hitEnd()) {
-            if (m.find() && name.toLowerCase().contains(m.group().replace("@", ""))) {
-                String before = currentText.substring(0, currentText.lastIndexOf(m.group()));
-                String after = currentText.substring(currentText.lastIndexOf(m.group()) + m.group().length());
+            if (m.find() && name.toLowerCase().contains(m.group().replace("@", "").toLowerCase())) {
+                String before = currentText.substring(0, currentText.toLowerCase().lastIndexOf(m.group().toLowerCase()));
+                String after = currentText.substring(currentText.toLowerCase().lastIndexOf(m.group().toLowerCase()) + m.group().length());
                 String middle = "@" + name;
 
                 mMessage.setText(before.concat(middle).concat(after));

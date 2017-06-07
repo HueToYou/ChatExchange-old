@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -33,6 +35,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mEmail;
     private EditText mPassword;
     private AccountManager mAccountManager;
+    private Button mSubmit;
 
     /**
      * Start the auth procedure (use StackExchangeAuth for now)
@@ -78,6 +81,51 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         mEmail = (EditText) findViewById(R.id.auth_email);
         mPassword = (EditText) findViewById(R.id.auth_password);
+        mSubmit = (Button) findViewById(R.id.auth_submit);
+        mSubmit.setVisibility(View.GONE);
+
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) mSubmit.setVisibility(View.VISIBLE);
+                else mSubmit.setVisibility(View.GONE);
+            }
+        });
+
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) mSubmit.setVisibility(View.VISIBLE);
+                else mSubmit.setVisibility(View.GONE);
+            }
+        });
+
+        mSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startAuth();
+            }
+        });
 
         mAccountManager = AccountManager.get(this);
 
@@ -86,22 +134,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mPassword.setInputType(isChecked ? InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            }
-        });
-
-        Button submit = (Button) findViewById(R.id.auth_submit);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean emptyEmail = mEmail.getText().toString().isEmpty();
-                boolean emptyPassword = mPassword.getText().toString().isEmpty();
-
-                if (emptyEmail || emptyPassword) {
-                    if (emptyEmail) setErrorHint(mEmail, R.string.activity_authenticator_email_required);
-                    if (emptyPassword) setErrorHint(mPassword, R.string.activity_authenticator_password_required);
-                } else {
-                    startAuth();
-                }
             }
         });
     }
