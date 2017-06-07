@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
@@ -42,6 +43,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +79,8 @@ public class ChatFragment extends Fragment {
     private FragmentManager mFragmentManager;
     private EditText mMessage;
 
+    private RequestFactory mRequestFactory;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -87,6 +91,7 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mRequestFactory = new RequestFactory();
 
         messageToSend = (EditText) view.findViewById(R.id.messageToSend);
         pingSuggestionsScrollView = (HorizontalScrollView) view.findViewById(R.id.pingSuggestionsScrollView);
@@ -142,6 +147,7 @@ public class ChatFragment extends Fragment {
         getActivity().setTitle(args.getString("chatTitle", "Error"));
 
         setupMessagePingList();
+        setupMessages();
 
         return view;
     }
@@ -154,6 +160,52 @@ public class ChatFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void setupMessages() {
+        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+            @Override
+            public void onSucceeded(final URL url, final String data) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String data = Jsoup.connect(mChatUrl).get().html();
+
+                            processMessageViews(url, data);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onFailed(String message) {
+
+            }
+        });
+    }
+
+    private void processMessageViews(URL url, String html) {
+        Document document = Jsoup.parse(html);
+        Elements elements = document.select("user-container");
+
+        Log.e("DOC", document.html());
+
+        for (Element e : elements) {
+            Elements link = e.select("a");
+            Element signature = new Element("");
+
+            for (Element e1: link) {
+                if (e1.hasAttr("class") && e1.attr("class").equals("signature")) {
+                    signature = e1;
+                    break;
+                }
+            }
+
+            Log.e("EEE", signature.html());
+        }
     }
 
     private void setupMessagePingList() {
