@@ -186,6 +186,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 setFragmentByTag("home");
+                for (Fragment fragment : mFragmentManager.getFragments()) {
+                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                }
+                if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
                 break;
         }
 
