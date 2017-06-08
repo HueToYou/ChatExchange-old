@@ -135,4 +135,10 @@
 
     <string name="cant_add_chat">Can\'t add a chat right now. Please try again in a bit.</string>
     <string name="huetoyou">HueToYou</string>
+
+    <string name="stars">Stars</string>
+    <string name="forward">Forward</string>
+    <string name="back">Back</string>
+    <string name="open_in_webview">Open in WebView</string>
+
 </resources>

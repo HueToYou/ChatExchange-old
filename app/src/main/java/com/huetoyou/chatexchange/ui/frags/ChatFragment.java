@@ -1,6 +1,7 @@
 package com.huetoyou.chatexchange.ui.frags;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -24,6 +25,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
@@ -425,10 +430,59 @@ public class ChatFragment extends Fragment {
         stars.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
-                intent.setAction(Intent.ACTION_VIEW);
-                startActivity(intent);
+                View web = View.inflate(getActivity(), R.layout.fragment_star_webview, null);
+
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getText(R.string.stars))
+                        .setView(web);
+//                        .setPositiveButton(getResources().getText(R.string.ok), null);
+
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+                final WebView webView = (WebView) alertDialog.findViewById(R.id.stars_view);
+                Button openInWV = (Button) alertDialog.findViewById(R.id.open_in_webview);
+                Button back = (Button) alertDialog.findViewById(R.id.go_back);
+                Button forward = (Button) alertDialog.findViewById(R.id.go_forward);
+
+                webView.loadUrl(mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
+//                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+//                webView.setInitialScale();
+                webView.getSettings().setLoadWithOverviewMode(true);
+                webView.getSettings().setUseWideViewPort(true);
+                webView.getSettings().setBuiltInZoomControls(true);
+                webView.setWebViewClient(new WebViewClient(){
+
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url){
+                        view.loadUrl(url);
+                        return true;
+                    }
+                });
+
+                openInWV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                        intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
+                        intent.setAction(Intent.ACTION_VIEW);
+                        startActivity(intent);
+                    }
+                });
+
+                back.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (webView.canGoBack()) webView.goBack();
+                    }
+                });
+
+                forward.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (webView.canGoForward()) webView.goForward();
+                    }
+                });
             }
         });
 
