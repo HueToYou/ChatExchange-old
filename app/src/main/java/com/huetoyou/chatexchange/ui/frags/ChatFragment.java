@@ -1,10 +1,15 @@
 package com.huetoyou.chatexchange.ui.frags;
 
+import android.accounts.AccountManager;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +19,7 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -38,7 +44,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.NewMessageListenerService;
 import com.huetoyou.chatexchange.net.RequestFactory;
+import com.huetoyou.chatexchange.ui.activity.GoBindActivity;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
@@ -53,6 +61,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import hello.Hello;
 
 public class ChatFragment extends Fragment {
 
@@ -154,6 +164,15 @@ public class ChatFragment extends Fragment {
 
         setupMessagePingList();
         setupMessages();
+
+        if(mChatUrl.equals("https://chat.stackexchange.com/rooms/201"))
+        {
+            hue();
+        }
+        else
+        {
+            System.out.println("Chat URL: " + mChatUrl);
+        }
 
         return view;
     }
@@ -619,4 +638,99 @@ public class ChatFragment extends Fragment {
 //            mStarsSpanned = Html.fromHtml(stars);
 //        }
 //    }
+
+    public void hue()
+    {
+        AccountManager accountManager = AccountManager.get(getActivity());
+
+        final ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setTitle("Hue!");
+        progress.setMessage("Hueing, please wait...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
+        System.out.println("Email: " + accountManager.getAccounts()[0].name);
+        System.out.println("Pass: " + accountManager.getPassword(accountManager.getAccounts()[0]));
+
+        Hello.initConnection("foo", accountManager.getAccounts()[0].name, accountManager.getPassword(accountManager.getAccounts()[0]));
+
+        Intent mServiceIntent = new Intent(getActivity(), NewMessageListenerService.class);
+        mServiceIntent.setData(Uri.parse("test"));
+        getActivity().startService(mServiceIntent);
+
+
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter("org.golang.example.bind.BROADCAST");
+
+        // Instantiates a new DownloadStateReceiver
+        ChatFragment.NewMessageReceiver messageReceiver = new ChatFragment.NewMessageReceiver();
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(messageReceiver, statusIntentFilter);
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    sleep(3000);
+
+                    getActivity().runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            // To dismiss the dialog
+                            progress.dismiss();
+                        }
+                    });
+
+                }
+
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+    }
+
+    private class NewMessageReceiver extends BroadcastReceiver
+    {
+        // Prevents instantiation
+        private NewMessageReceiver() {
+        }
+        // Called when the BroadcastReceiver gets an Intent it's registered to receive
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            final String messg = intent.getStringExtra("org.golang.example.bind.STATUS");
+
+            //System.out.println("Broadcast: " + intent.getStringExtra("org.golang.example.bind.STATUS"));
+
+            final TextView chat = (TextView) getActivity().findViewById(R.id.chat_body);
+            final MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(), R.raw.chime);
+            mediaPlayer.start();
+
+            try
+            {
+                getActivity().runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+
+                        chat.setText(chat.getText() + "\n" + messg);
+                    }
+                });
+
+            }
+
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 }
