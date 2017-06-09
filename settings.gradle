@@ -1,2 +1,2 @@
-include ':app', ':colorpicker-2.1.6', ':SlidingMenu'
+include ':app', ':colorpicker-2.1.6', ':SlidingMenu', ':testgobind'
 project(':SlidingMenu').projectDir = new File('SlidingMenu-master/library')
