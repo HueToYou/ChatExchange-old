@@ -1,5 +1,7 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +41,8 @@ public class GoBindActivity extends AppCompatActivity {
 
     public void hue(View v)
     {
+        AccountManager accountManager = AccountManager.get(GoBindActivity.this);
+
         final TextView username = (TextView) findViewById(R.id.username);
         final TextView password = (TextView) findViewById(R.id.password);
         final TextView message = (TextView) findViewById(R.id.message);
@@ -50,10 +54,10 @@ public class GoBindActivity extends AppCompatActivity {
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
-        System.out.println("Email: " + username.getText().toString());
-        System.out.println("Pass: " + password.getText().toString());
+        System.out.println("Email: " + accountManager.getAccounts()[0].name);
+        System.out.println("Pass: " + accountManager.getPassword(accountManager.getAccounts()[0]));
 
-        Hello.testNathansAPI(message.getText().toString(), username.getText().toString(), password.getText().toString());
+        Hello.initConnection(message.getText().toString(), accountManager.getAccounts()[0].name, accountManager.getPassword(accountManager.getAccounts()[0]));
 
         Intent mServiceIntent = new Intent(GoBindActivity.this, NewMessageListenerService.class);
         mServiceIntent.setData(Uri.parse("test"));

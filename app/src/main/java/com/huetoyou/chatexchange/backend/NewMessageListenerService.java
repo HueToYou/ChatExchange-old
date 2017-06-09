@@ -23,7 +23,7 @@ public class NewMessageListenerService extends IntentService
 
         while(true)
         {
-            final String messg = Hello.testNathansAPI2();
+            final String messg = Hello.waitForMessage();
 
             Intent localIntent = new Intent("org.golang.example.bind.BROADCAST").putExtra("org.golang.example.bind.STATUS", messg);
             // Broadcasts the Intent to receivers in this app.
