@@ -1,10 +1,10 @@
 package com.huetoyou.chatexchange.ui.misc;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.huetoyou.chatexchange.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ImgTextArrayAdapter extends ArrayAdapter<String>
 {
@@ -36,6 +33,7 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
         this.chatroomColors = chatroomColors;
     }
 
+    @SuppressLint("InflateParams")
     @NonNull
     public View getView(int position, View view, @NonNull ViewGroup parent)
     {
@@ -43,8 +41,8 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
 
         if (view == null) view = inflater.inflate(R.layout.chatroom_list_item, null, false);
 
-        TextView chatroomNameTextView = (TextView) view.findViewById(R.id.chatroomName);
-        ImageView chatroomIconImgView = (ImageView) view.findViewById(R.id.chatroomImg);
+        TextView chatroomNameTextView = view.findViewById(R.id.chatroomName);
+        ImageView chatroomIconImgView = view.findViewById(R.id.chatroomImg);
 
         chatroomNameTextView.setText(chatroomNames[position]);
         chatroomIconImgView.setImageDrawable(icons[position]);

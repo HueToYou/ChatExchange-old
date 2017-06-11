@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right|end"
         android:clickable="true"
+        android:focusable="true"
         android:tint="#fff"
         app:elevation="4dp"
         app:srcCompat="@drawable/ic_add_black_24dp"

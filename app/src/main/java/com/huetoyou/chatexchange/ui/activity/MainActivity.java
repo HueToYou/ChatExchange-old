@@ -1,7 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.add_chat_fab);
+        FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
 
             View view = View.inflate(this, R.layout.add_chat_dialog, null);
-            final EditText input = (EditText) view.findViewById(R.id.url_edittext);
+            final EditText input = view.findViewById(R.id.url_edittext);
 
-            final Spinner domains = (Spinner) view.findViewById(R.id.domain_spinner);
+            final Spinner domains = view.findViewById(R.id.domain_spinner);
 
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                     R.array.domain_spinner, android.R.layout.simple_spinner_item);
@@ -286,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, mUseDark ? R.style.Theme_AppCompat : R.style.Theme_AppCompat_Light))
+                    new AlertDialog.Builder(MainActivity.this)
                             .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
                             .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
                             .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
@@ -349,8 +347,9 @@ public class MainActivity extends AppCompatActivity {
         private ArrayList<Fragment> chatFragments = new ArrayList<>();
         private ProgressBar loading;
 
+        @SafeVarargs
         @Override
-        protected Void doInBackground(Set<String>... params) {
+        protected final Void doInBackground(Set<String>... params) {
             mCanAddChat = false;
             chatNames = new ArrayList<>();
             chatUrls = new ArrayList<>();
@@ -361,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    loading = (ProgressBar) mChatroomSlidingMenu.findViewById(R.id.loading_progress);
+                    loading = mChatroomSlidingMenu.findViewById(R.id.loading_progress);
                     loading.setVisibility(View.VISIBLE);
                 }
             });
@@ -486,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
+                Pattern p = Pattern.compile("\\.msparea\\{(.+?)}");
                 Matcher m = p.matcher(css);
                 String a = "";
 
@@ -574,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         if (names.length < 1) chatroomArrayAdapter.clear();
 //        Log.e("LE", names.length + "");
 
-        chatroomsList = (ListView) findViewById(R.id.chatroomsListView);
+        chatroomsList = findViewById(R.id.chatroomsListView);
         chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         // Here, you set the data in your ListView

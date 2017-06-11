@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -30,13 +29,13 @@ public class WebViewActivity extends AppCompatActivity {
             mURL = intent.getStringExtra("url");
         }
 
-        FrameLayout parent = (FrameLayout) findViewById(R.id.webview_parent);
+        FrameLayout parent = findViewById(R.id.webview_parent);
         parent.setPadding(0, 0, 0, 0);
 
-        final WebView webView = (WebView) findViewById(R.id.stars_view);
-        Button openInWV = (Button) findViewById(R.id.open_in_webview);
-        Button back = (Button) findViewById(R.id.go_back);
-        Button forward = (Button) findViewById(R.id.go_forward);
+        final WebView webView = findViewById(R.id.stars_view);
+        Button openInWV = findViewById(R.id.open_in_webview);
+        Button back = findViewById(R.id.go_back);
+        Button forward = findViewById(R.id.go_forward);
 
         webView.loadUrl(mURL);
 //                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);

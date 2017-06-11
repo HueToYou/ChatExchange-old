@@ -80,7 +80,7 @@ public class UserTileFragment extends Fragment implements Parcelable {
         mView = inflater.inflate(R.layout.user_tile, container, false);
         mSharedPreferences = getActivity().getSharedPreferences(getResources().getText(R.string.app_name).toString(), Context.MODE_PRIVATE);
 
-        mUserInfo = (TextView) mView.findViewById(R.id.user_info_tile);
+        mUserInfo = mView.findViewById(R.id.user_info_tile);
 
         mArgs = getArguments();
 
@@ -152,10 +152,10 @@ public class UserTileFragment extends Fragment implements Parcelable {
 
                 alertDialog.show();
 
-                user_image_info = (ImageView) view.findViewById(R.id.user_image);
-                TextView user_id = (TextView) view.findViewById(R.id.user_id);
-                TextView user_last_post = (TextView) view.findViewById(R.id.user_last_post);
-                TextView user_rep = (TextView) view.findViewById(R.id.user_rep);
+                user_image_info = view.findViewById(R.id.user_image);
+                TextView user_id = view.findViewById(R.id.user_id);
+                TextView user_last_post = view.findViewById(R.id.user_last_post);
+                TextView user_rep = view.findViewById(R.id.user_rep);
 
                 try {
                     new GetIconForInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mArgs.getString("userAvatarUrl", ""), "140");

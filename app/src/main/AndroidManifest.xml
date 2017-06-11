@@ -37,7 +37,8 @@
         <activity android:name=".auth.AuthenticatorActivity" />
 
         <!-- Authenticator service -->
-        <service android:name=".auth.AuthenticatorService">
+        <service android:name=".auth.AuthenticatorService"
+            android:permission="">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -51,12 +52,14 @@
         <service android:name=".backend.BackendService" />
 
         <!-- Firebase services -->
-        <service android:name=".firebase.FirebaseService">
+        <service android:name=".firebase.FirebaseService"
+            android:permission="">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".firebase.FirebaseMessaging">
+        <service android:name=".firebase.FirebaseMessaging"
+            android:permission="">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

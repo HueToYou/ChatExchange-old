@@ -79,9 +79,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         setContentView(R.layout.activity_authenticator);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        mEmail = (EditText) findViewById(R.id.auth_email);
-        mPassword = (EditText) findViewById(R.id.auth_password);
-        mSubmit = (Button) findViewById(R.id.auth_submit);
+        mEmail = findViewById(R.id.auth_email);
+        mPassword = findViewById(R.id.auth_password);
+        mSubmit = findViewById(R.id.auth_submit);
         mSubmit.setVisibility(View.GONE);
 
         mEmail.addTextChangedListener(new TextWatcher() {
@@ -129,7 +129,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         mAccountManager = AccountManager.get(this);
 
-        CheckBox showPassword = (CheckBox) findViewById(R.id.show_password);
+        CheckBox showPassword = findViewById(R.id.show_password);
         showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

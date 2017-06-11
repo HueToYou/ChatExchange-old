@@ -124,7 +124,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             String body = "";
             String line;
             while ((line = reader.readLine()) != null) {
-                body += line;
+                body = body.concat(line);
             }
             responseData = body;
         } catch (IOException e) {

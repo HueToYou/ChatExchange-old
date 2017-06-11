@@ -3,13 +3,11 @@ package com.huetoyou.chatexchange.ui.misc;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.design.internal.ForegroundLinearLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import android.view.WindowManager;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.AppCompatPreferenceActivity;
-import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 public class HueUtils
 {
@@ -128,7 +125,7 @@ public class HueUtils
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
+        FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
 
         ColorStateList colorStateList = ColorStateList.valueOf(appBarColor);
 
@@ -139,7 +136,7 @@ public class HueUtils
 
     public void showAddChatFab(AppCompatActivity activity, boolean show)
     {
-        FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
+        FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
         if(show)
         {
             addChat.setVisibility(View.VISIBLE);
@@ -157,7 +154,7 @@ public class HueUtils
         }
 
         if (activity != null) {
-            FloatingActionButton addChat = (FloatingActionButton) activity.findViewById(R.id.add_chat_fab);
+            FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
 
             int initialColor = mSharedPreferences.getInt("default_color",activity.getResources().getColor(R.color.colorPrimary));
             ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
@@ -196,11 +193,11 @@ public class HueUtils
     }
 
     private void tints(ColorStateList colorStateList, AppCompatActivity activity) {
-        FloatingActionButton closeChat = (FloatingActionButton) activity.findViewById(R.id.close_chat_frag);
-        FloatingActionButton openBrowser = (FloatingActionButton) activity.findViewById(R.id.open_in_browser_fab);
-        FloatingActionButton showUsers = (FloatingActionButton) activity.findViewById(R.id.show_users_fab);
-        FloatingActionButton roomInfo = (FloatingActionButton) activity.findViewById(R.id.room_info_fab);
-        FloatingActionButton stars = (FloatingActionButton) activity.findViewById(R.id.star_fab);
+        FloatingActionButton closeChat = activity.findViewById(R.id.close_chat_frag);
+        FloatingActionButton openBrowser = activity.findViewById(R.id.open_in_browser_fab);
+        FloatingActionButton showUsers = activity.findViewById(R.id.show_users_fab);
+        FloatingActionButton roomInfo = activity.findViewById(R.id.room_info_fab);
+        FloatingActionButton stars = activity.findViewById(R.id.star_fab);
 
         if (closeChat != null) {
             closeChat.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
@@ -227,7 +224,7 @@ public class HueUtils
     }
 
     public void showChatsTint(ColorStateList colorStateList, AppCompatActivity activity) {
-        FloatingActionButton showChats = (FloatingActionButton) activity.findViewById(R.id.show_chats_fab);
+        FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
         if (showChats != null) {
             showChats.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
             showChats.setBackgroundTintList(colorStateList);

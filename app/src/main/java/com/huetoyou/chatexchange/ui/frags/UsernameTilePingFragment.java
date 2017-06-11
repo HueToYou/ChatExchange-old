@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 
@@ -43,8 +42,8 @@ public class UsernameTilePingFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         mView = inflater.inflate(R.layout.username_tile_for_ping_suggestions, container, false);
-        usernameTextView = (TextView) mView.findViewById(R.id.username_tile_ping_suggestion_name);
-        userAvatar = (ImageView)  mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
+        usernameTextView = mView.findViewById(R.id.username_tile_ping_suggestion_name);
+        userAvatar = mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
         mArgs = getArguments();
 
         mUsername = mArgs.getString(ChatFragment.USER_NAME_KEY, "HueToYou");

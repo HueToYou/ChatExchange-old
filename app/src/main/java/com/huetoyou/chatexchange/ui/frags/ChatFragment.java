@@ -1,7 +1,6 @@
 package com.huetoyou.chatexchange.ui.frags;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -9,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,14 +23,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,8 +95,8 @@ public class ChatFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mRequestFactory = new RequestFactory();
 
-        messageToSend = (EditText) view.findViewById(R.id.messageToSend);
-        pingSuggestionsScrollView = (HorizontalScrollView) view.findViewById(R.id.pingSuggestionsScrollView);
+        messageToSend = view.findViewById(R.id.messageToSend);
+        pingSuggestionsScrollView = view.findViewById(R.id.pingSuggestionsScrollView);
 
         messageToSend.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
@@ -205,7 +201,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void setupMessagePingList() {
-        mMessage = (EditText) view.findViewById(R.id.messageToSend);
+        mMessage = view.findViewById(R.id.messageToSend);
 
         mMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -308,7 +304,7 @@ public class ChatFragment extends Fragment {
             users = el.html();
             String users2 = "";
 
-            Pattern p = Pattern.compile("\\{id:(.*?)\\}");
+            Pattern p = Pattern.compile("\\{id:(.*?)}");
             Matcher m = p.matcher(users);
 
             while (!m.hitEnd()) {
@@ -389,11 +385,11 @@ public class ChatFragment extends Fragment {
 
     private void addChatButtons(final String url) {
 
-        FloatingActionButton openInBrowser = (FloatingActionButton) view.findViewById(R.id.open_in_browser_fab);
-        FloatingActionButton roomInfo = (FloatingActionButton) view.findViewById(R.id.room_info_fab);
-        FloatingActionButton stars = (FloatingActionButton) view.findViewById(R.id.star_fab);
-        FloatingActionButton showChats = (FloatingActionButton) view.findViewById(R.id.show_chats_fab);
-        FloatingActionButton users = (FloatingActionButton) view.findViewById(R.id.show_users_fab);
+        FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
+        FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
+        FloatingActionButton stars = view.findViewById(R.id.star_fab);
+        FloatingActionButton showChats = view.findViewById(R.id.show_chats_fab);
+        FloatingActionButton users = view.findViewById(R.id.show_users_fab);
 
         openInBrowser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,15 +409,15 @@ public class ChatFragment extends Fragment {
                         .create();
                 d.show();
 
-                TextView desc = (TextView) d.findViewById(R.id.desc_text);
+                TextView desc = d.findViewById(R.id.desc_text);
                 desc.setText(mChatDesc);
                 desc.setMovementMethod(LinkMovementMethod.getInstance());
 
-                TextView tag = (TextView) d.findViewById(R.id.tag_text);
+                TextView tag = d.findViewById(R.id.tag_text);
                 tag.setText(mChatTagsSpanned);
                 tag.setMovementMethod(LinkMovementMethod.getInstance());
 
-                TextView url = (TextView) d.findViewById(R.id.url_text);
+                TextView url = d.findViewById(R.id.url_text);
                 url.setText(Html.fromHtml("<b>URL: </b><a href=\"".concat(mChatUrl).concat("\">").concat(mChatUrl).concat("</a>")));
                 url.setMovementMethod(LinkMovementMethod.getInstance());
             }
@@ -440,10 +436,10 @@ public class ChatFragment extends Fragment {
                 final AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
 
-                final WebView webView = (WebView) alertDialog.findViewById(R.id.stars_view);
-                Button openInWV = (Button) alertDialog.findViewById(R.id.open_in_webview);
-                Button back = (Button) alertDialog.findViewById(R.id.go_back);
-                Button forward = (Button) alertDialog.findViewById(R.id.go_forward);
+                final WebView webView = alertDialog.findViewById(R.id.stars_view);
+                Button openInWV = alertDialog.findViewById(R.id.open_in_webview);
+                Button back = alertDialog.findViewById(R.id.go_back);
+                Button forward = alertDialog.findViewById(R.id.go_forward);
 
                 webView.loadUrl(mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
 //                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
