@@ -7,4 +7,5 @@
     <color name="colorAccentDark">#128c74</color>
     <color name="transparentGrey">#878c8c8c</color>
     <color name="colorAccentTransparent">#3319bb9b</color>
+    <color name="chatMessageBackground">#f1eaee</color>
 </resources>

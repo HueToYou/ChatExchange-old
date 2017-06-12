@@ -23,8 +23,8 @@ public class AboutActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = new Intent(this, GoBindActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, GoBindActivity.class);
+        //startActivity(intent);
     }
 
     @Override

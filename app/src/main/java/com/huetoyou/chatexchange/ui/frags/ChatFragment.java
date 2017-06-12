@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -37,6 +38,8 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -706,11 +709,11 @@ public class ChatFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            final String messg = intent.getStringExtra("org.golang.example.bind.STATUS");
+            final String RawMessg = intent.getStringExtra("org.golang.example.bind.STATUS");
+
+            final String[] hue = RawMessg.split(":");
 
             //System.out.println("Broadcast: " + intent.getStringExtra("org.golang.example.bind.STATUS"));
-
-            final TextView chat = (TextView) getActivity().findViewById(R.id.chat_body);
             final MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(), R.raw.chime);
             mediaPlayer.start();
 
@@ -720,8 +723,9 @@ public class ChatFragment extends Fragment {
                 {
                     public void run()
                     {
-
-                        chat.setText(chat.getText() + "\n" + messg);
+                        MessgFragment messgFrag = MessgFragment.newInstance(hue[0], hue[1]);
+                        //mFragmentManager.beginTransaction().replace(R.id.chatBodyScrollView, new Fragment()).commit();
+                        mFragmentManager.beginTransaction().add(R.id.chatBodyLL, messgFrag, "messgFrag").commit();
                     }
                 });
 
