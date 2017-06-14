@@ -52,6 +52,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -398,9 +400,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void addTab(String url) {
-            String name = getName(url);
-            Drawable icon = getIcon(url);
-            Integer color = getColorInt(url);
+            String faviconKey = "FAVICON_" + url.replace("/", "");
+            String nameKey = url + "Name";
+            String colorKey = url + "Color";
+
+            String name;
+            Drawable icon;
+            Integer color;
+
+            name = mSharedPrefs.getString(nameKey, null);
+            color = mSharedPrefs.getInt(colorKey, -1);
+
+            try {
+                FileInputStream fis = openFileInput(faviconKey);
+                Bitmap bmp = BitmapFactory.decodeStream(fis);
+                Resources r = getResources();
+                int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+
+                icon = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
+            } catch (Exception e) {
+                icon = getIcon(url);
+            }
+
+            if (name == null) name = getName(url);
+            if (color == -1) color = getColorInt(url);
 
             chatNames.add(name);
             chatUrls.add(url);
@@ -415,9 +438,14 @@ public class MainActivity extends AppCompatActivity {
                 Elements spans = Jsoup.connect(url).get().select("span");
 
                 for (Element e : spans) {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomname")) return e.ownText();
+                    if (e.hasAttr("id") && e.attr("id").equals("roomname")) {
+                        mSharedPrefs.edit().putString(url + "Name", e.ownText()).apply();
+                        return e.ownText();
+                    }
                 }
-                return Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
+                String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
+                mSharedPrefs.edit().putString(url + "Name", ret).apply();
+                return ret;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -437,10 +465,16 @@ public class MainActivity extends AppCompatActivity {
 
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
+                String FILENAME = "FAVICON_" + chatUrl.replace("/", "");
+                FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.close();
+
                 Resources r = getResources();
                 int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
 
                 return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

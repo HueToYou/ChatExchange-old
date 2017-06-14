@@ -2,6 +2,9 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 
     dependencies {
@@ -26,6 +29,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.huetoyou.chatexchange"
         minSdkVersion 15
         targetSdkVersion 26
