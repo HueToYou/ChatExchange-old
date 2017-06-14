@@ -1,6 +1,7 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void setup() {
         FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +157,26 @@ public class MainActivity extends AppCompatActivity {
             mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             mAddListItemsFromURLList = new AddListItemsFromURLList();
             mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+        }
+
+        if (mIntent.getExtras() != null) {
+            final String chatId = mIntent.getExtras().getString("chatId");
+            final String chatDomain = mIntent.getExtras().getString("chatDomain");
+
+            if (chatId != null && chatDomain != null) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        while (!mAddListItemsFromURLList.getStatus().equals(Status.FINISHED));
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        setFragmentByChatId(chatId, chatDomain);
+                    }
+                }.execute();
+            }
         }
     }
 
@@ -519,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                Pattern p = Pattern.compile("\\.msparea\\{(.+?)}");
+                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
                 Matcher m = p.matcher(css);
                 String a = "";
 
@@ -659,6 +681,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setFragmentByChatId(String id, String domain) {
+        for (String url : mChatUrls) {
+            if (url.contains(domain) && url.contains(id)) {
+                setFragmentByTag(url);
+                break;
+            }
+        }
     }
 
     private void setFragmentByTag(String tag)
