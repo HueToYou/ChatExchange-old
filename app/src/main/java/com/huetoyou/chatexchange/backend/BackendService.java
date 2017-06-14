@@ -31,12 +31,13 @@ public class BackendService extends Service {
      */
     public static final String ACTION_START = "com.huetoyou.chatexchange.ACTION_START";
     public static final String ACTION_STOP = "com.huetoyou.chatexchange.ACTION_STOP";
+    public static final String EXTRA_TOKEN = "com.huetoyou.chatexchange.EXTRA_TOKEN";
 
     /**
      * Broadcast for new events being received
      */
     public static final String EVENT_RECEIVED = "com.huetoyou.chatexchange.EVENT_RECEIVED";
-    public static final String EXTRA_EVENT = "com.huetoyou.chatexchange.EVENT";
+    public static final String EXTRA_EVENT = "com.huetoyou.chatexchange.EXTRA_EVENT";
 
     /**
      * Broadcaster for chat events
@@ -55,19 +56,15 @@ public class BackendService extends Service {
     }
 
     /**
-     * Start or stop the service
+     * Start the service
      * @param context context to use for sending the intent
-     * @param start true to start the service; false to stop it
+     * @param token account token to use for initialization
      */
-    public static void startStopService(Context context, boolean start) {
+    public static void startService(Context context, String token) {
+        Log.i(TAG, "starting service");
         Intent intent = new Intent(context, BackendService.class);
-        if (start) {
-            Log.i(TAG, "starting service");
-            intent.setAction(ACTION_START);
-        } else {
-            Log.i(TAG, "stopping service");
-            intent.setAction(ACTION_STOP);
-        }
+        intent.setAction(ACTION_START);
+        intent.putExtra(EXTRA_TOKEN, token);
         context.startService(intent);
     }
 
@@ -84,10 +81,6 @@ public class BackendService extends Service {
         super.onCreate();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // TODO: need the "auth" token to make this work
-        // TODO: decide how this works with multiple accounts
-        mRequestFactory = new RequestFactory();
     }
 
     /**
@@ -112,11 +105,13 @@ public class BackendService extends Service {
 
     /**
      * Start the service with the current backend
+     * @param token account token
      *
      * If an existing backend is running, it is stopped.
      */
-    private int start() {
+    private int start(String token) {
         stop();
+        mRequestFactory = new RequestFactory(token);
         mBackend = mSharedPreferences.getString("backend", BACKEND_WEBSOCKET);
         switch (mBackend) {
             case BACKEND_WEBSOCKET:
@@ -132,7 +127,7 @@ public class BackendService extends Service {
 
         switch (intent.getAction()) {
             case ACTION_START:
-                return start();
+                return start(intent.getStringExtra(EXTRA_TOKEN));
             case ACTION_STOP:
                 return stop();
         }

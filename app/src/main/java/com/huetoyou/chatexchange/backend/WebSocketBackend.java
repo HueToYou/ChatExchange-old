@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Backend using a persistent WebSocket to maintain a connection to the chat server
  */
-public class WebSocketBackend {
+class WebSocketBackend {
 
     private static final String TAG = "WebSocketBackend";
     private static final String WEBSOCKET_URL = "https://chat.stackexchange.com/ws-auth";
@@ -172,7 +172,7 @@ public class WebSocketBackend {
      * @param roomId ID of the initial room to join
      * @param broadcaster event broadcaster
      */
-    public WebSocketBackend(RequestFactory requestFactory, int roomId, BackendService.Broadcaster broadcaster) {
+    WebSocketBackend(RequestFactory requestFactory, int roomId, BackendService.Broadcaster broadcaster) {
         mRequestFactory = requestFactory;
         mRoomId = roomId;
         mBroadcaster = broadcaster;
