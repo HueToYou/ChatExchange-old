@@ -304,7 +304,7 @@ public class ChatFragment extends Fragment {
             users = el.html();
             String users2 = "";
 
-            Pattern p = Pattern.compile("\\{id:(.*?)}");
+            Pattern p = Pattern.compile("\\{id:(.*?)\\}");
             Matcher m = p.matcher(users);
 
             while (!m.hitEnd()) {

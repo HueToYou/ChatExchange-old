@@ -17,6 +17,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
+            android:onClick="toggleChatsSlide"
             android:tint="#fff"
             app:elevation="4dp"
             app:srcCompat="@drawable/ic_chat_black_24dp"

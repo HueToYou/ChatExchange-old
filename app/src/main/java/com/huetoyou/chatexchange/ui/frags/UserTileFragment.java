@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -188,7 +189,12 @@ public class UserTileFragment extends Fragment implements Parcelable {
         @Override
         protected Drawable doInBackground(String... params) {
             try {
-                if (mIconBitmap == null) {
+                String bmpKey = "AVATAR_" + params[0].replace("/", "");
+
+                try {
+                    FileInputStream fis = getActivity().openFileInput(bmpKey);
+                    mIconBitmap = BitmapFactory.decodeStream(fis);
+                } catch (Exception e) {
                     InputStream is = (InputStream) new URL(params[0]).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
                 }
@@ -220,7 +226,12 @@ public class UserTileFragment extends Fragment implements Parcelable {
         @Override
         protected Drawable doInBackground(String... params) {
             try {
-                if (mIconBitmap == null) {
+                String bmpKey = "AVATAR_" + params[0].replace("/", "");
+
+                try {
+                    FileInputStream fis = getActivity().openFileInput(bmpKey);
+                    mIconBitmap = BitmapFactory.decodeStream(fis);
+                } catch (Exception e) {
                     InputStream is = (InputStream) new URL(params[0]).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
                 }
