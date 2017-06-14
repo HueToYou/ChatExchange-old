@@ -2,6 +2,7 @@ package com.huetoyou.chatexchange.net;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -21,6 +22,8 @@ import java.util.Map;
  * Perform a network request in a secondary thread and invoke a callback with the response
  */
 class Request extends AsyncTask<Request.Params, Void, Request.Response> {
+
+    private static final String TAG = "Request";
 
     interface Listener {
         void onResponse(Response response);
@@ -85,6 +88,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         HttpURLConnection connection;
         try {
             URL url = new URL(params.url);
+            Log.i(TAG, String.format("Opening connection to %s", url.toString()));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(params.method);
         } catch (IOException e) {
