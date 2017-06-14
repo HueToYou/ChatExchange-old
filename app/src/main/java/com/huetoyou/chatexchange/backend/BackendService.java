@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -134,9 +135,20 @@ public class BackendService extends Service {
         return START_NOT_STICKY;
     }
 
+    /**
+     * Binder for interacting with the service
+     */
+    public class BackendBinder extends Binder {
+        BackendService getService() {
+            return BackendService.this;
+        }
+    }
+
+    private final IBinder mBinder = new BackendBinder();
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 }
