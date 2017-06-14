@@ -136,6 +136,15 @@ public class BackendService extends Service {
     }
 
     /**
+     * Retrieve data from a page
+     * @param pageUrl URL of the page to retrieve
+     * @param listener listener for page retrieval status
+     */
+    public void retrievePage(String pageUrl, PageRetriever.Listener listener) {
+        new PageRetriever(mRequestFactory, pageUrl, listener);
+    }
+
+    /**
      * Binder for interacting with the service
      */
     public class BackendBinder extends Binder {
