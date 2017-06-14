@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import com.crashlytics.android.Crashlytics;
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
@@ -389,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            Set<String> urls = params[0];
+            final Set<String> urls = params[0];
 
             if (urls.size() < 1) {
                 publishProgress();
