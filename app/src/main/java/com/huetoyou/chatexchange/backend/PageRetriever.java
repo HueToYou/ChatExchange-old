@@ -11,12 +11,12 @@ import static jodd.jerry.Jerry.jerry;
 /**
  * Retrieve data for an individual page
  */
-class PageRetriever {
+public class PageRetriever {
 
     /**
      * Information about an individual page
      */
-    class Page {
+    public class Page {
 
         private String mName;
         private String mIcon;
@@ -50,7 +50,7 @@ class PageRetriever {
         }
     }
 
-    interface Listener {
+    public interface Listener {
         void onSucceeded(Page page);
         void onFailed(String message);
     }
@@ -70,7 +70,7 @@ class PageRetriever {
         return new Page(name, icon, color);
     }
 
-    PageRetriever(RequestFactory requestFactory, String pageUrl, final Listener listener) {
+    public PageRetriever(RequestFactory requestFactory, final String pageUrl, final Listener listener) {
         requestFactory.get(pageUrl, true, new RequestFactory.Listener() {
             @Override
             public void onSucceeded(URL url, String data) {
