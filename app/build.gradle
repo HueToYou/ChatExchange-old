@@ -61,6 +61,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
     compile project(path: ':SlidingMenu')
     //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:26.0.0-beta2'

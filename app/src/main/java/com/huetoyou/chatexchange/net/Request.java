@@ -4,11 +4,12 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -123,14 +124,8 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 return error(String.format("HTTP response: %s", responseMessage));
             }
-            InputStream stream = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-            String body = "";
-            String line;
-            while ((line = reader.readLine()) != null) {
-                body = body.concat(line);
-            }
-            responseData = body;
+            InputStream in = new BufferedInputStream(connection.getInputStream());
+            responseData = IOUtils.toString(in, "UTF-8");
         } catch (IOException e) {
             return error(e.getMessage());
         }
