@@ -14,7 +14,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -73,7 +72,7 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     compile 'com.github.apl-devs:appintro:v4.2.0'
     compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.0.0'
+    compile 'com.google.firebase:firebase-core:11.0.0'
     compile 'org.java-websocket:java-websocket:1.3.3'
     //noinspection GradleDependency
     compile 'org.jodd:jodd-lagarto:3.4.2'
