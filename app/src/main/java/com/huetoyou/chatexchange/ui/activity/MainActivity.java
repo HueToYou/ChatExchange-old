@@ -13,14 +13,18 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -393,12 +397,12 @@ public class MainActivity extends AppCompatActivity {
             final Set<String> urls = params[0];
 
             if (urls.size() < 1) {
-                publishProgress();
-            }
-
-            for (String s : urls) {
-                addTab(s);
-                publishProgress();
+                return null;
+            } else {
+                for (String s : urls) {
+                    addTab(s);
+                    publishProgress();
+                }
             }
 
             return null;
@@ -716,6 +720,7 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
 //                hueUtils.showAddChatFab(this, false);
             }
         }
