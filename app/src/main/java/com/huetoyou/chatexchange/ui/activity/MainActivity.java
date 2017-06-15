@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private SlidingMenu mChatroomSlidingMenu;
     private ListView chatroomsList;
     private ImgTextArrayAdapter chatroomArrayAdapter;
+    private SlidingMenu mCurrentUsers_SlidingMenu;
 
     private FragmentManager mFragmentManager;
 
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         mIntent = getIntent();
 
+        createUsersSlidingMenu();
         setupChatRoomMenu();
         setup();
 
@@ -709,9 +711,11 @@ public class MainActivity extends AppCompatActivity {
 //                hueUtils.showAddChatFab(this, true);
                 hueUtils.setAddChatFabColorDefault(this);
                 hueUtils.setActionBarColorDefault(this);
+                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
             }
             else
             {
+                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //                hueUtils.showAddChatFab(this, false);
             }
@@ -747,5 +751,37 @@ public class MainActivity extends AppCompatActivity {
         mAddListItemsFromURLList = new AddListItemsFromURLList();
         mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
         super.onResume();
+
+        System.out.println("Hellu!");
+    }
+
+    private void createUsersSlidingMenu()
+    {
+        // configure the SlidingMenu
+        mCurrentUsers_SlidingMenu = new SlidingMenu(MainActivity.this);
+        mCurrentUsers_SlidingMenu.setMode(SlidingMenu.RIGHT);
+        //mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mCurrentUsers_SlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mCurrentUsers_SlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mCurrentUsers_SlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
+        mCurrentUsers_SlidingMenu.setFadeDegree(0.35f);
+        mCurrentUsers_SlidingMenu.attachToActivity(MainActivity.this, SlidingMenu.SLIDING_CONTENT);
+        mCurrentUsers_SlidingMenu.setMenu(R.layout.users_slideout);
+        mCurrentUsers_SlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener() {
+            @Override
+            public void onOpen()
+            {
+                if (getmChatroomSlidingMenu().isMenuShowing())
+                {
+                    getmChatroomSlidingMenu().showContent(true);
+                }
+            }
+        });
+        mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+    }
+
+    public SlidingMenu getCurrentUsers_SlidingMenu()
+    {
+        return mCurrentUsers_SlidingMenu;
     }
 }
