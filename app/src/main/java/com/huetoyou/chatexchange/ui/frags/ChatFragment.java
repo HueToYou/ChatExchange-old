@@ -116,23 +116,7 @@ public class ChatFragment extends Fragment {
 
         hueUtils = new HueUtils();
 
-        // configure the SlidingMenu
-        mSlidingMenu = new SlidingMenu(getActivity());
-        mSlidingMenu.setMode(SlidingMenu.RIGHT);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
-        mSlidingMenu.setFadeDegree(0.35f);
-        mSlidingMenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
-        mSlidingMenu.setMenu(R.layout.users_slideout);
-
-        mSlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener() {
-            @Override
-            public void onOpen() {
-                if (((MainActivity)getActivity()).getmChatroomSlidingMenu().isMenuShowing()) ((MainActivity)getActivity()).getmChatroomSlidingMenu().showContent(true);
-            }
-        });
+        mSlidingMenu = ((MainActivity)getActivity()).getCurrentUsers_SlidingMenu();
 
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");

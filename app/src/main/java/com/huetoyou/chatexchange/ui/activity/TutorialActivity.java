@@ -1,6 +1,8 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -140,6 +142,12 @@ public class TutorialActivity extends AppCompatActivity
                     {
                         Intent intent = new Intent(TutorialActivity.this, MainActivity.class);
                         startActivity(intent);
+                        SharedPreferences mSharedPrefs;
+                        SharedPreferences.Editor mEditor;
+                        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        mEditor = mSharedPrefs.edit();
+                        mEditor.putBoolean("isFirstRun", false);
+                        mEditor.apply();
                         finish();
                     }
 
