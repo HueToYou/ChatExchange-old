@@ -138,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(mSharedPrefs.getBoolean("isFirstRun", true))
         {
-            mEditor.putBoolean("isFirstRun", false);
-            mEditor.apply();
-
             Intent intent = new Intent(this, IntroActivity.class);
             startActivity(intent);
 
