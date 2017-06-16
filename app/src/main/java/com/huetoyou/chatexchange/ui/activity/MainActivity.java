@@ -100,48 +100,82 @@ public class MainActivity extends SlidingActivity {
     private boolean mCanAddChat = true;
     private AddListItemsFromURLList mAddListItemsFromURLList;
 
+    /*
+     * Activity Lifecycle
+     */
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.activity_main);
-        setBehindContentView(R.layout.chatroom_slideout);
-        mChatroomSlidingMenu = getSlidingMenu();
-
-//        getSlidingMenu().setMode(SlidingMenu.LEFT);
-        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
-        mChatroomSlidingMenu.setFadeDegree(0.35f);
-//        getSlidingMenu().attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-//        getSlidingMenu().setMenu(R.layout.chatroom_slideout);
-
+    public void onCreate(Bundle savedInstanceState)
+    {
         hueUtils = new HueUtils();
+        hueUtils.setTheme(MainActivity.this);
 
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        mEditor = mSharedPrefs.edit();
-        mEditor.apply();
-
-        mHandler = new Handler();
-
-        mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
-        Log.e("URLS", mChatUrls.toString());
-
-        //mEditor.putInt("tabIndex", 0).apply();
-
-        mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
-
-        mFragmentManager = getSupportFragmentManager();
-
-        mIntent = getIntent();
-
+        super.onCreate(savedInstanceState);
+        //Fabric.with(this, new Crashlytics());
+        setContentView(R.layout.activity_main);
+        preSetup();
         createUsersSlidingMenu();
-        setupChatRoomMenu();
         setup();
-
-        //ColorPickerDialog.newBuilder().setColor(color).show(activity);
     }
+
+    @Override
+    protected void onPause() {
+        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
+            mAddListItemsFromURLList.cancel(true);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        hueUtils.setThemeOnResume(MainActivity.this);
+
+        mAddListItemsFromURLList = new AddListItemsFromURLList();
+        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+        super.onResume();
+
+        System.out.println("Hellu!");
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
+            mAddListItemsFromURLList.cancel(true);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
+            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setAddChatFabColorDefault(this);
+        } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
+            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setAddChatFabColorDefault(this);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+            setFragmentByTag("home");
+            for (Fragment fragment : mFragmentManager.getFragments()) {
+                if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+            }
+            if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
+        } else if (mChatroomSlidingMenu.isMenuShowing()) {
+            mChatroomSlidingMenu.showContent(true);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /*
+     * Setup procedure
+     */
 
     @SuppressLint("StaticFieldLeak")
     private void setup() {
@@ -197,6 +231,69 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
+    private void createUsersSlidingMenu()
+    {
+        // configure the SlidingMenu
+        mCurrentUsers_SlidingMenu = new SlidingMenu(MainActivity.this);
+        mCurrentUsers_SlidingMenu.setMode(SlidingMenu.RIGHT);
+        //mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mCurrentUsers_SlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mCurrentUsers_SlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mCurrentUsers_SlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
+        mCurrentUsers_SlidingMenu.setFadeDegree(0.35f);
+        mCurrentUsers_SlidingMenu.attachToActivity(MainActivity.this, SlidingMenu.SLIDING_CONTENT);
+        mCurrentUsers_SlidingMenu.setMenu(R.layout.users_slideout);
+        mCurrentUsers_SlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener() {
+            @Override
+            public void onOpen()
+            {
+                if (getmChatroomSlidingMenu().isMenuShowing())
+                {
+                    getmChatroomSlidingMenu().showContent(true);
+                }
+            }
+        });
+        mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+    }
+
+    public SlidingMenu getCurrentUsers_SlidingMenu()
+    {
+        return mCurrentUsers_SlidingMenu;
+    }
+
+    private void preSetup()
+    {
+        setBehindContentView(R.layout.chatroom_slideout);
+        mChatroomSlidingMenu = getSlidingMenu();
+
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
+        mChatroomSlidingMenu.setFadeDegree(0.35f);
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        mEditor = mSharedPrefs.edit();
+        mEditor.apply();
+
+        mHandler = new Handler();
+
+        mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
+        Log.e("URLS", mChatUrls.toString());
+
+        //mEditor.putInt("tabIndex", 0).apply();
+
+        mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
+
+        mFragmentManager = getSupportFragmentManager();
+
+        mIntent = getIntent();
+    }
+
+    /*
+     * Menu
+     */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -235,13 +332,129 @@ public class MainActivity extends SlidingActivity {
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
-            mAddListItemsFromURLList.cancel(true);
+    /*
+     * Fragment Stuffs
+     */
+
+    private void initiateCurrentFragments(ArrayList<Fragment> fragments) {
+        for (int i = 0; i < fragments.size(); i++) {
+            try {
+                Fragment fragment = fragments.get(i);
+                String tag = fragment.getArguments().getString("chatUrl");
+                if (mFragmentManager.findFragmentByTag(tag) == null) {
+                    mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+                }
+
+                if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
+                    mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+                    hueUtils.setActionBarColorDefault(this);
+                    hueUtils.setAddChatFabColorDefault(this);
+                }
+
+                mFragmentManager.executePendingTransactions();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
-        super.onDestroy();
     }
+
+    private void addFragmentsToList(ArrayList<String> chatroomNames,
+                                    ArrayList<String> chatUrls,
+                                    ArrayList<Drawable> chatIcons,
+                                    ArrayList<Integer> chatColors,
+                                    ArrayList<Fragment> chatFragments) {
+
+        String[] names = new String[chatroomNames.size()];
+        names = chatroomNames.toArray(names);
+
+        String[] urls = new String[chatUrls.size()];
+        urls = chatUrls.toArray(urls);
+
+        Drawable[] ico = new Drawable[chatIcons.size()];
+        ico = chatIcons.toArray(ico);
+
+        Integer[] colors = new Integer[chatColors.size()];
+        colors = chatColors.toArray(colors);
+
+        chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
+        if (names.length < 1) chatroomArrayAdapter.clear();
+//        Log.e("LE", names.length + "");
+
+        chatroomsList = findViewById(R.id.chatroomsListView);
+        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        // Here, you set the data in your ListView
+        chatroomsList.setAdapter(chatroomArrayAdapter);
+
+        chatroomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                chatroomsList.requestFocusFromTouch();
+                chatroomsList.setSelection(position);
+                chatroomsList.requestFocus();
+
+                mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                    }
+                }, 400);
+
+                getmChatroomSlidingMenu().toggle();
+            }
+        });
+    }
+
+    private void removeAllFragmentsFromList() {
+        if (chatroomsList != null) chatroomsList.setAdapter(null);
+    }
+
+
+    private void setFragmentByChatId(String id, String domain) {
+        for (String url : mChatUrls) {
+            if (url.contains(domain) && url.contains(id)) {
+                setFragmentByTag(url);
+                break;
+            }
+        }
+    }
+
+    private void setFragmentByTag(String tag)
+    {
+        if (mFragmentManager.getFragments() != null)
+        {
+            for (Fragment fragment : mFragmentManager.getFragments())
+            {
+                if (fragment != null && !fragment.isDetached())
+                {
+                    mFragmentManager.beginTransaction().detach(fragment).commit();
+                }
+            }
+            mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
+
+            if(tag.equals("home"))
+            {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                hueUtils.showAddChatFab(this, true);
+                hueUtils.setAddChatFabColorDefault(this);
+                hueUtils.setActionBarColorDefault(this);
+                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+            }
+            else
+            {
+                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
+//                hueUtils.showAddChatFab(this, false);
+            }
+        }
+    }
+
+    /*
+     * Other Stuffs
+     */
 
     public void showAddTabDialog() {
         if (mCanAddChat) {
@@ -349,33 +562,6 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
-            hueUtils.setActionBarColorDefault(this);
-            hueUtils.setAddChatFabColorDefault(this);
-        } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
-            hueUtils.setActionBarColorDefault(this);
-            hueUtils.setAddChatFabColorDefault(this);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mFragmentManager.findFragmentByTag("home").isDetached()) {
-            setFragmentByTag("home");
-            for (Fragment fragment : mFragmentManager.getFragments()) {
-                if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
-            }
-            if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
-        } else if (mChatroomSlidingMenu.isMenuShowing()) {
-            mChatroomSlidingMenu.showContent(true);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     public SlidingMenu getmChatroomSlidingMenu() {
         return mChatroomSlidingMenu;
     }
@@ -462,7 +648,7 @@ public class MainActivity extends SlidingActivity {
             }
 
             if (name == null) name = getName(url);
-            if (color == -1) color = getColorInt(url);
+            if (color == -1) color = hueUtils.getColorInt(MainActivity.this, url);
 
             chatNames.add(name);
             chatUrls.add(url);
@@ -520,69 +706,7 @@ public class MainActivity extends SlidingActivity {
             }
         }
 
-        private int getColorInt(String url) {
-            try {
-                Document doc = Jsoup.connect(url).get();
 
-                Elements styles = doc.select("link");
-                Element element = new Element("hue");
-
-                for (int i = 0; i < styles.size(); i++) {
-                    Element current = styles.get(i);
-
-                    if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
-                        element = current;
-                        break;
-                    }
-                }
-
-                String link = "";
-                if (element.hasAttr("href")) {
-                    link = element.attr("href");
-                    if (!(link.contains("http://") || link.contains("https://")))
-                        link = "https:".concat(link);
-                }
-
-
-//                Log.e("UR", link);
-                URL url1 = new URL(link);
-
-                InputStream inStr = url1.openStream();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
-                String line;
-                String css = "";
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    css = css.concat(line);
-                }
-
-
-                Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
-                Matcher m = p.matcher(css);
-                String a = "";
-
-                if (m.find()) {
-                    a = m.group();
-                }
-
-                p = Pattern.compile("color:(.*?);");
-                m = p.matcher(a);
-
-                String colorHex = "#000000";
-
-                if (m.find()) {
-                    colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
-                }
-
-                mEditor.putInt(url + "Color", Color.parseColor(colorHex));
-                mEditor.apply();
-                return Color.parseColor(colorHex);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Color.parseColor("#000000");
-            }
-        }
 
         private Fragment addFragment(String url, String name, Integer color) {
             Fragment fragment;
@@ -602,144 +726,6 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
-    private void initiateCurrentFragments(ArrayList<Fragment> fragments) {
-        for (int i = 0; i < fragments.size(); i++) {
-            try {
-                Fragment fragment = fragments.get(i);
-                String tag = fragment.getArguments().getString("chatUrl");
-                if (mFragmentManager.findFragmentByTag(tag) == null) {
-                    mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
-                }
-
-                if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
-                    mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-                    hueUtils.setActionBarColorDefault(this);
-                    hueUtils.setAddChatFabColorDefault(this);
-                }
-
-                mFragmentManager.executePendingTransactions();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void addFragmentsToList(ArrayList<String> chatroomNames,
-                                    ArrayList<String> chatUrls,
-                                    ArrayList<Drawable> chatIcons,
-                                    ArrayList<Integer> chatColors,
-                                    ArrayList<Fragment> chatFragments) {
-
-        String[] names = new String[chatroomNames.size()];
-        names = chatroomNames.toArray(names);
-
-        String[] urls = new String[chatUrls.size()];
-        urls = chatUrls.toArray(urls);
-
-        Drawable[] ico = new Drawable[chatIcons.size()];
-        ico = chatIcons.toArray(ico);
-
-        Integer[] colors = new Integer[chatColors.size()];
-        colors = chatColors.toArray(colors);
-
-        chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
-        if (names.length < 1) chatroomArrayAdapter.clear();
-//        Log.e("LE", names.length + "");
-
-        chatroomsList = findViewById(R.id.chatroomsListView);
-        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        // Here, you set the data in your ListView
-        chatroomsList.setAdapter(chatroomArrayAdapter);
-
-        chatroomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                chatroomsList.requestFocusFromTouch();
-                chatroomsList.setSelection(position);
-                chatroomsList.requestFocus();
-
-                mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
-
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
-                    }
-                }, 400);
-
-                getmChatroomSlidingMenu().toggle();
-            }
-        });
-    }
-
-    private void removeAllFragmentsFromList() {
-        if (chatroomsList != null) chatroomsList.setAdapter(null);
-    }
-
-    private void setupChatRoomMenu()
-    {
-//        // configure the SlidingMenu
-//        mChatroomSlidingMenu = new SlidingMenu(this);
-//        mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
-//        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-//        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-//        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-//        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
-//        mChatroomSlidingMenu.setFadeDegree(0.35f);
-//        mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-//        mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
-
-//        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener() {
-//            @Override
-//            public void onOpen() {
-//                for (Fragment fragment : mFragmentManager.getFragments()) {
-//                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
-//                }
-//            }
-//        });
-    }
-
-    private void setFragmentByChatId(String id, String domain) {
-        for (String url : mChatUrls) {
-            if (url.contains(domain) && url.contains(id)) {
-                setFragmentByTag(url);
-                break;
-            }
-        }
-    }
-
-    private void setFragmentByTag(String tag)
-    {
-        if (mFragmentManager.getFragments() != null)
-        {
-            for (Fragment fragment : mFragmentManager.getFragments())
-            {
-                if (fragment != null && !fragment.isDetached())
-                {
-                    mFragmentManager.beginTransaction().detach(fragment).commit();
-                }
-            }
-            mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
-
-            if(tag.equals("home"))
-            {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                hueUtils.showAddChatFab(this, true);
-                hueUtils.setAddChatFabColorDefault(this);
-                hueUtils.setActionBarColorDefault(this);
-                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-            }
-            else
-            {
-                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
-//                hueUtils.showAddChatFab(this, false);
-            }
-        }
-    }
-
     @Override
     public boolean onSupportNavigateUp()
     {
@@ -756,50 +742,4 @@ public class MainActivity extends SlidingActivity {
         mChatroomSlidingMenu.toggle();
     }
 
-    @Override
-    protected void onPause() {
-        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
-            mAddListItemsFromURLList.cancel(true);
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        mAddListItemsFromURLList = new AddListItemsFromURLList();
-        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
-        super.onResume();
-
-        System.out.println("Hellu!");
-    }
-
-    private void createUsersSlidingMenu()
-    {
-        // configure the SlidingMenu
-        mCurrentUsers_SlidingMenu = new SlidingMenu(MainActivity.this);
-        mCurrentUsers_SlidingMenu.setMode(SlidingMenu.RIGHT);
-        //mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mCurrentUsers_SlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mCurrentUsers_SlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mCurrentUsers_SlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_width);
-        mCurrentUsers_SlidingMenu.setFadeDegree(0.35f);
-        mCurrentUsers_SlidingMenu.attachToActivity(MainActivity.this, SlidingMenu.SLIDING_CONTENT);
-        mCurrentUsers_SlidingMenu.setMenu(R.layout.users_slideout);
-        mCurrentUsers_SlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener() {
-            @Override
-            public void onOpen()
-            {
-                if (getmChatroomSlidingMenu().isMenuShowing())
-                {
-                    getmChatroomSlidingMenu().showContent(true);
-                }
-            }
-        });
-        mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-    }
-
-    public SlidingMenu getCurrentUsers_SlidingMenu()
-    {
-        return mCurrentUsers_SlidingMenu;
-    }
 }

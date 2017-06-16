@@ -21,6 +21,12 @@
             android:title="Dynamically change AppBar color"
             android:summary="Change AppBar color based on color of current chat" />
 
+        <CheckBoxPreference
+            android:key="dark_theme"
+            android:id="@+id/dark_theme_checkbox"
+            android:title="Dark theme"
+            android:summary="Enable the alternate dark theme instead of the standard light theme" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

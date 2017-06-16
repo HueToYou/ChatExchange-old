@@ -8,14 +8,19 @@ import android.view.View;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 
-public class HelpActivity extends AppCompatActivity {
+public class HelpActivity extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        HueUtils hueUtils = new HueUtils();
+        hueUtils.setTheme(HelpActivity.this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-        HueUtils hueUtils = new HueUtils();
+
         hueUtils.setActionBarColorDefault(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
