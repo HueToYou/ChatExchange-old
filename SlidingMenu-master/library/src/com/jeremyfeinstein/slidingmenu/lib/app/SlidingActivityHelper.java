@@ -58,8 +58,7 @@ public class SlidingActivityHelper {
 
 		mOnPostCreateCalled = true;
 
-		mSlidingMenu.attachToActivity(mActivity, 
-				mEnableSlide ? SlidingMenu.SLIDING_WINDOW : SlidingMenu.SLIDING_CONTENT);
+		mSlidingMenu.attachToActivity(mActivity, SlidingMenu.SLIDING_CONTENT);
 		
 		final boolean open;
 		final boolean secondary;
