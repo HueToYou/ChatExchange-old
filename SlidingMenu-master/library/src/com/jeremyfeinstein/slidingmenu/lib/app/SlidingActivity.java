@@ -40,7 +40,9 @@ public class SlidingActivity extends AppCompatActivity implements SlidingActivit
 		T v = super.findViewById(id);
 		if (v != null)
 			return v;
-		return mHelper.findViewById(id);
+		if (mHelper != null)
+		    return mHelper.findViewById(id);
+        return null;
 	}
 
 	/* (non-Javadoc)
