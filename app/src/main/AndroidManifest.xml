@@ -24,8 +24,8 @@
 
         <!-- Main activity -->
         <activity
-            android:name=".ui.activity.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:name=".ui.activity.MainActivity">
+            <!--android:configChanges="keyboardHidden|orientation|screenSize">-->
         </activity>
 
         <!-- Authenticator activity -->

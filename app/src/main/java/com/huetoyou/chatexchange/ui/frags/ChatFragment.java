@@ -372,7 +372,6 @@ public class ChatFragment extends Fragment {
         FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
         FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = view.findViewById(R.id.star_fab);
-        FloatingActionButton showChats = view.findViewById(R.id.show_chats_fab);
         FloatingActionButton users = view.findViewById(R.id.show_users_fab);
 
         openInBrowser.setOnClickListener(new View.OnClickListener() {
@@ -466,18 +465,17 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        showChats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
-                activity.getmChatroomSlidingMenu().toggle();
-            }
-        });
+//        showChats.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MainActivity activity = (MainActivity) getActivity();
+//                activity.getmChatroomSlidingMenu().toggle();
+//            }
+//        });
 
         users.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
                 mSlidingMenu.toggle();
             }
         });

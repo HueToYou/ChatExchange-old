@@ -104,8 +104,8 @@ public class SlidingActivityHelper {
 	 * @param id the resource id of the desired view
 	 * @return The view if found or null otherwise.
 	 */
-	public View findViewById(int id) {
-		View v;
+	public <T extends View> T findViewById(int id) {
+		T v;
 		if (mSlidingMenu != null) {
 			v = mSlidingMenu.findViewById(id);
 			if (v != null)

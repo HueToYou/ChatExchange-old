@@ -2,13 +2,14 @@ package com.jeremyfeinstein.slidingmenu.lib.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class SlidingActivity extends Activity implements SlidingActivityBase {
+public class SlidingActivity extends AppCompatActivity implements SlidingActivityBase {
 
 	private SlidingActivityHelper mHelper;
 
@@ -35,8 +36,8 @@ public class SlidingActivity extends Activity implements SlidingActivityBase {
 	 * @see android.app.Activity#findViewById(int)
 	 */
 	@Override
-	public View findViewById(int id) {
-		View v = super.findViewById(id);
+	public <T extends View> T findViewById(int id) {
+		T v = super.findViewById(id);
 		if (v != null)
 			return v;
 		return mHelper.findViewById(id);

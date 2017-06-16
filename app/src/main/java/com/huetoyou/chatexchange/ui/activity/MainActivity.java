@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,6 +51,7 @@ import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import android.widget.Toast;
 import io.fabric.sdk.android.Fabric;
@@ -69,7 +71,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends SlidingActivity {
 
     private SharedPreferences mSharedPrefs;
     private SharedPreferences.Editor mEditor;
@@ -99,10 +101,21 @@ public class MainActivity extends AppCompatActivity {
     private AddListItemsFromURLList mAddListItemsFromURLList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+        setBehindContentView(R.layout.chatroom_slideout);
+        mChatroomSlidingMenu = getSlidingMenu();
+
+//        getSlidingMenu().setMode(SlidingMenu.LEFT);
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
+        mChatroomSlidingMenu.setFadeDegree(0.35f);
+//        getSlidingMenu().attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+//        getSlidingMenu().setMenu(R.layout.chatroom_slideout);
 
         hueUtils = new HueUtils();
 
@@ -666,25 +679,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupChatRoomMenu()
     {
-        // configure the SlidingMenu
-        mChatroomSlidingMenu = new SlidingMenu(this);
-        mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
-        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
-        mChatroomSlidingMenu.setFadeDegree(0.35f);
-        mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
+//        // configure the SlidingMenu
+//        mChatroomSlidingMenu = new SlidingMenu(this);
+//        mChatroomSlidingMenu.setMode(SlidingMenu.LEFT);
+//        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+//        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+//        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+//        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
+//        mChatroomSlidingMenu.setFadeDegree(0.35f);
+//        mChatroomSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+//        mChatroomSlidingMenu.setMenu(R.layout.chatroom_slideout);
 
-        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener() {
-            @Override
-            public void onOpen() {
-                for (Fragment fragment : mFragmentManager.getFragments()) {
-                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
-                }
-            }
-        });
+//        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener() {
+//            @Override
+//            public void onOpen() {
+//                for (Fragment fragment : mFragmentManager.getFragments()) {
+//                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+//                }
+//            }
+//        });
     }
 
     private void setFragmentByChatId(String id, String domain) {
