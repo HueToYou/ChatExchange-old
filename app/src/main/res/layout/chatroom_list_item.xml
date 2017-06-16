@@ -35,7 +35,6 @@
             android:gravity="left"
             android:text="Ask Ubuntu General Room"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#000000"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
         <TextView
