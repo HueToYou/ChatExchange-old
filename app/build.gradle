@@ -32,7 +32,7 @@ android {
         applicationId "com.huetoyou.chatexchange"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 14
+        versionCode 15
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

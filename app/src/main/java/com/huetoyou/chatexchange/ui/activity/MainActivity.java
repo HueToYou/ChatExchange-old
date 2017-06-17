@@ -366,7 +366,7 @@ public class MainActivity extends SlidingActivity {
                 }
 
                 mFragmentManager.executePendingTransactions();
-            } catch (IllegalStateException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
