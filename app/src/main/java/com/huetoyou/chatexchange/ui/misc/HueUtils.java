@@ -212,6 +212,7 @@ public class HueUtils
         FloatingActionButton showUsers = activity.findViewById(R.id.show_users_fab);
         FloatingActionButton roomInfo = activity.findViewById(R.id.room_info_fab);
         FloatingActionButton stars = activity.findViewById(R.id.star_fab);
+        FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
 
         if (closeChat != null) {
             closeChat.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);

@@ -3,12 +3,14 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +85,7 @@ public class ChatFragment extends Fragment {
     private EditText mMessage;
 
     private RequestFactory mRequestFactory;
+    private String mChatTitle;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -120,6 +124,7 @@ public class ChatFragment extends Fragment {
 
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");
+        mChatTitle = args.getString("chatTitle", "ERROR");
 
         new GetDesc().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
         new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
@@ -130,7 +135,7 @@ public class ChatFragment extends Fragment {
         ParseUsers parseUsers = new ParseUsers();
         parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
 
-        getActivity().setTitle(args.getString("chatTitle", "Error"));
+        getActivity().setTitle(mChatTitle);
 
         setupMessagePingList();
         setupMessages();
@@ -498,6 +503,9 @@ public class ChatFragment extends Fragment {
             hueUtils.setChatFragmentFabColorDefault((AppCompatActivity) getActivity());
             hueUtils.setAddChatFabColorDefault((AppCompatActivity) getActivity());
         }
+
+        getActivity().setTitle(mChatTitle);
+
     }
 
     private class GetDesc extends AsyncTask<String, Void, String> {
@@ -568,6 +576,8 @@ public class ChatFragment extends Fragment {
     public ArrayList<Bundle> getmUserInfo() {
         return mUserInfo;
     }
+
+    public int getmAppBarColor() { return mAppBarColor; }
 
 //    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {
 //        @Override

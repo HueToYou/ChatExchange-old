@@ -64,6 +64,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
     private Bitmap mIconBitmap;
 
     private String CREATOR;
+    private GetIcon mGetIcon;
+    private GetIconForInfo mGetIconForInfo;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -111,7 +113,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
     }
 
     private void setAvatar(String url) {
-        new GetIcon().execute(url, "50");
+        mGetIcon = new GetIcon();
+        mGetIcon.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, "50");
     }
 
     private void setIsModOwner(boolean isMod, boolean isOwner) {
@@ -125,6 +128,7 @@ public class UserTileFragment extends Fragment implements Parcelable {
 
     private void displayInfoOnTap(final int id, final int lastPost, final int rep) {
         mUserInfo.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 long t = (long)lastPost * 1000;
@@ -159,7 +163,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
                 TextView user_rep = view.findViewById(R.id.user_rep);
 
                 try {
-                    new GetIconForInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mArgs.getString("userAvatarUrl", ""), "140");
+                    mGetIconForInfo = new GetIconForInfo();
+                    mGetIconForInfo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mArgs.getString("userAvatarUrl", ""), "140");
                     user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
                     user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
                     user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
@@ -252,5 +257,11 @@ public class UserTileFragment extends Fragment implements Parcelable {
         protected void onPostExecute(Drawable drawable) {
             user_image_info.setImageDrawable(drawable);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mGetIcon.cancel(true);
+        super.onDestroy();
     }
 }

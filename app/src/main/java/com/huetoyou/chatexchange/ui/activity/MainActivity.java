@@ -136,6 +136,13 @@ public class MainActivity extends SlidingActivity {
         super.onResume();
 
         System.out.println("Hellu!");
+
+        if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
     }
 
     @Override
@@ -150,10 +157,10 @@ public class MainActivity extends SlidingActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
             hueUtils.setActionBarColorDefault(this);
-            hueUtils.setAddChatFabColorDefault(this);
+//            hueUtils.setAddChatFabColorDefault(this);
         } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
             hueUtils.setActionBarColorDefault(this);
-            hueUtils.setAddChatFabColorDefault(this);
+//            hueUtils.setAddChatFabColorDefault(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -205,7 +212,7 @@ public class MainActivity extends SlidingActivity {
 
         else
         {
-            mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+            if (mFragmentManager.findFragmentByTag("home") == null) mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             mAddListItemsFromURLList = new AddListItemsFromURLList();
             mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
         }
@@ -348,7 +355,7 @@ public class MainActivity extends SlidingActivity {
                 if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
                     mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
                     hueUtils.setActionBarColorDefault(this);
-                    hueUtils.setAddChatFabColorDefault(this);
+//                    hueUtils.setAddChatFabColorDefault(this);
                 }
 
                 mFragmentManager.executePendingTransactions();
@@ -438,8 +445,8 @@ public class MainActivity extends SlidingActivity {
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //                hueUtils.showAddChatFab(this, true);
-                hueUtils.setAddChatFabColorDefault(this);
-                hueUtils.setActionBarColorDefault(this);
+//                hueUtils.setAddChatFabColorDefault(this);
+//                hueUtils.setActionBarColorDefault(this);
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
             }
             else
@@ -724,6 +731,11 @@ public class MainActivity extends SlidingActivity {
 
             return fragment;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig) ;
     }
 
     @Override

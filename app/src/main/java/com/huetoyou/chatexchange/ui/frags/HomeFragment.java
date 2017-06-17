@@ -37,7 +37,8 @@ public class HomeFragment extends Fragment {
         mHueUtils = new HueUtils();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        setChatButtonTint();
+
+//        setChatButtonTint();
         mHueUtils.setActionBarColorDefault((AppCompatActivity) getActivity());
         mHueUtils.setAddChatFabColorDefault((AppCompatActivity) getActivity());
 
@@ -48,13 +49,18 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        setChatButtonTint();
+        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
+            setChatButtonTint();
+        }
         super.onAttach(context);
     }
 
     @Override
     public void onResume() {
-        setChatButtonTint();
+        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
+            setChatButtonTint();
+        }
+//        setChatButtonTint();
         super.onResume();
     }
 
