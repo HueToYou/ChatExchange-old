@@ -260,45 +260,37 @@ public class HueUtils
 
     public void setTheme(Activity activity)
     {
-        /*if(mSharedPreferences == null)
+        if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
-        boolean currentThemeIsDark = (getCurrentThemeResID(activity) == R.style.DarkTheme);
 
-        if(!currentThemeIsDark && desiredThemeIsDark)
+        if(desiredThemeIsDark)
         {
             activity.setTheme(R.style.DarkTheme);
             //activity.recreate();
         }
         else
         {
-            activity.setTheme(R.style.AppTheme);
+            //activity.setTheme(R.style.AppTheme);
             //activity.recreate();
-        }*/
+        }
     }
 
-    public void setThemeOnResume(Activity activity)
+    public void setThemeOnResume(Activity activity, boolean oncreatejustcalled)
     {
-        /*if(mSharedPreferences == null)
+        if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
-        boolean currentThemeIsDark = (getCurrentThemeResID(activity) == R.style.DarkTheme);
-
-        if(!currentThemeIsDark && desiredThemeIsDark)
+        if(mSharedPreferences.getBoolean("FLAG_restartMain", false) && !oncreatejustcalled)
         {
+            mSharedPreferences.edit().putBoolean("FLAG_restartMain", false);
             activity.recreate();
         }
-        else
-        {
-            //activity.setTheme(R.style.AppTheme);
-            //activity.recreate();
-        }*/
     }
 
     private int getCurrentThemeResID(Activity activity)

@@ -81,7 +81,6 @@ public class MainActivity extends SlidingActivity {
     private ListView chatroomsList;
     private ImgTextArrayAdapter chatroomArrayAdapter;
     private SlidingMenu mCurrentUsers_SlidingMenu;
-
     private FragmentManager mFragmentManager;
 
     private Intent mIntent;
@@ -89,6 +88,7 @@ public class MainActivity extends SlidingActivity {
     private Set<String> mChatUrls = new HashSet<>();
 
     private boolean mUseDark;
+    private boolean oncreatejustcalled = false;
 
     private final String CHAT_URLS_KEY = "URLS";
 
@@ -116,6 +116,8 @@ public class MainActivity extends SlidingActivity {
         preSetup();
         createUsersSlidingMenu();
         setup();
+
+        oncreatejustcalled = true;
     }
 
     @Override
@@ -129,7 +131,12 @@ public class MainActivity extends SlidingActivity {
     @Override
     protected void onResume()
     {
-        hueUtils.setThemeOnResume(MainActivity.this);
+        hueUtils.setThemeOnResume(MainActivity.this, oncreatejustcalled);
+
+        if(oncreatejustcalled)
+        {
+            oncreatejustcalled = false;
+        }
 
         mAddListItemsFromURLList = new AddListItemsFromURLList();
         mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);

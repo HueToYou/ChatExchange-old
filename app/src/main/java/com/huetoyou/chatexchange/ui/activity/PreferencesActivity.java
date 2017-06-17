@@ -26,16 +26,18 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
     private static SharedPreferences mSharedPrefs;
     private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
     static HueUtils hueUtils = null;
+    private static boolean darkThemePrevState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        hueUtils = new HueUtils();
+        hueUtils.setTheme(PreferencesActivity.this);
+
+        super.onCreate(null);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        hueUtils = new HueUtils();
 
         hueUtils.setActionBarColorDefault(this);
 
@@ -85,6 +87,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
              * Dark theme preference
              */
             CheckBoxPreference darkThemePref = (CheckBoxPreference) findPreference("dark_theme");
+            darkThemePrevState = darkThemePref.isChecked();
             setDarkTheme(darkThemePref);
 
             /*
@@ -199,6 +202,17 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     boolean pref = Boolean.parseBoolean(newValue.toString());
 
                     mSharedPrefs.edit().putBoolean("darkTheme", pref).apply();
+
+                    if(pref != darkThemePrevState)
+                    {
+                        mSharedPrefs.edit().putBoolean("FLAG_restartMain", true).apply();
+                    }
+                    else
+                    {
+                        mSharedPrefs.edit().putBoolean("FLAG_restartMain", false).apply();
+                    }
+
+                    ((PreferencesActivity)getActivity()).recreate();
 
                     return true;
                 }
