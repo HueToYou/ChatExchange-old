@@ -22,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        hueUtils.setActionBarColorDefault(this);
+        hueUtils.setActionBarColorToSharedPrefsValue(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

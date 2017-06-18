@@ -163,10 +163,10 @@ public class MainActivity extends SlidingActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
-            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setActionBarColorToSharedPrefsValue(this);
 //            hueUtils.setAddChatFabColorDefault(this);
         } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
-            hueUtils.setActionBarColorDefault(this);
+            hueUtils.setActionBarColorToSharedPrefsValue(this);
 //            hueUtils.setAddChatFabColorDefault(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -361,7 +361,7 @@ public class MainActivity extends SlidingActivity {
 
                 if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
                     mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-                    hueUtils.setActionBarColorDefault(this);
+                    hueUtils.setActionBarColorToSharedPrefsValue(this);
 //                    hueUtils.setAddChatFabColorDefault(this);
                 }
 

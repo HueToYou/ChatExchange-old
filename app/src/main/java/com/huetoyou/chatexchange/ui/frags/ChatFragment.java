@@ -498,9 +498,9 @@ public class ChatFragment extends Fragment {
 
         else
         {
-            hueUtils.setActionBarColorDefault((AppCompatActivity) getActivity());
-            hueUtils.setChatFragmentFabColorDefault((AppCompatActivity) getActivity());
-            hueUtils.setAddChatFabColorDefault((AppCompatActivity) getActivity());
+            hueUtils.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            hueUtils.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
         }
 
         getActivity().setTitle(mChatTitle);

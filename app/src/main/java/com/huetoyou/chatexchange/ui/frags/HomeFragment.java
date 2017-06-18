@@ -39,8 +39,8 @@ public class HomeFragment extends Fragment {
 
 
 //        setChatButtonTint();
-        mHueUtils.setActionBarColorDefault((AppCompatActivity) getActivity());
-        mHueUtils.setAddChatFabColorDefault((AppCompatActivity) getActivity());
+        mHueUtils.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        mHueUtils.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
 
         mAccountManager = AccountManager.get(getActivity());
 

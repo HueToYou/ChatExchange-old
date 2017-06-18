@@ -40,7 +40,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        hueUtils.setActionBarColorDefault(this);
+        hueUtils.setActionBarColorToSharedPrefsValue(this);
 
         AccountManager mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0)
@@ -73,7 +73,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    hueUtils.setActionBarColorDefault(((PreferencesActivity)getActivity()));
+                    hueUtils.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });
@@ -93,7 +93,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    hueUtils.setActionBarColorDefault(((PreferencesActivity)getActivity()));
+                    hueUtils.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });

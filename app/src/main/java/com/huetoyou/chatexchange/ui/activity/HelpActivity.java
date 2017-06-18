@@ -21,7 +21,7 @@ public class HelpActivity extends AppCompatActivity
         setContentView(R.layout.activity_help);
 
 
-        hueUtils.setActionBarColorDefault(this);
+        hueUtils.setActionBarColorToSharedPrefsValue(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

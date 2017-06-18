@@ -67,7 +67,7 @@ public class HueUtils
         }
     }
 
-    public void setActionBarColorDefault(AppCompatActivity activity)
+    public void setActionBarColorToSharedPrefsValue(AppCompatActivity activity)
     {
         if(mSharedPreferences == null)
         {
@@ -100,7 +100,7 @@ public class HueUtils
         }
     }
 
-    public void setActionBarColorDefault(AppCompatPreferenceActivity activity)
+    public void setActionBarColorToSharedPrefsValue(AppCompatPreferenceActivity activity)
     {
         if(mSharedPreferences == null)
         {
@@ -148,20 +148,7 @@ public class HueUtils
         }
     }
 
-    public void showAddChatFab(AppCompatActivity activity, boolean show)
-    {
-        FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
-        if(show)
-        {
-            addChat.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            addChat.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    public void setAddChatFabColorDefault(AppCompatActivity activity) {
+    public void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity) {
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -192,7 +179,7 @@ public class HueUtils
         tints(colorStateList, activity);
     }
 
-    public void setChatFragmentFabColorDefault(AppCompatActivity activity) {
+    public void setChatFragmentFabColorToSharedPrefsValue(AppCompatActivity activity) {
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -271,12 +258,6 @@ public class HueUtils
         if(desiredThemeIsDark)
         {
             activity.setTheme(R.style.DarkTheme);
-            //activity.recreate();
-        }
-        else
-        {
-            //activity.setTheme(R.style.AppTheme);
-            //activity.recreate();
         }
     }
 
