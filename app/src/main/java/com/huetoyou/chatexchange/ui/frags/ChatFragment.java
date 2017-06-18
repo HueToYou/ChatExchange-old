@@ -172,7 +172,7 @@ public class ChatFragment extends Fragment {
         Document document = Jsoup.parse(html);
         Elements elements = document.select("user-container");
 
-        Log.e("DOC", document.html());
+
 
         for (Element e : elements) {
             Elements link = e.select("a");
@@ -185,7 +185,6 @@ public class ChatFragment extends Fragment {
                 }
             }
 
-            Log.e("EEE", signature.html());
         }
     }
 

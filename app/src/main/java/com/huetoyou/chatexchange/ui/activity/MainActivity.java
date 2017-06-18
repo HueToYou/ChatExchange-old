@@ -293,7 +293,7 @@ public class MainActivity extends SlidingActivity {
         mHandler = new Handler();
 
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
-        Log.e("URLS", mChatUrls.toString());
+//        Log.e("URLS", mChatUrls.toString());
 
         //mEditor.putInt("tabIndex", 0).apply();
 
@@ -524,7 +524,7 @@ public class MainActivity extends SlidingActivity {
                     mChatUrls.add(url);
                     mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                     mEditor.apply();
-                    Log.e("URLSA", mChatUrls.toString());
+//                    Log.e("URLSA", mChatUrls.toString());
                     mAddListItemsFromURLList = new AddListItemsFromURLList();
                     mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
                 }
@@ -560,11 +560,11 @@ public class MainActivity extends SlidingActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Fragment remFrag = mFragmentManager.findFragmentByTag(mCurrentFragment);
                                     mChatUrls.remove(remFrag.getTag());
-                                    Log.e("TAG", remFrag.getTag());
+//                                    Log.e("TAG", remFrag.getTag());
                                     setFragmentByTag("home");
                                     mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
                                     mEditor.apply();
-                                    Log.e("URLSR", mChatUrls.toString());
+//                                    Log.e("URLSR", mChatUrls.toString());
                                     mAddListItemsFromURLList = new AddListItemsFromURLList();
                                     mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
                                 }
