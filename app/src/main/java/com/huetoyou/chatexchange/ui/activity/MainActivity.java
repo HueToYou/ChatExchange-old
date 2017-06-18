@@ -10,11 +10,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -24,13 +22,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,34 +36,31 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import com.crashlytics.android.Crashlytics;
-import com.huetoyou.chatexchange.net.RequestFactory;
+
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
-import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import android.widget.Toast;
-import io.fabric.sdk.android.Fabric;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.io.BufferedReader;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends SlidingActivity {
 
@@ -94,7 +85,9 @@ public class MainActivity extends SlidingActivity {
 
     private Handler mHandler;
 
-    private HueUtils hueUtils = null;
+    private Utils hueUtils = null;
+    private ThemeHue themeHue = null;
+    private ActionBarHue actionBarHue = null;
     private String mCurrentFragment;
 
     private boolean mCanAddChat = true;
@@ -107,8 +100,10 @@ public class MainActivity extends SlidingActivity {
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        hueUtils = new HueUtils();
-        hueUtils.setTheme(MainActivity.this);
+        hueUtils = new Utils();
+        themeHue = new ThemeHue();
+        actionBarHue = new ActionBarHue();
+        themeHue.setTheme(MainActivity.this);
 
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
@@ -131,7 +126,7 @@ public class MainActivity extends SlidingActivity {
     @Override
     protected void onResume()
     {
-        hueUtils.setThemeOnResume(MainActivity.this, oncreatejustcalled);
+        themeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
         if(oncreatejustcalled)
         {
@@ -144,11 +139,25 @@ public class MainActivity extends SlidingActivity {
 
         System.out.println("Hellu!");
 
-        if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+        if (mFragmentManager.findFragmentByTag("home").isDetached())
+        {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
-        } else {
+        }
+
+        else
+        {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
+        if (!mFragmentManager.findFragmentByTag("home").isDetached())
+        {
+            actionBarHue.setActionBarColorToSharedPrefsValue(this);
+        }
+
+        else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false))
+        {
+            actionBarHue.setActionBarColorToSharedPrefsValue(this);
         }
     }
 
@@ -158,18 +167,6 @@ public class MainActivity extends SlidingActivity {
             mAddListItemsFromURLList.cancel(true);
         }
         super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mFragmentManager.findFragmentByTag("home").isDetached()) {
-            hueUtils.setActionBarColorToSharedPrefsValue(this);
-//            hueUtils.setAddChatFabColorDefault(this);
-        } else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false)) {
-            hueUtils.setActionBarColorToSharedPrefsValue(this);
-//            hueUtils.setAddChatFabColorDefault(this);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -361,7 +358,7 @@ public class MainActivity extends SlidingActivity {
 
                 if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null) {
                     mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-                    hueUtils.setActionBarColorToSharedPrefsValue(this);
+                    //hueUtils.setActionBarColorToSharedPrefsValue(this);
 //                    hueUtils.setAddChatFabColorDefault(this);
                 }
 
@@ -452,7 +449,7 @@ public class MainActivity extends SlidingActivity {
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //                hueUtils.showAddChatFab(this, true);
-//                hueUtils.setAddChatFabColorDefault(this);
+                //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
 //                hueUtils.setActionBarColorDefault(this);
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
             }

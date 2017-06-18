@@ -3,14 +3,11 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,8 +18,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +35,9 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
-import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
@@ -64,7 +61,9 @@ public class ChatFragment extends Fragment {
     private EditText messageToSend;
     private HorizontalScrollView pingSuggestionsScrollView;
 
-    private HueUtils hueUtils = null;
+    private ActionBarHue actionBarHue = null;
+    private OtherFabsHue otherFabsHue = null;
+
     private Spanned mChatDesc;
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
@@ -92,8 +91,8 @@ public class ChatFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -109,8 +108,8 @@ public class ChatFragment extends Fragment {
             {
                 if(hasFocus)
                 {
-//                    Toast.makeText(getActivity(), "Got focus",
-//                            Toast.LENGTH_LONG).show();
+                    /*Toast.makeText(getActivity(), "Got focus",
+                    Toast.LENGTH_LONG).show();*/
                     pingSuggestionsScrollView.setVisibility(View.VISIBLE);
                 }
             }
@@ -118,7 +117,8 @@ public class ChatFragment extends Fragment {
 
         mFragmentManager = getFragmentManager();
 
-        hueUtils = new HueUtils();
+        actionBarHue = new ActionBarHue();
+        otherFabsHue = new OtherFabsHue();
 
         mSlidingMenu = ((MainActivity)getActivity()).getCurrentUsers_SlidingMenu();
 
@@ -146,6 +146,27 @@ public class ChatFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        System.out.println("Chat Frag OnResume");
+
+        actionBarHue = new ActionBarHue();
+        otherFabsHue = new OtherFabsHue();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
+            //hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+        }
+
+        else
+        {
+            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            //hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        }
+
+        getActivity().setTitle(mChatTitle);
     }
 
     @Override
@@ -490,17 +511,19 @@ public class ChatFragment extends Fragment {
     {
         super.onResume();
 
+        System.out.println("Chat Frag OnResume");
+
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            hueUtils.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
-            hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-            hueUtils.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
+            //hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
         }
 
         else
         {
-            hueUtils.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            hueUtils.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            //hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
         }
 
         getActivity().setTitle(mChatTitle);

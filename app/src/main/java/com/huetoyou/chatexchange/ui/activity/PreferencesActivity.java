@@ -16,7 +16,9 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.backend.BackendService;
 import com.huetoyou.chatexchange.ui.misc.AppCompatPreferenceActivity;
-import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jrummyapps.android.colorpicker.ColorPreference;
 
 import java.util.ArrayList;
@@ -25,22 +27,24 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 {
     private static SharedPreferences mSharedPrefs;
     private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
-    static HueUtils hueUtils = null;
+    static ActionBarHue actionBarHue = null;
+    static ThemeHue themeHue = null;
     private static boolean darkThemePrevState;
     static ColorPreference fabColorPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        hueUtils = new HueUtils();
-        hueUtils.setTheme(PreferencesActivity.this);
+        themeHue = new ThemeHue();
+        actionBarHue = new ActionBarHue();
+        themeHue.setTheme(PreferencesActivity.this);
 
         super.onCreate(null);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        hueUtils.setActionBarColorToSharedPrefsValue(this);
+        actionBarHue.setActionBarColorToSharedPrefsValue(this);
 
         AccountManager mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0)
@@ -73,7 +77,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    hueUtils.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    actionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });
@@ -93,7 +97,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    hueUtils.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    actionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });

@@ -13,13 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
+import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
 public class HomeFragment extends Fragment {
 
     private AccountManager mAccountManager;
     private View view;
-    private HueUtils mHueUtils;
+    private Utils mHueUtils;
+    private ActionBarHue actionBarHue;
+    private OtherFabsHue otherFabsHue;
     private SharedPreferences mSharedPreferences;
 
     public HomeFragment() {
@@ -27,20 +32,19 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
         getActivity().setTitle(getResources().getText(R.string.app_name));
 
-        mHueUtils = new HueUtils();
+        mHueUtils = new Utils();
+        actionBarHue = new ActionBarHue();
+        otherFabsHue = new OtherFabsHue();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
 
-//        setChatButtonTint();
-        mHueUtils.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-        mHueUtils.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
 
         mAccountManager = AccountManager.get(getActivity());
 
@@ -50,15 +54,20 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
-            setChatButtonTint();
+            //setChatButtonTint();
         }
         super.onAttach(context);
     }
 
     @Override
-    public void onResume() {
-        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
-            setChatButtonTint();
+    public void onResume()
+    {
+        actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+
+        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
+        {
+            //setChatButtonTint();
         }
 //        setChatButtonTint();
         super.onResume();
@@ -69,11 +78,11 @@ public class HomeFragment extends Fragment {
         super.onDetach();
     }
 
-    private void setChatButtonTint() {
-        mHueUtils = new HueUtils();
+    /*private void setChatButtonTint() {
+        mHueUtils = new Utils();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int initialColor = mSharedPreferences.getInt("default_color", getResources().getColor(R.color.colorPrimary));
         ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
         mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
-    }
+    }*/
 }

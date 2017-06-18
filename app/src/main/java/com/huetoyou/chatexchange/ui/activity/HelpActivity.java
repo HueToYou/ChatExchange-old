@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.misc.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 public class HelpActivity extends AppCompatActivity
 {
@@ -14,14 +16,14 @@ public class HelpActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        HueUtils hueUtils = new HueUtils();
-        hueUtils.setTheme(HelpActivity.this);
+        ThemeHue themeHue = new ThemeHue();
+        ActionBarHue actionBarHue = new ActionBarHue();
+        themeHue.setTheme(HelpActivity.this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-
-        hueUtils.setActionBarColorToSharedPrefsValue(this);
+        actionBarHue.setActionBarColorToSharedPrefsValue(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
