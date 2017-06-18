@@ -27,6 +27,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
     private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
     static HueUtils hueUtils = null;
     private static boolean darkThemePrevState;
+    static ColorPreference fabColorPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -84,6 +85,24 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             setAppBarColorChange(checkBoxPreference);
 
             /*
+             * FAB color preference
+             */
+            fabColorPreference = (ColorPreference) findPreference("fab_color");
+            colorPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    hueUtils.setActionBarColorDefault(((PreferencesActivity)getActivity()));
+                    return true;
+                }
+            });
+            if(checkBoxPreference.isChecked())
+            {
+                fabColorPreference.setEnabled(false);
+            }
+
+            /*
              * Dark theme preference
              */
             CheckBoxPreference darkThemePref = (CheckBoxPreference) findPreference("dark_theme");
@@ -125,6 +144,8 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     boolean pref = Boolean.parseBoolean(newValue.toString());
 
                     mSharedPrefs.edit().putBoolean("dynamicallyColorBar", pref).apply();
+
+                    fabColorPreference.setEnabled(!pref);
 
                     return true;
                 }
@@ -212,7 +233,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                         mSharedPrefs.edit().putBoolean("FLAG_restartMain", false).apply();
                     }
 
-                    ((PreferencesActivity)getActivity()).recreate();
+                    getActivity().recreate();
 
                     return true;
                 }

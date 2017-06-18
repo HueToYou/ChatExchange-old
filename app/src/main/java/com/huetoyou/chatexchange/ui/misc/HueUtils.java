@@ -200,7 +200,8 @@ public class HueUtils
 
         if (activity != null)
         {
-            int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
+            //int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));.
+            int initialColor = activity.getResources().getColor(R.color.colorAccent);
             ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
             tints(colorStateList, activity);
         }
@@ -291,24 +292,6 @@ public class HueUtils
             mSharedPreferences.edit().putBoolean("FLAG_restartMain", false);
             activity.recreate();
         }
-    }
-
-    private int getCurrentThemeResID(Activity activity)
-    {
-        int themeResId = 0;
-        try
-        {
-            Class<?> uhg = ContextThemeWrapper.class;
-            Method method = null;
-            method = uhg.getMethod("getThemeResId");
-            method.setAccessible(true);
-            themeResId = (Integer) method.invoke(activity);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return themeResId;
     }
 
     public int getColorInt(Activity activity, String url) {
