@@ -261,7 +261,11 @@ public class UserTileFragment extends Fragment implements Parcelable {
 
     @Override
     public void onDestroy() {
-        mGetIcon.cancel(true);
+        try {
+            mGetIcon.cancel(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 }
