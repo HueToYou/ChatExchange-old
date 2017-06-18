@@ -147,7 +147,7 @@ public class ChatFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        System.out.println("Chat Frag OnResume");
+        /*System.out.println("Chat Frag OnResume");
 
         actionBarHue = new ActionBarHue();
         otherFabsHue = new OtherFabsHue();
@@ -166,7 +166,7 @@ public class ChatFragment extends Fragment {
             otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
         }
 
-        getActivity().setTitle(mChatTitle);
+        getActivity().setTitle(mChatTitle);*/
     }
 
     @Override
