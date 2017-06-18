@@ -580,7 +580,7 @@ public class MainActivity extends SlidingActivity {
         return mChatroomSlidingMenu;
     }
 
-    private class AddListItemsFromURLList extends AsyncTask<Set<String>, Void, Void> {
+    private class AddListItemsFromURLList extends AsyncTask<Set, Void, Void> {
         private ArrayList<String> chatNames = new ArrayList<>();
         private ArrayList<String> chatUrls = new ArrayList<>();
         private ArrayList<Drawable> chatIcons = new ArrayList<>();
@@ -588,9 +588,8 @@ public class MainActivity extends SlidingActivity {
         private ArrayList<Fragment> chatFragments = new ArrayList<>();
         private ProgressBar loading;
 
-        @SafeVarargs
         @Override
-        protected final Void doInBackground(Set<String>... params) {
+        protected final Void doInBackground(Set... params) {
             mCanAddChat = false;
             chatNames = new ArrayList<>();
             chatUrls = new ArrayList<>();
@@ -606,13 +605,13 @@ public class MainActivity extends SlidingActivity {
                 }
             });
 
-            final Set<String> urls = params[0];
+            final Set urls = params[0];
 
             if (urls.size() < 1) {
                 return null;
             } else {
-                for (String s : urls) {
-                    addTab(s);
+                for (Object o : urls) {
+                    addTab(o.toString());
                     publishProgress();
                 }
             }
