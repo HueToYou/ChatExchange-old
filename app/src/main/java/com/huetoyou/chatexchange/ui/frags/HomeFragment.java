@@ -25,6 +25,7 @@ public class HomeFragment extends Fragment {
     private Utils mHueUtils;
     private ActionBarHue actionBarHue;
     private OtherFabsHue otherFabsHue;
+    private boolean oncreateHasBeenCalled = false;
     private SharedPreferences mSharedPreferences;
 
     public HomeFragment() {
@@ -48,6 +49,8 @@ public class HomeFragment extends Fragment {
 
         mAccountManager = AccountManager.get(getActivity());
 
+        oncreateHasBeenCalled = true;
+
         return view;
     }
 
@@ -59,11 +62,41 @@ public class HomeFragment extends Fragment {
         super.onAttach(context);
     }
 
+    public void hueTest()
+    {
+        System.out.println("Hue");
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                while(!oncreateHasBeenCalled);
+
+                getActivity().runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        hueAllTheThings();
+                    }
+                });
+            }
+        };
+        thread.start();
+    }
+
+    private void hueAllTheThings()
+    {
+
+        actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+    }
+
     @Override
     public void onResume()
     {
-        actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-        otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        hueAllTheThings();
 
         if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
         {

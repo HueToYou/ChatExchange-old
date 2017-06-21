@@ -150,7 +150,7 @@ public class MainActivity extends SlidingActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        if (!mFragmentManager.findFragmentByTag("home").isDetached())
+        /*if (!mFragmentManager.findFragmentByTag("home").isDetached())
         {
             actionBarHue.setActionBarColorToSharedPrefsValue(this);
         }
@@ -158,7 +158,7 @@ public class MainActivity extends SlidingActivity {
         else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false))
         {
             actionBarHue.setActionBarColorToSharedPrefsValue(this);
-        }
+        }*/
     }
 
     @Override
@@ -443,7 +443,9 @@ public class MainActivity extends SlidingActivity {
                     mFragmentManager.beginTransaction().detach(fragment).commit();
                 }
             }
-            mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag(tag)).commit();
+            Fragment fragToAttach = mFragmentManager.findFragmentByTag(tag);
+            mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+
 
             if(tag.equals("home"))
             {
@@ -452,6 +454,7 @@ public class MainActivity extends SlidingActivity {
                 //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
 //                hueUtils.setActionBarColorDefault(this);
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                ((HomeFragment) fragToAttach).hueTest();
             }
             else
             {
@@ -459,6 +462,7 @@ public class MainActivity extends SlidingActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
 //                hueUtils.showAddChatFab(this, false);
+                ((ChatFragment) fragToAttach).hueTest();
             }
         }
     }

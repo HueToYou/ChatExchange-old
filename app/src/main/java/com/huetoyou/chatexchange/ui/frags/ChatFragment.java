@@ -35,8 +35,8 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -50,10 +50,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment
+{
 
     private SharedPreferences mSharedPreferences;
     private View view;
+    private boolean oncreateHasBeenCalled = false;
 
     private @ColorInt int mAppBarColor;
     private SlidingMenu mSlidingMenu;
@@ -63,6 +65,7 @@ public class ChatFragment extends Fragment {
 
     private ActionBarHue actionBarHue = null;
     private OtherFabsHue otherFabsHue = null;
+    private ChatFragFabsHue chatFragFabsHue = null;
 
     private Spanned mChatDesc;
     private ArrayList<String> mChatTags = new ArrayList<>();
@@ -119,6 +122,7 @@ public class ChatFragment extends Fragment {
 
         actionBarHue = new ActionBarHue();
         otherFabsHue = new OtherFabsHue();
+        chatFragFabsHue = new ChatFragFabsHue();
 
         mSlidingMenu = ((MainActivity)getActivity()).getCurrentUsers_SlidingMenu();
 
@@ -140,33 +144,14 @@ public class ChatFragment extends Fragment {
         setupMessagePingList();
         setupMessages();
 
+        oncreateHasBeenCalled = true;
+
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        /*System.out.println("Chat Frag OnResume");
-
-        actionBarHue = new ActionBarHue();
-        otherFabsHue = new OtherFabsHue();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
-            //hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-        }
-
-        else
-        {
-            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            //hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-        }
-
-        getActivity().setTitle(mChatTitle);*/
     }
 
     @Override
@@ -187,6 +172,48 @@ public class ChatFragment extends Fragment {
 
             }
         });
+    }
+
+    private void hueAllTheThings()
+    {
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
+            chatFragFabsHue.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+        }
+
+        else
+        {
+            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            chatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        }
+
+        getActivity().setTitle(mChatTitle);
+    }
+
+    public void hueTest()
+    {
+        System.out.println("Hue");
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                while(!oncreateHasBeenCalled);
+
+                getActivity().runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        hueAllTheThings();
+                    }
+                });
+            }
+        };
+        thread.start();
     }
 
     private void processMessageViews(URL url, String html) {
@@ -513,20 +540,7 @@ public class ChatFragment extends Fragment {
 
         System.out.println("Chat Frag OnResume");
 
-        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
-            //hueUtils.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-        }
-
-        else
-        {
-            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            //hueUtils.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-        }
-
-        getActivity().setTitle(mChatTitle);
+        hueAllTheThings();
 
     }
 
