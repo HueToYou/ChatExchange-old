@@ -26,11 +26,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -66,6 +68,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
     private String CREATOR;
     private GetIcon mGetIcon;
     private GetIconForInfo mGetIconForInfo;
+    private ProgressBar mLoading;
+    private View mUserInfoView;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -84,6 +88,7 @@ public class UserTileFragment extends Fragment implements Parcelable {
         mSharedPreferences = getActivity().getSharedPreferences(getResources().getText(R.string.app_name).toString(), Context.MODE_PRIVATE);
 
         mUserInfo = mView.findViewById(R.id.user_info_tile);
+        mLoading = mView.findViewById(R.id.avatar_loading);
 
         mArgs = getArguments();
 
@@ -146,21 +151,21 @@ public class UserTileFragment extends Fragment implements Parcelable {
 
                 String time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
 
-                View view = View.inflate(getActivity(), R.layout.user_info, null);
+                mUserInfoView = View.inflate(getActivity(), R.layout.user_info, null);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                         .setCancelable(true)
                         .setTitle(getResources().getText(R.string.user_info) + " | " + mArgs.getString("userName", "Not Found!"))
-                        .setView(view)
+                        .setView(mUserInfoView)
                         .setPositiveButton("OK", null)
                         .create();
 
                 alertDialog.show();
 
-                user_image_info = view.findViewById(R.id.user_image);
-                TextView user_id = view.findViewById(R.id.user_id);
-                TextView user_last_post = view.findViewById(R.id.user_last_post);
-                TextView user_rep = view.findViewById(R.id.user_rep);
+                user_image_info = mUserInfoView.findViewById(R.id.user_image);
+                TextView user_id = mUserInfoView.findViewById(R.id.user_id);
+                TextView user_last_post = mUserInfoView.findViewById(R.id.user_last_post);
+                TextView user_rep = mUserInfoView.findViewById(R.id.user_rep);
 
                 try {
                     mGetIconForInfo = new GetIconForInfo();
@@ -202,6 +207,14 @@ public class UserTileFragment extends Fragment implements Parcelable {
                 } catch (Exception e) {
                     InputStream is = (InputStream) new URL(params[0]).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
+
+                    try {
+                        FileOutputStream fos = getActivity().openFileOutput(bmpKey, Context.MODE_PRIVATE);
+                        mIconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                        fos.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
 
                 int p = Integer.decode(params[1]);
@@ -224,6 +237,7 @@ public class UserTileFragment extends Fragment implements Parcelable {
                 //noinspection deprecation
                 mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             }
+            mLoading.setVisibility(View.GONE);
         }
     }
 
@@ -239,6 +253,14 @@ public class UserTileFragment extends Fragment implements Parcelable {
                 } catch (Exception e) {
                     InputStream is = (InputStream) new URL(params[0]).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
+
+                    try {
+                        FileOutputStream fos = getActivity().openFileOutput(bmpKey, Context.MODE_PRIVATE);
+                        mIconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                        fos.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
 
                 int p = Integer.decode(params[1]);
@@ -256,6 +278,7 @@ public class UserTileFragment extends Fragment implements Parcelable {
         @Override
         protected void onPostExecute(Drawable drawable) {
             user_image_info.setImageDrawable(drawable);
+            mUserInfoView.findViewById(R.id.info_loading).setVisibility(View.GONE);
         }
     }
 
