@@ -45,8 +45,6 @@ public class HomeFragment extends Fragment {
         otherFabsHue = new OtherFabsHue();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-
-
         mAccountManager = AccountManager.get(getActivity());
 
         oncreateHasBeenCalled = true;

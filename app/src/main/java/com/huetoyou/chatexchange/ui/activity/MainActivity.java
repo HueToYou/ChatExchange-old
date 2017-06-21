@@ -287,6 +287,7 @@ public class MainActivity extends SlidingActivity {
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
 
+
         mHandler = new Handler();
 
         mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
@@ -406,12 +407,17 @@ public class MainActivity extends SlidingActivity {
 
                 mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
 
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
-                    }
-                }, 400);
+                if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                        }
+                    }, 400);
+                } else {
+                    setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                }
+
 
                 getmChatroomSlidingMenu().toggle();
             }
@@ -447,7 +453,7 @@ public class MainActivity extends SlidingActivity {
 
             if(tag.equals("home"))
             {
-                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).attach(fragToAttach).commit();
+                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //                hueUtils.showAddChatFab(this, true);
                 //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
@@ -457,7 +463,11 @@ public class MainActivity extends SlidingActivity {
             }
             else
             {
-                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).attach(fragToAttach).commit();
+                if (mFragmentManager.findFragmentByTag("home").isDetached()) {
+                    mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+                } else {
+                    mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                }
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
