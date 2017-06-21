@@ -50,7 +50,7 @@ public class OtherFabsHue
             }
             else
             {
-                hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorPrimary));
+                hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorAccent));
             }
 
             ColorStateList colorStateList = ColorStateList.valueOf(hue);
