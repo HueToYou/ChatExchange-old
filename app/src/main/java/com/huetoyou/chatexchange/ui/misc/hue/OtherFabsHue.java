@@ -44,14 +44,7 @@ public class OtherFabsHue
             FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
             FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
 
-            if(mSharedPreferences.getBoolean("dynamic_bar_color", false))
-            {
-                hue = activity.getResources().getColor(R.color.colorAccent);
-            }
-            else
-            {
-                hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorAccent));
-            }
+            hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorAccent));
 
             ColorStateList colorStateList = ColorStateList.valueOf(hue);
 
