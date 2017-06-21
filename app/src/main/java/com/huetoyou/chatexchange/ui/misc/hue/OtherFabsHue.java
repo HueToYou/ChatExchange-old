@@ -42,6 +42,7 @@ public class OtherFabsHue
         {
             int hue = 0;
             FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
+            FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
 
             if(mSharedPreferences.getBoolean("dynamic_bar_color", false))
             {
@@ -56,6 +57,7 @@ public class OtherFabsHue
 
             if (addChat != null) {
                 addChat.setBackgroundTintList(colorStateList);
+                showChats.setBackgroundTintList(colorStateList);
             }
 
             //showChatsTint(colorStateList, activity);
