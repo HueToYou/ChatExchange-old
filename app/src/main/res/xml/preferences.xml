@@ -24,6 +24,7 @@
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="fab_color"
             android:id="@+id/fab_color_preference"
+            android:defaultValue="@color/colorAccent"
             android:summary="Choose a custom color for floating action buttons"
             app:cpv_allowCustom="true"
             app:cpv_allowPresets="true"
