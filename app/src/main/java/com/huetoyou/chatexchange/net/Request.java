@@ -3,6 +3,9 @@ package com.huetoyou.chatexchange.net;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebViewClient;
 
 import org.apache.commons.io.IOUtils;
 
@@ -96,6 +99,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             return error(e.getMessage());
         }
         connection.setRequestProperty("Cookie", params.cookies);
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0");
         connection.setDoInput(true);
         if (!params.method.equals("GET")) {
             connection.setDoOutput(true);

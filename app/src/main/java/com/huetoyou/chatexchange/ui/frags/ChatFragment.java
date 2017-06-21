@@ -18,6 +18,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.PageRetriever;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
@@ -83,11 +85,14 @@ public class ChatFragment extends Fragment
     public static final String USER_REP_KEY = "rep";
     public static final String USER_IS_MOD_KEY = "isMod";
     public static final String USER_IS_OWNER_KEY = "isOwner";
+    public static final String CHAT_HOST_DOMAIN = "hostDomain";
+
     private FragmentManager mFragmentManager;
     private EditText mMessage;
 
     private RequestFactory mRequestFactory;
     private String mChatTitle;
+    private String mChatDomain;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -143,6 +148,36 @@ public class ChatFragment extends Fragment
 
         setupMessagePingList();
         setupMessages();
+
+        mChatDomain = mSharedPreferences.getString(CHAT_HOST_DOMAIN.concat(mChatUrl), null);
+
+        if (mChatDomain == null || mChatDomain.isEmpty()) {
+            if (mChatUrl.contains("stackoverflow")) mChatDomain = "stackoverflow.com";
+            else {
+                mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+                    @Override
+                    public void onSucceeded(URL url, String data) {
+                        new GetHostDomainFromHtml(new DomainFoundListener() {
+                            @Override
+                            public void onSuccess(String text) {
+                                mSharedPreferences.edit().putString(CHAT_HOST_DOMAIN.concat(mChatUrl), text).apply();
+                                mChatDomain = text;
+                            }
+
+                            @Override
+                            public void onFail(String text) {
+                                mChatDomain = "Unknown";
+                            }
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+                        Log.e("WHOOPS", message);
+                    }
+                });
+            }
+        }
 
         oncreateHasBeenCalled = true;
 
@@ -455,6 +490,10 @@ public class ChatFragment extends Fragment
                 TextView url = d.findViewById(R.id.url_text);
                 url.setText(Html.fromHtml("<b>URL: </b><a href=\"".concat(mChatUrl).concat("\">").concat(mChatUrl).concat("</a>")));
                 url.setMovementMethod(LinkMovementMethod.getInstance());
+
+                TextView host = d.findViewById(R.id.domain_text);
+                host.setText(Html.fromHtml("<b>Domain: </b><a href=\"".concat("https://").concat(mChatDomain).concat("\">").concat("https://").concat(mChatDomain).concat("</a>")));
+                host.setMovementMethod(LinkMovementMethod.getInstance());
             }
         });
 
@@ -614,6 +653,49 @@ public class ChatFragment extends Fragment
     }
 
     public int getmAppBarColor() { return mAppBarColor; }
+
+    private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String> {
+        DomainFoundListener mDomainFoundListener;
+
+        public static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
+            GetHostDomainFromHtml h = new GetHostDomainFromHtml(domainFoundListener);
+            return h;
+        }
+
+        GetHostDomainFromHtml(DomainFoundListener domainFoundListener) {
+            mDomainFoundListener = domainFoundListener;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                Document document = Jsoup.parse(strings[0]);
+                Log.e("DOC", document.html());
+                Elements scripts = document.select("script");
+                Log.e("S", scripts.html());
+
+                Pattern p = Pattern.compile("host:(.*?),");
+                Matcher m = p.matcher(scripts.html());
+
+                while (!m.hitEnd()) {
+                    if (m.find()) return m.group().replace(",", "").replace("host: ", "").replace("'", "");
+                }
+            } catch (Exception e) {
+                mDomainFoundListener.onFail(e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String domain) {
+            mDomainFoundListener.onSuccess(domain);
+        }
+    }
+
+    private interface DomainFoundListener {
+        void onSuccess(String text);
+        void onFail(String text);
+    }
 
 //    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {
 //        @Override
