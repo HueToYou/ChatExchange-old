@@ -101,10 +101,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     return true;
                 }
             });
-            if(checkBoxPreference.isChecked())
-            {
-                fabColorPreference.setEnabled(false);
-            }
 
             /*
              * Dark theme preference
@@ -148,8 +144,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     boolean pref = Boolean.parseBoolean(newValue.toString());
 
                     mSharedPrefs.edit().putBoolean("dynamicallyColorBar", pref).apply();
-
-                    fabColorPreference.setEnabled(!pref);
 
                     return true;
                 }

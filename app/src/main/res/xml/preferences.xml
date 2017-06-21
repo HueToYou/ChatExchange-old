@@ -18,8 +18,8 @@
         <CheckBoxPreference
             android:key="dynamic_bar_color"
             android:id="@+id/app_bar_color_change"
-            android:title="Dynamic action bar color"
-            android:summary="Change action bar color based on color of current chat" />
+            android:title="Dynamic color scheme"
+            android:summary="Change color scheme based on color of current chat" />
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="fab_color"
