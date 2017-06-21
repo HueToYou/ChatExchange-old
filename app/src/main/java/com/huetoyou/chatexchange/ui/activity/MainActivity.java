@@ -444,11 +444,10 @@ public class MainActivity extends SlidingActivity {
                 }
             }
             Fragment fragToAttach = mFragmentManager.findFragmentByTag(tag);
-            mFragmentManager.beginTransaction().attach(fragToAttach).commit();
-
 
             if(tag.equals("home"))
             {
+                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).attach(fragToAttach).commit();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //                hueUtils.showAddChatFab(this, true);
                 //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
@@ -458,6 +457,7 @@ public class MainActivity extends SlidingActivity {
             }
             else
             {
+                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).attach(fragToAttach).commit();
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
