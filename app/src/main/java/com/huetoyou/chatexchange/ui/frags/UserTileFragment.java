@@ -48,38 +48,19 @@ import android.text.Html;
  * Created by Zacha on 5/31/2017.
  */
 
-public class UserTileFragment extends Fragment implements Parcelable {
+public class UserTileFragment extends Fragment {
     private View mView;
     private SharedPreferences mSharedPreferences;
     private TextView mUserInfo;
 
-    private final int NAME_INDEX = 0;
-    private final int URL_INDEX = 1;
-    private final int ID_INDEX = 2;
-    private final int LP_INDEX = 3;
-    private final int REP_INDEX = 4;
-    private final int MOD_INDEX = 5;
-    private final int OWN_INDEX = 6;
     private String mChatUrl;
     private Bundle mArgs;
     private ImageView user_image_info;
     private Bitmap mIconBitmap;
 
-    private String CREATOR;
     private GetIcon mGetIcon;
-    private GetIconForInfo mGetIconForInfo;
     private ProgressBar mLoading;
     private View mUserInfoView;
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     @Nullable
     @Override
@@ -118,8 +99,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
     }
 
     private void setAvatar(String url) {
-        mGetIcon = new GetIcon();
-        mGetIcon.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, "50");
+        mGetIcon = new GetIcon(url, 50, false);
+        mGetIcon.start();
     }
 
     private void setIsModOwner(boolean isMod, boolean isOwner) {
@@ -168,8 +149,8 @@ public class UserTileFragment extends Fragment implements Parcelable {
                 TextView user_rep = mUserInfoView.findViewById(R.id.user_rep);
 
                 try {
-                    mGetIconForInfo = new GetIconForInfo();
-                    mGetIconForInfo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mArgs.getString("userAvatarUrl", ""), "140");
+                    mGetIcon = new GetIcon(mArgs.getString("userAvatarUrl", ""), 140, true);
+                    mGetIcon.start();
                     user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
                     user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
                     user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
@@ -195,17 +176,29 @@ public class UserTileFragment extends Fragment implements Parcelable {
         });
     }
 
-    private class GetIcon extends AsyncTask<String, Void, Drawable> {
+    private class GetIcon extends Thread {
+        private String mUrl;
+        private int mSize;
+        private boolean mIsForInfoDialog;
+
+        GetIcon(String url, int size, boolean forInfo) {
+            mUrl = url;
+            mSize = size;
+            mIsForInfoDialog = forInfo;
+        }
+
         @Override
-        protected Drawable doInBackground(String... params) {
+        public void run() {
+            Drawable drawable;
+
             try {
-                String bmpKey = "AVATAR_" + params[0].replace("/", "");
+                String bmpKey = "AVATAR_" + mUrl.replace("/", "");
 
                 try {
                     FileInputStream fis = getActivity().openFileInput(bmpKey);
                     mIconBitmap = BitmapFactory.decodeStream(fis);
                 } catch (Exception e) {
-                    InputStream is = (InputStream) new URL(params[0]).getContent();
+                    InputStream is = (InputStream) new URL(mUrl).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
 
                     try {
@@ -217,75 +210,43 @@ public class UserTileFragment extends Fragment implements Parcelable {
                     }
                 }
 
-                int p = Integer.decode(params[1]);
+                int p = mSize;
 
                 Resources r = getResources();
                 int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
 
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
+                drawable = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
             } catch (Exception e) {
                 e.printStackTrace();
-                return VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
+                drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
             }
-        }
 
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            if (Build.VERSION.SDK_INT >= 21) {
-                mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-            } else {
-                //noinspection deprecation
-                mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-            }
-            mLoading.setVisibility(View.GONE);
-        }
-    }
-
-    private class GetIconForInfo extends AsyncTask<String, Void, Drawable> {
-        @Override
-        protected Drawable doInBackground(String... params) {
-            try {
-                String bmpKey = "AVATAR_" + params[0].replace("/", "");
-
-                try {
-                    FileInputStream fis = getActivity().openFileInput(bmpKey);
-                    mIconBitmap = BitmapFactory.decodeStream(fis);
-                } catch (Exception e) {
-                    InputStream is = (InputStream) new URL(params[0]).getContent();
-                    mIconBitmap = BitmapFactory.decodeStream(is);
-
-                    try {
-                        FileOutputStream fos = getActivity().openFileOutput(bmpKey, Context.MODE_PRIVATE);
-                        mIconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                        fos.close();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+            final Drawable drawable1 = drawable;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mIsForInfoDialog) {
+                        user_image_info.setImageDrawable(drawable1);
+                        mUserInfoView.findViewById(R.id.info_loading).setVisibility(View.GONE);
+                    } else {
+                        if (Build.VERSION.SDK_INT >= 21) {
+                            mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
+                        } else {
+                            //noinspection deprecation
+                            mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
+                        }
+                        mLoading.setVisibility(View.GONE);
                     }
                 }
-
-                int p = Integer.decode(params[1]);
-
-                Resources r = getResources();
-                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
-
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            user_image_info.setImageDrawable(drawable);
-            mUserInfoView.findViewById(R.id.info_loading).setVisibility(View.GONE);
+            });
         }
     }
 
     @Override
     public void onDestroy() {
         try {
-            mGetIcon.cancel(true);
+            mGetIcon.interrupt();
+//            mGetIconForInfo.interrupt();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -2,6 +2,7 @@ package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,9 +38,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
@@ -55,11 +59,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends SlidingActivity {
@@ -92,6 +96,27 @@ public class MainActivity extends SlidingActivity {
 
     private boolean mCanAddChat = true;
     private AddListItemsFromURLList mAddListItemsFromURLList;
+    private RequestFactory mRequestFactory;
+
+    private SparseArray<Fragment> mSOChats = new SparseArray<>();
+    private SparseArray<Fragment> mSEChats = new SparseArray<>();
+
+    private SparseIntArray mSOChatColors = new SparseIntArray();
+    private SparseIntArray mSEChatColors = new SparseIntArray();
+
+    private SparseArray<String> mSOChatNames = new SparseArray<>();
+    private SparseArray<String> mSEChatNames = new SparseArray<>();
+
+    private SparseArray<String> mSOChatUrls = new SparseArray<>();
+    private SparseArray<String> mSEChatUrls = new SparseArray<>();
+
+    private SparseArray<Drawable> mSOChatIcons = new SparseArray<>();
+    private SparseArray<Drawable> mSEChatIcons = new SparseArray<>();
+
+    private Set<String> mSOChatIDs = new HashSet<>();
+    private Set<String> mSEChatIDs = new HashSet<>();
+
+    private static MainActivity mainActivity;
 
     /*
      * Activity Lifecycle
@@ -100,10 +125,13 @@ public class MainActivity extends SlidingActivity {
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        mainActivity = this;
         hueUtils = new Utils();
         themeHue = new ThemeHue();
         actionBarHue = new ActionBarHue();
         themeHue.setTheme(MainActivity.this);
+
+        mRequestFactory = new RequestFactory();
 
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
@@ -133,8 +161,7 @@ public class MainActivity extends SlidingActivity {
             oncreatejustcalled = false;
         }
 
-        mAddListItemsFromURLList = new AddListItemsFromURLList();
-        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+        doFragmentStuff();
         super.onResume();
 
         System.out.println("Hellu!");
@@ -200,6 +227,9 @@ public class MainActivity extends SlidingActivity {
 
         mAccountManager = AccountManager.get(this);
 
+        mSOChatIDs = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
+        mSEChatIDs = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
+
         if(mSharedPrefs.getBoolean("isFirstRun", true))
         {
             Intent intent = new Intent(this, IntroActivity.class);
@@ -217,8 +247,7 @@ public class MainActivity extends SlidingActivity {
         else
         {
             if (mFragmentManager.findFragmentByTag("home") == null) mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-            mAddListItemsFromURLList = new AddListItemsFromURLList();
-            mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+            doFragmentStuff();
         }
 
         if (mIntent.getExtras() != null) {
@@ -240,6 +269,290 @@ public class MainActivity extends SlidingActivity {
                 }.execute();
             }
         }
+    }
+
+    public static <C> List<C> asList(SparseArray<C> sparseArray) {
+        if (sparseArray == null) return null;
+        List<C> arrayList = new ArrayList<C>(sparseArray.size());
+        for (int i = 0; i < sparseArray.size(); i++)
+            arrayList.add(sparseArray.valueAt(i));
+        return arrayList;
+    }
+
+    public static List<Integer> sparseIntArrayAsList(SparseIntArray sparseIntArray) {
+        if (sparseIntArray == null) return null;
+        List<Integer> arrayList = new ArrayList<>(sparseIntArray.size());
+        for (int i = 0; i < sparseIntArray.size(); i++)
+            arrayList.add(sparseIntArray.valueAt(i));
+        return arrayList;
+    }
+
+    private void doFragmentStuff() {
+//        Looper.prepare();
+        for (String s : mSEChatIDs) {
+            Log.e("ID", s);
+            final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
+            final String id = s;
+            mRequestFactory.get(chatUrl, true, new RequestFactory.Listener() {
+                @Override
+                public void onSucceeded(final URL url, String data) {
+                    mSEChatUrls.put(Integer.decode(id), chatUrl);
+                    AddList addList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
+                        @Override
+                        public void onStart() {
+                            mCanAddChat = false;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onProgress(String name, Drawable icon, Integer color) {
+                            Fragment fragment = addFragment(chatUrl, name, color);
+                            Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
+                            mSEChats.put(Integer.decode(id), fragment);
+                            mSEChatColors.put(Integer.decode(id), color);
+                            mSEChatIcons.put(Integer.decode(id), icon);
+                            mSEChatNames.put(Integer.decode(id), name);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            mCanAddChat = true;
+                            findViewById(R.id.loading_progress).setVisibility(View.GONE);
+                            ArrayList<String> names = new ArrayList<>();
+                            names.addAll(asList(mSEChatNames));
+                            names.addAll(asList(mSOChatNames));
+
+                            ArrayList<String> urls = new ArrayList<>();
+                            urls.addAll(asList(mSEChatUrls));
+                            urls.addAll(asList(mSOChatUrls));
+
+                            ArrayList<Drawable> icons = new ArrayList<>();
+                            icons.addAll(asList(mSEChatIcons));
+                            icons.addAll(asList(mSOChatIcons));
+
+                            ArrayList<Integer> colors = new ArrayList<>();
+                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
+                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
+
+                            ArrayList<Fragment> fragments = new ArrayList<>();
+                            fragments.addAll(asList(mSEChats));
+                            fragments.addAll(asList(mSOChats));
+
+                            addFragmentsToList(names, urls, icons, colors, fragments);
+                            initiateCurrentFragments(fragments);
+                        }
+                    });
+
+                    addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
+                    Log.e("FAIL", message.concat(id));
+                }
+            });
+        }
+
+        for (String s : mSOChatIDs) {
+            final String chatUrl = "https://chat.stackoverflow.com/rooms/".concat(s);
+            final String id = s;
+            mRequestFactory.get(chatUrl, true, new RequestFactory.Listener() {
+                @Override
+                public void onSucceeded(final URL url, String data) {
+                    mSOChatUrls.put(Integer.decode(id), chatUrl);
+                    AddList addList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
+                        @Override
+                        public void onStart() {
+                            mCanAddChat = false;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onProgress(String name, Drawable icon, Integer color) {
+                            Fragment fragment = addFragment(chatUrl, name, color);
+                            mSOChats.put(Integer.decode(id), fragment);
+                            mSOChatColors.put(Integer.decode(id), color);
+                            mSOChatIcons.put(Integer.decode(id), icon);
+                            mSOChatNames.put(Integer.decode(id), name);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            mCanAddChat = true;
+                            findViewById(R.id.loading_progress).setVisibility(View.GONE);
+                            ArrayList<String> names = new ArrayList<>();
+                            names.addAll(asList(mSEChatNames));
+                            names.addAll(asList(mSOChatNames));
+
+                            ArrayList<String> urls = new ArrayList<>();
+                            urls.addAll(asList(mSEChatUrls));
+                            urls.addAll(asList(mSOChatUrls));
+
+                            ArrayList<Drawable> icons = new ArrayList<>();
+                            icons.addAll(asList(mSEChatIcons));
+                            icons.addAll(asList(mSOChatIcons));
+
+                            ArrayList<Integer> colors = new ArrayList<>();
+                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
+                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
+
+                            ArrayList<Fragment> fragments = new ArrayList<>();
+                            fragments.addAll(asList(mSEChats));
+                            fragments.addAll(asList(mSOChats));
+
+                            addFragmentsToList(names, urls, icons, colors, fragments);
+                            initiateCurrentFragments(fragments);
+                        }
+                    });
+
+                    addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
+                    Log.e("FAIL", message.concat(id));
+                }
+            });
+        }
+
+//        mAddListItemsFromURLList = AddListItemsFromURLList.newInstance(new AddItemsListener() {
+//            @Override
+//            public void onStart() {
+//                mCanAddChat = false;
+//            }
+//
+//            @Override
+//            public void onProgressMade(String url, ArrayList<String> names, ArrayList<String> urls, ArrayList<Drawable> icons, ArrayList<Integer> colors, ArrayList<Fragment> fragments) {
+//                fragments = addTab(url, names, urls, icons, colors, fragments);
+//                if (fragments.size() > 0) {
+//                    initiateCurrentFragments(fragments);
+//                    addFragmentsToList(names, urls, icons, colors, fragments);
+//                } else {
+//                    removeAllFragmentsFromList();
+//                }
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//                mCanAddChat = true;
+//                findViewById(R.id.loading_progress).setVisibility(View.GONE);
+//            }
+//        });
+//        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+    }
+
+    private static class AddList extends AsyncTask<String, Void, Void> {
+        private String mHtmlData;
+        private String mChatId;
+        private String mChatUrl;
+        private AddListListener mAddListListener;
+        private SharedPreferences mSharedPreferences;
+        private String mName;
+        private Drawable mIcon;
+        private Integer mColor;
+
+        static AddList newInstance(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener) {
+           AddList a = new AddList(sharedPreferences, data, id, url, addListListener);
+           return a;
+        }
+
+        AddList(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener) {
+            mSharedPreferences = sharedPreferences;
+            mHtmlData = data;
+            mChatId = id;
+            mChatUrl = url;
+            mAddListListener = addListListener;
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            mAddListListener.onStart();
+            mName = getName(mHtmlData, mChatUrl);
+            mIcon = getIcon(mHtmlData, mChatUrl);
+            mColor = new Utils().getColorInt(mainActivity, mChatUrl);
+
+            publishProgress();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mAddListListener.onFinish();
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            mAddListListener.onProgress(mName, mIcon, mColor);
+            super.onProgressUpdate(values);
+        }
+
+        @Nullable
+        private String getName(String html, String url) {
+            try {
+                Elements spans = Jsoup.parse(html).select("span");
+
+                for (Element e : spans) {
+                    if (e.hasAttr("id") && e.attr("id").equals("roomname")) {
+                        mSharedPreferences.edit().putString(url + "Name", e.ownText()).apply();
+                        return e.ownText();
+                    }
+                }
+                String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
+                mSharedPreferences.edit().putString(url + "Name", ret).apply();
+                return ret;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Nullable
+        private Drawable getIcon(String html, String chatUrl) {
+            try {
+                Document document = Jsoup.parse(html);
+                Element head = document.head();
+                Element link = head.select("link").first();
+
+                String fav = link.attr("href");
+                if (!fav.contains("http")) fav = "https:".concat(fav);
+                URL url = new URL(fav);
+
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+                String FILENAME = "FAVICON_" + chatUrl.replace("/", "");
+                FileOutputStream fos = mainActivity.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.close();
+
+                Resources r = mainActivity.getResources();
+                int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+
+                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private interface AddListListener {
+        void onStart();
+        void onProgress(String name, Drawable icon, Integer color);
+        void onFinish();
     }
 
     private void createUsersSlidingMenu()
@@ -430,16 +743,17 @@ public class MainActivity extends SlidingActivity {
 
 
     private void setFragmentByChatId(String id, String domain) {
-        for (String url : mChatUrls) {
-            if (url.contains(domain) && url.contains(id)) {
-                setFragmentByTag(url);
-                break;
-            }
-        }
+//        for (String url : mChatUrls) {
+//            if (url.contains(domain) && url.contains(id)) {
+//                setFragmentByTag(url);
+//                break;
+//            }
+//        }
     }
 
     private void setFragmentByTag(String tag)
     {
+        Log.e("TAG", tag);
         if (mFragmentManager.getFragments() != null)
         {
             for (Fragment fragment : mFragmentManager.getFragments())
@@ -521,23 +835,26 @@ public class MainActivity extends SlidingActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String inputText = input.getText().toString();
-                    String url;
-
+//                    String url;
 
                     if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
-                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
+//                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
+                        mSOChatIDs.add(inputText);
                     } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
-                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
+//                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
+                        mSEChatIDs.add(inputText);
                     } else {
-                        url = inputText;
+//                        url = inputText;
                     }
 
-                    mChatUrls.add(url);
-                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
-                    mEditor.apply();
+                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+
+//                    mChatUrls.add(url);
+//                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
+//                    mEditor.apply();
 //                    Log.e("URLSA", mChatUrls.toString());
-                    mAddListItemsFromURLList = new AddListItemsFromURLList();
-                    mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+                    doFragmentStuff();
                 }
             });
             builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
@@ -570,14 +887,13 @@ public class MainActivity extends SlidingActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Fragment remFrag = mFragmentManager.findFragmentByTag(mCurrentFragment);
-                                    mChatUrls.remove(remFrag.getTag());
+//                                    mChatUrls.remove(remFrag.getTag());
 //                                    Log.e("TAG", remFrag.getTag());
                                     setFragmentByTag("home");
-                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
-                                    mEditor.apply();
+//                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
+//                                    mEditor.apply();
 //                                    Log.e("URLSR", mChatUrls.toString());
-                                    mAddListItemsFromURLList = new AddListItemsFromURLList();
-                                    mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
+                                    doFragmentStuff();
                                 }
                             })
                             .setNegativeButton(getResources().getText(R.string.generic_no), null)
@@ -591,30 +907,32 @@ public class MainActivity extends SlidingActivity {
         return mChatroomSlidingMenu;
     }
 
-    private class AddListItemsFromURLList extends AsyncTask<Set, Void, Void> {
+    private static class AddListItemsFromURLList extends AsyncTask<Set, String, Void> {
+        private AddItemsListener mAddItemsListener;
+
+        public static AddListItemsFromURLList newInstance(AddItemsListener addItemsListener) {
+            AddListItemsFromURLList a = new AddListItemsFromURLList(addItemsListener);
+            return a;
+        }
+
+        AddListItemsFromURLList(AddItemsListener addItemsListener) {
+            mAddItemsListener = addItemsListener;
+        }
+
         private ArrayList<String> chatNames = new ArrayList<>();
         private ArrayList<String> chatUrls = new ArrayList<>();
         private ArrayList<Drawable> chatIcons = new ArrayList<>();
         private ArrayList<Integer> chatColors = new ArrayList<>();
         private ArrayList<Fragment> chatFragments = new ArrayList<>();
-        private ProgressBar loading;
 
         @Override
         protected final Void doInBackground(Set... params) {
-            mCanAddChat = false;
+            mAddItemsListener.onStart();
             chatNames = new ArrayList<>();
             chatUrls = new ArrayList<>();
             chatIcons = new ArrayList<>();
             chatColors = new ArrayList<>();
             chatFragments = new ArrayList<>();
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    loading = mChatroomSlidingMenu.findViewById(R.id.loading_progress);
-                    loading.setVisibility(View.VISIBLE);
-                }
-            });
 
             final Set urls = params[0];
 
@@ -622,8 +940,7 @@ public class MainActivity extends SlidingActivity {
                 return null;
             } else {
                 for (Object o : urls) {
-                    addTab(o.toString());
-                    publishProgress();
+                    publishProgress(o.toString());
                 }
             }
 
@@ -631,123 +948,77 @@ public class MainActivity extends SlidingActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            if (chatFragments.size() > 0) {
-                initiateCurrentFragments(chatFragments);
-                addFragmentsToList(chatNames, chatUrls, chatIcons, chatColors, chatFragments);
-            } else {
-                removeAllFragmentsFromList();
-            }
+        protected void onProgressUpdate(String... values) {
+            mAddItemsListener.onProgressMade(values[0], chatNames, chatUrls, chatIcons, chatColors, chatFragments);
             super.onProgressUpdate(values);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mCanAddChat = true;
-            loading.setVisibility(View.GONE);
+            mAddItemsListener.onFinished();
             super.onPostExecute(aVoid);
         }
 
-        private void addTab(String url) {
-            String faviconKey = "FAVICON_" + url.replace("/", "");
-            String nameKey = url + "Name";
-            String colorKey = url + "Color";
 
-            String name;
-            Drawable icon;
-            Integer color;
+    }
 
-            name = mSharedPrefs.getString(nameKey, null);
-            color = mSharedPrefs.getInt(colorKey, -1);
+    private interface AddItemsListener {
+        void onStart();
+        void onProgressMade(String url, ArrayList<String> names, ArrayList<String> urls, ArrayList<Drawable> icons, ArrayList<Integer> colors, ArrayList<Fragment> fragments);
+        void onFinished();
+    }
 
-            try {
-                FileInputStream fis = openFileInput(faviconKey);
-                Bitmap bmp = BitmapFactory.decodeStream(fis);
-                Resources r = getResources();
-                int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+//    private ArrayList<Fragment> addTab(String url, ArrayList<String> chatNames, ArrayList<String> chatUrls, ArrayList<Drawable> chatIcons, ArrayList<Integer> chatColors, ArrayList<Fragment> chatFragments) {
+//        String faviconKey = "FAVICON_" + url.replace("/", "");
+//        String nameKey = url + "Name";
+//        String colorKey = url + "Color";
+//
+//        String name;
+//        Drawable icon;
+//        Integer color;
+//
+//        name = mSharedPrefs.getString(nameKey, null);
+//        color = mSharedPrefs.getInt(colorKey, -1);
+//
+//        try {
+//            FileInputStream fis = openFileInput(faviconKey);
+//            Bitmap bmp = BitmapFactory.decodeStream(fis);
+//            Resources r = getResources();
+//            int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+//
+//            icon = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
+//        } catch (Exception e) {
+//            icon = getIcon(url);
+//        }
+//
+//        if (name == null) name = getName(url);
+//        if (color == -1) color = hueUtils.getColorInt(MainActivity.this, url);
+//
+//        chatNames.add(name);
+//        chatUrls.add(url);
+//        chatIcons.add(icon);
+//        chatColors.add(color);
+//        chatFragments.add(addFragment(url, name, color));
+//
+//        return chatFragments;
+//    }
 
-                icon = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
-            } catch (Exception e) {
-                icon = getIcon(url);
-            }
 
-            if (name == null) name = getName(url);
-            if (color == -1) color = hueUtils.getColorInt(MainActivity.this, url);
+    private Fragment addFragment(String url, String name, Integer color) {
+        Fragment fragment;
+        if (mFragmentManager.findFragmentByTag(url) != null) {
+            fragment = mFragmentManager.findFragmentByTag(url);
+        } else {
+            fragment = new ChatFragment();
+            Bundle args = new Bundle();
+            args.putString("chatTitle", name);
+            args.putString("chatUrl", url);
+            args.putInt("chatColor", color);
 
-            chatNames.add(name);
-            chatUrls.add(url);
-            chatIcons.add(icon);
-            chatColors.add(color);
-            chatFragments.add(addFragment(url, name, color));
+            fragment.setArguments(args);
         }
 
-        @Nullable
-        private String getName(String url) {
-            try {
-                Elements spans = Jsoup.connect(url).get().select("span");
-
-                for (Element e : spans) {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomname")) {
-                        mSharedPrefs.edit().putString(url + "Name", e.ownText()).apply();
-                        return e.ownText();
-                    }
-                }
-                String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
-                mSharedPrefs.edit().putString(url + "Name", ret).apply();
-                return ret;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Nullable
-        private Drawable getIcon(String chatUrl) {
-            try {
-                Document document = Jsoup.connect(chatUrl).get();
-                Element head = document.head();
-                Element link = head.select("link").first();
-
-                String fav = link.attr("href");
-                if (!fav.contains("http")) fav = "https:".concat(fav);
-                URL url = new URL(fav);
-
-                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                String FILENAME = "FAVICON_" + chatUrl.replace("/", "");
-                FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.close();
-
-                Resources r = getResources();
-                int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-
-
-        private Fragment addFragment(String url, String name, Integer color) {
-            Fragment fragment;
-            if (mFragmentManager.findFragmentByTag(url) != null) {
-                fragment = mFragmentManager.findFragmentByTag(url);
-            } else {
-                fragment = new ChatFragment();
-                Bundle args = new Bundle();
-                args.putString("chatTitle", name);
-                args.putString("chatUrl", url);
-                args.putInt("chatColor", color);
-
-                fragment.setArguments(args);
-            }
-
-            return fragment;
-        }
+        return fragment;
     }
 
     @Override

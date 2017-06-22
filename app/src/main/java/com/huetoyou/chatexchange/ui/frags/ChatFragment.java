@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -135,14 +136,97 @@ public class ChatFragment extends Fragment
         mChatUrl = args.getString("chatUrl", "ERROR");
         mChatTitle = args.getString("chatTitle", "ERROR");
 
-        new GetDesc().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
-        new GetTags().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
-
         mAppBarColor = args.getInt("chatColor", -1);
 
         addChatButtons(mChatUrl);
-        ParseUsers parseUsers = new ParseUsers();
-        parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrl);
+
+        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+            @Override
+            public void onSucceeded(URL url, String data) {
+                GetDesc getDesc = GetDesc.newInstance(new DescGotten() {
+                    @Override
+                    public void onSuccess(String desc) {
+                        mChatDesc = Html.fromHtml("<b>Desc: </b>" + desc);
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                });
+
+                getDesc.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+
+                GetTags getTags = GetTags.newInstance(new TagsGotten() {
+                    @Override
+                    public void onSuccess(ArrayList<String> tabList) {
+                        mChatTags = tabList;
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String tags = "";
+                                if (mChatTags != null) {
+                                    tags = mChatTags.toString();
+                                    tags = tags.replace("[", "").replace("]", "");
+                                }
+
+                                mChatTagsSpanned = Html.fromHtml("<b>Tags: </b>" + tags);
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                });
+                getTags.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+
+                ParseUsers parseUsers = ParseUsers.newInstance(new UserParsed() {
+                    @Override
+                    public void onSuccess(String usersJson) {
+                        try {
+//                            Log.e("TTTT", usersJson.substring(2058));
+                            JSONObject object = new JSONObject(usersJson);
+                            JSONArray jArray = object.getJSONArray("users");
+
+                            for (int i = 0; i < jArray.length(); i++)
+                            {
+                                JSONObject jsonObject = jArray.getJSONObject(i);
+
+                                int id = jsonObject.getInt("id");
+                                int lastPost = jsonObject.getInt("last_post");
+                                int rep = jsonObject.getInt("reputation");
+
+                                boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
+                                boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
+
+                                String name = jsonObject.getString("name");
+                                String icon = jsonObject.getString("email_hash");
+
+                                if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+
+                                addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                });
+                parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+            }
+
+            @Override
+            public void onFailed(String message) {
+
+            }
+        });
 
         getActivity().setTitle(mChatTitle);
 
@@ -255,8 +339,6 @@ public class ChatFragment extends Fragment
         Document document = Jsoup.parse(html);
         Elements elements = document.select("user-container");
 
-
-
         for (Element e : elements) {
             Elements link = e.select("a");
             Element signature = new Element("");
@@ -356,15 +438,26 @@ public class ChatFragment extends Fragment
         void setName(UsernameTilePingFragment usernameTilePingFragment);
     }
 
-    private class ParseUsers extends AsyncTask<String, Void, Void> {
+    private static class ParseUsers extends AsyncTask<String, Void, String> {
+        private UserParsed mUserParsed;
+
+        static ParseUsers newInstance(UserParsed userParsed) {
+            ParseUsers p = new ParseUsers(userParsed);
+            return p;
+        }
+
+        ParseUsers(UserParsed userParsed) {
+            mUserParsed = userParsed;
+        }
+
         @Override
-        protected Void doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             Document html = new Document("");
 
             String users;
 
             try {
-                html = Jsoup.connect(params[0]).get();
+                html = Jsoup.parse(params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -394,7 +487,7 @@ public class ChatFragment extends Fragment
                     .replace("(", "")
                     .replace(")", "")
                     .replace("id:", "\"id\":")
-                    .replace("name", "\"name\"")
+                    .replace(" name", " \"name\"")
                     .replace("email_hash", "\"email_hash\"")
                     .replace("reputation", "\"reputation\"")
                     .replace("last_post", "\"last_post\"")
@@ -402,35 +495,24 @@ public class ChatFragment extends Fragment
                     .replace("is_owner", "\"is_owner\"")
 //                        .replace("true", "\"true\"")
                     .replace("}{", "},{")
-                    .replace("!", "");
+                    .replace("!", "")
+                    .replace("\"\"", "\\\"")
+                    .replace("=", "\\=")
+                    .replace("&", "\\&");
 
-            try {
-                JSONObject object = new JSONObject(users2);
-                JSONArray jArray = object.getJSONArray("users");
-
-                for (int i = 0; i < jArray.length(); i++)
-                {
-                    JSONObject jsonObject = jArray.getJSONObject(i);
-
-                    int id = jsonObject.getInt("id");
-                    int lastPost = jsonObject.getInt("last_post");
-                    int rep = jsonObject.getInt("reputation");
-
-                    boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
-                    boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
-
-                    String name = jsonObject.getString("name");
-                    String icon = jsonObject.getString("email_hash");
-
-                    if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
-
-                    addUser(name, icon, id, lastPost, rep, isMod, isOwner, params[0]);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+            return users2;
         }
+
+        @Override
+        protected void onPostExecute(String s) {
+            mUserParsed.onSuccess(s);
+            super.onPostExecute(s);
+        }
+    }
+
+    private interface UserParsed {
+        void onSuccess(String usersJson);
+        void onFail(String message);
     }
 
     private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
@@ -583,16 +665,28 @@ public class ChatFragment extends Fragment
 
     }
 
-    private class GetDesc extends AsyncTask<String, Void, String> {
+    private static class GetDesc extends AsyncTask<String, Void, String> {
+        private DescGotten mDescGotten;
+
+        static GetDesc newInstance(DescGotten descGotten) {
+            GetDesc g = new GetDesc(descGotten);
+            return g;
+        }
+
+        GetDesc(DescGotten descGotten) {
+            mDescGotten = descGotten;
+        }
+
         @Override
         protected String doInBackground(String... params) {
             try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div");
+                Elements divs = Jsoup.parse(params[0]).select("div");
 
                 for (Element e : divs) {
                     if (e.hasAttr("id") && e.attr("id").equals("roomdesc")) return e.html();
                 }
 
+                mDescGotten.onFail("NULL");
                 return null;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -602,15 +696,31 @@ public class ChatFragment extends Fragment
 
         @Override
         protected void onPostExecute(String s) {
-            mChatDesc = Html.fromHtml("<b>Desc: </b>" + s);
+            mDescGotten.onSuccess(s);
         }
     }
 
-    private class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
+    private interface DescGotten {
+        void onSuccess(String desc);
+        void onFail(String message);
+    }
+
+    private static class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
+        private TagsGotten mTagsGotten;
+
+        public static GetTags newInstance(TagsGotten tagsGotten) {
+            GetTags g = new GetTags(tagsGotten);
+            return g;
+        }
+
+        GetTags(TagsGotten tagsGotten) {
+            mTagsGotten = tagsGotten;
+        }
+
         @Override
         protected ArrayList<String> doInBackground(String... params) {
             try {
-                Elements divs = Jsoup.connect(params[0]).get().select("div").select("a");
+                Elements divs = Jsoup.parse(params[0]).select("div").select("a");
                 ArrayList<String> tagList = new ArrayList<>();
 
                 for (Element e : divs) {
@@ -621,27 +731,20 @@ public class ChatFragment extends Fragment
 
                 return tagList;
             } catch (Exception e) {
+                mTagsGotten.onFail("NULL");
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> strings) {
-            mChatTags = strings;
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    String tags = "";
-                    if (mChatTags != null) {
-                        tags = mChatTags.toString();
-                        tags = tags.replace("[", "").replace("]", "");
-                    }
-
-                    mChatTagsSpanned = Html.fromHtml("<b>Tags: </b>" + tags);
-                }
-            }).start();
+            mTagsGotten.onSuccess(strings);
         }
+    }
+
+    private interface TagsGotten {
+        void onSuccess(ArrayList<String> tabList);
+        void onFail(String message);
     }
 
     public SlidingMenu getmSlidingMenu() {
