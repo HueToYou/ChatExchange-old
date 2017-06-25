@@ -11,9 +11,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.huetoyou.chatexchange.R;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
-    private final String TAG = "ChatExchange";
-
-    private final int NOTIF_ID = 100;
+    private static final String TAG = "ChatExchange";
+    private static final int NOTIF_ID = 100;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -42,7 +41,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
     //this won't work until we use the API
     private void sendNotification(String messageBody) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "global")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Event tracker")
                 .setContentText("Events received");

@@ -236,7 +236,7 @@ public class MainActivity extends SlidingActivity {
 
     @SuppressLint("StaticFieldLeak")
     private void respondToNotificationClick() {
-        if (mIntent.getExtras() != null) {
+        if (getIntent().getExtras() != null) {
             Log.e("NOTIF", "NOTIF");
             final String chatId = mIntent.getExtras().getString("chatId");
             final String chatDomain = mIntent.getExtras().getString("chatDomain");
