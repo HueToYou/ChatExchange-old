@@ -1,5 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     private String mURL;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,9 @@ public class WebViewActivity extends AppCompatActivity {
 //        mParentView.addView(mWebView);
         setContentView(R.layout.fragment_star_webview);
         Intent intent = getIntent();
+
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             mURL = intent.getStringExtra("url");
@@ -51,6 +56,7 @@ public class WebViewActivity extends AppCompatActivity {
                 return true;
             }
         });
+        webView.getSettings().setJavaScriptEnabled(true);
 
         openInWV.setVisibility(View.GONE);
 
@@ -72,5 +78,11 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 }

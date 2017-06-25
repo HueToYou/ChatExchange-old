@@ -67,8 +67,8 @@ public class MessgFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.message_view, container, false);
-        TextView messgBody = (TextView) mView.findViewById(R.id.message_body);
-        TextView username = (TextView) mView.findViewById(R.id.messg_username);
+        TextView messgBody = mView.findViewById(R.id.message_body);
+        TextView username = mView.findViewById(R.id.messg_username);
         messgBody.setText(mParam2);
         username.setText(mParam1);
         return mView;

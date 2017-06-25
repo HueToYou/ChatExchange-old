@@ -20,7 +20,6 @@
         tools:ignore="UselessParent">
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/ic_launcher"
@@ -30,18 +29,15 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <View
-            android:id="@+id/view6"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/activity_vertical_margin" />
 
         <TextView
-            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_authenticator_description" />
 
         <View
-            android:id="@+id/view5"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/activity_vertical_margin" />
 
@@ -66,7 +62,6 @@
             android:text="@string/activity_authenticator_show_password" />
 
         <View
-            android:id="@+id/view4"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/activity_vertical_margin" />
 

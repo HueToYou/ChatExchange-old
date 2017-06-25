@@ -10,12 +10,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -30,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -169,8 +166,10 @@ public class UserTileFragment extends Fragment {
 
                 addr = addr.concat(String.valueOf(id));
 
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(addr));
-                startActivity(browserIntent);
+                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra("url", addr).setAction(Intent.ACTION_VIEW));
+
+//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(addr));
+//                startActivity(browserIntent);
                 return true;
             }
         });

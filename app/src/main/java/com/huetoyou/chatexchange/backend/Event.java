@@ -45,7 +45,7 @@ public class Event implements Parcelable {
         dest.writeInt(mEventType);
     }
 
-    protected Event(Parcel in) {
+    private Event(Parcel in) {
         mId = in.readInt();
         mEventType = in.readInt();
     }

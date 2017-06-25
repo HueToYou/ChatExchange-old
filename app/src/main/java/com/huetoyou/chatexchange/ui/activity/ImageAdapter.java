@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.huetoyou.chatexchange.R;
 
-public class ImageAdapter extends BaseAdapter {
+class ImageAdapter extends BaseAdapter {
     private Context mContext;
 
     public ImageAdapter(Context c) {

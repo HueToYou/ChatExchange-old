@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
@@ -25,6 +24,7 @@ public class HelpActivity extends AppCompatActivity
 
         actionBarHue.setActionBarColorToSharedPrefsValue(this);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

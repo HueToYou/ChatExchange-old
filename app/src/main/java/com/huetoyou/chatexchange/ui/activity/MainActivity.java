@@ -2,7 +2,6 @@ package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,6 +64,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends SlidingActivity {
 
@@ -80,22 +81,14 @@ public class MainActivity extends SlidingActivity {
 
     private Intent mIntent;
 
-    private Set<String> mChatUrls = new HashSet<>();
-
-    private boolean mUseDark;
     private boolean oncreatejustcalled = false;
-
-    private final String CHAT_URLS_KEY = "URLS";
 
     private Handler mHandler;
 
-    private Utils hueUtils = null;
     private ThemeHue themeHue = null;
-    private ActionBarHue actionBarHue = null;
     private String mCurrentFragment;
 
     private boolean mCanAddChat = true;
-    private AddListItemsFromURLList mAddListItemsFromURLList;
     private RequestFactory mRequestFactory;
 
     private SparseArray<Fragment> mSOChats = new SparseArray<>();
@@ -116,7 +109,9 @@ public class MainActivity extends SlidingActivity {
     private Set<String> mSOChatIDs = new HashSet<>();
     private Set<String> mSEChatIDs = new HashSet<>();
 
+    @SuppressLint("StaticFieldLeak")
     private static MainActivity mainActivity;
+    private AddList mAddList;
 
     /*
      * Activity Lifecycle
@@ -126,9 +121,7 @@ public class MainActivity extends SlidingActivity {
     public void onCreate(Bundle savedInstanceState)
     {
         mainActivity = this;
-        hueUtils = new Utils();
         themeHue = new ThemeHue();
-        actionBarHue = new ActionBarHue();
         themeHue.setTheme(MainActivity.this);
 
         mRequestFactory = new RequestFactory();
@@ -141,14 +134,6 @@ public class MainActivity extends SlidingActivity {
         setup();
 
         oncreatejustcalled = true;
-    }
-
-    @Override
-    protected void onPause() {
-        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
-            mAddListItemsFromURLList.cancel(true);
-        }
-        super.onPause();
     }
 
     @Override
@@ -168,14 +153,19 @@ public class MainActivity extends SlidingActivity {
 
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
+            //noinspection ConstantConditions
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
         }
 
         else
         {
+            //noinspection ConstantConditions
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
+        mIntent = getIntent();
+        respondToNotificationClick();
 
         /*if (!mFragmentManager.findFragmentByTag("home").isDetached())
         {
@@ -186,14 +176,6 @@ public class MainActivity extends SlidingActivity {
         {
             actionBarHue.setActionBarColorToSharedPrefsValue(this);
         }*/
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mAddListItemsFromURLList != null && mAddListItemsFromURLList.getStatus() == AsyncTask.Status.RUNNING) {
-            mAddListItemsFromURLList.cancel(true);
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -215,7 +197,6 @@ public class MainActivity extends SlidingActivity {
      * Setup procedure
      */
 
-    @SuppressLint("StaticFieldLeak")
     private void setup() {
         FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -250,7 +231,13 @@ public class MainActivity extends SlidingActivity {
             doFragmentStuff();
         }
 
+        respondToNotificationClick();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void respondToNotificationClick() {
         if (mIntent.getExtras() != null) {
+            Log.e("NOTIF", "NOTIF");
             final String chatId = mIntent.getExtras().getString("chatId");
             final String chatDomain = mIntent.getExtras().getString("chatDomain");
 
@@ -258,7 +245,10 @@ public class MainActivity extends SlidingActivity {
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        while (!mAddListItemsFromURLList.getStatus().equals(Status.FINISHED));
+                        if (chatDomain.contains("exchange")) //noinspection StatementWithEmptyBody
+                            while (mSEChatUrls.get(Integer.decode(chatId)) == null);
+                        else if (chatDomain.contains("overflow")) //noinspection StatementWithEmptyBody
+                            while (mSOChatUrls.get(Integer.decode(chatId)) == null);
                         return null;
                     }
 
@@ -266,20 +256,20 @@ public class MainActivity extends SlidingActivity {
                     protected void onPostExecute(Void aVoid) {
                         setFragmentByChatId(chatId, chatDomain);
                     }
-                }.execute();
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     }
 
-    public static <C> List<C> asList(SparseArray<C> sparseArray) {
+    private static <C> List<C> asList(SparseArray<C> sparseArray) {
         if (sparseArray == null) return null;
-        List<C> arrayList = new ArrayList<C>(sparseArray.size());
+        List<C> arrayList = new ArrayList<>(sparseArray.size());
         for (int i = 0; i < sparseArray.size(); i++)
             arrayList.add(sparseArray.valueAt(i));
         return arrayList;
     }
 
-    public static List<Integer> sparseIntArrayAsList(SparseIntArray sparseIntArray) {
+    private static List<Integer> sparseIntArrayAsList(SparseIntArray sparseIntArray) {
         if (sparseIntArray == null) return null;
         List<Integer> arrayList = new ArrayList<>(sparseIntArray.size());
         for (int i = 0; i < sparseIntArray.size(); i++)
@@ -288,6 +278,16 @@ public class MainActivity extends SlidingActivity {
     }
 
     private void doFragmentStuff() {
+        mSEChatUrls = new SparseArray<>();
+        mSOChatUrls = new SparseArray<>();
+        mSEChatColors = new SparseIntArray();
+        mSOChatColors = new SparseIntArray();
+        mSEChatIcons = new SparseArray<>();
+        mSOChatIcons = new SparseArray<>();
+        mSEChatNames = new SparseArray<>();
+        mSOChatNames = new SparseArray<>();
+        mSEChats = new SparseArray<>();
+        mSOChats = new SparseArray<>();
 //        Looper.prepare();
         for (String s : mSEChatIDs) {
             Log.e("ID", s);
@@ -297,7 +297,7 @@ public class MainActivity extends SlidingActivity {
                 @Override
                 public void onSucceeded(final URL url, String data) {
                     mSEChatUrls.put(Integer.decode(id), chatUrl);
-                    AddList addList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
+                    mAddList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
                         @Override
                         public void onStart() {
                             mCanAddChat = false;
@@ -348,12 +348,14 @@ public class MainActivity extends SlidingActivity {
                         }
                     });
 
-                    addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    mAddList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
 
                 @Override
                 public void onFailed(String message) {
-                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
+                    mSEChatIDs.remove(id);
+                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
                     Log.e("FAIL", message.concat(id));
                 }
             });
@@ -422,10 +424,14 @@ public class MainActivity extends SlidingActivity {
                 @Override
                 public void onFailed(String message) {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
+                    mSOChatIDs.remove(id);
+                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                     Log.e("FAIL", message.concat(id));
                 }
             });
         }
+
+        if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0) removeAllFragmentsFromList();
 
 //        mAddListItemsFromURLList = AddListItemsFromURLList.newInstance(new AddItemsListener() {
 //            @Override
@@ -464,8 +470,7 @@ public class MainActivity extends SlidingActivity {
         private Integer mColor;
 
         static AddList newInstance(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener) {
-           AddList a = new AddList(sharedPreferences, data, id, url, addListListener);
-           return a;
+            return new AddList(sharedPreferences, data, id, url, addListListener);
         }
 
         AddList(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener) {
@@ -603,13 +608,9 @@ public class MainActivity extends SlidingActivity {
 
         mHandler = new Handler();
 
-        mChatUrls = mSharedPrefs.getStringSet(CHAT_URLS_KEY, new HashSet<String>());
 //        Log.e("URLS", mChatUrls.toString());
 
         //mEditor.putInt("tabIndex", 0).apply();
-
-        mUseDark = mSharedPrefs.getBoolean("isDarkMode", false);
-
         mFragmentManager = getSupportFragmentManager();
 
         mIntent = getIntent();
@@ -749,6 +750,16 @@ public class MainActivity extends SlidingActivity {
 //                break;
 //            }
 //        }
+
+        Log.e("SETID", id.concat(domain));
+
+        if (domain.contains("exchange")) {
+            if (mSEChatUrls.get(Integer.decode(id)) != null) setFragmentByTag(mSEChatUrls.get(Integer.decode(id)));
+            else Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
+        } else if (domain.contains("overflow")) {
+            if (mSOChatUrls.get(Integer.decode(id)) != null) setFragmentByTag(mSOChatUrls.get(Integer.decode(id)));
+            else Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setFragmentByTag(String tag)
@@ -768,6 +779,7 @@ public class MainActivity extends SlidingActivity {
             if(tag.equals("home"))
             {
                 mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                //noinspection ConstantConditions
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //                hueUtils.showAddChatFab(this, true);
                 //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
@@ -783,6 +795,7 @@ public class MainActivity extends SlidingActivity {
                     mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                 }
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                //noinspection ConstantConditions
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
 //                hueUtils.showAddChatFab(this, false);
@@ -795,7 +808,7 @@ public class MainActivity extends SlidingActivity {
      * Other Stuffs
      */
 
-    public void showAddTabDialog() {
+    private void showAddTabDialog() {
         if (mCanAddChat) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -840,7 +853,8 @@ public class MainActivity extends SlidingActivity {
                     if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
 //                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
                         mSOChatIDs.add(inputText);
-                    } else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
+                    } else //noinspection StatementWithEmptyBody
+                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
 //                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
                         mSEChatIDs.add(inputText);
                     } else {
@@ -887,13 +901,49 @@ public class MainActivity extends SlidingActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Fragment remFrag = mFragmentManager.findFragmentByTag(mCurrentFragment);
+                                    String domain = "";
+                                    String id = "";
+
+                                    Pattern domP = Pattern.compile("//(.+?)\\.com");
+                                    Matcher domM = domP.matcher(mCurrentFragment);
+
+                                    while (!domM.hitEnd()) {
+                                        if (domM.find()) {
+                                            domain = domM.group();
+                                        }
+                                    }
+
+                                    Pattern idP = Pattern.compile("rooms/(.+?)\\b");
+                                    Matcher idM = idP.matcher(mCurrentFragment);
+
+                                    while (!idM.hitEnd()) {
+                                        if (idM.find()) {
+                                            id = idM.group().replace("rooms/", "");
+                                        }
+                                    }
+
+                                    Log.e("IDDDDD", id);
+                                    Log.e("DOMAIN", domain);
+
+                                    if (!domain.isEmpty() && !id.isEmpty()) {
+                                        if (domain.contains("overflow")) {
+                                            mSOChatIDs.remove(id);
+                                        } else if (domain.contains("exchange")) {
+                                            mSEChatIDs.remove(id);
+                                        }
+
+                                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+
+                                        setFragmentByTag("home");
+                                        doFragmentStuff();
+                                    }
+
 //                                    mChatUrls.remove(remFrag.getTag());
 //                                    Log.e("TAG", remFrag.getTag());
-                                    setFragmentByTag("home");
 //                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
 //                                    mEditor.apply();
 //                                    Log.e("URLSR", mChatUrls.toString());
-                                    doFragmentStuff();
                                 }
                             })
                             .setNegativeButton(getResources().getText(R.string.generic_no), null)
@@ -903,106 +953,9 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
-    public SlidingMenu getmChatroomSlidingMenu() {
+    private SlidingMenu getmChatroomSlidingMenu() {
         return mChatroomSlidingMenu;
     }
-
-    private static class AddListItemsFromURLList extends AsyncTask<Set, String, Void> {
-        private AddItemsListener mAddItemsListener;
-
-        public static AddListItemsFromURLList newInstance(AddItemsListener addItemsListener) {
-            AddListItemsFromURLList a = new AddListItemsFromURLList(addItemsListener);
-            return a;
-        }
-
-        AddListItemsFromURLList(AddItemsListener addItemsListener) {
-            mAddItemsListener = addItemsListener;
-        }
-
-        private ArrayList<String> chatNames = new ArrayList<>();
-        private ArrayList<String> chatUrls = new ArrayList<>();
-        private ArrayList<Drawable> chatIcons = new ArrayList<>();
-        private ArrayList<Integer> chatColors = new ArrayList<>();
-        private ArrayList<Fragment> chatFragments = new ArrayList<>();
-
-        @Override
-        protected final Void doInBackground(Set... params) {
-            mAddItemsListener.onStart();
-            chatNames = new ArrayList<>();
-            chatUrls = new ArrayList<>();
-            chatIcons = new ArrayList<>();
-            chatColors = new ArrayList<>();
-            chatFragments = new ArrayList<>();
-
-            final Set urls = params[0];
-
-            if (urls.size() < 1) {
-                return null;
-            } else {
-                for (Object o : urls) {
-                    publishProgress(o.toString());
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            mAddItemsListener.onProgressMade(values[0], chatNames, chatUrls, chatIcons, chatColors, chatFragments);
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mAddItemsListener.onFinished();
-            super.onPostExecute(aVoid);
-        }
-
-
-    }
-
-    private interface AddItemsListener {
-        void onStart();
-        void onProgressMade(String url, ArrayList<String> names, ArrayList<String> urls, ArrayList<Drawable> icons, ArrayList<Integer> colors, ArrayList<Fragment> fragments);
-        void onFinished();
-    }
-
-//    private ArrayList<Fragment> addTab(String url, ArrayList<String> chatNames, ArrayList<String> chatUrls, ArrayList<Drawable> chatIcons, ArrayList<Integer> chatColors, ArrayList<Fragment> chatFragments) {
-//        String faviconKey = "FAVICON_" + url.replace("/", "");
-//        String nameKey = url + "Name";
-//        String colorKey = url + "Color";
-//
-//        String name;
-//        Drawable icon;
-//        Integer color;
-//
-//        name = mSharedPrefs.getString(nameKey, null);
-//        color = mSharedPrefs.getInt(colorKey, -1);
-//
-//        try {
-//            FileInputStream fis = openFileInput(faviconKey);
-//            Bitmap bmp = BitmapFactory.decodeStream(fis);
-//            Resources r = getResources();
-//            int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-//
-//            icon = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
-//        } catch (Exception e) {
-//            icon = getIcon(url);
-//        }
-//
-//        if (name == null) name = getName(url);
-//        if (color == -1) color = hueUtils.getColorInt(MainActivity.this, url);
-//
-//        chatNames.add(name);
-//        chatUrls.add(url);
-//        chatIcons.add(icon);
-//        chatColors.add(color);
-//        chatFragments.add(addFragment(url, name, color));
-//
-//        return chatFragments;
-//    }
-
 
     private Fragment addFragment(String url, String name, Integer color) {
         Fragment fragment;

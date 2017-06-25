@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -34,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.backend.PageRetriever;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
@@ -74,19 +72,19 @@ public class ChatFragment extends Fragment
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
     private String mChatUrl;
-    ArrayList<Bundle> mUserInfo = new ArrayList<>();
-    ArrayList<UserTileFragment> mUserTiles = new ArrayList<>();
+    private ArrayList<Bundle> mUserInfo = new ArrayList<>();
+    private ArrayList<UserTileFragment> mUserTiles = new ArrayList<>();
     //    private Spanned mStarsSpanned;
 
     public static final String USER_NAME_KEY = "userName";
-    public static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
-    public static final String USER_URL_KEY = "chatUrl";
-    public static final String USER_ID_KEY = "id";
-    public static final String USER_LAST_POST_KEY = "lastPost";
-    public static final String USER_REP_KEY = "rep";
-    public static final String USER_IS_MOD_KEY = "isMod";
-    public static final String USER_IS_OWNER_KEY = "isOwner";
-    public static final String CHAT_HOST_DOMAIN = "hostDomain";
+    private static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
+    private static final String USER_URL_KEY = "chatUrl";
+    private static final String USER_ID_KEY = "id";
+    private static final String USER_LAST_POST_KEY = "lastPost";
+    private static final String USER_REP_KEY = "rep";
+    private static final String USER_IS_MOD_KEY = "isMod";
+    private static final String USER_IS_OWNER_KEY = "isOwner";
+    private static final String CHAT_HOST_DOMAIN = "hostDomain";
 
     private FragmentManager mFragmentManager;
     private EditText mMessage;
@@ -320,6 +318,7 @@ public class ChatFragment extends Fragment
             @Override
             public void run()
             {
+                //noinspection StatementWithEmptyBody
                 while(!oncreateHasBeenCalled);
 
                 getActivity().runOnUiThread(new Runnable()
@@ -399,6 +398,7 @@ public class ChatFragment extends Fragment
 //                            e.printStackTrace()
                         }
 
+                        assert name != null;
                         if (name.replace(" ", "").toLowerCase().startsWith(currentName.toLowerCase())) {
                             fragments.add(pingFragment);
                         }
@@ -413,7 +413,7 @@ public class ChatFragment extends Fragment
         });
     }
 
-    public void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment) {
+    private void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment) {
 //        Toast.makeText(getActivity(), usernameTilePingFragment.getmUsername(), Toast.LENGTH_SHORT).show();
         String name = usernameTilePingFragment.getmUsername();
         name = name.replace(" ", "");
@@ -442,8 +442,7 @@ public class ChatFragment extends Fragment
         private UserParsed mUserParsed;
 
         static ParseUsers newInstance(UserParsed userParsed) {
-            ParseUsers p = new ParseUsers(userParsed);
-            return p;
+            return new ParseUsers(userParsed);
         }
 
         ParseUsers(UserParsed userParsed) {
@@ -562,18 +561,22 @@ public class ChatFragment extends Fragment
                 d.show();
 
                 TextView desc = d.findViewById(R.id.desc_text);
+                assert desc != null;
                 desc.setText(mChatDesc);
                 desc.setMovementMethod(LinkMovementMethod.getInstance());
 
                 TextView tag = d.findViewById(R.id.tag_text);
+                assert tag != null;
                 tag.setText(mChatTagsSpanned);
                 tag.setMovementMethod(LinkMovementMethod.getInstance());
 
                 TextView url = d.findViewById(R.id.url_text);
+                assert url != null;
                 url.setText(Html.fromHtml("<b>URL: </b><a href=\"".concat(mChatUrl).concat("\">").concat(mChatUrl).concat("</a>")));
                 url.setMovementMethod(LinkMovementMethod.getInstance());
 
                 TextView host = d.findViewById(R.id.domain_text);
+                assert host != null;
                 host.setText(Html.fromHtml("<b>Domain: </b><a href=\"".concat("https://").concat(mChatDomain).concat("\">").concat("https://").concat(mChatDomain).concat("</a>")));
                 host.setMovementMethod(LinkMovementMethod.getInstance());
             }
@@ -597,6 +600,7 @@ public class ChatFragment extends Fragment
                 Button back = alertDialog.findViewById(R.id.go_back);
                 Button forward = alertDialog.findViewById(R.id.go_forward);
 
+                assert webView != null;
                 webView.loadUrl(mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
 //                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
 //                webView.setInitialScale();
@@ -612,6 +616,7 @@ public class ChatFragment extends Fragment
                     }
                 });
 
+                assert openInWV != null;
                 openInWV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -622,6 +627,7 @@ public class ChatFragment extends Fragment
                     }
                 });
 
+                assert back != null;
                 back.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -629,6 +635,7 @@ public class ChatFragment extends Fragment
                     }
                 });
 
+                assert forward != null;
                 forward.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -669,8 +676,7 @@ public class ChatFragment extends Fragment
         private DescGotten mDescGotten;
 
         static GetDesc newInstance(DescGotten descGotten) {
-            GetDesc g = new GetDesc(descGotten);
-            return g;
+            return new GetDesc(descGotten);
         }
 
         GetDesc(DescGotten descGotten) {
@@ -702,15 +708,14 @@ public class ChatFragment extends Fragment
 
     private interface DescGotten {
         void onSuccess(String desc);
-        void onFail(String message);
+        void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
 
     private static class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
         private TagsGotten mTagsGotten;
 
         public static GetTags newInstance(TagsGotten tagsGotten) {
-            GetTags g = new GetTags(tagsGotten);
-            return g;
+            return new GetTags(tagsGotten);
         }
 
         GetTags(TagsGotten tagsGotten) {
@@ -744,7 +749,7 @@ public class ChatFragment extends Fragment
 
     private interface TagsGotten {
         void onSuccess(ArrayList<String> tabList);
-        void onFail(String message);
+        void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
 
     public SlidingMenu getmSlidingMenu() {
@@ -761,8 +766,7 @@ public class ChatFragment extends Fragment
         DomainFoundListener mDomainFoundListener;
 
         public static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
-            GetHostDomainFromHtml h = new GetHostDomainFromHtml(domainFoundListener);
-            return h;
+            return new GetHostDomainFromHtml(domainFoundListener);
         }
 
         GetHostDomainFromHtml(DomainFoundListener domainFoundListener) {

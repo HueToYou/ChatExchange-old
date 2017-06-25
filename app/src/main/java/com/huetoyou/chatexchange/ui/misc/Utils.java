@@ -2,22 +2,8 @@ package com.huetoyou.chatexchange.ui.misc;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.annotation.ColorInt;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.ContextThemeWrapper;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
-import com.huetoyou.chatexchange.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,7 +13,6 @@ import org.jsoup.select.Elements;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -97,8 +82,7 @@ public class Utils
                 colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
             }
 
-            mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex));
-            mSharedPreferences.edit().apply();
+            mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
             return Color.parseColor(colorHex);
         } catch (Exception e) {
             e.printStackTrace();

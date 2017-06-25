@@ -30,15 +30,15 @@ public class BackendService extends Service {
     /**
      * Actions for starting and stopping the service
      */
-    public static final String ACTION_START = "com.huetoyou.chatexchange.ACTION_START";
-    public static final String ACTION_STOP = "com.huetoyou.chatexchange.ACTION_STOP";
-    public static final String EXTRA_TOKEN = "com.huetoyou.chatexchange.EXTRA_TOKEN";
+    private static final String ACTION_START = "com.huetoyou.chatexchange.ACTION_START";
+    private static final String ACTION_STOP = "com.huetoyou.chatexchange.ACTION_STOP";
+    private static final String EXTRA_TOKEN = "com.huetoyou.chatexchange.EXTRA_TOKEN";
 
     /**
      * Broadcast for new events being received
      */
-    public static final String EVENT_RECEIVED = "com.huetoyou.chatexchange.EVENT_RECEIVED";
-    public static final String EXTRA_EVENT = "com.huetoyou.chatexchange.EXTRA_EVENT";
+    private static final String EVENT_RECEIVED = "com.huetoyou.chatexchange.EVENT_RECEIVED";
+    private static final String EXTRA_EVENT = "com.huetoyou.chatexchange.EXTRA_EVENT";
 
     /**
      * Broadcaster for chat events
@@ -87,6 +87,7 @@ public class BackendService extends Service {
     /**
      * Stop the currently running backend
      */
+    @SuppressWarnings("SameReturnValue")
     private int stop() {
         switch (mBackend) {
             case BACKEND_WEBSOCKET:
@@ -110,6 +111,7 @@ public class BackendService extends Service {
      *
      * If an existing backend is running, it is stopped.
      */
+    @SuppressWarnings("SameReturnValue")
     private int start(String token) {
         stop();
         mRequestFactory = new RequestFactory(token);

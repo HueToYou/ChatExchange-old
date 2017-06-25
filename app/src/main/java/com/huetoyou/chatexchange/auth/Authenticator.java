@@ -16,7 +16,7 @@ import android.os.Bundle;
  * result of the login process. These cookies will enable the requests to
  * succeed and must be stored for later use.
  */
-public class Authenticator extends AbstractAccountAuthenticator {
+class Authenticator extends AbstractAccountAuthenticator {
 
     static final String ACCOUNT_TYPE = "com.huetoyou.chatexchange";
 

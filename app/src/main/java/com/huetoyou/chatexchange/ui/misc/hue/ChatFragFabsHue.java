@@ -86,7 +86,7 @@ public class ChatFragFabsHue
         showChatsTint(colorStateList, activity);
     }
 
-    public void showChatsTint(ColorStateList colorStateList, AppCompatActivity activity)
+    private void showChatsTint(ColorStateList colorStateList, AppCompatActivity activity)
     {
         FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
         if (showChats != null)

@@ -20,6 +20,7 @@ public class IntroActivity extends AppIntro
         super.onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //noinspection ConstantConditions
         getSupportActionBar().hide();
 
         // Note here that we DO NOT use setContentView();

@@ -172,7 +172,7 @@ class WebSocketBackend {
      * @param roomId ID of the initial room to join
      * @param broadcaster event broadcaster
      */
-    WebSocketBackend(RequestFactory requestFactory, int roomId, BackendService.Broadcaster broadcaster) {
+    WebSocketBackend(RequestFactory requestFactory, @SuppressWarnings("SameParameterValue") int roomId, BackendService.Broadcaster broadcaster) {
         mRequestFactory = requestFactory;
         mRoomId = roomId;
         mBroadcaster = broadcaster;

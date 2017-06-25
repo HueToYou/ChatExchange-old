@@ -38,7 +38,7 @@ public class ThemeHue
 
         if(mSharedPreferences.getBoolean("FLAG_restartMain", false) && !oncreatejustcalled)
         {
-            mSharedPreferences.edit().putBoolean("FLAG_restartMain", false);
+            mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();
         }
     }

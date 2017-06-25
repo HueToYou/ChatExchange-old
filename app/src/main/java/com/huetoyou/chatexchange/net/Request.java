@@ -3,9 +3,6 @@ package com.huetoyou.chatexchange.net;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebViewClient;
 
 import org.apache.commons.io.IOUtils;
 

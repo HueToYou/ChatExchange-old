@@ -2,13 +2,13 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 
 import android.graphics.Color;
 
-public class HueUtils
+class HueUtils
 {
     /*
      * This class contains common utils which the other Hue classes use
      */
 
-    public static  int manipulateColor(int color, float factor)
+    public static  int manipulateColor(int color, @SuppressWarnings("SameParameterValue") float factor)
     {
         int a = Color.alpha(color);
         int r = Math.round(Color.red(color) * factor);

@@ -11,7 +11,7 @@ import static jodd.jerry.Jerry.jerry;
 /**
  * Retrieve data for an individual page
  */
-public class PageRetriever {
+class PageRetriever {
 
     /**
      * Information about an individual page

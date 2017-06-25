@@ -16,7 +16,6 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.backend.BackendService;
 import com.huetoyou.chatexchange.ui.misc.AppCompatPreferenceActivity;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jrummyapps.android.colorpicker.ColorPreference;
@@ -27,10 +26,10 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 {
     private static SharedPreferences mSharedPrefs;
     private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
-    static ActionBarHue actionBarHue = null;
-    static ThemeHue themeHue = null;
+    private static ActionBarHue actionBarHue = null;
+    private static ThemeHue themeHue = null;
     private static boolean darkThemePrevState;
-    static ColorPreference fabColorPreference;
+    private static ColorPreference fabColorPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

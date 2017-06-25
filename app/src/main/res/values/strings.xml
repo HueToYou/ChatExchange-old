@@ -10,8 +10,6 @@
     <string name="activity_authenticator_error_ok">OK</string>
     <string name="activity_authenticator_error_title">Error</string>
     <string name="activity_authenticator_error_message">An unexpected error has occurred. This may be caused by invalid credentials.\n\nTechnical details: %1$s.</string>
-    <string name="activity_authenticator_email_required">Email Required</string>
-    <string name="activity_authenticator_password_required">Password Required</string>
     <string name="activity_authenticator_show_password">Show Password</string>
 
     <string name="se_auth_unable_to_read_url">unable to read auth URL</string>
@@ -21,14 +19,11 @@
 
     <string name="activity_main_add_account">Add New Account</string>
     <string name="activity_main_add_chat">Add Chat</string>
-    <string name="activity_main_select_account">Select Account</string>
-    <string name="activity_main_chat_already_added">Chat Already Exists!</string>
     <string name="activity_main_delete_chat_title">Remove Chat?</string>
     <string name="activity_main_delete_chat_message">Are you sure you want to remove this chat?</string>
     <string name="activity_main_chat_url">Choose root domain</string>
     <string name="activity_main_chat_url_hint">Enter chat ID</string>
     <string name="activity_main_chat_full_url_hint">Enter full URL</string>
-    <string name="activity_main_loading_notification">It may take a while for chats to load.</string>
 
     <string name="options_menu_settings">Settings</string>
     <string name="options_menu_about">About</string>
@@ -37,92 +32,21 @@
     <string name="generic_no">No</string>
     <string name="generic_ok">OK</string>
     <string name="generic_cancel">Cancel</string>
-    <string name="generic_accounts">Accounts</string>
 
-
-    <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
 
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 
 
     <string name="current_users">Current Users</string>
     <string name="loading">Loading&#8230;</string>
     <string name="user_info">User Info</string>
-    <string name="show_users">Show Users</string>
-    <string name="browser">Browser</string>
-    <string name="close_chat">Close Chat</string>
     <string name="chatrooms">Chatrooms</string>
-    <string name="url">URL</string>
 
     <string name="stackoverflow">https://chat.stackoverflow.com/</string>
     <string name="stackexchange">https://chat.stackexchange.com/</string>

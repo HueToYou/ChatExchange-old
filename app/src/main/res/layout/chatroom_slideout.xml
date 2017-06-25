@@ -12,7 +12,6 @@
         tools:ignore="UselessParent">
 
         <TextView
-            android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -22,7 +21,8 @@
             android:id="@+id/loading_progress"
             style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/chatroomsListView"

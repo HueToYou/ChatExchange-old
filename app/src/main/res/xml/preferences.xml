@@ -8,7 +8,6 @@
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="default_color"
-            android:id="@+id/actionBarColorPicker"
             android:defaultValue="@color/colorPrimary"
             android:summary="Choose a custom color for the action bar"
             app:cpv_allowCustom="true"
@@ -17,13 +16,11 @@
 
         <CheckBoxPreference
             android:key="dynamic_bar_color"
-            android:id="@+id/app_bar_color_change"
             android:title="Dynamic color scheme"
             android:summary="Change color scheme based on color of current chat" />
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="fab_color"
-            android:id="@+id/fab_color_preference"
             android:defaultValue="@color/colorAccent"
             android:summary="Choose a custom color for floating action buttons"
             app:cpv_allowCustom="true"
@@ -32,7 +29,6 @@
 
         <CheckBoxPreference
             android:key="dark_theme"
-            android:id="@+id/dark_theme_checkbox"
             android:title="Dark theme"
             android:summary="Enable the alternate dark theme instead of the standard light theme" />
 

@@ -97,7 +97,7 @@ public class RequestFactory {
      * @param followRedirects true to follow HTTP redirects
      * @param listener listener for request completion
      */
-    public void get(String url, boolean followRedirects, Listener listener) {
+    public void get(String url, @SuppressWarnings("SameParameterValue") boolean followRedirects, Listener listener) {
         newRequest("GET", url, null, followRedirects, listener);
     }
 

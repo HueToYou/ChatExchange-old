@@ -3,7 +3,6 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
-import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
 public class HomeFragment extends Fragment {
@@ -54,6 +52,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        //noinspection StatementWithEmptyBody
         if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
             //setChatButtonTint();
         }
@@ -69,6 +68,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void run()
             {
+                //noinspection StatementWithEmptyBody
                 while(!oncreateHasBeenCalled);
 
                 getActivity().runOnUiThread(new Runnable()
@@ -96,6 +96,7 @@ public class HomeFragment extends Fragment {
     {
         hueAllTheThings();
 
+        //noinspection StatementWithEmptyBody
         if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
         {
             //setChatButtonTint();
