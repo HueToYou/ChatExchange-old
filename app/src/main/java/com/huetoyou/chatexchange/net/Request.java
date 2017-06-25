@@ -127,6 +127,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
             }
             InputStream in = new BufferedInputStream(connection.getInputStream());
             responseData = IOUtils.toString(in, "UTF-8");
+            in.close();
         } catch (IOException e) {
             return error(e.getMessage());
         }
@@ -135,6 +136,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         response.finalUrl = connection.getURL();
         response.cookies = connection.getHeaderField("Set-Cookie");
         response.data = responseData;
+        connection.disconnect();
         return response;
     }
 

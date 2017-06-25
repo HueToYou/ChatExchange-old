@@ -261,8 +261,9 @@ public class MainActivity extends SlidingActivity {
 
                             @Override
                             protected void onPostExecute(Void aVoid) {
-                                setFragmentByChatId(extras.getString("idSE"), "exchange");
-                                super.onPostExecute(aVoid);
+                                 try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
+                                 catch (Exception e) { e.printStackTrace(); }
+                                 super.onPostExecute(aVoid);
                             }
                         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else if (extras.containsKey("idSO")) {
@@ -279,8 +280,9 @@ public class MainActivity extends SlidingActivity {
 
                             @Override
                             protected void onPostExecute(Void aVoid) {
-                                setFragmentByChatId(extras.getString("idSO"), "overflow");
-                                super.onPostExecute(aVoid);
+                                 try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
+                                 catch (Exception e) { e.printStackTrace(); }
+                                 super.onPostExecute(aVoid);
                             }
                         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
@@ -416,7 +418,7 @@ public class MainActivity extends SlidingActivity {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
                     mSEChatIDs.remove(id);
                     mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
-                    Log.e("FAIL", message.concat(id));
+                    Log.e("Couldn't load SE chat", message.concat(id));
                 }
             });
         }
@@ -486,7 +488,7 @@ public class MainActivity extends SlidingActivity {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
                     mSOChatIDs.remove(id);
                     mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                    Log.e("FAIL", message.concat(id));
+                    Log.e("Couldn't load SO chat", message.concat(id));
                 }
             });
         }
