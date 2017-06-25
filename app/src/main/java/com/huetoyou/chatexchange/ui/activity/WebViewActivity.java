@@ -2,6 +2,7 @@ package com.huetoyou.chatexchange.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,8 +10,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebViewActivity extends AppCompatActivity {
 
@@ -52,7 +57,26 @@ public class WebViewActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url){
-                view.loadUrl(url);
+                if (url.contains("/rooms/")) {
+                    String id = "";
+                    Pattern p = Pattern.compile("rooms/(.+?)\\b");
+                    Matcher m = p.matcher(url);
+
+                    while (!m.hitEnd()) {
+                        if (m.find()) id = m.group().replace("rooms/", "");
+                    }
+
+                    if (!id.isEmpty()) {
+                        String key = "id";
+                        if (url.contains("exchange")) key = key.concat("SE");
+                        else if (url.contains("overflow")) key = key.concat("SO");
+
+                        Intent urlIntent = new Intent("idAdd").putExtra(key, id);
+                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(urlIntent);
+                        finish();
+                    }
+                }
+                else view.loadUrl(url);
                 return true;
             }
         });

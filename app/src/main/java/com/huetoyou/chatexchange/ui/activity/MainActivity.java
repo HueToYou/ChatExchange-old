@@ -2,9 +2,11 @@ package com.huetoyou.chatexchange.ui.activity;
 
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -22,6 +24,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -78,6 +81,8 @@ public class MainActivity extends SlidingActivity {
     private ImgTextArrayAdapter chatroomArrayAdapter;
     private SlidingMenu mCurrentUsers_SlidingMenu;
     private FragmentManager mFragmentManager;
+
+    private BroadcastReceiver mAddChatReceiver;
 
     private Intent mIntent;
 
@@ -232,6 +237,61 @@ public class MainActivity extends SlidingActivity {
         }
 
         respondToNotificationClick();
+        setupACBR();
+    }
+
+    @SuppressWarnings("StaticFieldLeak")
+    private void setupACBR() {
+        mAddChatReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    if (extras.containsKey("idSE")) {
+                        mSEChatIDs.add(extras.getString("idSE"));
+                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+                        doFragmentStuff();
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                while (mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) == null);
+                                while (mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) == null);
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                setFragmentByChatId(extras.getString("idSE"), "exchange");
+                                super.onPostExecute(aVoid);
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else if (extras.containsKey("idSO")) {
+                        mSOChatIDs.add(extras.getString("idSO"));
+                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                        doFragmentStuff();
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                while (mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) == null);
+                                while (mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) == null);
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                setFragmentByChatId(extras.getString("idSO"), "overflow");
+                                super.onPostExecute(aVoid);
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("idAdd");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mAddChatReceiver, intentFilter);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -995,4 +1055,9 @@ public class MainActivity extends SlidingActivity {
         mChatroomSlidingMenu.toggle();
     }
 
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mAddChatReceiver);
+        super.onDestroy();
+    }
 }
