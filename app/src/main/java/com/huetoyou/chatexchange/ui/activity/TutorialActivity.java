@@ -16,7 +16,7 @@ public class TutorialActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tutorial);
+        setContentView(R.layout.fragment_chat);
 
         displayShowcases();
     }
@@ -24,7 +24,7 @@ public class TutorialActivity extends AppCompatActivity
     private void displayShowcases()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.show_chats_fab_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.show_chats_fab)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Show chatrooms")
@@ -45,7 +45,7 @@ public class TutorialActivity extends AppCompatActivity
     private void showcaseRemoveChat()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.close_chat_frag_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.close_chat_frag)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Remove chatroom")
@@ -66,7 +66,7 @@ public class TutorialActivity extends AppCompatActivity
     private void showcaseStar()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.star_fab_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.star_fab)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Show starred messages")
@@ -87,7 +87,7 @@ public class TutorialActivity extends AppCompatActivity
     private void showcaseInfo()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.room_info_fab_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.room_info_fab)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Room info")
@@ -108,7 +108,7 @@ public class TutorialActivity extends AppCompatActivity
     private void showcaseOpenInBrowser()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.open_in_browser_fab_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.open_in_browser_fab)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Open in browser")
@@ -129,7 +129,7 @@ public class TutorialActivity extends AppCompatActivity
     private void showcaseUsersPanel()
     {
         new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.show_users_fab_tutorial)))
+                .setTarget(new ViewTarget(findViewById(R.id.show_users_fab)))
                 .withNewStyleShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setContentTitle("Reveal users")
