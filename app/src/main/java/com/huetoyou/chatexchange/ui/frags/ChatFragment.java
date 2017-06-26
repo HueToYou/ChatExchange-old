@@ -92,6 +92,7 @@ public class ChatFragment extends Fragment
     private RequestFactory mRequestFactory;
     private String mChatTitle;
     private String mChatDomain;
+    private Integer mChatId;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -133,6 +134,7 @@ public class ChatFragment extends Fragment
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");
         mChatTitle = args.getString("chatTitle", "ERROR");
+        mChatId = args.getInt("chatId", -1);
 
         mAppBarColor = args.getInt("chatColor", -1);
 
@@ -802,6 +804,10 @@ public class ChatFragment extends Fragment
     private interface DomainFoundListener {
         void onSuccess(String text);
         void onFail(String text);
+    }
+
+    public Integer getChatId() {
+        return mChatId;
     }
 
 //    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {

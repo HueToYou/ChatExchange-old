@@ -373,7 +373,7 @@ public class MainActivity extends SlidingActivity {
 
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color) {
-                            Fragment fragment = addFragment(chatUrl, name, color);
+                            Fragment fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
                             mSEChats.put(Integer.decode(id), fragment);
                             mSEChatColors.put(Integer.decode(id), color);
@@ -444,7 +444,7 @@ public class MainActivity extends SlidingActivity {
 
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color) {
-                            Fragment fragment = addFragment(chatUrl, name, color);
+                            Fragment fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             mSOChats.put(Integer.decode(id), fragment);
                             mSOChatColors.put(Integer.decode(id), color);
                             mSOChatIcons.put(Integer.decode(id), icon);
@@ -1019,7 +1019,7 @@ public class MainActivity extends SlidingActivity {
         return mChatroomSlidingMenu;
     }
 
-    private Fragment addFragment(String url, String name, Integer color) {
+    private Fragment addFragment(String url, String name, Integer color, Integer id) {
         Fragment fragment;
         if (mFragmentManager.findFragmentByTag(url) != null) {
             fragment = mFragmentManager.findFragmentByTag(url);
@@ -1029,6 +1029,7 @@ public class MainActivity extends SlidingActivity {
             args.putString("chatTitle", name);
             args.putString("chatUrl", url);
             args.putInt("chatColor", color);
+            args.putInt("chatId", id);
 
             fragment.setArguments(args);
         }
