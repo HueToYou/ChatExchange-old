@@ -350,6 +350,13 @@ public class MainActivity extends SlidingActivity {
         mSOChatNames = new SparseArray<>();
         mSEChats = new SparseArray<>();
         mSOChats = new SparseArray<>();
+        mCanAddChat = false;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
+            }
+        });
 //        Looper.prepare();
         for (String s : mSEChatIDs) {
             Log.e("ID", s);
@@ -362,13 +369,7 @@ public class MainActivity extends SlidingActivity {
                     mAddList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
                         @Override
                         public void onStart() {
-                            mCanAddChat = false;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
-                                }
-                            });
+
                         }
 
                         @Override
@@ -383,8 +384,6 @@ public class MainActivity extends SlidingActivity {
 
                         @Override
                         public void onFinish() {
-                            mCanAddChat = true;
-                            findViewById(R.id.loading_progress).setVisibility(View.GONE);
                             ArrayList<String> names = new ArrayList<>();
                             names.addAll(asList(mSEChatNames));
                             names.addAll(asList(mSOChatNames));
@@ -433,13 +432,6 @@ public class MainActivity extends SlidingActivity {
                     AddList addList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener() {
                         @Override
                         public void onStart() {
-                            mCanAddChat = false;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
-                                }
-                            });
                         }
 
                         @Override
@@ -453,8 +445,6 @@ public class MainActivity extends SlidingActivity {
 
                         @Override
                         public void onFinish() {
-                            mCanAddChat = true;
-                            findViewById(R.id.loading_progress).setVisibility(View.GONE);
                             ArrayList<String> names = new ArrayList<>();
                             names.addAll(asList(mSEChatNames));
                             names.addAll(asList(mSOChatNames));
@@ -495,6 +485,21 @@ public class MainActivity extends SlidingActivity {
 
         if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0) removeAllFragmentsFromList();
 
+        final int size = mSEChatIDs.size() + mSOChatIDs.size();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (chatroomsList == null);
+                while (chatroomsList.getChildCount() < size);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        findViewById(R.id.loading_progress).setVisibility(View.GONE);
+                    }
+                });
+                mCanAddChat = true;
+            }
+        }).start();
 //        mAddListItemsFromURLList = AddListItemsFromURLList.newInstance(new AddItemsListener() {
 //            @Override
 //            public void onStart() {
