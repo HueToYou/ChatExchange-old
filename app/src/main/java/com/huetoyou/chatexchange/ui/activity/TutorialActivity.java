@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -17,6 +18,9 @@ public class TutorialActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_chat);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
 
         displayShowcases();
     }
