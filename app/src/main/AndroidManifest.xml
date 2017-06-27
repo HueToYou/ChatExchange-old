@@ -25,7 +25,8 @@
 
         <!-- Main activity -->
         <activity
-            android:name=".ui.activity.MainActivity">
+            android:name=".ui.activity.MainActivity"
+            android:exported="true">
             <!--android:configChanges="keyboardHidden|orientation|screenSize">-->
         </activity>
 

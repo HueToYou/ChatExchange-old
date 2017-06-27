@@ -1,7 +1,11 @@
 package com.huetoyou.chatexchange.ui.activity;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +21,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -24,6 +29,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.INotificationSideChannel;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -42,6 +48,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
@@ -128,9 +135,6 @@ public class MainActivity extends SlidingActivity {
         mainActivity = this;
         themeHue = new ThemeHue();
         themeHue.setTheme(MainActivity.this);
-
-        mRequestFactory = new RequestFactory();
-
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -210,8 +214,26 @@ public class MainActivity extends SlidingActivity {
                 showAddTabDialog();
             }
         });
+        mRequestFactory = new RequestFactory();
 
         mAccountManager = AccountManager.get(this);
+
+        AccountManagerCallback<Bundle> accountManagerCallback = new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                Log.e("AUtH", "AAA");
+                String authToken = "";
+                try {
+                    authToken = accountManagerFuture.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                    Log.e("Auth", authToken);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("RI", "P");
+                }
+                mRequestFactory = new RequestFactory(authToken);
+                doFragmentStuff();
+            }
+        };
 
         mSOChatIDs = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
         mSEChatIDs = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
@@ -233,7 +255,7 @@ public class MainActivity extends SlidingActivity {
         else
         {
             if (mFragmentManager.findFragmentByTag("home") == null) mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-            doFragmentStuff();
+            mAccountManager.getAuthToken(mAccountManager.getAccounts()[0], Authenticator.ACCOUNT_TYPE, null, true, accountManagerCallback, null);
         }
 
         respondToNotificationClick();
@@ -417,7 +439,7 @@ public class MainActivity extends SlidingActivity {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
                     mSEChatIDs.remove(id);
                     mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
-                    Log.e("Couldn't load SE chat", message.concat(id));
+                    Log.e("Couldn't load SE chat ".concat(id), message);
                 }
             });
         }
@@ -478,19 +500,22 @@ public class MainActivity extends SlidingActivity {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
                     mSOChatIDs.remove(id);
                     mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                    Log.e("Couldn't load SO chat", message.concat(id));
+                    Log.e("Couldn't load SO chat ".concat(id), message);
                 }
             });
         }
 
-        if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0) removeAllFragmentsFromList();
+        if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0) {
+            removeAllFragmentsFromList();
+            findViewById(R.id.loading_progress).setVisibility(View.GONE);
+            mCanAddChat = true;
+        }
 
-        final int size = mSEChatIDs.size() + mSOChatIDs.size();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (chatroomsList == null);
-                while (chatroomsList.getChildCount() < size);
+                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -876,7 +901,7 @@ public class MainActivity extends SlidingActivity {
      */
 
     private void showAddTabDialog() {
-        if (mCanAddChat) {
+        if (/*mCanAddChat*/true) { //TODO: Experiment with adding a chat while chats are loading, then fix this
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
@@ -914,28 +939,36 @@ public class MainActivity extends SlidingActivity {
             builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                     String inputText = input.getText().toString();
+                    if (!inputText.isEmpty()) {
 //                    String url;
+                        if (!mAddList.getStatus().equals(AsyncTask.Status.FINISHED)) { //part of TODO
+                            mAddList.cancel(true);
+                        }
 
-                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
+                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
 //                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
-                        mSOChatIDs.add(inputText);
-                    } else //noinspection StatementWithEmptyBody
-                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
+                            mSOChatIDs.add(inputText);
+                        } else //noinspection StatementWithEmptyBody
+                            if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
 //                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
-                        mSEChatIDs.add(inputText);
-                    } else {
+                                mSEChatIDs.add(inputText);
+                            } else {
 //                        url = inputText;
-                    }
+                            }
 
-                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
 //                    mChatUrls.add(url);
 //                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
 //                    mEditor.apply();
 //                    Log.e("URLSA", mChatUrls.toString());
-                    doFragmentStuff();
+                        doFragmentStuff();
+                    } else {
+                        Toast.makeText(getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {

@@ -151,6 +151,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 mPassword.getText().toString(),
                 null
         );
+        mAccountManager.setAuthToken(account, Authenticator.ACCOUNT_TYPE, authToken);
 
         onAuthFinish(accountName, authToken);
     }

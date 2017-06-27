@@ -63,7 +63,7 @@ public class RequestFactory {
      * @param cookies string containing cookies
      */
     public RequestFactory(String cookies) {
-        addCookies(cookies);
+        if (!cookies.isEmpty()) addCookies(cookies);
     }
 
     /**

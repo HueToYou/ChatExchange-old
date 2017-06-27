@@ -104,7 +104,7 @@ public class ChatFragment extends Fragment
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mRequestFactory = new RequestFactory();
+        mRequestFactory = new RequestFactory("t=NETipskrs%2bbmhDM1HqswLwfyvDthu2SS");
 
         messageToSend = view.findViewById(R.id.messageToSend);
         pingSuggestionsScrollView = view.findViewById(R.id.pingSuggestionsScrollView);
