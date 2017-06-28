@@ -72,6 +72,7 @@ import org.jsoup.select.Elements;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -539,6 +540,8 @@ public class MainActivity extends SlidingActivity {
             }
         });
 //        Looper.prepare();
+        Log.e("IDS", mSEChatIDs.toString());
+
         for (String s : mSEChatIDs) {
             Log.e("ID", s);
             final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
@@ -674,7 +677,10 @@ public class MainActivity extends SlidingActivity {
             @Override
             public void run() {
                 while (chatroomsList == null);
-                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size());
+                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size() - 2) {
+                    Log.e("ChildSize", chatroomsList.getChildCount() + "");
+                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1081,88 +1087,90 @@ public class MainActivity extends SlidingActivity {
      */
 
     private void showAddTabDialog() {
-        if (/*mCanAddChat*/true) { //TODO: Experiment with adding a chat while chats are loading, then fix this
+//        if (/*mCanAddChat*/true) { //TODO: Experiment with adding a chat while chats are loading, then fix this
+//
+//
+//        } else {
+//            Toast.makeText(this, getResources().getText(R.string.cant_add_chat), Toast.LENGTH_LONG).show();
+//        }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
 
-            View view = View.inflate(this, R.layout.add_chat_dialog, null);
-            final EditText input = view.findViewById(R.id.url_edittext);
+        View view = View.inflate(this, R.layout.add_chat_dialog, null);
+        final EditText input = view.findViewById(R.id.url_edittext);
 
-            final Spinner domains = view.findViewById(R.id.domain_spinner);
+        final Spinner domains = view.findViewById(R.id.domain_spinner);
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                    R.array.domain_spinner, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.domain_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            domains.setAdapter(adapter);
+        domains.setAdapter(adapter);
 
-            domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
-                        input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
-                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-                    } else {
-                        input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
-                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    }
+        domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
+                    input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+                } else {
+                    input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
+            }
+        });
 
-            builder.setView(view);
-            builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+        builder.setView(view);
+        builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                    String inputText = input.getText().toString();
-                    if (!inputText.isEmpty()) {
+                String inputText = input.getText().toString();
+                if (!inputText.isEmpty()) {
 //                    String url;
-                        if (!mAddList.getStatus().equals(AsyncTask.Status.FINISHED)) { //part of TODO
-                            mAddList.cancel(true);
+                    if (!mAddList.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                        mAddList.cancel(true);
+                    }
+
+                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
+//                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
+                        mSOChatIDs.add(inputText);
+                    } else //noinspection StatementWithEmptyBody
+                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
+//                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
+                            mSEChatIDs.add(inputText);
+                        } else {
+//                        url = inputText;
                         }
 
-                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString())) {
-//                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
-                            mSOChatIDs.add(inputText);
-                        } else //noinspection StatementWithEmptyBody
-                            if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString())) {
-//                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
-                                mSEChatIDs.add(inputText);
-                            } else {
-//                        url = inputText;
-                            }
-
-                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
 //                    mChatUrls.add(url);
 //                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
 //                    mEditor.apply();
 //                    Log.e("URLSA", mChatUrls.toString());
-                        doFragmentStuff();
-                    } else {
-                        Toast.makeText(getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
-                    }
+                    doFragmentStuff();
+                } else {
+                    Toast.makeText(getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
                 }
-            });
-            builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            }
+        });
+        builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
 
-            AlertDialog al = builder.create();
-            al.show();
-        } else {
-            Toast.makeText(this, getResources().getText(R.string.cant_add_chat), Toast.LENGTH_LONG).show();
-        }
+        AlertDialog al = builder.create();
+        al.show();
     }
 
     /**
