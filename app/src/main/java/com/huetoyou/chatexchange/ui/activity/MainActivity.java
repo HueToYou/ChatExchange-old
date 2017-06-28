@@ -102,7 +102,6 @@ public class MainActivity extends SlidingActivity {
     private ThemeHue themeHue = null;
     private String mCurrentFragment;
 
-    private boolean mCanAddChat = true;
     private RequestFactory mRequestFactory;
 
     private SparseArray<Fragment> mSOChats = new SparseArray<>();
@@ -532,7 +531,6 @@ public class MainActivity extends SlidingActivity {
         mSOChatNames = new SparseArray<>();
         mSEChats = new SparseArray<>();
         mSOChats = new SparseArray<>();
-        mCanAddChat = false;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -670,7 +668,6 @@ public class MainActivity extends SlidingActivity {
         if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0) {
             removeAllFragmentsFromList();
             findViewById(R.id.loading_progress).setVisibility(View.GONE);
-            mCanAddChat = true;
         }
 
         new Thread(new Runnable() {
@@ -687,7 +684,6 @@ public class MainActivity extends SlidingActivity {
                         findViewById(R.id.loading_progress).setVisibility(View.GONE);
                     }
                 });
-                mCanAddChat = true;
             }
         }).start();
 //        mAddListItemsFromURLList = AddListItemsFromURLList.newInstance(new AddItemsListener() {
