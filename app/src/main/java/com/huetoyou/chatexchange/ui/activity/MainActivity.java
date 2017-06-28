@@ -1,27 +1,26 @@
 package com.huetoyou.chatexchange.ui.activity;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -29,7 +28,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.INotificationSideChannel;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -57,7 +55,6 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
-import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
@@ -72,7 +69,6 @@ import org.jsoup.select.Elements;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,6 +122,37 @@ public class MainActivity extends SlidingActivity {
     private static MainActivity mainActivity;
     private AddList mAddList;
 
+    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener()
+    {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id)
+        {
+            chatroomsList.requestFocusFromTouch();
+            chatroomsList.setSelection(position);
+            chatroomsList.requestFocus();
+
+            mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
+
+            if (mFragmentManager.findFragmentByTag("home").isDetached())
+            {
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                    }
+                }, 400);
+            } else
+            {
+                setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+            }
+
+
+            getmChatroomSlidingMenu().toggle();
+        }
+    };
+
     /*
      * Activity Lifecycle
      */
@@ -142,6 +169,11 @@ public class MainActivity extends SlidingActivity {
         preSetup();
         createUsersSlidingMenu();
         setup();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+        drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
+        getSupportActionBar().setHomeAsUpIndicator(drawable);
 
         oncreatejustcalled = true;
     }
@@ -164,14 +196,14 @@ public class MainActivity extends SlidingActivity {
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
             //noinspection ConstantConditions
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
         }
 
         else
         {
             //noinspection ConstantConditions
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         mIntent = getIntent();
@@ -336,6 +368,7 @@ public class MainActivity extends SlidingActivity {
                             public void onFinish() {
                                 try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
                                 catch (Exception e) { e.printStackTrace(); }
+                                if (mCurrentUsers_SlidingMenu.isMenuShowing()) mCurrentUsers_SlidingMenu.toggle();
                             }
                         }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -373,6 +406,7 @@ public class MainActivity extends SlidingActivity {
                             public void onFinish() {
                                 try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
                                 catch (Exception e) { e.printStackTrace(); }
+                                if (mCurrentUsers_SlidingMenu.isMenuShowing()) mCurrentUsers_SlidingMenu.toggle();
                             }
                         }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
@@ -673,10 +707,16 @@ public class MainActivity extends SlidingActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(350);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 while (chatroomsList == null);
                 while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size() - 2) {
-                    Log.e("ChildSize", chatroomsList.getChildCount() + "");
-                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
+//                    Log.e("ChildSize", chatroomsList.getChildCount() + "");
+//                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
                 }
                 runOnUiThread(new Runnable() {
                     @Override
@@ -887,12 +927,25 @@ public class MainActivity extends SlidingActivity {
                 Intent startHelpActivity = new Intent(getApplicationContext(), HelpActivity.class);
                 startActivity(startHelpActivity);
                 break;
-            default:
-                setFragmentByTag("home");
-                for (Fragment fragment : mFragmentManager.getFragments()) {
-                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+            case R.id.action_browser:
+                Intent browserIntent;
+                if (mCurrentFragment == null || mCurrentFragment.equals("home")) {
+                    WebView webView = findViewById(R.id.stars_view);
+                    String url = webView.getUrl();
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                } else {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentFragment));
                 }
-                if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
+                startActivity(browserIntent);
+                break;
+            default:
+//                setFragmentByTag("home");
+//                for (Fragment fragment : mFragmentManager.getFragments()) {
+//                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+//                }
+//                if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
+//                mChatroomSlidingMenu.toggle();
+                onSupportNavigateUp();
                 break;
         }
 
@@ -967,28 +1020,22 @@ public class MainActivity extends SlidingActivity {
         // Here, you set the data in your ListView
         chatroomsList.setAdapter(chatroomArrayAdapter);
 
-        chatroomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        chatroomsList.setOnItemClickListener(mItemClickListener);
+
+        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                chatroomsList.requestFocusFromTouch();
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+//                chatroomsList.requestFocusFromTouch();
+                chatroomsList.setOnItemClickListener(null);
                 chatroomsList.setSelection(position);
-                chatroomsList.requestFocus();
+//                chatroomsList.requestFocus();
 
                 mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
 
-                if (mFragmentManager.findFragmentByTag("home").isDetached()) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
-                        }
-                    }, 400);
-                } else {
-                    setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
-                }
-
-
-                getmChatroomSlidingMenu().toggle();
+                confirmClose(view);
+                return true;
             }
         });
     }
@@ -1049,7 +1096,7 @@ public class MainActivity extends SlidingActivity {
             {
                 mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                 //noinspection ConstantConditions
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //                hueUtils.showAddChatFab(this, true);
                 //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
 //                hueUtils.setActionBarColorDefault(this);
@@ -1065,9 +1112,11 @@ public class MainActivity extends SlidingActivity {
                 }
                 mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 //noinspection ConstantConditions
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
-//                hueUtils.showAddChatFab(this, false);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+//                drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
+//                getSupportActionBar().setHomeAsUpIndicator(drawable);
+//                hueUtils.showAddChatFab(this, falzse);
                 ((ChatFragment) fragToAttach).hueTest();
             }
         }
@@ -1189,7 +1238,6 @@ public class MainActivity extends SlidingActivity {
                             .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Fragment remFrag = mFragmentManager.findFragmentByTag(mCurrentFragment);
                                     String domain = "";
                                     String id = "";
 
@@ -1236,6 +1284,14 @@ public class MainActivity extends SlidingActivity {
                                 }
                             })
                             .setNegativeButton(getResources().getText(R.string.generic_no), null)
+                            .setOnDismissListener(new DialogInterface.OnDismissListener()
+                            {
+                                @Override
+                                public void onDismiss(DialogInterface dialogInterface)
+                                {
+                                    chatroomsList.setOnItemClickListener(mItemClickListener);
+                                }
+                            })
                             .show();
                 }
             });
@@ -1286,12 +1342,13 @@ public class MainActivity extends SlidingActivity {
     @Override
     public boolean onSupportNavigateUp()
     {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setFragmentByTag("home");
-            }
-        }, 400);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setFragmentByTag("home");
+//            }
+//        }, 400);
+        mChatroomSlidingMenu.toggle();
         return true;
     }
 

@@ -7,10 +7,13 @@
             android:title="@string/options_menu_settings" />
         <item
             android:id="@+id/action_help"
-            android:title="Help" />
+            android:title="@string/options_menu_help" />
         <item
             android:id="@+id/action_about"
             android:title="@string/options_menu_about" />
+        <item
+            android:id="@+id/action_browser"
+            android:title="@string/options_menu_browser" />
     </group>
 
 </menu>

@@ -21,6 +21,7 @@
             android:focusable="true"
             android:onClick="toggleChatsSlide"
             android:tint="#fff"
+            android:visibility="gone"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_chat_black_24dp"
@@ -37,39 +38,10 @@
             android:focusable="true"
             android:onClick="confirmClose"
             android:tint="#fff"
+            android:visibility="gone"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_close_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/star_fab"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/room_info_fab"
-            android:layout_toStartOf="@+id/room_info_fab"
-            android:clickable="true"
-            android:focusable="true"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_star_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/room_info_fab"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/open_in_browser_fab"
-            android:layout_toStartOf="@+id/open_in_browser_fab"
-            android:clickable="true"
-            android:focusable="true"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_info_outline_black_24dp"
             app:useCompatPadding="true" />
 
         <android.support.design.widget.FloatingActionButton
@@ -82,24 +54,10 @@
             android:clickable="true"
             android:focusable="true"
             android:tint="#fff"
+            android:visibility="gone"
             app:elevation="4dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/show_users_fab"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:tint="#fff"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
             app:useCompatPadding="true" />
 
         <ImageButton
@@ -162,6 +120,52 @@
                     android:layout_height="match_parent" />
             </LinearLayout>
         </ScrollView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/show_users_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/room_info_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_info_outline_black_24dp"
+                app:useCompatPadding="true" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/star_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:tint="#fff"
+                app:elevation="4dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_star_black_24dp"
+                app:useCompatPadding="true" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>

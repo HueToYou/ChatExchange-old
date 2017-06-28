@@ -2,19 +2,27 @@ package com.huetoyou.chatexchange.ui.frags;
 
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HomeFragment extends Fragment {
 
@@ -44,6 +52,9 @@ public class HomeFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mAccountManager = AccountManager.get(getActivity());
+
+        view.findViewById(R.id.open_in_webview).setVisibility(View.GONE);
+        setupWebView();
 
         oncreateHasBeenCalled = true;
 
@@ -120,5 +131,84 @@ public class HomeFragment extends Fragment {
 
         actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
         otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+    }
+
+    private void setupWebView() {
+        final WebView webView = view.findViewById(R.id.stars_view);
+        Button back = view.findViewById(R.id.go_back);
+        Button forward = view.findViewById(R.id.go_forward);
+
+        webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+//                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+//                webView.setInitialScale();
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        client(webView);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView.canGoBack()) webView.goBack();
+            }
+        });
+
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView.canGoForward()) webView.goForward();
+            }
+        });
+
+        Button chooseSE = view.findViewById(R.id.chooseSEView);
+        Button chooseSO = view.findViewById(R.id.chooseSOView);
+
+        chooseSE.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+            }
+        });
+
+        chooseSO.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                webView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
+            }
+        });
+    }
+
+    private void client(WebView webView) {
+        webView.setWebViewClient(new WebViewClient(){
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
+                if (url.contains("/rooms/")) {
+                    String id = "";
+                    Pattern p = Pattern.compile("rooms/(.+?)\\b");
+                    Matcher m = p.matcher(url);
+
+                    while (!m.hitEnd()) {
+                        if (m.find()) id = m.group().replace("rooms/", "");
+                    }
+
+                    if (!id.isEmpty()) {
+                        String key = "id";
+                        if (url.contains("exchange")) key = key.concat("SE");
+                        else if (url.contains("overflow")) key = key.concat("SO");
+
+                        Intent urlIntent = new Intent("idAdd").putExtra(key, id);
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(urlIntent);
+                    }
+                }
+                else view.loadUrl(url);
+                return true;
+            }
+        });
     }
 }
