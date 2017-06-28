@@ -47,6 +47,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -266,7 +267,7 @@ public class MainActivity extends SlidingActivity {
     }
 
     private void setup() {
-        FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
+        com.github.clans.fab.FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,7 +275,7 @@ public class MainActivity extends SlidingActivity {
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.home_fab);
+        com.github.clans.fab.FloatingActionButton fab = findViewById(R.id.home_fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override

@@ -571,18 +571,18 @@ public class ChatFragment extends Fragment
      */
     private void addChatButtons(final String url) {
 
-        FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
-        FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
-        FloatingActionButton stars = view.findViewById(R.id.star_fab);
-        FloatingActionButton users = view.findViewById(R.id.show_users_fab);
+//        FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
+        com.github.clans.fab.FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
+        com.github.clans.fab.FloatingActionButton stars = view.findViewById(R.id.star_fab);
+        com.github.clans.fab.FloatingActionButton users = view.findViewById(R.id.show_users_fab);
 
-        openInBrowser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-            }
-        });
+//        openInBrowser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                startActivity(browserIntent);
+//            }
+//        });
 
         roomInfo.setOnClickListener(new View.OnClickListener() {
             @Override

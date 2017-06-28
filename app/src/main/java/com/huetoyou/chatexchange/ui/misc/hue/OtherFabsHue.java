@@ -2,11 +2,14 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 
 public class OtherFabsHue
@@ -25,17 +28,33 @@ public class OtherFabsHue
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
-        FloatingActionButton homeFab = activity.findViewById(R.id.home_fab);
-
         ColorStateList colorStateList = ColorStateList.valueOf(appBarColor);
 
-        if (addChat != null) {
-            addChat.setBackgroundTintList(colorStateList);
+        FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);
+        com.github.clans.fab.FloatingActionButton home = activity.findViewById(R.id.home_fab);
+        com.github.clans.fab.FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
+
+        if (chatListMenu != null) {
+            chatListMenu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
+            chatListMenu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
         }
 
-        if (homeFab != null) {
-            homeFab.setBackgroundTintList(colorStateList);
+        if (home != null) {
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_home_white_24dp, null);
+            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+            home.setColorNormal(colorStateList.getDefaultColor());
+            home.setColorPressed(colorStateList.getDefaultColor());
+            home.setImageDrawable(vectorDrawableCompat);
+        }
+
+        if (addChat != null) {
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_add_black_24dp, null);
+            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+            addChat.setColorNormal(colorStateList.getDefaultColor());
+            addChat.setColorPressed(colorStateList.getDefaultColor());
+            addChat.setImageDrawable(vectorDrawableCompat);
         }
     }
 
@@ -49,20 +68,35 @@ public class OtherFabsHue
 
         if (activity != null)
         {
-            int hue = 0;
-            FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
-            FloatingActionButton homeFab = activity.findViewById(R.id.home_fab);
-
-            hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorAccent));
+            int hue = mSharedPreferences.getInt("fab_color", activity.getResources().getColor(R.color.colorAccent));
 
             ColorStateList colorStateList = ColorStateList.valueOf(hue);
 
-            if (addChat != null) {
-                addChat.setBackgroundTintList(colorStateList);
+            FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);
+            com.github.clans.fab.FloatingActionButton home = activity.findViewById(R.id.home_fab);
+            com.github.clans.fab.FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
+
+            if (chatListMenu != null) {
+                chatListMenu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
+                chatListMenu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
             }
 
-            if (homeFab != null) {
-                homeFab.setBackgroundTintList(colorStateList);
+            if (home != null) {
+                VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_home_white_24dp, null);
+                vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+                home.setColorNormal(colorStateList.getDefaultColor());
+                home.setColorPressed(colorStateList.getDefaultColor());
+                home.setImageDrawable(vectorDrawableCompat);
+            }
+
+            if (addChat != null) {
+                VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_add_black_24dp, null);
+                vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+                addChat.setColorNormal(colorStateList.getDefaultColor());
+                addChat.setColorPressed(colorStateList.getDefaultColor());
+                addChat.setImageDrawable(vectorDrawableCompat);
             }
 
             //showChatsTint(colorStateList, activity);
