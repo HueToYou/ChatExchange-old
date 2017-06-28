@@ -567,16 +567,7 @@ public class MainActivity extends SlidingActivity {
      */
 
     private void doFragmentStuff() {
-        mSEChatUrls = new SparseArray<>();
-        mSOChatUrls = new SparseArray<>();
-        mSEChatColors = new SparseIntArray();
-        mSOChatColors = new SparseIntArray();
-        mSEChatIcons = new SparseArray<>();
-        mSOChatIcons = new SparseArray<>();
-        mSEChatNames = new SparseArray<>();
-        mSOChatNames = new SparseArray<>();
-        mSEChats = new SparseArray<>();
-        mSOChats = new SparseArray<>();
+        resetArrays(false);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1058,6 +1049,7 @@ public class MainActivity extends SlidingActivity {
 
     private void removeAllFragmentsFromList() {
         if (chatroomsList != null) chatroomsList.setAdapter(null);
+        resetArrays(true);
     }
 
     /**
@@ -1377,5 +1369,51 @@ public class MainActivity extends SlidingActivity {
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mAddChatReceiver);
         super.onDestroy();
+    }
+
+    /**
+     * Empty all specified arrays related to chats
+     * @param shouldEmptyIDs should the ID Set be emptied?
+     */
+
+    private void resetArrays(boolean shouldEmptyIDs) {
+        if (shouldEmptyIDs) {
+            mSEChatIDs = new HashSet<>();
+            mSOChatIDs = new HashSet<>();
+            mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+            mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+        }
+
+        mSEChatUrls = new SparseArray<>();
+        mSOChatUrls = new SparseArray<>();
+        mSEChats = new SparseArray<>();
+        mSOChats = new SparseArray<>();
+        mSEChatNames = new SparseArray<>();
+        mSOChatNames = new SparseArray<>();
+        mSEChatIcons = new SparseArray<>();
+        mSOChatIcons = new SparseArray<>();
+        mSEChatColors = new SparseIntArray();
+        mSOChatColors = new SparseIntArray();
+    }
+
+    /**
+     * Removes all chats on confirmation
+     * @param v the view calling this function
+     */
+
+    public void removeAllChats(View v) {
+        new AlertDialog.Builder(this)
+                .setTitle("Are you sure?")
+                .setMessage("Are you sure you want to remove all chats?")
+                .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        removeAllFragmentsFromList();
+                    }
+                })
+                .setNegativeButton(getResources().getText(R.string.generic_no), null)
+                .show();
     }
 }

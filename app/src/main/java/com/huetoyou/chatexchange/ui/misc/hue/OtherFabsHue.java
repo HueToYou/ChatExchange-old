@@ -75,6 +75,7 @@ public class OtherFabsHue
             FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);
             com.github.clans.fab.FloatingActionButton home = activity.findViewById(R.id.home_fab);
             com.github.clans.fab.FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
+            com.github.clans.fab.FloatingActionButton removeChats = activity.findViewById(R.id.remove_all_chats_fab);
 
             if (chatListMenu != null) {
                 chatListMenu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
@@ -97,6 +98,15 @@ public class OtherFabsHue
                 addChat.setColorNormal(colorStateList.getDefaultColor());
                 addChat.setColorPressed(colorStateList.getDefaultColor());
                 addChat.setImageDrawable(vectorDrawableCompat);
+            }
+
+            if (removeChats != null) {
+                VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_close_black_24dp, null);
+                vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+                removeChats.setColorNormal(colorStateList.getDefaultColor());
+                removeChats.setColorPressed(colorStateList.getDefaultColor());
+                removeChats.setImageDrawable(vectorDrawableCompat);
             }
 
             //showChatsTint(colorStateList, activity);
