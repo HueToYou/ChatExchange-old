@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import com.huetoyou.chatexchange.R;
 
 /*
- * This class is for setting the theme of MainActivity
+ * This class is for dynamically setting the theme of an Activity
  */
 
 public class ThemeHue

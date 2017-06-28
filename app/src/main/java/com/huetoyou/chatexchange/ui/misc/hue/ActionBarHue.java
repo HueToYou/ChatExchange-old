@@ -44,7 +44,7 @@ public class ActionBarHue
 
                     // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(HueUtils.manipulateColor(mAppBarColor, 0.7f));
+                    window.setStatusBarColor(HueUtils.darkenColor(mAppBarColor, 0.7f));
                 }
             }
         }
@@ -76,7 +76,7 @@ public class ActionBarHue
 
                     // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(HueUtils.manipulateColor(initialColor, 0.7f));
+                    window.setStatusBarColor(HueUtils.darkenColor(initialColor, 0.7f));
                 }
 
             }
@@ -110,7 +110,7 @@ public class ActionBarHue
 
                     // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(HueUtils.manipulateColor(initialColor, 0.7f));
+                    window.setStatusBarColor(HueUtils.darkenColor(initialColor, 0.7f));
                 }
             }
         }

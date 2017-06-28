@@ -2,13 +2,16 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 
 import android.graphics.Color;
 
+/*
+ * This class contains common utils which the other Hue classes use
+ */
+
 class HueUtils
 {
     /*
-     * This class contains common utils which the other Hue classes use
+     * This method darkens a color by the factor specified in the second parameter
      */
-
-    public static  int manipulateColor(int color, @SuppressWarnings("SameParameterValue") float factor)
+    public static  int darkenColor(int color, @SuppressWarnings("SameParameterValue") float factor)
     {
         int a = Color.alpha(color);
         int r = Math.round(Color.red(color) * factor);

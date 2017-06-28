@@ -17,7 +17,9 @@ public class OtherFabsHue
 
     private SharedPreferences mSharedPreferences = null;
 
-    public void setAddChatFabColor(AppCompatActivity activity, @ColorInt int appBarColor) {
+    public void setAddChatFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
+    {
+        //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -32,7 +34,9 @@ public class OtherFabsHue
         }
     }
 
-    public void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity) {
+    public void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity)
+    {
+        //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);

@@ -10,16 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.huetoyou.chatexchange.R;
 
+/*
+ * This class is for setting the color of the FABs in a chat fragment {??except the show chats fab}
+ */
+
 public class ChatFragFabsHue
 {
-    /*
-     * This class is for setting the color of the FABs in a chat fragment {??except the show chats fab}
-     */
-
     private SharedPreferences mSharedPreferences = null;
 
     public void setChatFragmentFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
     {
+        //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -31,6 +32,7 @@ public class ChatFragFabsHue
 
     public void setChatFragmentFabColorToSharedPrefsValue(AppCompatActivity activity)
     {
+        //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
