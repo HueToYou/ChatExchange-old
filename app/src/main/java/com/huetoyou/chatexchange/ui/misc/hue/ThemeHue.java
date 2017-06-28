@@ -15,7 +15,7 @@ public class ThemeHue
     private SharedPreferences mSharedPreferences = null;
 
     /*
-     * Only call this method from onCreate(), calling it afterwards will not have any effect
+     * Only call this method if setContentView() has not been called yet
      */
     public void setTheme(Activity activity)
     {
@@ -31,7 +31,7 @@ public class ThemeHue
         //We only need to explicitly set the theme if the user wants the dark theme, as light is the default
         if(desiredThemeIsDark)
         {
-            //NB: this *must* be called before super.onCreate(), else weird things happen
+            //NB: this *must* be called before setContentView(), else weird things happen
             activity.setTheme(R.style.DarkTheme);
         }
     }
