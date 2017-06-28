@@ -53,6 +53,32 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        client(webView);
+
+        openInWV.setVisibility(View.GONE);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView.canGoBack()) webView.goBack();
+            }
+        });
+
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView.canGoForward()) webView.goForward();
+            }
+        });
+    }
+
+    /**
+     * Set client for specified WebView (so we can intercept URL presses, and they open in the WebView itself by default)
+     * @param webView the WebView to have its client set
+     */
+
+    private void client(WebView webView) {
         webView.setWebViewClient(new WebViewClient(){
 
             @Override
@@ -78,23 +104,6 @@ public class WebViewActivity extends AppCompatActivity {
                 }
                 else view.loadUrl(url);
                 return true;
-            }
-        });
-        webView.getSettings().setJavaScriptEnabled(true);
-
-        openInWV.setVisibility(View.GONE);
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (webView.canGoBack()) webView.goBack();
-            }
-        });
-
-        forward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (webView.canGoForward()) webView.goForward();
             }
         });
     }

@@ -90,89 +90,24 @@ public class UserTileFragment extends Fragment {
         return mView;
     }
 
+    /**
+     * Set the username
+     * @param text username
+     */
+
     private void setUserName(String text) {
         mUserInfo.setText(text);
         mUserInfo.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
+    /**
+     * Set avatar
+     * @param url URL of avatar (must be image URL)
+     */
+
     private void setAvatar(String url) {
         mGetIcon = new GetIcon(url, 50, false);
         mGetIcon.start();
-    }
-
-    private void setIsModOwner(boolean isMod, boolean isOwner) {
-        if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
-        else if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
-    }
-
-    public Bitmap getmIconBitmap() {
-        return mIconBitmap;
-    }
-
-    private void displayInfoOnTap(final int id, final int lastPost, final int rep) {
-        mUserInfo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                long t = (long)lastPost * 1000;
-                Date date = new Date(t);
-                date.setTime(t);
-                String d = SimpleDateFormat.getDateInstance().format(date);
-
-                Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-                calendar.setTimeZone(TimeZone.getDefault());
-                calendar.setTime(date);   // assigns calendar to given date
-                int hr24 = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
-                int hr12 = calendar.get(Calendar.HOUR);        // gets hour in 12h format
-                int min = calendar.get(Calendar.MINUTE);
-                int sec = calendar.get(Calendar.SECOND);
-
-                String time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
-
-                mUserInfoView = View.inflate(getActivity(), R.layout.user_info, null);
-
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                        .setCancelable(true)
-                        .setTitle(getResources().getText(R.string.user_info) + " | " + mArgs.getString("userName", "Not Found!"))
-                        .setView(mUserInfoView)
-                        .setPositiveButton("OK", null)
-                        .create();
-
-                alertDialog.show();
-
-                user_image_info = mUserInfoView.findViewById(R.id.user_image);
-                TextView user_id = mUserInfoView.findViewById(R.id.user_id);
-                TextView user_last_post = mUserInfoView.findViewById(R.id.user_last_post);
-                TextView user_rep = mUserInfoView.findViewById(R.id.user_rep);
-
-                try {
-                    mGetIcon = new GetIcon(mArgs.getString("userAvatarUrl", ""), 140, true);
-                    mGetIcon.start();
-                    user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
-                    user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
-                    user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        mUserInfo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                String addr;
-                if (mChatUrl.contains("stackexchange")) addr = "https://chat.stackexchange.com/users/";
-                else addr = "https://chat.stackoverflow.com/users/";
-
-                addr = addr.concat(String.valueOf(id));
-
-                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra("url", addr).setAction(Intent.ACTION_VIEW));
-
-//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(addr));
-//                startActivity(browserIntent);
-                return true;
-            }
-        });
     }
 
     private class GetIcon extends Thread {
@@ -239,6 +174,99 @@ public class UserTileFragment extends Fragment {
                 }
             });
         }
+    }
+
+    /**
+     * Set appropriate text decoration for moderator/owner
+     * @param isMod If user is a mod
+     * @param isOwner If user is a room owner
+     */
+
+    private void setIsModOwner(boolean isMod, boolean isOwner) {
+        if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
+        else if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
+    }
+
+    /**
+     * Get the user's avatar in Bitmap form
+     * @return a Bitmap of the user's avatar
+     */
+
+    public Bitmap getmIconBitmap() {
+        return mIconBitmap;
+    }
+
+    /**
+     * Create a dialog showing various user info
+     * @param id User's ID
+     * @param lastPost User's last post time in UNIX format
+     * @param rep User's reputation
+     */
+
+    private void displayInfoOnTap(final int id, final int lastPost, final int rep) {
+        mUserInfo.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                long t = (long)lastPost * 1000;
+                Date date = new Date(t);
+                date.setTime(t);
+                String d = SimpleDateFormat.getDateInstance().format(date);
+
+                Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+                calendar.setTimeZone(TimeZone.getDefault());
+                calendar.setTime(date);   // assigns calendar to given date
+                int hr24 = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+                int hr12 = calendar.get(Calendar.HOUR);        // gets hour in 12h format
+                int min = calendar.get(Calendar.MINUTE);
+                int sec = calendar.get(Calendar.SECOND);
+
+                String time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
+
+                mUserInfoView = View.inflate(getActivity(), R.layout.user_info, null);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                        .setCancelable(true)
+                        .setTitle(getResources().getText(R.string.user_info) + " | " + mArgs.getString("userName", "Not Found!"))
+                        .setView(mUserInfoView)
+                        .setPositiveButton("OK", null)
+                        .create();
+
+                alertDialog.show();
+
+                user_image_info = mUserInfoView.findViewById(R.id.user_image);
+                TextView user_id = mUserInfoView.findViewById(R.id.user_id);
+                TextView user_last_post = mUserInfoView.findViewById(R.id.user_last_post);
+                TextView user_rep = mUserInfoView.findViewById(R.id.user_rep);
+
+                try {
+                    mGetIcon = new GetIcon(mArgs.getString("userAvatarUrl", ""), 140, true);
+                    mGetIcon.start();
+                    user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
+                    user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
+                    user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mUserInfo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String addr;
+                if (mChatUrl.contains("stackexchange")) addr = "https://chat.stackexchange.com/users/";
+                else addr = "https://chat.stackoverflow.com/users/";
+
+                addr = addr.concat(String.valueOf(id));
+
+                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra("url", addr).setAction(Intent.ACTION_VIEW));
+
+//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(addr));
+//                startActivity(browserIntent);
+                return true;
+            }
+        });
     }
 
     @Override

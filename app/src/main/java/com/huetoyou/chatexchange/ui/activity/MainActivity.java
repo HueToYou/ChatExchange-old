@@ -42,6 +42,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -206,6 +207,32 @@ public class MainActivity extends SlidingActivity {
      * Setup procedure
      */
 
+    private void preSetup()
+    {
+        setBehindContentView(R.layout.chatroom_slideout);
+        mChatroomSlidingMenu = getSlidingMenu();
+
+        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
+        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
+        mChatroomSlidingMenu.setFadeDegree(0.35f);
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        mEditor = mSharedPrefs.edit();
+        mEditor.apply();
+
+
+        mHandler = new Handler();
+
+//        Log.e("URLS", mChatUrls.toString());
+
+        //mEditor.putInt("tabIndex", 0).apply();
+        mFragmentManager = getSupportFragmentManager();
+
+        mIntent = getIntent();
+    }
+
     private void setup() {
         FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -262,7 +289,12 @@ public class MainActivity extends SlidingActivity {
         setupACBR();
     }
 
-    @SuppressWarnings("StaticFieldLeak")
+
+    /**
+     * BroadcastReceiver listening for click on chat URL from WebViewActivity
+     * @see WebViewActivity#client(WebView)
+     */
+
     private void setupACBR() {
         mAddChatReceiver = new BroadcastReceiver() {
             @Override
@@ -273,40 +305,76 @@ public class MainActivity extends SlidingActivity {
                         mSEChatIDs.add(extras.getString("idSE"));
                         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
                         doFragmentStuff();
-                        new AsyncTask<Void, Void, Void>() {
+//                        new AsyncTask<Void, Void, Void>() {
+//                            @Override
+//                            protected Void doInBackground(Void... voids) {
+//                                while (mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) == null);
+//                                while (mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) == null);
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            protected void onPostExecute(Void aVoid) {
+//                                 try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
+//                                 catch (Exception e) { e.printStackTrace(); }
+//                                 super.onPostExecute(aVoid);
+//                            }
+//                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                        ReceiveACB.newInstance(new ACBInterface() {
                             @Override
-                            protected Void doInBackground(Void... voids) {
-                                while (mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) == null);
-                                while (mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) == null);
-                                return null;
+                            public boolean urlFound() {
+                                return mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) != null;
                             }
 
                             @Override
-                            protected void onPostExecute(Void aVoid) {
-                                 try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
-                                 catch (Exception e) { e.printStackTrace(); }
-                                 super.onPostExecute(aVoid);
+                            public boolean fragmentFound() {
+                                return mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
                             }
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                            @Override
+                            public void onFinish() {
+                                try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+                        }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
                     } else if (extras.containsKey("idSO")) {
                         mSOChatIDs.add(extras.getString("idSO"));
                         mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                         doFragmentStuff();
-                        new AsyncTask<Void, Void, Void>() {
+//                        new AsyncTask<Void, Void, Void>() {
+//                            @Override
+//                            protected Void doInBackground(Void... voids) {
+//                                while (mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) == null);
+//                                while (mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) == null);
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            protected void onPostExecute(Void aVoid) {
+//                                 try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
+//                                 catch (Exception e) { e.printStackTrace(); }
+//                                 super.onPostExecute(aVoid);
+//                            }
+//                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        ReceiveACB.newInstance(new ACBInterface() {
                             @Override
-                            protected Void doInBackground(Void... voids) {
-                                while (mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) == null);
-                                while (mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) == null);
-                                return null;
+                            public boolean urlFound() {
+                                return mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) != null;
                             }
 
                             @Override
-                            protected void onPostExecute(Void aVoid) {
-                                 try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
-                                 catch (Exception e) { e.printStackTrace(); }
-                                 super.onPostExecute(aVoid);
+                            public boolean fragmentFound() {
+                                return mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
                             }
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                            @Override
+                            public void onFinish() {
+                                try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+                        }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 }
             }
@@ -318,7 +386,43 @@ public class MainActivity extends SlidingActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mAddChatReceiver, intentFilter);
     }
 
-    @SuppressLint("StaticFieldLeak")
+    static private class ReceiveACB extends AsyncTask<Void, Void, Void> {
+        ACBInterface mInterface;
+        String mKey;
+
+        static ReceiveACB newInstance(ACBInterface acbInterface, String key) {
+            return new ReceiveACB(acbInterface, key);
+        }
+
+        ReceiveACB(ACBInterface acbInterface, String key) {
+            mInterface = acbInterface;
+            mKey = key;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while(!mInterface.urlFound());
+            while(!mInterface.fragmentFound());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mInterface.onFinish();
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private interface ACBInterface {
+        boolean urlFound();
+        boolean fragmentFound();
+        void onFinish();
+    }
+
+    /**
+     * If Firebase notification comes with data, and that data is room info, open the room if added
+     */
+
     private void respondToNotificationClick() {
         if (getIntent().getExtras() != null) {
             Log.e("NOTIF", "NOTIF");
@@ -326,24 +430,65 @@ public class MainActivity extends SlidingActivity {
             final String chatDomain = mIntent.getExtras().getString("chatDomain");
 
             if (chatId != null && chatDomain != null) {
-                new AsyncTask<Void, Void, Void>() {
+                NotificationHandler.newInstance(new NHInterface() {
                     @Override
-                    protected Void doInBackground(Void... voids) {
-                        if (chatDomain.contains("exchange")) //noinspection StatementWithEmptyBody
-                            while (mSEChatUrls.get(Integer.decode(chatId)) == null);
-                        else if (chatDomain.contains("overflow")) //noinspection StatementWithEmptyBody
-                            while (mSOChatUrls.get(Integer.decode(chatId)) == null);
-                        return null;
+                    public boolean seContainsId() {
+                        return mSEChatUrls.get(Integer.decode(chatId)) != null;
                     }
 
                     @Override
-                    protected void onPostExecute(Void aVoid) {
+                    public boolean soContainsId() {
+                        return mSOChatUrls.get(Integer.decode(chatId)) != null;
+                    }
+
+                    @Override
+                    public void onFinish() {
                         setFragmentByChatId(chatId, chatDomain);
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     }
+
+    private static class NotificationHandler extends AsyncTask<Void, Void, Void> {
+        NHInterface mInterface;
+        String mKey;
+
+        static NotificationHandler newInstance(NHInterface nhInterface, String key) {
+            return new NotificationHandler(nhInterface, key);
+        }
+
+        NotificationHandler(NHInterface nhInterface, String key) {
+            mInterface = nhInterface;
+            mKey = key;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (mKey.contains("overflow")) while (!mInterface.soContainsId());
+            else if (mKey.contains("exchange")) while (!mInterface.seContainsId());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mInterface.onFinish();
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private interface NHInterface {
+        boolean seContainsId();
+        boolean soContainsId();
+        void onFinish();
+    }
+
+    /**
+     * Needed to convert some SparseArrays to ArrayLists
+     * @param sparseArray the SparseArray to be converted
+     * @param <C> dummy class for compatibility or something
+     * @return returns the resulting ArrayList
+     */
 
     private static <C> List<C> asList(SparseArray<C> sparseArray) {
         if (sparseArray == null) return null;
@@ -353,6 +498,12 @@ public class MainActivity extends SlidingActivity {
         return arrayList;
     }
 
+    /**
+     * Same as {@link MainActivity#asList(SparseArray)} but for SparseIntArray
+     * @param sparseIntArray Array to be converted
+     * @return returns resulting ArrayList
+     */
+
     private static List<Integer> sparseIntArrayAsList(SparseIntArray sparseIntArray) {
         if (sparseIntArray == null) return null;
         List<Integer> arrayList = new ArrayList<>(sparseIntArray.size());
@@ -360,6 +511,14 @@ public class MainActivity extends SlidingActivity {
             arrayList.add(sparseIntArray.valueAt(i));
         return arrayList;
     }
+
+    /*
+     * Setup fragments
+     */
+
+    /**
+     * Instantiate fragments and add them to {@link MainActivity#mChatroomSlidingMenu}
+     */
 
     private void doFragmentStuff() {
         mSEChatUrls = new SparseArray<>();
@@ -551,6 +710,11 @@ public class MainActivity extends SlidingActivity {
 //        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);
     }
 
+    /**
+     * Handles the actual data parsing for chats
+     * (in the background to avoid ANRs)
+     */
+
     private static class AddList extends AsyncTask<String, Void, Void> {
         private String mHtmlData;
         private String mChatId;
@@ -652,6 +816,10 @@ public class MainActivity extends SlidingActivity {
         void onFinish();
     }
 
+    /**
+     * Setup current users {@link SlidingMenu}
+     */
+
     private void createUsersSlidingMenu()
     {
         // configure the SlidingMenu
@@ -677,35 +845,14 @@ public class MainActivity extends SlidingActivity {
         mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
     }
 
+    /**
+     * Get the sliding menu from another class
+     * @return returns the current users {@link SlidingMenu}
+     */
+
     public SlidingMenu getCurrentUsers_SlidingMenu()
     {
         return mCurrentUsers_SlidingMenu;
-    }
-
-    private void preSetup()
-    {
-        setBehindContentView(R.layout.chatroom_slideout);
-        mChatroomSlidingMenu = getSlidingMenu();
-
-        mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
-        mChatroomSlidingMenu.setBehindWidthRes(R.dimen.sliding_menu_chats_width);
-        mChatroomSlidingMenu.setFadeDegree(0.35f);
-
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        mEditor = mSharedPrefs.edit();
-        mEditor.apply();
-
-
-        mHandler = new Handler();
-
-//        Log.e("URLS", mChatUrls.toString());
-
-        //mEditor.putInt("tabIndex", 0).apply();
-        mFragmentManager = getSupportFragmentManager();
-
-        mIntent = getIntent();
     }
 
     /*
@@ -754,6 +901,11 @@ public class MainActivity extends SlidingActivity {
      * Fragment Stuffs
      */
 
+    /**
+     * Add specified fragments to the {@link FragmentManager}
+     * @param fragments list of Fragments to be added
+     */
+
     private void initiateCurrentFragments(ArrayList<Fragment> fragments) {
         for (int i = 0; i < fragments.size(); i++) {
             try {
@@ -775,6 +927,15 @@ public class MainActivity extends SlidingActivity {
             }
         }
     }
+
+    /**
+     * Add fragments to the ListView/SlidingMenu
+     * @param chatroomNames list of chat names
+     * @param chatUrls list of corresponding chat URLs
+     * @param chatIcons list of corresponding chat favicons
+     * @param chatColors list of corresponding chat accent colors
+     * @param chatFragments list of chat fragments (TODO: remove this variable?)
+     */
 
     private void addFragmentsToList(ArrayList<String> chatroomNames,
                                     ArrayList<String> chatUrls,
@@ -830,10 +991,19 @@ public class MainActivity extends SlidingActivity {
         });
     }
 
+    /**
+     * Might be useful for a batch removal later, but right now, it just enables removal of the only chat added
+     */
+
     private void removeAllFragmentsFromList() {
         if (chatroomsList != null) chatroomsList.setAdapter(null);
     }
 
+    /**
+     * Open a chat by the specified ID
+     * @param id the ID of the desired chat
+     * @param domain the domain of the desired chat ("exchange" or "overflow")
+     */
 
     private void setFragmentByChatId(String id, String domain) {
 //        for (String url : mChatUrls) {
@@ -853,6 +1023,11 @@ public class MainActivity extends SlidingActivity {
             else Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * Open a chat using its tag
+     * @param tag the chat's fragment tag (should be its URL)
+     */
 
     private void setFragmentByTag(String tag)
     {
@@ -898,6 +1073,11 @@ public class MainActivity extends SlidingActivity {
 
     /*
      * Other Stuffs
+     */
+
+    /**
+     * Handle adding chats
+     * TODO: remove add-by-URL option
      */
 
     private void showAddTabDialog() {
@@ -985,6 +1165,11 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
+    /**
+     * Handle removing a chat
+     * @param v the view that called this method
+     */
+
     public void confirmClose(View v) {
         if (chatroomsList.getSelectedItemPosition() != 0) {
             Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -1053,9 +1238,23 @@ public class MainActivity extends SlidingActivity {
         }
     }
 
+    /**
+     * Get the chatroom list {@link SlidingMenu} instance from other classes
+     * @return returns the chatroom SlidingMenu
+     */
+
     private SlidingMenu getmChatroomSlidingMenu() {
         return mChatroomSlidingMenu;
     }
+
+    /**
+     * Instantiate/create the appropriate chat fragment, if necessary
+     * @param url URL of chat
+     * @param name Name of chat
+     * @param color Accent color of chat
+     * @param id ID of chat
+     * @return the created Fragment
+     */
 
     private Fragment addFragment(String url, String name, Integer color, Integer id) {
         Fragment fragment;
@@ -1075,10 +1274,10 @@ public class MainActivity extends SlidingActivity {
         return fragment;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig) ;
-    }
+    /**
+     * Handle user press of Home button in ActionBar
+     * @return true
+     */
 
     @Override
     public boolean onSupportNavigateUp()
@@ -1091,6 +1290,11 @@ public class MainActivity extends SlidingActivity {
         }, 400);
         return true;
     }
+
+    /**
+     * Open or close chatroom list
+     * @param v The View calling the method
+     */
 
     public void toggleChatsSlide(View v) {
         mChatroomSlidingMenu.toggle();

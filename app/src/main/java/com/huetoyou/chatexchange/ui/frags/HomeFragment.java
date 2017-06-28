@@ -59,6 +59,37 @@ public class HomeFragment extends Fragment {
         super.onAttach(context);
     }
 
+    @Override
+    public void onResume()
+    {
+        hueAllTheThings();
+
+        //noinspection StatementWithEmptyBody
+        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
+        {
+            //setChatButtonTint();
+        }
+//        setChatButtonTint();
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    /*private void setChatButtonTint() {
+        mHueUtils = new Utils();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int initialColor = mSharedPreferences.getInt("default_color", getResources().getColor(R.color.colorPrimary));
+        ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
+        mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
+    }*/
+
+    /*
+     * Set appropriate colors
+     */
+
     public void hueTest()
     {
         System.out.println("Hue");
@@ -90,31 +121,4 @@ public class HomeFragment extends Fragment {
         actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
         otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
     }
-
-    @Override
-    public void onResume()
-    {
-        hueAllTheThings();
-
-        //noinspection StatementWithEmptyBody
-        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
-        {
-            //setChatButtonTint();
-        }
-//        setChatButtonTint();
-        super.onResume();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    /*private void setChatButtonTint() {
-        mHueUtils = new Utils();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int initialColor = mSharedPreferences.getInt("default_color", getResources().getColor(R.color.colorPrimary));
-        ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
-        mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
-    }*/
 }

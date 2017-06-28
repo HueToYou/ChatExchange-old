@@ -278,6 +278,10 @@ public class ChatFragment extends Fragment
         super.onDetach();
     }
 
+    /*
+     * Handle loading messages
+     */
+
     private void setupMessages() {
         mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
             @Override
@@ -292,6 +296,28 @@ public class ChatFragment extends Fragment
             }
         });
     }
+
+    private void processMessageViews(URL url, String html) {
+        Document document = Jsoup.parse(html);
+        Elements elements = document.select("user-container");
+
+        for (Element e : elements) {
+            Elements link = e.select("a");
+            Element signature = new Element("");
+
+            for (Element e1: link) {
+                if (e1.hasAttr("class") && e1.attr("class").equals("signature")) {
+                    signature = e1;
+                    break;
+                }
+            }
+
+        }
+    }
+
+    /*
+     * Set proper coloring for the chat
+     */
 
     private void hueAllTheThings()
     {
@@ -336,23 +362,9 @@ public class ChatFragment extends Fragment
         thread.start();
     }
 
-    private void processMessageViews(URL url, String html) {
-        Document document = Jsoup.parse(html);
-        Elements elements = document.select("user-container");
-
-        for (Element e : elements) {
-            Elements link = e.select("a");
-            Element signature = new Element("");
-
-            for (Element e1: link) {
-                if (e1.hasAttr("class") && e1.attr("class").equals("signature")) {
-                    signature = e1;
-                    break;
-                }
-            }
-
-        }
-    }
+    /*
+     * Handle ping suggestions
+     */
 
     private void setupMessagePingList() {
         mMessage = view.findViewById(R.id.messageToSend);
@@ -440,6 +452,10 @@ public class ChatFragment extends Fragment
         void setName(UsernameTilePingFragment usernameTilePingFragment);
     }
 
+    /*
+     * Parse userdata from URL
+     */
+
     private static class ParseUsers extends AsyncTask<String, Void, String> {
         private UserParsed mUserParsed;
 
@@ -516,6 +532,18 @@ public class ChatFragment extends Fragment
         void onFail(String message);
     }
 
+    /**
+     * Add user to user {@link SlidingMenu}
+     * @param name Name of user
+     * @param imgUrl URL for user's avatar
+     * @param id Chat ID of user
+     * @param lastPost Last Post time in UNIX time
+     * @param rep User's total on-site reputation
+     * @param isMod Is user a mod?
+     * @param isOwner Is user a room owner? (Always true if isMod is true)
+     * @param chatUrl URL of current chat
+     */
+
     private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
         Bundle args = new Bundle();
         args.putString(USER_NAME_KEY, name);
@@ -537,6 +565,10 @@ public class ChatFragment extends Fragment
         mFragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
     }
 
+    /**
+     * Instantiate and handle taps of chat buttons
+     * @param url Chat URL
+     */
     private void addChatButtons(final String url) {
 
         FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
@@ -674,6 +706,10 @@ public class ChatFragment extends Fragment
 
     }
 
+    /*
+     * Parse Description of chat
+     */
+
     private static class GetDesc extends AsyncTask<String, Void, String> {
         private DescGotten mDescGotten;
 
@@ -712,6 +748,10 @@ public class ChatFragment extends Fragment
         void onSuccess(String desc);
         void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
+
+    /*
+     * Parse Tags of chat
+     */
 
     private static class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
         private TagsGotten mTagsGotten;
@@ -754,15 +794,34 @@ public class ChatFragment extends Fragment
         void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
 
+    /**
+     * Access the fragment's {@link SlidingMenu} from elsewhere
+     * @return returns {@link ChatFragment#mSlidingMenu}
+     */
+
     public SlidingMenu getmSlidingMenu() {
         return mSlidingMenu;
     }
+
+    /**
+     * Access all users' info from elsewhere
+     * @return returns the user info Bundles
+     */
 
     public ArrayList<Bundle> getmUserInfo() {
         return mUserInfo;
     }
 
+    /**
+     * Get the current chat color from elsewhere
+     * @return returns the color int of the chat accent
+     */
+
     public int getmAppBarColor() { return mAppBarColor; }
+
+    /*
+     * Parse the chat's host domain
+     */
 
     private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String> {
         DomainFoundListener mDomainFoundListener;
@@ -805,6 +864,11 @@ public class ChatFragment extends Fragment
         void onSuccess(String text);
         void onFail(String text);
     }
+
+    /**
+     * Access the current chat's ID from elsewhere
+     * @return the chat ID as Integer
+     */
 
     public Integer getChatId() {
         return mChatId;
