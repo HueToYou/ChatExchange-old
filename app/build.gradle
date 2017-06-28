@@ -92,4 +92,4 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services' //KEEP THIS AT THE BOTTOM

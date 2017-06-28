@@ -1130,7 +1130,7 @@ public class MainActivity extends SlidingActivity {
                 String inputText = input.getText().toString();
                 if (!inputText.isEmpty()) {
 //                    String url;
-                    if (!mAddList.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                    if (mAddList != null && !mAddList.getStatus().equals(AsyncTask.Status.FINISHED)) {
                         mAddList.cancel(true);
                     }
 
