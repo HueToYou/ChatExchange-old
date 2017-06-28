@@ -273,6 +273,17 @@ public class MainActivity extends SlidingActivity {
                 showAddTabDialog();
             }
         });
+
+        FloatingActionButton fab = findViewById(R.id.home_fab);
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                setFragmentByTag("home");
+                mChatroomSlidingMenu.toggle();
+            }
+        });
         mRequestFactory = new RequestFactory();
 
         mAccountManager = AccountManager.get(this);

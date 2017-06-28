@@ -30,17 +30,37 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_chat_fab"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|end"
-        android:clickable="true"
-        android:focusable="true"
-        android:tint="#fff"
-        app:elevation="4dp"
-        app:srcCompat="@drawable/ic_add_black_24dp"
-        app:useCompatPadding="true"
-        tools:ignore="RtlHardcoded" />
+        android:layout_gravity="bottom|end"
+        android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/home_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:tint="#fff"
+            app:elevation="4dp"
+            app:srcCompat="@drawable/ic_home_white_24dp"
+            app:useCompatPadding="true"
+            tools:ignore="RtlHardcoded" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_chat_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:tint="#fff"
+            app:elevation="4dp"
+            app:srcCompat="@drawable/ic_add_black_24dp"
+            app:useCompatPadding="true"
+            tools:ignore="RtlHardcoded" />
+    </LinearLayout>
 
 </FrameLayout>

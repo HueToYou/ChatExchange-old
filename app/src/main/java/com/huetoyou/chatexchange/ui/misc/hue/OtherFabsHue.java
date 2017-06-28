@@ -26,11 +26,16 @@ public class OtherFabsHue
         }
 
         FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
+        FloatingActionButton homeFab = activity.findViewById(R.id.home_fab);
 
         ColorStateList colorStateList = ColorStateList.valueOf(appBarColor);
 
         if (addChat != null) {
             addChat.setBackgroundTintList(colorStateList);
+        }
+
+        if (homeFab != null) {
+            homeFab.setBackgroundTintList(colorStateList);
         }
     }
 
@@ -46,7 +51,7 @@ public class OtherFabsHue
         {
             int hue = 0;
             FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
-            FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
+            FloatingActionButton homeFab = activity.findViewById(R.id.home_fab);
 
             hue = mSharedPreferences.getInt("fab_color",activity.getResources().getColor(R.color.colorAccent));
 
@@ -54,7 +59,10 @@ public class OtherFabsHue
 
             if (addChat != null) {
                 addChat.setBackgroundTintList(colorStateList);
-                showChats.setBackgroundTintList(colorStateList);
+            }
+
+            if (homeFab != null) {
+                homeFab.setBackgroundTintList(colorStateList);
             }
 
             //showChatsTint(colorStateList, activity);

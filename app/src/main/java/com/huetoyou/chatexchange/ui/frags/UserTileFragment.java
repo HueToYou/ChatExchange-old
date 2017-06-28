@@ -208,20 +208,28 @@ public class UserTileFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                long t = (long)lastPost * 1000;
-                Date date = new Date(t);
-                date.setTime(t);
-                String d = SimpleDateFormat.getDateInstance().format(date);
+                String time;
+                String d;
+                if (lastPost > 0)
+                {
+                    long t = (long) lastPost * 1000;
+                    Date date = new Date(t);
+                    date.setTime(t);
+                    d = SimpleDateFormat.getDateInstance().format(date);
 
-                Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-                calendar.setTimeZone(TimeZone.getDefault());
-                calendar.setTime(date);   // assigns calendar to given date
-                int hr24 = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
-                int hr12 = calendar.get(Calendar.HOUR);        // gets hour in 12h format
-                int min = calendar.get(Calendar.MINUTE);
-                int sec = calendar.get(Calendar.SECOND);
+                    Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+                    calendar.setTimeZone(TimeZone.getDefault());
+                    calendar.setTime(date);   // assigns calendar to given date
+                    int hr24 = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+                    int hr12 = calendar.get(Calendar.HOUR);        // gets hour in 12h format
+                    int min = calendar.get(Calendar.MINUTE);
+                    int sec = calendar.get(Calendar.SECOND);
 
-                String time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
+                    time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
+                } else {
+                    time = "N/A";
+                    d = "";
+                }
 
                 mUserInfoView = View.inflate(getActivity(), R.layout.user_info, null);
 
