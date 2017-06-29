@@ -1197,6 +1197,10 @@ public class MainActivity extends SlidingActivity {
             {
                 Log.e("TAG", tag);
             }
+
+            ViewGroup huehue = getActionBar(getWindow().getDecorView());
+            AppCompatImageButton huehuehue = (AppCompatImageButton) huehue.getChildAt(1);
+            huehuehue.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_180_around_center));
         }
     }
 
