@@ -187,6 +187,7 @@ public class MainActivity extends SlidingActivity {
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
+        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
         mActionBar = getActionBar(getWindow().getDecorView());
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
         mDrawerButton.setOnClickListener(new View.OnClickListener()
@@ -203,6 +204,15 @@ public class MainActivity extends SlidingActivity {
                     doOpenAnimationForDrawerToggle(view);
                 }
                 onSupportNavigateUp();
+            }
+        });
+
+        mChatroomSlidingMenu.setOnClosedListener(new SlidingMenu.OnClosedListener()
+        {
+            @Override
+            public void onClosed()
+            {
+                fam.close(false);
             }
         });
 
