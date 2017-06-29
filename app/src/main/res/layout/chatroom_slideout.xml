@@ -79,12 +79,14 @@
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"
             app:fab_size="mini"
+            app:fab_label="Remove all chats"
             android:onClick="removeAllChats"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/home_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_label="Home page"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"
             app:fab_size="mini" />
@@ -92,6 +94,7 @@
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/add_chat_fab"
             android:layout_width="wrap_content"
+            app:fab_label="Add chat"
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"

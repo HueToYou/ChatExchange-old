@@ -10,6 +10,7 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
@@ -71,6 +72,14 @@ public class ChatFragFabsHue
 //            openBrowser.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
 //            openBrowser.setBackgroundTintList(colorStateList);
 //        }
+
+        if (menu != null)
+        {
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_unfold_menu, null);
+            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+            menu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
+        }
 
         if (showUsers != null)
         {
