@@ -236,12 +236,12 @@ public class ChatFragment extends Fragment
         mChatDomain = mSharedPreferences.getString(CHAT_HOST_DOMAIN.concat(mChatUrl), null);
 
         if (mChatDomain == null || mChatDomain.isEmpty()) {
-            if (mChatUrl.contains("stackoverflow")) mChatDomain = "stackoverflow.com";
+            if (mChatUrl.contains("overflow")) mChatDomain = "stackoverflow.com";
             else {
                 mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
                     @Override
                     public void onSucceeded(URL url, String data) {
-                        new GetHostDomainFromHtml(new DomainFoundListener() {
+                        GetHostDomainFromHtml.newInstance(new DomainFoundListener() {
                             @Override
                             public void onSuccess(String text) {
                                 mSharedPreferences.edit().putString(CHAT_HOST_DOMAIN.concat(mChatUrl), text).apply();
@@ -250,7 +250,7 @@ public class ChatFragment extends Fragment
 
                             @Override
                             public void onFail(String text) {
-                                mChatDomain = "Unknown";
+                                mChatDomain = text;
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
                     }
@@ -258,6 +258,7 @@ public class ChatFragment extends Fragment
                     @Override
                     public void onFailed(String message) {
                         Log.e("WHOOPS", message);
+                        mChatDomain = "Not Found";
                     }
                 });
             }
@@ -826,7 +827,7 @@ public class ChatFragment extends Fragment
     private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String> {
         DomainFoundListener mDomainFoundListener;
 
-        public static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
+        static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
             return new GetHostDomainFromHtml(domainFoundListener);
         }
 
@@ -837,6 +838,7 @@ public class ChatFragment extends Fragment
         @Override
         protected String doInBackground(String... strings) {
             try {
+                Log.e("STARTED", "DOOOO");
                 Document document = Jsoup.parse(strings[0]);
                 Log.e("DOC", document.html());
                 Elements scripts = document.select("script");
@@ -846,9 +848,16 @@ public class ChatFragment extends Fragment
                 Matcher m = p.matcher(scripts.html());
 
                 while (!m.hitEnd()) {
-                    if (m.find()) return m.group().replace(",", "").replace("host: ", "").replace("'", "");
+                    Log.e("INWHILE", "III");
+                    if (m.find()){
+                        Log.e("HOST", m.group());
+                        return m.group().replace(",", "").replace("host: ", "").replace("'", "");
+                    }
                 }
+                throw new Exception("Not Found");
             } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("NOTFOUND", e.getMessage());
                 mDomainFoundListener.onFail(e.getMessage());
             }
             return null;

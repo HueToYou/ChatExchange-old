@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -89,6 +90,7 @@ public class Utils
             } catch (Exception e)
             {
                 e.printStackTrace();
+                Log.e("UNKNOWN COLOR", url);
                 String threeChar = colorHex.replace("#", "");
                 String one = threeChar.substring(0, 1);
                 String two = threeChar.substring(1, 2);
