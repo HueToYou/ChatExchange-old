@@ -71,7 +71,7 @@ public class ChatFragFabsHue
 
         if (menu != null)
         {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_arrow_drop_down_black_32dp, null);
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_more_black_32dp, null);
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             menu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
