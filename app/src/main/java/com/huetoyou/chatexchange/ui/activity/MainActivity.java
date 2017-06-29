@@ -15,6 +15,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -39,6 +40,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -185,6 +187,8 @@ public class MainActivity extends SlidingActivity {
 //
 //        setSupportActionBar(toolbar);
 
+        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
@@ -204,8 +208,18 @@ public class MainActivity extends SlidingActivity {
                 } else
                 {
                     view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_neg180_around_center));
+                    fam.close(false);
                 }
                 onSupportNavigateUp();
+            }
+        });
+
+        mChatroomSlidingMenu.setOnClosedListener(new SlidingMenu.OnClosedListener()
+        {
+            @Override
+            public void onClosed()
+            {
+                fam.close(false);
             }
         });
 
@@ -300,7 +314,6 @@ public class MainActivity extends SlidingActivity {
     {
         setBehindContentView(R.layout.chatroom_slideout);
         mChatroomSlidingMenu = getSlidingMenu();
-
         mChatroomSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         mChatroomSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mChatroomSlidingMenu.setShadowDrawable(new ColorDrawable(getResources().getColor(R.color.transparentGrey)));
