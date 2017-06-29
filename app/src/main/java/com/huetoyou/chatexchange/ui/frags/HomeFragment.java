@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -12,11 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
@@ -33,6 +37,7 @@ public class HomeFragment extends Fragment {
     private OtherFabsHue otherFabsHue;
     private boolean oncreateHasBeenCalled = false;
     private SharedPreferences mSharedPreferences;
+    private WebView webView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -134,11 +139,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupWebView() {
-        final WebView webView = view.findViewById(R.id.stars_view);
+        webView = view.findViewById(R.id.stars_view);
         Button back = view.findViewById(R.id.go_back);
         Button forward = view.findViewById(R.id.go_forward);
 
+        setCookieWithDomain("openid.stackexchange.com");
+
         webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+//        webView.loadUrl("https://stackexchange.com");
 //                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
 //                webView.setInitialScale();
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -169,6 +177,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view)
             {
+                setCookieWithDomain("openid.stackexchange.com");
                 webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
             }
         });
@@ -178,6 +187,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view)
             {
+                setCookieWithDomain("openid.stackexchange.com");
                 webView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
             }
         });
@@ -210,5 +220,23 @@ public class HomeFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    private void setCookieWithDomain(String domain) {
+        CookieSyncManager.createInstance(getActivity());
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        if (((MainActivity)getActivity()).getCookieString() != null) {
+            cookieManager.removeSessionCookie();
+            cookieManager.setCookie(domain, ((MainActivity)getActivity()).getCookieString());
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(getActivity());
+                cookieManager.setAcceptCookie(true);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            {
+                cookieManager.setAcceptThirdPartyCookies(webView, true);
+            }
+        }
     }
 }

@@ -7,3 +7,10 @@
 /captures
 local.properties
 .externalNativeBuild
+/gradle.properties
+app/fabric.properties
+app/libs/
+app/lint.xml
+app/release/
+app/src/main/res/drawable-v21/
+testgobind/

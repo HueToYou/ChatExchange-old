@@ -8,12 +8,14 @@ buildscript {
         maven {
             url "https://s3.amazonaws.com/repo.commonsware.com"
         }
+        maven { url "https://jitpack.io" }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
         classpath 'io.fabric.tools:gradle:1.22.2'
     }
+
 }
 
 apply plugin: 'com.android.application'
@@ -28,6 +30,7 @@ repositories {
     maven {
         url "https://s3.amazonaws.com/repo.commonsware.com"
     }
+    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -48,6 +51,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
@@ -91,7 +97,9 @@ dependencies {
     compile 'org.jodd:jodd-lagarto:3.4.2'
     compile 'org.jsoup:jsoup:1.10.2'
 
-    compile 'com.github.clans:fab:1.6.4'
+//    compile 'com.github.clans:fab:1.6.4'
+
+    compile 'com.github.huetoyou:floatingactionbutton:bafc713'
 
     testCompile 'junit:junit:4.12'
 }

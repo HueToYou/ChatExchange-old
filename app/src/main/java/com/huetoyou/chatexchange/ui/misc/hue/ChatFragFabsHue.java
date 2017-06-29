@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -75,7 +76,7 @@ public class ChatFragFabsHue
 
         if (menu != null)
         {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_unfold_menu, null);
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_more_vert_black_24dp, null);
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             menu.getMenuIconView().setImageDrawable(vectorDrawableCompat);

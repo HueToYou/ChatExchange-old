@@ -1,9 +1,11 @@
 package com.huetoyou.chatexchange.net;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -41,7 +43,7 @@ public class RequestFactory {
      */
     private void addCookies(String cookies) {
         for (HttpCookie cookie : HttpCookie.parse(cookies)) {
-            mManager.getCookieStore().add(null, cookie);
+            mManager.getCookieStore().add(URI.create("openid.stackexchange.com"), cookie);
         }
     }
 

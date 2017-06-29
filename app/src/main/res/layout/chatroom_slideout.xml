@@ -70,34 +70,36 @@
         android:layout_gravity="bottom|end"
         app:menu_colorNormal="@color/colorAccent"
         app:menu_colorPressed="@color/colorAccent"
-        app:menu_openDirection="up">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/remove_all_chats_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorAccent"
-            app:fab_colorPressed="@color/colorAccent"
-            app:fab_size="mini"
-            app:fab_label="Remove all chats"
-            android:onClick="removeAllChats"/>
+        app:menu_openDirection="up"
+        app:menu_fab_open_rotation_left="-90"
+        app:menu_fab_open_rotation_right="270">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/home_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_label="Home page"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Home"
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/add_chat_fab"
             android:layout_width="wrap_content"
-            app:fab_label="Add chat"
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Add Chat"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/remove_all_chats_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="removeAllChats"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Remove All Chats"
             app:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>

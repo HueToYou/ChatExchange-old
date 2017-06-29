@@ -40,6 +40,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -116,8 +118,10 @@ public class MainActivity extends SlidingActivity {
     private SparseArray<Drawable> mSOChatIcons = new SparseArray<>();
     private SparseArray<Drawable> mSEChatIcons = new SparseArray<>();
 
-    private Set<String> mSOChatIDs = new HashSet<>();
-    private Set<String> mSEChatIDs = new HashSet<>();
+    private Set<String> mSOChatIDs = new HashSet<>(0);
+    private Set<String> mSEChatIDs = new HashSet<>(0);
+
+    private String mCookieString = null;
 
     @SuppressLint("StaticFieldLeak")
     private static MainActivity mainActivity;
@@ -302,6 +306,7 @@ public class MainActivity extends SlidingActivity {
                     Log.e("RI", "P");
                 }
                 mRequestFactory = new RequestFactory(authToken);
+                mCookieString = authToken;
                 doFragmentStuff();
             }
         };
@@ -717,7 +722,7 @@ public class MainActivity extends SlidingActivity {
                 }
 
                 while (chatroomsList == null);
-                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size() - 2) {
+                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size()) {
 //                    Log.e("ChildSize", chatroomsList.getChildCount() + "");
 //                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
                 }
@@ -1096,32 +1101,40 @@ public class MainActivity extends SlidingActivity {
             }
             Fragment fragToAttach = mFragmentManager.findFragmentByTag(tag);
 
-            if(tag.equals("home"))
+            if (fragToAttach != null)
             {
-                mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                //noinspection ConstantConditions
+
+                if (tag.equals("home"))
+                {
+                    mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    //noinspection ConstantConditions
 //                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //                hueUtils.showAddChatFab(this, true);
-                //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
+                    //hueUtils.setAddChatFabColorToSharedPrefsValue(this);
 //                hueUtils.setActionBarColorDefault(this);
-                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-                ((HomeFragment) fragToAttach).hueTest();
-            }
-            else
-            {
-                if (mFragmentManager.findFragmentByTag("home").isDetached()) {
-                    mFragmentManager.beginTransaction().attach(fragToAttach).commit();
-                } else {
-                    mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                }
-                mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-                //noinspection ConstantConditions
+                    mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    ((HomeFragment) fragToAttach).hueTest();
+                } else
+                {
+                    if (mFragmentManager.findFragmentByTag("home").isDetached())
+                    {
+                        mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+                    } else
+                    {
+                        mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    }
+                    mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //noinspection ConstantConditions
 //                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //                VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
 //                drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
 //                getSupportActionBar().setHomeAsUpIndicator(drawable);
 //                hueUtils.showAddChatFab(this, falzse);
-                ((ChatFragment) fragToAttach).hueTest();
+                    ((ChatFragment) fragToAttach).hueTest();
+                }
+            } else
+            {
+                Log.e("TAG", tag);
             }
         }
     }
@@ -1273,6 +1286,8 @@ public class MainActivity extends SlidingActivity {
                                             mSEChatIDs.remove(id);
                                         }
 
+                                        mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mCurrentFragment));
+
                                         mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                                         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
@@ -1378,8 +1393,8 @@ public class MainActivity extends SlidingActivity {
 
     private void resetArrays(boolean shouldEmptyIDs) {
         if (shouldEmptyIDs) {
-            mSEChatIDs = new HashSet<>();
-            mSOChatIDs = new HashSet<>();
+            mSEChatIDs = new HashSet<>(0);
+            mSOChatIDs = new HashSet<>(0);
             mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
             mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
         }
@@ -1415,5 +1430,14 @@ public class MainActivity extends SlidingActivity {
                 })
                 .setNegativeButton(getResources().getText(R.string.generic_no), null)
                 .show();
+    }
+
+    /**
+     * Get cookies from other classes
+     * @return the authToken/Cookie string of the current account
+     */
+
+    public String getCookieString() {
+        return mCookieString;
     }
 }

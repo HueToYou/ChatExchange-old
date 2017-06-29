@@ -175,7 +175,9 @@
             android:foregroundGravity="right"
             app:menu_colorNormal="@color/colorAccent"
             app:menu_colorPressed="@color/colorAccent"
-            app:menu_openDirection="down">
+            app:menu_openDirection="down"
+            app:menu_fab_open_rotation_left="-270"
+            app:menu_fab_open_rotation_right="90">
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/star_fab"
