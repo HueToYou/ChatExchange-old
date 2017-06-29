@@ -62,7 +62,7 @@ public class OtherFabsHue
             chatListMenu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
             chatListMenu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
 
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_arrow_drop_up_black_32dp, null);
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_less_black_32dp, null);
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             chatListMenu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
