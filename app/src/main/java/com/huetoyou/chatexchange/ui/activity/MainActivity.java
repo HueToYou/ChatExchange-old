@@ -185,22 +185,11 @@ public class MainActivity extends SlidingActivity {
 //        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
         drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
-//        ImageButton button = new ImageButton(this);
-//        button.setImageDrawable(drawable);
-//
-//        LinearLayout linearLayout = new LinearLayout(this);
-//        linearLayout.addView(button);
-//
-//        getSupportActionBar().setDisplayShowCustomEnabled(true);
-//        getSupportActionBar().setCustomView(linearLayout);
-
         ViewGroup actionBar = getActionBar(getWindow().getDecorView());
-//        Log.e("CLASS", actionBar.getChildAt(1).getClass().toString());
         AppCompatImageButton imageButton = (AppCompatImageButton) actionBar.getChildAt(1);
         imageButton.setOnClickListener(new View.OnClickListener()
         {
@@ -208,7 +197,13 @@ public class MainActivity extends SlidingActivity {
             public void onClick(View view)
             {
                 Log.e("CLICKED", "CLICKED");
-                view.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate_180_around_center));
+                if (mChatroomSlidingMenu.isMenuShowing())
+                {
+                    view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_180_around_center));
+                } else
+                {
+                    view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_neg180_around_center));
+                }
                 onSupportNavigateUp();
             }
         });
@@ -778,14 +773,20 @@ public class MainActivity extends SlidingActivity {
                 }
 
                 while (chatroomsList == null);
-                while (chatroomsList.getChildCount() <  mSEChatIDs.size() + mSOChatIDs.size()) {
-//                    Log.e("ChildSize", chatroomsList.getChildCount() + "");
+                while (chatroomsList.getCount() <  mSEChatIDs.size() + mSOChatIDs.size()) {
+//                    Log.e("ChildSize", chatroomsList.getCount() + "");
 //                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
+//                    try {
+//                        Thread.sleep(350);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         findViewById(R.id.loading_progress).setVisibility(View.GONE);
+                        Log.e("VIS", "GONE");
                     }
                 });
             }
