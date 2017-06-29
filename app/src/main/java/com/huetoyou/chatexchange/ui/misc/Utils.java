@@ -82,8 +82,23 @@ public class Utils
                 colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
             }
 
-            mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
-            return Color.parseColor(colorHex);
+            try
+            {
+                mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+                String threeChar = colorHex.replace("#", "");
+                String one = threeChar.substring(0, 1);
+                String two = threeChar.substring(1, 2);
+                String three = threeChar.substring(2);
+
+                colorHex = "#".concat(one).concat(one).concat(two).concat(two).concat(three).concat(three);
+
+                mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Color.parseColor("#000000");
