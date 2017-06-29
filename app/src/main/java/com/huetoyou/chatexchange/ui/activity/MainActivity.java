@@ -23,15 +23,14 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatImageButton;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -41,8 +40,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -50,7 +49,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -158,6 +156,7 @@ public class MainActivity extends SlidingActivity {
             getmChatroomSlidingMenu().toggle();
         }
     };
+    private VectorDrawableCompat drawable;
 
     /*
      * Activity Lifecycle
@@ -176,12 +175,68 @@ public class MainActivity extends SlidingActivity {
         createUsersSlidingMenu();
         setup();
 
+//        android.support.v7.widget.Toolbar toolbar = new android.support.v7.widget.Toolbar(this);
+//        toolbar.setId(1001);
+//        TypedValue typedValue = new TypedValue();
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics()));
+//        toolbar.setLayoutParams(layoutParams);
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//
+//        setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+//        VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+        drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
+//        ImageButton button = new ImageButton(this);
+//        button.setImageDrawable(drawable);
+//
+//        LinearLayout linearLayout = new LinearLayout(this);
+//        linearLayout.addView(button);
+//
+//        getSupportActionBar().setDisplayShowCustomEnabled(true);
+//        getSupportActionBar().setCustomView(linearLayout);
+
+        ViewGroup actionBar = getActionBar(getWindow().getDecorView());
+//        Log.e("CLASS", actionBar.getChildAt(1).getClass().toString());
+        AppCompatImageButton imageButton = (AppCompatImageButton) actionBar.getChildAt(1);
+        imageButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.e("CLICKED", "CLICKED");
+                view.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate_180_around_center));
+                onSupportNavigateUp();
+            }
+        });
+
         oncreatejustcalled = true;
+    }
+
+    public ViewGroup getActionBar(View view) {
+        try {
+            if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+
+                if (viewGroup instanceof android.support.v7.widget.Toolbar) {
+                    return viewGroup;
+                }
+
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                    ViewGroup actionBar = getActionBar(viewGroup.getChildAt(i));
+
+                    if (actionBar != null) {
+                        return actionBar;
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
     }
 
     @Override
@@ -919,7 +974,7 @@ public class MainActivity extends SlidingActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
@@ -954,7 +1009,11 @@ public class MainActivity extends SlidingActivity {
 //                }
 //                if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
 //                mChatroomSlidingMenu.toggle();
-                onSupportNavigateUp();
+//                drawable.start();
+//                ((AnimatedVectorDrawableCompat)item.getIcon()).start();
+//                onSupportNavigateUp();
+
+                //LOOK UNDER onCreate() for Drawer Toggle!
                 break;
         }
 

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 /*
  * This class is for dynamically setting the theme of an Activity
@@ -32,6 +33,7 @@ public class ThemeHue
         if(desiredThemeIsDark)
         {
             //NB: this *must* be called before setContentView(), else weird things happen
+//            if (activity instanceof MainActivity) activity.setTheme(R.style.DarkTheme_NoActionBar);
             activity.setTheme(R.style.DarkTheme);
         }
     }
