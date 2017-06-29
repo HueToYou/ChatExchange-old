@@ -99,7 +99,7 @@ dependencies {
 
 //    compile 'com.github.clans:fab:1.6.4'
 
-    compile 'com.github.huetoyou:floatingactionbutton:bafc713'
+    compile 'com.github.huetoyou:floatingactionbutton:2628689'
 
     testCompile 'junit:junit:4.12'
 }
