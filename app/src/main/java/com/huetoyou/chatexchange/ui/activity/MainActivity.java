@@ -49,6 +49,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -318,12 +319,18 @@ public class MainActivity extends SlidingActivity {
         mIntent = getIntent();
     }
 
-    private void setup() {
+    private void setup()
+    {
+        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
+
         com.github.clans.fab.FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showAddTabDialog();
+                fam.close(true);
             }
         });
 
@@ -345,6 +352,7 @@ public class MainActivity extends SlidingActivity {
 
                     }
                 }, 400);
+                fam.close(false);
             }
         });
         mRequestFactory = new RequestFactory();
@@ -1487,7 +1495,11 @@ public class MainActivity extends SlidingActivity {
      * @param v the view calling this function
      */
 
-    public void removeAllChats(View v) {
+    public void removeAllChats(View v)
+    {
+        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
+        fam.close(true);
+
         new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("Are you sure you want to remove all chats?")
