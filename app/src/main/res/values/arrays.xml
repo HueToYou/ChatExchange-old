@@ -8,6 +8,5 @@
     <string-array name="domain_spinner">
         <item>@string/stackexchange</item>
         <item>@string/stackoverflow</item>
-        <item>@string/enter_full_url</item>
     </string-array>
 </resources>

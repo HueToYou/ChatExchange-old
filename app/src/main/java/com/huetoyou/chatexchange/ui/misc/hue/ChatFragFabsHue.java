@@ -2,16 +2,11 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
@@ -76,7 +71,7 @@ public class ChatFragFabsHue
 
         if (menu != null)
         {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_more_vert_black_24dp, null);
+            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_arrow_drop_down_black_32dp, null);
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             menu.getMenuIconView().setImageDrawable(vectorDrawableCompat);

@@ -71,8 +71,8 @@
         app:menu_colorNormal="@color/colorAccent"
         app:menu_colorPressed="@color/colorAccent"
         app:menu_openDirection="up"
-        app:menu_fab_open_rotation_left="-90"
-        app:menu_fab_open_rotation_right="270"
+        app:menu_fab_open_rotation_left="180"
+        app:menu_fab_open_rotation_right="-180"
         app:menu_fab_animation_duration="600">
 
         <com.github.clans.fab.FloatingActionButton

@@ -1174,13 +1174,8 @@ public class MainActivity extends SlidingActivity {
         domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.enter_full_url))) {
-                    input.setHint(getResources().getText(R.string.activity_main_chat_full_url_hint));
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-                } else {
-                    input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
+                input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
             }
 
             @Override

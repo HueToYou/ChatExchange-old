@@ -52,7 +52,6 @@
 
     <string name="stackoverflow">https://chat.stackoverflow.com/</string>
     <string name="stackexchange">https://chat.stackexchange.com/</string>
-    <string name="enter_full_url">Enter full URL</string>
     <string name="show_chats">Show Chats</string>
 
     <string name="user_id">User ID:</string>
