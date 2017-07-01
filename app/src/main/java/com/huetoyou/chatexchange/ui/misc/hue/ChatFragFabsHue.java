@@ -15,6 +15,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 
+import java.net.HttpURLConnection;
+
 /*
  * This class is for setting the color of the FABs in a chat fragment {??except the show chats fab}
  */
@@ -96,8 +98,8 @@ public class ChatFragFabsHue
 
         if (desiredThemeIsDark) {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
-            textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
-            colorNormal = activity.getResources().getColor(android.R.color.darker_gray);
+            textColor = HueUtils.darkenColor(activity.getResources().getColor(R.color.white), .9f);
+            colorNormal = HueUtils.darkenColor(activity.getResources().getColor(android.R.color.darker_gray), .6f);
             colorPressed = colorNormal;
         } else {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
