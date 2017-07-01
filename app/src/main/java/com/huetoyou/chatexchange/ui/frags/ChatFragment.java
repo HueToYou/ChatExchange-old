@@ -32,6 +32,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
@@ -704,6 +705,10 @@ public class ChatFragment extends Fragment
     public void onResume()
     {
         super.onResume();
+
+        FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
+        fam.hideMenuButton(false);
+        fam.showMenuButton(true);
 
         System.out.println("Chat Frag OnResume");
 

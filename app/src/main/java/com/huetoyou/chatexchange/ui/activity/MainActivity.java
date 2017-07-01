@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.activity;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,11 +37,13 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -188,6 +191,8 @@ public class MainActivity extends SlidingActivity {
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
         final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
+        fam.hideMenuButton(false);
+
         mActionBar = getActionBar(getWindow().getDecorView());
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
         mDrawerButton.setOnClickListener(new View.OnClickListener()
@@ -207,12 +212,29 @@ public class MainActivity extends SlidingActivity {
             }
         });
 
-        mChatroomSlidingMenu.setOnClosedListener(new SlidingMenu.OnClosedListener()
+        mChatroomSlidingMenu.setOnCloseListener(new SlidingMenu.OnCloseListener()
         {
             @Override
-            public void onClosed()
+            public void onClose()
             {
                 fam.close(false);
+                fam.hideMenuButton(false);
+            }
+        });
+
+        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener()
+        {
+            @Override
+            public void onOpen()
+            {
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        fam.showMenuButton(true);
+                    }
+                }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
             }
         });
 
@@ -415,11 +437,15 @@ public class MainActivity extends SlidingActivity {
     }
 
     private void doCloseAnimationForDrawerToggle(View view) {
-        view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_180_around_center));
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_close_animation);
+        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+        view.startAnimation(animation);
     }
 
     private void doOpenAnimationForDrawerToggle(View view) {
-        view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_neg180_around_center));
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_open_animation);
+        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+        view.startAnimation(animation);
     }
 
     /**
