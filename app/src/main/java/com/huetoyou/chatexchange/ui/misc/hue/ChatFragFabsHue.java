@@ -96,12 +96,14 @@ public class ChatFragFabsHue
 
         if (desiredThemeIsDark) {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
-            textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+//            textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+            textColor = activity.getResources().getColor(android.R.color.primary_text_light);
             colorNormal = activity.getResources().getColor(android.R.color.darker_gray);
             colorPressed = colorNormal;
         } else {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
-            textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+//            textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+            textColor = activity.getResources().getColor(android.R.color.primary_text_dark);
             colorNormal = 0xFF333333;
             colorPressed = 0xFF444444;
         }
