@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -50,8 +51,6 @@ public class OtherFabsHue
 
             ColorStateList colorStateList = ColorStateList.valueOf(hue);
             setTints(colorStateList, activity);
-
-            //showChatsTint(colorStateList, activity);
         }
     }
 
@@ -73,19 +72,19 @@ public class OtherFabsHue
         }
 
         if (home != null) {
-            setColorsOnFabs(home, colorStateList, activity);
+            setColorsOnFabs(home, colorStateList, activity, R.drawable.ic_home_white_24dp);
         }
 
         if (addChat != null) {
-            setColorsOnFabs(addChat, colorStateList, activity);
+            setColorsOnFabs(addChat, colorStateList, activity, R.drawable.ic_add_black_24dp);
         }
 
         if (removeChats != null) {
-            setColorsOnFabs(removeChats, colorStateList, activity);
+            setColorsOnFabs(removeChats, colorStateList, activity, R.drawable.ic_clear_all_black_24dp);
         }
     }
 
-    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity) {
+    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         @ColorInt int color;
@@ -103,7 +102,7 @@ public class OtherFabsHue
         color = a.getColor(0, 0);
         a.recycle();
 
-        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_home_white_24dp, null);
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
         vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
         fab.setColorNormal(colorStateList.getDefaultColor());

@@ -1,13 +1,17 @@
 package com.huetoyou.chatexchange.ui.misc.hue;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 
@@ -49,28 +53,16 @@ public class ChatFragFabsHue
 
     private void tints(ColorStateList colorStateList, AppCompatActivity activity)
     {
-//        FloatingActionButton closeChat = activity.findViewById(R.id.close_chat_frag);
-//        FloatingActionButton openBrowser = activity.findViewById(R.id.open_in_browser_fab);
         com.github.clans.fab.FloatingActionButton showUsers = activity.findViewById(R.id.show_users_fab);
         com.github.clans.fab.FloatingActionButton roomInfo = activity.findViewById(R.id.room_info_fab);
         com.github.clans.fab.FloatingActionButton stars = activity.findViewById(R.id.star_fab);
         FloatingActionMenu menu = activity.findViewById(R.id.chat_menu);
-//        FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
-
-//        if (closeChat != null)
-//        {
-//            closeChat.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            closeChat.setBackgroundTintList(colorStateList);
-//        }
-//
-//        if (openBrowser != null)
-//        {
-//            openBrowser.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            openBrowser.setBackgroundTintList(colorStateList);
-//        }
 
         if (menu != null)
         {
+            menu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
+            menu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
+
             VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_more_black_32dp, null);
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
@@ -79,58 +71,46 @@ public class ChatFragFabsHue
 
         if (showUsers != null)
         {
-//            showUsers.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            showUsers.setBackgroundTintList(colorStateList);
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_supervisor_account_black_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            showUsers.setColorNormal(colorStateList.getDefaultColor());
-            showUsers.setColorPressed(colorStateList.getDefaultColor());
-            showUsers.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(showUsers, colorStateList, activity, R.drawable.ic_supervisor_account_black_24dp);
         }
 
         if (roomInfo != null)
         {
-//            roomInfo.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            roomInfo.setBackgroundTintList(colorStateList);
-
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_info_outline_black_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            roomInfo.setColorNormal(colorStateList.getDefaultColor());
-            roomInfo.setColorPressed(colorStateList.getDefaultColor());
-            roomInfo.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(roomInfo, colorStateList, activity, R.drawable.ic_info_outline_black_24dp);
         }
 
         if (stars != null)
         {
-//            stars.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            stars.setBackgroundTintList(colorStateList);
-
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_star_black_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            stars.setColorNormal(colorStateList.getDefaultColor());
-            stars.setColorPressed(colorStateList.getDefaultColor());
-            stars.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(stars, colorStateList, activity, R.drawable.ic_star_black_24dp);
         }
 
-        if (menu != null)
-        {
-            menu.setMenuButtonColorNormal(colorStateList.getDefaultColor());
-            menu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
-        }
-
-//        showChatsTint(colorStateList, activity);
     }
 
-    private void showChatsTint(ColorStateList colorStateList, AppCompatActivity activity)
-    {
-//        FloatingActionButton showChats = activity.findViewById(R.id.show_chats_fab);
-//        if (showChats != null)
-//        {
-//            showChats.setBackgroundTintMode(PorterDuff.Mode.MULTIPLY);
-//            showChats.setBackgroundTintList(colorStateList);
-//        }
+    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
+        boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
+
+        @ColorInt int color;
+        @ColorInt int textColor;
+        TypedArray a;
+
+        if (desiredThemeIsDark) {
+            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
+            textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+        } else {
+            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
+            textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+        }
+
+        color = a.getColor(0, 0);
+        a.recycle();
+
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
+        vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+        fab.setColorNormal(colorStateList.getDefaultColor());
+        fab.setColorPressed(colorStateList.getDefaultColor());
+        fab.setImageDrawable(vectorDrawableCompat);
+        fab.setLabelColors(color, color, fab.getColorRipple());
+        fab.setLabelTextColor(textColor);
     }
 }
