@@ -15,11 +15,11 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.0'
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionName '1.6.7'
     }
     buildTypes {
@@ -46,8 +46,8 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-v4:25.4.0'
-    compile 'com.android.support:support-vector-drawable:25.4.0'
+    compile 'com.android.support:support-v4:26.0.0-beta2'
+    compile 'com.android.support:support-vector-drawable:26.0.0-beta2'
 }
 
 apply from: '../gradle-mvn-push.gradle'

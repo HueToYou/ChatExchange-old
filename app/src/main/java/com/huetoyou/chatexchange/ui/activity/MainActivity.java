@@ -146,7 +146,7 @@ public class MainActivity extends SlidingActivity {
                 {
                     setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
                 }
-            }, 400);
+            }, getResources().getInteger(R.integer.animation_duration_ms));
 
 
             getmChatroomSlidingMenu().toggle();
@@ -361,7 +361,7 @@ public class MainActivity extends SlidingActivity {
                         setFragmentByTag("home");
 
                     }
-                }, 400);
+                }, R.integer.animation_duration_ms);
                 fam.close(false);
             }
         });
@@ -535,8 +535,11 @@ public class MainActivity extends SlidingActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            while(!mInterface.urlFound());
-            while(!mInterface.fragmentFound());
+            while (true) {
+                if (!mInterface.urlFound()) continue;
+                if (!mInterface.fragmentFound()) continue;
+                break;
+            }
             return null;
         }
 
@@ -599,8 +602,22 @@ public class MainActivity extends SlidingActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if (mKey.contains("overflow")) while (!mInterface.soContainsId());
-            else if (mKey.contains("exchange")) while (!mInterface.seContainsId());
+            if (mKey.contains("overflow"))
+            {
+                while (true)
+                {
+                    if (!mInterface.soContainsId()) continue;
+                    break;
+                }
+            }
+            else if (mKey.contains("exchange"))
+            {
+                while (true)
+                {
+                    if (!mInterface.seContainsId()) continue;
+                    break;
+                }
+            }
             return null;
         }
 
@@ -804,16 +821,12 @@ public class MainActivity extends SlidingActivity {
                     e.printStackTrace();
                 }
 
-                while (chatroomsList == null);
-                while (chatroomsList.getCount() <  mSEChatIDs.size() + mSOChatIDs.size()) {
-//                    Log.e("ChildSize", chatroomsList.getCount() + "");
-//                    Log.e("ChatIDSize", mSEChatIDs.size() + mSOChatIDs.size() + "");
-//                    try {
-//                        Thread.sleep(350);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
+                while (true) {
+                    if (chatroomsList == null) continue;
+                    if (chatroomsList.getCount() <  mSEChatIDs.size() + mSOChatIDs.size()) continue;
+                    break;
                 }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

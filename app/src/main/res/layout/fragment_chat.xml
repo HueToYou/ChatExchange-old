@@ -178,7 +178,7 @@
             app:menu_openDirection="down"
             app:menu_fab_open_rotation_left="180"
             app:menu_fab_open_rotation_right="-180"
-            app:menu_fab_animation_duration="600">
+            app:menu_fab_animation_duration="@integer/animation_duration_ms">
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/star_fab"

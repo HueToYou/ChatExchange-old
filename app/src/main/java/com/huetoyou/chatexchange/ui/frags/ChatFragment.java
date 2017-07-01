@@ -348,7 +348,11 @@ public class ChatFragment extends Fragment
             public void run()
             {
                 //noinspection StatementWithEmptyBody
-                while(!oncreateHasBeenCalled);
+
+                while (true) {
+                    if (!oncreateHasBeenCalled) continue;
+                    break;
+                }
 
                 getActivity().runOnUiThread(new Runnable()
                 {

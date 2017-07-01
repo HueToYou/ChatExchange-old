@@ -2,6 +2,8 @@ package com.huetoyou.chatexchange.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,19 +12,48 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 public class TutorialActivity extends AppCompatActivity
 {
+    private ThemeHue mThemeHue;
+    private boolean mOnCreateCalled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mThemeHue = new ThemeHue();
+        mThemeHue.setTheme(this);
         setContentView(R.layout.fragment_chat);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
+        VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+        drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
+        getSupportActionBar().setHomeAsUpIndicator(drawable);
+
+        mOnCreateCalled = true;
 
         displayShowcases();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+               while (true) {
+                   if (!mOnCreateCalled) continue;
+                   mThemeHue.setThemeOnResume(TutorialActivity.this, true);
+                   break;
+               }
+            }
+        }).start();
+        super.onResume();
     }
 
     private void displayShowcases()
