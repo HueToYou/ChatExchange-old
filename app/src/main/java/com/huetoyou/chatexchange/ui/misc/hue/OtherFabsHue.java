@@ -89,18 +89,20 @@ public class OtherFabsHue
 
         @ColorInt int color;
         @ColorInt int textColor;
-        TypedArray a;
+//        TypedArray a;
 
         if (desiredThemeIsDark) {
-            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
+//            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+            color = activity.getResources().getColor(android.R.color.darker_gray);
         } else {
-            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
+//            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+            color = activity.getResources().getColor(android.R.color.background_dark);
         }
 
-        color = a.getColor(0, 0);
-        a.recycle();
+//        color = a.getColor(0, 0);
+//        a.recycle();
 
         VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
         vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
