@@ -3,7 +3,7 @@
     android:shareInterpolator="false" >
 
     <rotate
-        android:duration="650"
+        android:duration="400"
         android:interpolator="@android:anim/anticipate_overshoot_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"

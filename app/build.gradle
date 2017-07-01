@@ -12,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha5'
         classpath 'io.fabric.tools:gradle:1.22.2'
     }
 
@@ -76,6 +76,7 @@ dependencies {
 
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
     compile project(path: ':SlidingMenu')
+    compile project(path: ':library')
     //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:26.0.0-beta2'
     compile 'com.android.support:cardview-v7:26.0.0-beta2'
@@ -99,7 +100,7 @@ dependencies {
 
 //    compile 'com.github.clans:fab:1.6.4'
 
-    compile 'com.github.huetoyou:floatingactionbutton:v1.6.5'
+//    compile 'com.github.huetoyou:floatingactionbutton:v1.6.7'
 
     testCompile 'junit:junit:4.12'
 }

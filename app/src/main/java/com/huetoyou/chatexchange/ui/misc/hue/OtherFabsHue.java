@@ -3,12 +3,16 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 
@@ -69,30 +73,43 @@ public class OtherFabsHue
         }
 
         if (home != null) {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_home_white_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            home.setColorNormal(colorStateList.getDefaultColor());
-            home.setColorPressed(colorStateList.getDefaultColor());
-            home.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(home, colorStateList, activity);
         }
 
         if (addChat != null) {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_add_black_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            addChat.setColorNormal(colorStateList.getDefaultColor());
-            addChat.setColorPressed(colorStateList.getDefaultColor());
-            addChat.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(addChat, colorStateList, activity);
         }
 
         if (removeChats != null) {
-            VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_clear_all_black_24dp, null);
-            vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
-
-            removeChats.setColorNormal(colorStateList.getDefaultColor());
-            removeChats.setColorPressed(colorStateList.getDefaultColor());
-            removeChats.setImageDrawable(vectorDrawableCompat);
+            setColorsOnFabs(removeChats, colorStateList, activity);
         }
+    }
+
+    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity) {
+        boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
+
+        @ColorInt int color;
+        @ColorInt int textColor;
+        TypedArray a;
+
+        if (desiredThemeIsDark) {
+            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
+            textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+        } else {
+            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
+            textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
+        }
+
+        color = a.getColor(0, 0);
+        a.recycle();
+
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_home_white_24dp, null);
+        vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
+
+        fab.setColorNormal(colorStateList.getDefaultColor());
+        fab.setColorPressed(colorStateList.getDefaultColor());
+        fab.setImageDrawable(vectorDrawableCompat);
+        fab.setLabelColors(color, color, fab.getColorRipple());
+        fab.setLabelTextColor(textColor);
     }
 }

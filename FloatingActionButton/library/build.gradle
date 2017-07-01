@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
+        maven { url "https://jitpack.io" }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha5'
+    }
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '26.0.0'
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionName '1.6.7'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable false
+        }
+
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+    }
+    productFlavors {
+    }
+}
+
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:25.4.0'
+    compile 'com.android.support:support-vector-drawable:25.4.0'
+}
+
+apply from: '../gradle-mvn-push.gradle'
