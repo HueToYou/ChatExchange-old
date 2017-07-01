@@ -87,18 +87,21 @@ public class OtherFabsHue
     private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
-        @ColorInt int color;
+        @ColorInt int colorNormal;
+        @ColorInt int colorPressed;
         @ColorInt int textColor;
 //        TypedArray a;
 
         if (desiredThemeIsDark) {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
-            color = activity.getResources().getColor(android.R.color.darker_gray);
+            colorNormal = activity.getResources().getColor(android.R.color.darker_gray);
+            colorPressed = colorNormal;
         } else {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.textColorAlertDialogListItem}).getColor(0, 0);
-            color = activity.getResources().getColor(android.R.color.background_dark);
+            colorNormal = 0xFF333333;
+            colorPressed = 0xFF444444;
         }
 
 //        color = a.getColor(0, 0);
@@ -110,7 +113,7 @@ public class OtherFabsHue
         fab.setColorNormal(colorStateList.getDefaultColor());
         fab.setColorPressed(colorStateList.getDefaultColor());
         fab.setImageDrawable(vectorDrawableCompat);
-        fab.setLabelColors(color, color, fab.getColorRipple());
+        fab.setLabelColors(colorNormal, colorPressed, fab.getColorRipple());
         fab.setLabelTextColor(textColor);
     }
 }

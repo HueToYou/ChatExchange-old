@@ -507,11 +507,11 @@ public class FloatingActionButton extends ImageButton {
         return mClickListener;
     }
 
-    Label getLabelView() {
+    public Label getLabelView() {
         return (Label) getTag(R.id.fab_label);
     }
 
-    void setColors(int colorNormal, int colorPressed, int colorRipple) {
+    public void setColors(int colorNormal, int colorPressed, int colorRipple) {
         mColorNormal = colorNormal;
         mColorPressed = colorPressed;
         mColorRipple = colorRipple;
