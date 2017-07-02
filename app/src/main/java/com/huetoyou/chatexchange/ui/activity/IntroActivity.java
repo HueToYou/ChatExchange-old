@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.WindowManager;
@@ -46,6 +47,7 @@ public class IntroActivity extends AppIntro
     public void onDonePressed(Fragment currentFragment)
     {
         super.onDonePressed(currentFragment);
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("isFirstRun", false).apply();
         Intent intent = new Intent(IntroActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
