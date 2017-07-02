@@ -14,21 +14,23 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
-public class TutorialActivity extends AppCompatActivity
+public class TutorialActivity extends SlidingActivity
 {
     private ThemeHue mThemeHue;
     private boolean mOnCreateCalled = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mThemeHue = new ThemeHue();
         mThemeHue.setTheme(this);
         setContentView(R.layout.fragment_chat);
+        setBehindContentView(R.layout.chatroom_slideout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
