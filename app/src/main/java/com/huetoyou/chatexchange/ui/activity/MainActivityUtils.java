@@ -12,7 +12,12 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.Util;
+import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,6 +26,10 @@ import org.jsoup.select.Elements;
 
 import java.io.FileOutputStream;
 import java.net.URL;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MainActivityUtils
 {
@@ -138,5 +147,70 @@ public class MainActivityUtils
                 return null;
             }
         }
+    }
+
+    static void showChatSliderTutorial(Activity activity, SlidingMenu mChatroomSlidingMenu)
+    {
+        final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
+        final FloatingActionButton home = activity.findViewById(R.id.home_fab);
+        final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
+        final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
+        sequence.setConfig(config);
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
+        {
+            int position = 0;
+
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
+            {
+                switch (position)
+                {
+                    case 1:
+                        chatFam.open(true);
+                        break;
+                    case 4:
+                        chatFam.close(true);
+                        break;
+                }
+
+                position++;
+            }
+        });
+
+        ShowcaseConfig config1 = new ShowcaseConfig();
+//        config1.setShape(new RectangleShape(mChatroomSlidingMenu.getWidth(), mChatroomSlidingMenu.getHeight()));
+        config1.setShapePadding(Util.dpToPx(activity, 300));
+
+        sequence.setConfig(config1);
+
+        sequence.addSequenceItem(mChatroomSlidingMenu.findViewById(R.id.chatrooms_list_title),
+                "Chatrooms",
+                "OK");
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(chatFam.getMenuButton(),
+                "Menu",
+                "OK");
+
+        sequence.addSequenceItem(home,
+                "Home",
+                "OK");
+
+        sequence.addSequenceItem(add,
+                "Add Chat",
+                "OK");
+
+        sequence.addSequenceItem(removeAll,
+                "Remove All Chats",
+                "OK");
+
+        sequence.start();
     }
 }
