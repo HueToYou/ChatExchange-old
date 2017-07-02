@@ -12,6 +12,7 @@
         tools:ignore="UselessParent">
 
         <TextView
+            android:id="@+id/chatrooms_list_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

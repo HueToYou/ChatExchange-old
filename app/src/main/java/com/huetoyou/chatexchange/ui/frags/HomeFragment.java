@@ -22,11 +22,17 @@ import android.widget.Button;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
 public class HomeFragment extends Fragment {
 
@@ -57,7 +63,54 @@ public class HomeFragment extends Fragment {
 
         oncreateHasBeenCalled = true;
 
+        setUpHomeFragmentSequence();
+
         return view;
+    }
+
+    private void setUpHomeFragmentSequence() {
+//        setContentView(R.layout.fragment_home);
+
+        Button chooseSE = view.findViewById(R.id.chooseSEView);
+        Button chooseSO = view.findViewById(R.id.chooseSOView);
+        WebView webView = view.findViewById(R.id.stars_view);
+        webView.loadUrl("https://chat.stackexchange.com");
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+
+        final MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "HomeFragTutorial");
+        sequence.setConfig(config);
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
+        {
+            int currentIndex = 0;
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
+            {
+                currentIndex++; //keep at bottom
+            }
+        });
+
+        sequence.addSequenceItem(Utils.getActionBar(getActivity().getWindow().getDecorView()).getChildAt(1),
+                "Drawer Toggle",
+                "OK");
+
+        sequence.addSequenceItem(chooseSE,
+                "Load SE Chats",
+                "OK");
+
+        sequence.addSequenceItem(chooseSO,
+                "Load SO Chats",
+                "OK");
+
+        config.setShape(new RectangleShape(webView.getWidth(), webView.getHeight()));
+
+        sequence.addSequenceItem(webView,
+                "Explore Chats",
+                "OK").setConfig(config);
+
+        sequence.start();
     }
 
     @Override

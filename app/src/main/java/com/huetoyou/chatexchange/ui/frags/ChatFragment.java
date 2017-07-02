@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
@@ -30,11 +31,13 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
@@ -49,6 +52,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class ChatFragment extends Fragment
 {
@@ -256,8 +263,68 @@ public class ChatFragment extends Fragment
         }
 
         oncreateHasBeenCalled = true;
+        
+        setUpSequence();
 
         return view;
+    }
+
+    private void setUpSequence() {
+
+        final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
+        final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
+        final FloatingActionButton info = view.findViewById(R.id.room_info_fab);
+        final FloatingActionButton stars = view.findViewById(R.id.star_fab);
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "ChatFragTutorial");
+        sequence.setConfig(config);
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
+        {
+            int itemIndex = 0; //i should be the current position, but it isn't working so we need this
+
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
+            {
+                Log.e("Pos", itemIndex + "");
+
+                switch (itemIndex) {
+                    case 1:
+                        fam.open(true);
+                        break;
+                    case 4:
+                        fam.close(true);
+                        break;
+                }
+
+                itemIndex++;
+            }
+        });
+
+        sequence.addSequenceItem(Utils.getActionBar(getActivity().getWindow().getDecorView()).getChildAt(1),
+                "Drawer Toggle",
+                "OK");
+
+        sequence.addSequenceItem(fam.getMenuButton(),
+                "Menu",
+                "OK");
+
+        sequence.addSequenceItem(users,
+                "Show Users",
+                "OK");
+
+        sequence.addSequenceItem(info,
+                "Show Info",
+                "OK");
+
+        sequence.addSequenceItem(stars,
+                "Stars",
+                "OK");
+
+        sequence.start();
     }
 
     /*

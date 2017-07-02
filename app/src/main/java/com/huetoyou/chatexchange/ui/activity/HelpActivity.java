@@ -9,14 +9,15 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
+import uk.co.deanwild.materialshowcaseview.PrefsManager;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class HelpActivity extends AppCompatActivity
 {
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        ThemeHue themeHue = new ThemeHue();
-        ActionBarHue actionBarHue = new ActionBarHue();
         ThemeHue.setTheme(HelpActivity.this);
 
         super.onCreate(savedInstanceState);
@@ -30,7 +31,16 @@ public class HelpActivity extends AppCompatActivity
 
     public void showTutorial(View v)
     {
-        Intent intent = new Intent(this, TutorialActivity.class);
+        PrefsManager prefsManager = new PrefsManager(this, "HomeFragTutorial");
+        prefsManager.resetShowcase();
+
+        prefsManager = new PrefsManager(this, "ChatFragTutorial");
+        prefsManager.resetShowcase();
+
+        prefsManager = new PrefsManager(this, "ChatSliderTutorial");
+        prefsManager.resetShowcase();
+
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

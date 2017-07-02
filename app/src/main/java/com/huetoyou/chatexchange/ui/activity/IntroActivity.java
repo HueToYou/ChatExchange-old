@@ -46,7 +46,7 @@ public class IntroActivity extends AppIntro
     public void onDonePressed(Fragment currentFragment)
     {
         super.onDonePressed(currentFragment);
-        Intent intent = new Intent(IntroActivity.this, TutorialActivity.class);
+        Intent intent = new Intent(IntroActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }

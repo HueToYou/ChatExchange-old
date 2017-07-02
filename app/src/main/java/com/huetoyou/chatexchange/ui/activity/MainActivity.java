@@ -48,11 +48,14 @@ import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -80,6 +83,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.PrefsManager;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
 public class MainActivity extends SlidingActivity {
 
@@ -260,10 +269,74 @@ public class MainActivity extends SlidingActivity {
                         fam.showMenuButton(true);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
+                showChatSliderTutorial();
             }
         });
 
         oncreatejustcalled = true;
+    }
+
+    private void showChatSliderTutorial() {
+        final FloatingActionMenu chatFam = findViewById(R.id.chat_slide_menu);
+        final FloatingActionButton home = findViewById(R.id.home_fab);
+        final FloatingActionButton add = findViewById(R.id.add_chat_fab);
+        final FloatingActionButton removeAll = findViewById(R.id.remove_all_chats_fab);
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "ChatSliderTutorial");
+        sequence.setConfig(config);
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
+        {
+            int position = 0;
+
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
+            {
+                switch(position) {
+                    case 1:
+                        chatFam.open(true);
+                        break;
+                    case 4:
+                        chatFam.close(true);
+                        break;
+                }
+
+                position++;
+            }
+        });
+
+        ShowcaseConfig config1 = new ShowcaseConfig();
+//        config1.setShape(new RectangleShape(mChatroomSlidingMenu.getWidth(), mChatroomSlidingMenu.getHeight()));
+        config1.setShapePadding(Util.dpToPx(this, 300));
+
+        sequence.setConfig(config1);
+
+        sequence.addSequenceItem(mChatroomSlidingMenu.findViewById(R.id.chatrooms_list_title),
+                "Chatrooms",
+                "OK");
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(chatFam.getMenuButton(),
+                "Menu",
+                "OK");
+
+        sequence.addSequenceItem(home,
+                "Home",
+                "OK");
+
+        sequence.addSequenceItem(add,
+                "Add Chat",
+                "OK");
+
+        sequence.addSequenceItem(removeAll,
+                "Remove All Chats",
+                "OK");
+
+        sequence.start();
     }
 
     @Override
@@ -1456,7 +1529,7 @@ public class MainActivity extends SlidingActivity {
      * @return returns the chatroom SlidingMenu
      */
 
-    private SlidingMenu getmChatroomSlidingMenu() {
+    public SlidingMenu getmChatroomSlidingMenu() {
         return mChatroomSlidingMenu;
     }
 
