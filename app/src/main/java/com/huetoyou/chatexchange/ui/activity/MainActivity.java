@@ -88,7 +88,7 @@ public class MainActivity extends SlidingActivity {
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
-    private ListView chatroomsList;
+    private ListView chatroomsList; //TODO: convert to RecyclerView at some point
     private ImgTextArrayAdapter chatroomArrayAdapter;
     private SlidingMenu mCurrentUsers_SlidingMenu;
     private FragmentManager mFragmentManager;

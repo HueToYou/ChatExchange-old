@@ -198,7 +198,7 @@ public class ChatFragment extends Fragment
 
                                 if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
 
-                                addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                                if (mFragmentManager.findFragmentByTag("user_" + id) == null) addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -548,7 +548,7 @@ public class ChatFragment extends Fragment
 
         mUserInfo.add(args);
         mUserTiles.add(userTileFragment);
-        mFragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment).commit();
+        mFragmentManager.beginTransaction().add(R.id.users_scroll_slide, userTileFragment, "user_" + id).commit();
     }
 
     /**
