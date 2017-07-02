@@ -10,6 +10,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
@@ -55,6 +56,19 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 mAccountNames.add(a.name);
             }
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment
