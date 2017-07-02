@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
@@ -35,10 +36,17 @@ public class TutorialActivity extends AppCompatActivity
 
         mOnCreateCalled = true;
 
-        displayShowcases();
+        new ShowcaseView.Builder(this)
+                .setTarget(new ActionViewTarget(this, ActionViewTarget.Type.HOME))
+                .setContentTitle("ShowcaseView")
+                .setContentText("This is highlighting the Home button")
+                .hideOnTouchOutside()
+                .build();
+
+        //displayShowcases();
     }
 
-    @Override
+    /*@Override
     protected void onResume()
     {
         new Thread(new Runnable()
@@ -188,5 +196,5 @@ public class TutorialActivity extends AppCompatActivity
 
                 })
                 .build();
-    }
+    }*/
 }
