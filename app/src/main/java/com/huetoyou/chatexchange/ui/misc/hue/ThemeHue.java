@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 /*
  * This class is for dynamically setting the theme of an Activity

@@ -1,29 +1,22 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -38,8 +31,6 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
-import uk.co.deanwild.materialshowcaseview.shape.Shape;
-import uk.co.deanwild.materialshowcaseview.target.Target;
 
 public class TutorialActivity extends SlidingActivity
 {
@@ -60,8 +51,10 @@ public class TutorialActivity extends SlidingActivity
         OtherFabsHue.setAddChatFabColorToSharedPrefsValue(this);
         ChatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue(this);
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+        assert drawable != null;
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
@@ -250,6 +243,19 @@ public class TutorialActivity extends SlidingActivity
 
         sequence.start();
     }
+
+    /**
+     * Just to keep lint happy
+     * @see MainActivity#toggleChatsSlide(View)
+     */
+    public void toggleChatsSlide(android.view.View view) {
+    }
+
+    /**
+     * Just to keep lint happy
+     * @see MainActivity#confirmClose(View)
+     */
+    public void confirmClose(android.view.View view) {}
 
     /*@Override
     protected void onResume()

@@ -54,7 +54,7 @@ class WebSocketBackend {
      * List of rooms with events
      */
     private class WsMessage {
-        List<Event> events = new ArrayList<>();
+        final List<Event> events = new ArrayList<>();
     }
 
     /**
@@ -89,9 +89,9 @@ class WebSocketBackend {
             .create();
 
 
-    private RequestFactory mRequestFactory;
-    private int mRoomId;
-    private BackendService.Broadcaster mBroadcaster;
+    private final RequestFactory mRequestFactory;
+    private final int mRoomId;
+    private final BackendService.Broadcaster mBroadcaster;
 
     private WebSocketClient mWebSocketClient;
 

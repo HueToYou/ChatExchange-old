@@ -17,12 +17,12 @@ public class AboutActivity extends AppCompatActivity {
     {
         ThemeHue themeHue = new ThemeHue();
         ActionBarHue actionBarHue = new ActionBarHue();
-        themeHue.setTheme(AboutActivity.this);
+        ThemeHue.setTheme(AboutActivity.this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        actionBarHue.setActionBarColorToSharedPrefsValue(this);
+        ActionBarHue.setActionBarColorToSharedPrefsValue(this);
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,6 +1,7 @@
 package com.huetoyou.chatexchange.ui.frags;
 
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +22,6 @@ import android.widget.Button;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
@@ -83,11 +83,6 @@ public class HomeFragment extends Fragment {
         super.onResume();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
     /*private void setChatButtonTint() {
         mHueUtils = new Utils();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -132,6 +127,7 @@ public class HomeFragment extends Fragment {
         OtherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
         webView = view.findViewById(R.id.stars_view);
         Button back = view.findViewById(R.id.go_back);

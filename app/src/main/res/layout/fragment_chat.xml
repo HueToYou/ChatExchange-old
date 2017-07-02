@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
     android:focusableInTouchMode="true"
     android:focusedByDefault="true"
-    android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    android:orientation="vertical"
+    tools:targetApi="o">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/show_chats_fab"
@@ -29,7 +26,6 @@
             app:useCompatPadding="true" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/close_chat_frag"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -46,7 +42,6 @@
             app:useCompatPadding="true" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/open_in_browser_fab"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -209,6 +204,4 @@
 
         </com.github.clans.fab.FloatingActionMenu>
 
-
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

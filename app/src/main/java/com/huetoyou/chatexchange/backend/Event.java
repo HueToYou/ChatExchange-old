@@ -16,7 +16,7 @@ public class Event implements Parcelable {
 
     public static final int EVENT_MESSAGE_POSTED = 1;
 
-    @SerializedName("id") private int mId;
+    @SerializedName("id") private final int mId;
 
     /**
      * Retrieve the event ID
@@ -25,7 +25,7 @@ public class Event implements Parcelable {
         return mId;
     }
 
-    @SerializedName("event_type") private int mEventType;
+    @SerializedName("event_type") private final int mEventType;
 
     /**
      * Retrieve the event type

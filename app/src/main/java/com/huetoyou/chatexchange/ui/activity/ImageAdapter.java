@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.huetoyou.chatexchange.R;
 
 class ImageAdapter extends BaseAdapter {
-    private Context mContext;
+    private final Context mContext;
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -46,7 +46,7 @@ class ImageAdapter extends BaseAdapter {
     }
 
     // references to our images
-    private Integer[] mThumbIds = {
+    private final Integer[] mThumbIds = {
             R.drawable.ic_error_black_24dp
     };
 }

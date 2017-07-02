@@ -51,7 +51,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         String data;
     }
 
-    private Listener mListener;
+    private final Listener mListener;
 
     /**
      * Generate an error response

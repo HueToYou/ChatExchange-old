@@ -3,15 +3,12 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -66,6 +63,7 @@ public class OtherFabsHue
             chatListMenu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
 
             VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_less_black_32dp, null);
+            assert vectorDrawableCompat != null;
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             chatListMenu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
@@ -108,6 +106,7 @@ public class OtherFabsHue
 //        a.recycle();
 
         VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
+        assert vectorDrawableCompat != null;
         vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
         fab.setColorNormal(colorStateList.getDefaultColor());

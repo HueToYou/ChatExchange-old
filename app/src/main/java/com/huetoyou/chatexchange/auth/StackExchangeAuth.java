@@ -45,11 +45,11 @@ class StackExchangeAuth {
         void authFailed(String message);
     }
 
-    private RequestFactory mRequestFactory = new RequestFactory();
+    private final RequestFactory mRequestFactory = new RequestFactory();
 
-    private String mEmail;
-    private String mPassword;
-    private Listener mListener;
+    private final String mEmail;
+    private final String mPassword;
+    private final Listener mListener;
 
     private String mLoginUrl;
     private String mNetworkFkey;
@@ -57,7 +57,7 @@ class StackExchangeAuth {
     private String mSessionId;
     private String mSessionFkey;
 
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Implement the onFailed() method since it is always handled the same way

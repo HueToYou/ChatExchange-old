@@ -20,7 +20,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     public static final String ACCOUNT_TYPE = "com.huetoyou.chatexchange";
 
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Create a new authenticator with the provided context

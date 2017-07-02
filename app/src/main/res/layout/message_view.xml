@@ -3,7 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <android.support.v7.widget.CardView
@@ -35,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:drawableLeft="@drawable/ic_help_outline_black_18dp"
+                    android:drawableStart="@drawable/ic_help_outline_black_18dp"
                     android:drawablePadding="5dp"
                     android:maxWidth="75dp"
                     android:singleLine="true"
@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
+                    android:layout_gravity="end|center_vertical"
                     android:text="12:00"
                     android:textSize="12sp" />
             </FrameLayout>

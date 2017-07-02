@@ -9,8 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="gone"
-        android:id="@+id/linearLayout">
+        android:visibility="gone">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/show_chats_fab"
@@ -54,13 +53,15 @@
             android:id="@+id/chooseSEView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sename" />
+            android:text="@string/sename"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/chooseSOView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/soname" />
+            android:text="@string/soname"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,7 +71,6 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/webview"
             layout="@layout/fragment_star_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

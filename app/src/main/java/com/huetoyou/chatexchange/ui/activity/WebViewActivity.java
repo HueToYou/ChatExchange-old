@@ -10,7 +10,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 

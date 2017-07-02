@@ -41,7 +41,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
     //this won't work until we use the API
     private void sendNotification(String messageBody) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+        @SuppressWarnings("deprecation") NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Event tracker")
                 .setContentText("Events received");

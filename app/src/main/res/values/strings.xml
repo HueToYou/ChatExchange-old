@@ -23,7 +23,6 @@
     <string name="activity_main_delete_chat_message">Are you sure you want to remove this chat?</string>
     <string name="activity_main_chat_url">Choose root domain</string>
     <string name="activity_main_chat_url_hint">Enter chat ID</string>
-    <string name="activity_main_chat_full_url_hint">Enter full URL</string>
 
     <string name="options_menu_settings">Settings</string>
     <string name="options_menu_about">About</string>
@@ -58,7 +57,6 @@
     <string name="user_last_talked">Last Talk Time:</string>
     <string name="user_rep">Reputation:</string>
 
-    <string name="cant_add_chat">Can\'t add a chat right now. Please try again in a bit.</string>
     <string name="huetoyou">HueToYou</string>
 
     <string name="stars">Stars</string>

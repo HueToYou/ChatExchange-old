@@ -3,7 +3,6 @@ package com.huetoyou.chatexchange.ui.misc.hue;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
@@ -14,8 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
-
-import java.net.HttpURLConnection;
 
 /*
  * This class is for setting the color of the FABs in a chat fragment {??except the show chats fab}
@@ -66,6 +63,7 @@ public class ChatFragFabsHue
             menu.setMenuButtonColorPressed(colorStateList.getDefaultColor());
 
             VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_more_black_32dp, null);
+            assert vectorDrawableCompat != null;
             vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
             menu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
@@ -112,6 +110,7 @@ public class ChatFragFabsHue
 //        a.recycle();
 
         VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
+        assert vectorDrawableCompat != null;
         vectorDrawableCompat.setTint(Color.rgb(255, 255, 255));
 
         fab.setColorNormal(colorStateList.getDefaultColor());

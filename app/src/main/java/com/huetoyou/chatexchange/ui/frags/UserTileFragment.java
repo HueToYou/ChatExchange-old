@@ -111,9 +111,9 @@ public class UserTileFragment extends Fragment {
     }
 
     private class GetIcon extends Thread {
-        private String mUrl;
-        private int mSize;
-        private boolean mIsForInfoDialog;
+        private final String mUrl;
+        private final int mSize;
+        private final boolean mIsForInfoDialog;
 
         GetIcon(String url, int size, boolean forInfo) {
             mUrl = url;

@@ -38,14 +38,11 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
@@ -55,7 +52,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
@@ -84,10 +80,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MainActivity extends SlidingActivity {
 
@@ -137,7 +129,7 @@ public class MainActivity extends SlidingActivity {
     private static MainActivity mainActivity;
     private AddList mAddList;
 
-    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener()
+    private final AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener()
     {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id)
@@ -166,8 +158,8 @@ public class MainActivity extends SlidingActivity {
     private ViewGroup mActionBar;
     private AppCompatImageButton mDrawerButton;
 
-    private AnimatorSet mOpenAnimSet = new AnimatorSet();
-    private AnimatorSet mCloseAnimSet = new AnimatorSet();
+    private final AnimatorSet mOpenAnimSet = new AnimatorSet();
+    private final AnimatorSet mCloseAnimSet = new AnimatorSet();
 
     /*
      * Activity Lifecycle
@@ -194,6 +186,8 @@ public class MainActivity extends SlidingActivity {
 //
 //        setSupportActionBar(toolbar);
 
+        assert getSupportActionBar() != null;
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
@@ -203,6 +197,7 @@ public class MainActivity extends SlidingActivity {
         fam.hideMenuButton(false);
 
         mActionBar = Utils.getActionBar(getWindow().getDecorView());
+        assert mActionBar != null;
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
 
         ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
@@ -558,8 +553,8 @@ public class MainActivity extends SlidingActivity {
     }
 
     static private class ReceiveACB extends AsyncTask<Void, Void, Void> {
-        ACBInterface mInterface;
-        String mKey;
+        final ACBInterface mInterface;
+        final String mKey;
 
         static ReceiveACB newInstance(ACBInterface acbInterface, String key) {
             return new ReceiveACB(acbInterface, key);
@@ -625,8 +620,8 @@ public class MainActivity extends SlidingActivity {
     }
 
     private static class NotificationHandler extends AsyncTask<Void, Void, Void> {
-        NHInterface mInterface;
-        String mKey;
+        final NHInterface mInterface;
+        final String mKey;
 
         static NotificationHandler newInstance(NHInterface nhInterface, String key) {
             return new NotificationHandler(nhInterface, key);
@@ -905,11 +900,11 @@ public class MainActivity extends SlidingActivity {
      */
 
     private static class AddList extends AsyncTask<String, Void, Void> {
-        private String mHtmlData;
-        private String mChatId;
-        private String mChatUrl;
-        private AddListListener mAddListListener;
-        private SharedPreferences mSharedPreferences;
+        private final String mHtmlData;
+        private final String mChatId;
+        private final String mChatUrl;
+        private final AddListListener mAddListListener;
+        private final SharedPreferences mSharedPreferences;
         private String mName;
         private Drawable mIcon;
         private Integer mColor;

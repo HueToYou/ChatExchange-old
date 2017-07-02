@@ -17,12 +17,12 @@ public class HelpActivity extends AppCompatActivity
     {
         ThemeHue themeHue = new ThemeHue();
         ActionBarHue actionBarHue = new ActionBarHue();
-        themeHue.setTheme(HelpActivity.this);
+        ThemeHue.setTheme(HelpActivity.this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-        actionBarHue.setActionBarColorToSharedPrefsValue(this);
+        ActionBarHue.setActionBarColorToSharedPrefsValue(this);
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

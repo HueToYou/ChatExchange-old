@@ -1,6 +1,5 @@
 package com.huetoyou.chatexchange.net;
 
-import android.net.Uri;
 import android.text.TextUtils;
 
 import java.net.CookieManager;
@@ -36,7 +35,7 @@ public class RequestFactory {
         void onFailed(String message);
     }
 
-    private CookieManager mManager = new CookieManager();
+    private final CookieManager mManager = new CookieManager();
 
     /**
      * Add the provided cookies to the cookie manager

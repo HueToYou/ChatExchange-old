@@ -18,9 +18,9 @@ class PageRetriever {
      */
     public class Page {
 
-        private String mName;
-        private String mIcon;
-        private int mColor;
+        private final String mName;
+        private final String mIcon;
+        private final int mColor;
 
         Page(String name, String icon, int color) {
             mName = name;

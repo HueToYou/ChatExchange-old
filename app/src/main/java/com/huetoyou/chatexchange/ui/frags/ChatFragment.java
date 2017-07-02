@@ -3,12 +3,10 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -69,8 +67,8 @@ public class ChatFragment extends Fragment
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
     private String mChatUrl;
-    private ArrayList<Bundle> mUserInfo = new ArrayList<>();
-    private ArrayList<UserTileFragment> mUserTiles = new ArrayList<>();
+    private final ArrayList<Bundle> mUserInfo = new ArrayList<>();
+    private final ArrayList<UserTileFragment> mUserTiles = new ArrayList<>();
     //    private Spanned mStarsSpanned;
 
     public static final String USER_NAME_KEY = "userName";
@@ -262,16 +260,6 @@ public class ChatFragment extends Fragment
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
     /*
      * Handle loading messages
      */
@@ -455,7 +443,7 @@ public class ChatFragment extends Fragment
      */
 
     private static class ParseUsers extends AsyncTask<String, Void, String> {
-        private UserParsed mUserParsed;
+        private final UserParsed mUserParsed;
 
         static ParseUsers newInstance(UserParsed userParsed) {
             return new ParseUsers(userParsed);
@@ -713,7 +701,7 @@ public class ChatFragment extends Fragment
      */
 
     private static class GetDesc extends AsyncTask<String, Void, String> {
-        private DescGotten mDescGotten;
+        private final DescGotten mDescGotten;
 
         static GetDesc newInstance(DescGotten descGotten) {
             return new GetDesc(descGotten);
@@ -756,7 +744,7 @@ public class ChatFragment extends Fragment
      */
 
     private static class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
-        private TagsGotten mTagsGotten;
+        private final TagsGotten mTagsGotten;
 
         public static GetTags newInstance(TagsGotten tagsGotten) {
             return new GetTags(tagsGotten);
@@ -826,7 +814,7 @@ public class ChatFragment extends Fragment
      */
 
     private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String> {
-        DomainFoundListener mDomainFoundListener;
+        final DomainFoundListener mDomainFoundListener;
 
         static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
             return new GetHostDomainFromHtml(domainFoundListener);

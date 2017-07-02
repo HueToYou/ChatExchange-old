@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class PreferencesActivity extends AppCompatPreferenceActivity
 {
     private static SharedPreferences mSharedPrefs;
-    private ArrayList<CharSequence> mAccountNames = new ArrayList<>();
+    private final ArrayList<CharSequence> mAccountNames = new ArrayList<>();
     private static ActionBarHue actionBarHue = null;
     private static ThemeHue themeHue = null;
     private static boolean darkThemePrevState;
@@ -36,14 +36,14 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
     {
         themeHue = new ThemeHue();
         actionBarHue = new ActionBarHue();
-        themeHue.setTheme(PreferencesActivity.this);
+        ThemeHue.setTheme(PreferencesActivity.this);
 
         super.onCreate(null);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        actionBarHue.setActionBarColorToSharedPrefsValue(this);
+        ActionBarHue.setActionBarColorToSharedPrefsValue(this);
 
         AccountManager mAccountManager = AccountManager.get(this);
         if (mAccountManager.getAccounts().length > 0)
@@ -76,7 +76,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    actionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });
@@ -96,7 +96,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    actionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
                     return true;
                 }
             });

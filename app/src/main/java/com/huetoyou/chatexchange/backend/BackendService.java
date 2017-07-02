@@ -73,7 +73,7 @@ public class BackendService extends Service {
 
     private RequestFactory mRequestFactory;
     private String mBackend = BACKEND_NONE;
-    private Broadcaster mBroadcaster = new Broadcaster();
+    private final Broadcaster mBroadcaster = new Broadcaster();
 
     private WebSocketBackend mWebSocketBackend;
 
