@@ -1,3 +1,4 @@
-include ':app', ':colorpicker-2.1.6', ':SlidingMenu', ':FABs'
+include ':app', ':colorpicker-2.1.6', ':SlidingMenu', ':FABs', ':ShowcaseView'
 project(':SlidingMenu').projectDir = new File('SlidingMenu-master/library')
 project(':FABs').projectDir = new File('FloatingActionButton/FloatingActionButton')
+project(':ShowcaseView').projectDir = new File('ShowcaseView-master/library')

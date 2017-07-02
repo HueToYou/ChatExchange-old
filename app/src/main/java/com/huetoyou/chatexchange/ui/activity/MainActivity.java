@@ -199,7 +199,7 @@ public class MainActivity extends SlidingActivity {
         final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
         fam.hideMenuButton(false);
 
-        mActionBar = getActionBar(getWindow().getDecorView());
+        mActionBar = Utils.getActionBar(getWindow().getDecorView());
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
 
         ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
@@ -266,30 +266,6 @@ public class MainActivity extends SlidingActivity {
         });
 
         oncreatejustcalled = true;
-    }
-
-    public ViewGroup getActionBar(View view) {
-        try {
-            if (view instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) view;
-
-                if (viewGroup instanceof android.support.v7.widget.Toolbar) {
-                    return viewGroup;
-                }
-
-                for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                    ViewGroup actionBar = getActionBar(viewGroup.getChildAt(i));
-
-                    if (actionBar != null) {
-                        return actionBar;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     @Override
