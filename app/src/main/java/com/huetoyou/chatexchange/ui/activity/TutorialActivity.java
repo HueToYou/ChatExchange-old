@@ -8,13 +8,14 @@ import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import android.view.ViewGroup;
+
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class TutorialActivity extends AppCompatActivity
 {
@@ -34,14 +35,24 @@ public class TutorialActivity extends AppCompatActivity
         drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
         getSupportActionBar().setHomeAsUpIndicator(drawable);
 
+        ViewGroup actionBar = Utils.getActionBar(getWindow().getDecorView());
+
         mOnCreateCalled = true;
 
-        new ShowcaseView.Builder(this)
-                .setTarget(new ActionViewTarget(this, ActionViewTarget.Type.HOME))
-                .setContentTitle("ShowcaseView")
-                .setContentText("This is highlighting the Home button")
-                .hideOnTouchOutside()
-                .build();
+//        new ShowcaseView.Builder(this)
+//                .withMaterialShowcase()
+//                .setTarget(new ActionViewTarget(this, ActionViewTarget.Type.HOME))
+//                .setContentTitle("ShowcaseView")
+//                .setContentText("This is highlighting the Home button")
+//                .hideOnTouchOutside()
+//                .build();
+
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(actionBar.getChildAt(1))
+                .setTitleText("HUE")
+                .setContentText("Home button")
+                .setDismissText("OK")
+                .show();
 
         //displayShowcases();
     }
