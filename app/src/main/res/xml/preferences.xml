@@ -12,6 +12,7 @@
             android:summary="Choose a custom color for the action bar"
             app:cpv_allowCustom="true"
             app:cpv_allowPresets="true"
+            app:cpv_dialogType="custom"
             android:title="Action bar color" />
 
         <CheckBoxPreference
@@ -24,6 +25,7 @@
             android:defaultValue="@color/colorAccent"
             android:summary="Choose a custom color for floating action buttons"
             app:cpv_allowCustom="true"
+            app:cpv_dialogType="custom"
             app:cpv_allowPresets="true"
             android:title="FAB color" />
 
