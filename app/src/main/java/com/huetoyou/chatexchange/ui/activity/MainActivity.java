@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -45,6 +46,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -159,6 +162,9 @@ public class MainActivity extends SlidingActivity {
     private ViewGroup mActionBar;
     private AppCompatImageButton mDrawerButton;
 
+    private AnimatorSet mOpenAnimSet = new AnimatorSet();
+    private AnimatorSet mCloseAnimSet = new AnimatorSet();
+
     /*
      * Activity Lifecycle
      */
@@ -195,6 +201,27 @@ public class MainActivity extends SlidingActivity {
 
         mActionBar = getActionBar(getWindow().getDecorView());
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
+
+        ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
+                mDrawerButton,
+                "rotation",
+                180f,
+                0f);
+
+        mCloseAnimSet.play(closeAnimator);
+        mCloseAnimSet.setInterpolator(new AnticipateInterpolator());
+        mCloseAnimSet.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+
+        ObjectAnimator openAnimator = ObjectAnimator.ofFloat(
+                mDrawerButton,
+                "rotation",
+                -180f,
+                0f);
+
+        mOpenAnimSet.play(openAnimator);
+        mOpenAnimSet.setInterpolator(new OvershootInterpolator());
+        mOpenAnimSet.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+
         mDrawerButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -259,6 +286,7 @@ public class MainActivity extends SlidingActivity {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -437,15 +465,20 @@ public class MainActivity extends SlidingActivity {
     }
 
     private void doCloseAnimationForDrawerToggle(View view) {
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_close_animation);
-        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
-        view.startAnimation(animation);
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_close_animation);
+//        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+//        view.startAnimation(animation);
+
+        mOpenAnimSet.cancel();
+        mCloseAnimSet.start();
     }
 
     private void doOpenAnimationForDrawerToggle(View view) {
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_open_animation);
-        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
-        view.startAnimation(animation);
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_open_animation);
+//        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+//        view.startAnimation(animation);
+        mCloseAnimSet.cancel();
+        mOpenAnimSet.start();
     }
 
     /**
