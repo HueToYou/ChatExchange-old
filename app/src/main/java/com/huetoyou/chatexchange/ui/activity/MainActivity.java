@@ -183,6 +183,7 @@ public class MainActivity extends SlidingActivity
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+        mHandler = new Handler();
         preSetup();
         createUsersSlidingMenu();
         setup();
@@ -369,9 +370,6 @@ public class MainActivity extends SlidingActivity
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
-
-        mHandler = new Handler();
-
 //        Log.e("URLS", mChatUrls.toString());
 
         //mEditor.putInt("tabIndex", 0).apply();
@@ -384,7 +382,7 @@ public class MainActivity extends SlidingActivity
     {
         final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
 
-        com.github.clans.fab.FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
+        FloatingActionButton floatingActionButton = findViewById(R.id.add_chat_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -395,24 +393,24 @@ public class MainActivity extends SlidingActivity
             }
         });
 
-        com.github.clans.fab.FloatingActionButton fab = findViewById(R.id.home_fab);
+        FloatingActionButton fab = findViewById(R.id.home_fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                doCloseAnimationForDrawerToggle(mDrawerButton);
-                mChatroomSlidingMenu.toggle();
-
                 mHandler.postDelayed(new Runnable()
                 {
                     @Override
                     public void run()
                     {
+                        Log.e("POS", "DEFL");
                         setFragmentByTag("home");
-
                     }
                 }, R.integer.animation_duration_ms);
+
+                doCloseAnimationForDrawerToggle(mDrawerButton);
+                mChatroomSlidingMenu.toggle();
                 fam.close(false);
             }
         });

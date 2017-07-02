@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment
 
         oncreateHasBeenCalled = true;
 
-        //setUpHomeFragmentSequence();
+        setUpHomeFragmentSequence();
 
         return view;
     }
@@ -76,8 +76,8 @@ public class HomeFragment extends Fragment
 
         Button chooseSE = view.findViewById(R.id.chooseSEView);
         Button chooseSO = view.findViewById(R.id.chooseSOView);
-        WebView webView = view.findViewById(R.id.stars_view);
-        webView.loadUrl("https://chat.stackexchange.com");
+//        WebView webView = view.findViewById(R.id.stars_view);
+//        webView.loadUrl("https://chat.stackexchange.com");
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
@@ -100,19 +100,19 @@ public class HomeFragment extends Fragment
                 "Drawer Toggle",
                 "OK");
 
-        sequence.addSequenceItem(chooseSE,
-                "Load SE Chats",
-                "OK");
+//        sequence.addSequenceItem(chooseSE,
+//                "Load SE Chats",
+//                "OK");
+//
+//        sequence.addSequenceItem(chooseSO,
+//                "Load SO Chats",
+//                "OK");
 
-        sequence.addSequenceItem(chooseSO,
-                "Load SO Chats",
-                "OK");
-
-        config.setShape(new RectangleShape(webView.getWidth(), webView.getHeight()));
-
-        sequence.addSequenceItem(webView,
-                "Explore Chats",
-                "OK").setConfig(config);
+//        config.setShape(new RectangleShape(webView.getWidth(), webView.getHeight()));
+//
+//        sequence.addSequenceItem(webView,
+//                "Explore Chats",
+//                "OK");
 
         sequence.start();
     }

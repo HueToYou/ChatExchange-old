@@ -10,12 +10,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -30,6 +34,7 @@ import java.net.URL;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
 public class MainActivityUtils
 {
@@ -149,12 +154,25 @@ public class MainActivityUtils
         }
     }
 
-    static void showChatSliderTutorial(Activity activity, SlidingMenu mChatroomSlidingMenu)
+    static void showChatSliderTutorial(final Activity activity, SlidingMenu mChatroomSlidingMenu)
     {
+        activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
+
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
+
+        final ListView dummyChats = activity.findViewById(R.id.dummy_chat_list);
+        dummyChats.setVisibility(View.VISIBLE);
+
+        String[] names = new String[] {"Example 1", "Example 2", "Example 3"};
+        String[] urls = new String[] {"U", "U", "U"};
+        Drawable example = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_help_outline_black_24dp, null);
+        Drawable[] icons = new Drawable[] {example, example, example};
+        Integer[] colors = new Integer[] {0, 0, 0};
+
+        dummyChats.setAdapter(new ImgTextArrayAdapter(activity, names, urls, icons, colors));
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
@@ -176,6 +194,8 @@ public class MainActivityUtils
                         break;
                     case 4:
                         chatFam.close(true);
+                        dummyChats.setVisibility(View.GONE);
+                        activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
                         break;
                 }
 
@@ -183,17 +203,9 @@ public class MainActivityUtils
             }
         });
 
-        ShowcaseConfig config1 = new ShowcaseConfig();
-//        config1.setShape(new RectangleShape(mChatroomSlidingMenu.getWidth(), mChatroomSlidingMenu.getHeight()));
-        config1.setShapePadding(Util.dpToPx(activity, 300));
-
-        sequence.setConfig(config1);
-
-        sequence.addSequenceItem(mChatroomSlidingMenu.findViewById(R.id.chatrooms_list_title),
+        sequence.addSequenceItem(dummyChats,
                 "Chatrooms",
                 "OK");
-
-        sequence.setConfig(config);
 
         sequence.addSequenceItem(chatFam.getMenuButton(),
                 "Menu",

@@ -29,6 +29,13 @@
             android:id="@+id/chatroomsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/dummy_chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <!--<LinearLayout-->
