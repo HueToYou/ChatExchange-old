@@ -65,10 +65,6 @@ public class ChatFragment extends Fragment
     private EditText messageToSend;
     private HorizontalScrollView pingSuggestionsScrollView;
 
-    private ActionBarHue actionBarHue = null;
-    private OtherFabsHue otherFabsHue = null;
-    private ChatFragFabsHue chatFragFabsHue = null;
-
     private Spanned mChatDesc;
     private ArrayList<String> mChatTags = new ArrayList<>();
     private Spanned mChatTagsSpanned;
@@ -125,10 +121,6 @@ public class ChatFragment extends Fragment
         });
 
         mFragmentManager = getFragmentManager();
-
-        actionBarHue = new ActionBarHue();
-        otherFabsHue = new OtherFabsHue();
-        chatFragFabsHue = new ChatFragFabsHue();
 
         mSlidingMenu = ((MainActivity)getActivity()).getCurrentUsers_SlidingMenu();
 
@@ -324,16 +316,16 @@ public class ChatFragment extends Fragment
     private void hueAllTheThings()
     {
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
-            actionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
-            chatFragFabsHue.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-            otherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            ActionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
+            ChatFragFabsHue.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
+            OtherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
         }
 
         else
         {
-            actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            chatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-            otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            ActionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            ChatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+            OtherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
         }
 
         getActivity().setTitle(mChatTitle);

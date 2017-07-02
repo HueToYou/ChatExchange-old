@@ -17,9 +17,9 @@ public class ActionBarHue
      * This class is for setting the color of the action bar
      */
 
-    private SharedPreferences mSharedPreferences = null;
+    private static SharedPreferences mSharedPreferences = null;
 
-    public void setActionBarColor(AppCompatActivity activity, int mAppBarColor)
+    public static void setActionBarColor(AppCompatActivity activity, int mAppBarColor)
     {
         if(mSharedPreferences == null)
         {
@@ -50,7 +50,7 @@ public class ActionBarHue
         }
     }
 
-    public void setActionBarColorToSharedPrefsValue(AppCompatActivity activity)
+    public static void setActionBarColorToSharedPrefsValue(AppCompatActivity activity)
     {
         if(mSharedPreferences == null)
         {
@@ -83,7 +83,7 @@ public class ActionBarHue
         }
     }
 
-    public void setActionBarColorToSharedPrefsValue(AppCompatPreferenceActivity activity)
+    public static void setActionBarColorToSharedPrefsValue(AppCompatPreferenceActivity activity)
     {
         if(mSharedPreferences == null)
         {

@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 
 public class Utils
 {
-    private SharedPreferences mSharedPreferences = null;
+    private static SharedPreferences mSharedPreferences = null;
 
-    public int getColorInt(Activity activity, String url) {
+    public static int getColorInt(Activity activity, String url) {
 
         if(mSharedPreferences == null)
         {

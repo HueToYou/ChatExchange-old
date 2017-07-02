@@ -23,9 +23,9 @@ public class OtherFabsHue
      * This class is for setting the color of the show chats FAB and the add new chat FAB
      */
 
-    private SharedPreferences mSharedPreferences = null;
+    private static SharedPreferences mSharedPreferences = null;
 
-    public void setAddChatFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
+    public static void setAddChatFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
@@ -37,7 +37,7 @@ public class OtherFabsHue
         setTints(colorStateList, activity);
     }
 
-    public void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity)
+    public static void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
@@ -54,7 +54,7 @@ public class OtherFabsHue
         }
     }
 
-    private void setTints(ColorStateList colorStateList, Activity activity) {
+    private static void setTints(ColorStateList colorStateList, Activity activity) {
         FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);
         com.github.clans.fab.FloatingActionButton home = activity.findViewById(R.id.home_fab);
         com.github.clans.fab.FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
@@ -84,7 +84,7 @@ public class OtherFabsHue
         }
     }
 
-    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
+    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         @ColorInt int colorNormal;

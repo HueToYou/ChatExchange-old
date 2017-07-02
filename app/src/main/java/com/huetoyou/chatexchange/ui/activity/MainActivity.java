@@ -55,6 +55,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
@@ -84,6 +85,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class MainActivity extends SlidingActivity {
 
     private SharedPreferences mSharedPrefs;
@@ -104,7 +109,6 @@ public class MainActivity extends SlidingActivity {
 
     private Handler mHandler;
 
-    private ThemeHue themeHue = null;
     private String mCurrentFragment;
 
     private RequestFactory mRequestFactory;
@@ -173,8 +177,7 @@ public class MainActivity extends SlidingActivity {
     public void onCreate(Bundle savedInstanceState)
     {
         mainActivity = this;
-        themeHue = new ThemeHue();
-        themeHue.setTheme(MainActivity.this);
+        ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -271,7 +274,7 @@ public class MainActivity extends SlidingActivity {
     @Override
     protected void onResume()
     {
-        themeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
+        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
         if(oncreatejustcalled)
         {
@@ -343,7 +346,6 @@ public class MainActivity extends SlidingActivity {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
-
 
         mHandler = new Handler();
 
@@ -929,7 +931,7 @@ public class MainActivity extends SlidingActivity {
             mAddListListener.onStart();
             mName = getName(mHtmlData, mChatUrl);
             mIcon = getIcon(mHtmlData, mChatUrl);
-            mColor = new Utils().getColorInt(mainActivity, mChatUrl);
+            mColor = Utils.getColorInt(mainActivity, mChatUrl);
 
             publishProgress();
             return null;

@@ -32,9 +32,6 @@ public class HomeFragment extends Fragment {
 
     private AccountManager mAccountManager;
     private View view;
-    private Utils mHueUtils;
-    private ActionBarHue actionBarHue;
-    private OtherFabsHue otherFabsHue;
     private boolean oncreateHasBeenCalled = false;
     private SharedPreferences mSharedPreferences;
     private WebView webView;
@@ -51,9 +48,6 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(getResources().getText(R.string.app_name));
 
-        mHueUtils = new Utils();
-        actionBarHue = new ActionBarHue();
-        otherFabsHue = new OtherFabsHue();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mAccountManager = AccountManager.get(getActivity());
@@ -134,8 +128,8 @@ public class HomeFragment extends Fragment {
     private void hueAllTheThings()
     {
 
-        actionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
-        otherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        ActionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
+        OtherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
     }
 
     private void setupWebView() {

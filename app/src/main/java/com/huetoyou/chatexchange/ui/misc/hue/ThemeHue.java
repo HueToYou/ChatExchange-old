@@ -13,12 +13,12 @@ import com.huetoyou.chatexchange.ui.activity.MainActivity;
 
 public class ThemeHue
 {
-    private SharedPreferences mSharedPreferences = null;
+    private static SharedPreferences mSharedPreferences = null;
 
     /*
      * Only call this method if setContentView() has not been called yet
      */
-    public void setTheme(Activity activity)
+    public static void setTheme(Activity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
@@ -41,7 +41,7 @@ public class ThemeHue
     /*
      * Do *not* call this method from onCreate(); used for changing the theme on-the-fly; you should call this in onResume()
      */
-    public void setThemeOnResume(Activity activity, boolean oncreatejustcalled)
+    public static void setThemeOnResume(Activity activity, boolean oncreatejustcalled)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)

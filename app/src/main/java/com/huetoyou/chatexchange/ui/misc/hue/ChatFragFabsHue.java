@@ -23,9 +23,9 @@ import java.net.HttpURLConnection;
 
 public class ChatFragFabsHue
 {
-    private SharedPreferences mSharedPreferences = null;
+    private static SharedPreferences mSharedPreferences = null;
 
-    public void setChatFragmentFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
+    public static void setChatFragmentFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
@@ -37,7 +37,7 @@ public class ChatFragFabsHue
         tints(colorStateList, activity);
     }
 
-    public void setChatFragmentFabColorToSharedPrefsValue(AppCompatActivity activity)
+    public static void setChatFragmentFabColorToSharedPrefsValue(AppCompatActivity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if(mSharedPreferences == null)
@@ -53,7 +53,7 @@ public class ChatFragFabsHue
         }
     }
 
-    private void tints(ColorStateList colorStateList, AppCompatActivity activity)
+    private static void tints(ColorStateList colorStateList, AppCompatActivity activity)
     {
         com.github.clans.fab.FloatingActionButton showUsers = activity.findViewById(R.id.show_users_fab);
         com.github.clans.fab.FloatingActionButton roomInfo = activity.findViewById(R.id.room_info_fab);
@@ -88,7 +88,7 @@ public class ChatFragFabsHue
 
     }
 
-    private void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
+    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         @ColorInt int colorNormal;
