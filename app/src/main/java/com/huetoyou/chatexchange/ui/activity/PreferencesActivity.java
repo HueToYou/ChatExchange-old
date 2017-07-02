@@ -239,7 +239,8 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     if (pref != darkThemePrevState)
                     {
                         mSharedPrefs.edit().putBoolean("FLAG_restartMain", true).apply();
-                    } else
+                    }
+                    else
                     {
                         mSharedPrefs.edit().putBoolean("FLAG_restartMain", false).apply();
                     }

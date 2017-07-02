@@ -9,11 +9,13 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
  * Created by Zacha on 5/30/2017.
  */
 
-public class FirebaseService extends FirebaseInstanceIdService {
+public class FirebaseService extends FirebaseInstanceIdService
+{
     private final String TAG = "ChatExchange";
 
     @Override
-    public void onTokenRefresh() {
+    public void onTokenRefresh()
+    {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);

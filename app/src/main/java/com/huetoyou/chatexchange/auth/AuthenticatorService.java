@@ -8,12 +8,14 @@ import android.support.annotation.Nullable;
 /**
  * Service to facilitate login
  */
-public class AuthenticatorService extends Service {
+public class AuthenticatorService extends Service
+{
 
     private Authenticator mAuthenticator;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         mAuthenticator = new Authenticator(this);
@@ -21,7 +23,8 @@ public class AuthenticatorService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return mAuthenticator.getIBinder();
     }
 }

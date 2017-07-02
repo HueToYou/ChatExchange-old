@@ -220,12 +220,17 @@ public class ChatFragment extends Fragment
                                 String icon = jsonObject.getString("email_hash");
 
                                 if (!(icon.contains("http://") || icon.contains("https://")))
+                                {
                                     icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+                                }
 
                                 if (mFragmentManager.findFragmentByTag("user_" + id) == null)
+                                {
                                     addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                                }
                             }
-                        } catch (Exception e)
+                        }
+                        catch (Exception e)
                         {
                             e.printStackTrace();
                         }
@@ -256,7 +261,10 @@ public class ChatFragment extends Fragment
 
         if (mChatDomain == null || mChatDomain.isEmpty())
         {
-            if (mChatUrl.contains("overflow")) mChatDomain = "stackoverflow.com";
+            if (mChatUrl.contains("overflow"))
+            {
+                mChatDomain = "stackoverflow.com";
+            }
             else
             {
                 mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
@@ -414,7 +422,8 @@ public class ChatFragment extends Fragment
             ActionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
             ChatFragFabsHue.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
             OtherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-        } else
+        }
+        else
         {
             ActionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
             ChatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
@@ -437,7 +446,10 @@ public class ChatFragment extends Fragment
 
                 while (true)
                 {
-                    if (!oncreateHasBeenCalled) continue;
+                    if (!oncreateHasBeenCalled)
+                    {
+                        continue;
+                    }
                     break;
                 }
 
@@ -512,7 +524,8 @@ public class ChatFragment extends Fragment
 //                                    Log.e("NAME", currentName);
                                 }
                             }
-                        } catch (IllegalStateException e)
+                        }
+                        catch (IllegalStateException e)
                         {
 //                            e.printStackTrace()
                         }
@@ -591,13 +604,17 @@ public class ChatFragment extends Fragment
             try
             {
                 html = Jsoup.parse(params[0]);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
 
             Elements el = html.select("script");
-            if (el.hasAttr("type")) el = html.select("script");
+            if (el.hasAttr("type"))
+            {
+                el = html.select("script");
+            }
 
             users = el.html();
             String users2 = "";
@@ -612,7 +629,8 @@ public class ChatFragment extends Fragment
                     try
                     {
                         users2 = users2.concat(m.group());
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         e.printStackTrace();
                     }
@@ -803,7 +821,10 @@ public class ChatFragment extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (webView.canGoBack()) webView.goBack();
+                        if (webView.canGoBack())
+                        {
+                            webView.goBack();
+                        }
                     }
                 });
 
@@ -813,7 +834,10 @@ public class ChatFragment extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (webView.canGoForward()) webView.goForward();
+                        if (webView.canGoForward())
+                        {
+                            webView.goForward();
+                        }
                     }
                 });
             }
@@ -879,12 +903,16 @@ public class ChatFragment extends Fragment
 
                 for (Element e : divs)
                 {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomdesc")) return e.html();
+                    if (e.hasAttr("id") && e.attr("id").equals("roomdesc"))
+                    {
+                        return e.html();
+                    }
                 }
 
                 mDescGotten.onFail("NULL");
                 return null;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 return null;
@@ -940,7 +968,8 @@ public class ChatFragment extends Fragment
                 }
 
                 return tagList;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 mTagsGotten.onFail("NULL");
                 return null;
@@ -1036,7 +1065,8 @@ public class ChatFragment extends Fragment
                     }
                 }
                 throw new Exception("Not Found");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 Log.e("NOTFOUND", e.getMessage());

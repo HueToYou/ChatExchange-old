@@ -22,18 +22,21 @@ import java.util.Map;
 /**
  * Perform a network request in a secondary thread and invoke a callback with the response
  */
-class Request extends AsyncTask<Request.Params, Void, Request.Response> {
+class Request extends AsyncTask<Request.Params, Void, Request.Response>
+{
 
     private static final String TAG = "Request";
 
-    interface Listener {
+    interface Listener
+    {
         void onResponse(Response response);
     }
 
     /**
      * Parameters for the request
      */
-    static class Params {
+    static class Params
+    {
         String method;
         String url;
         String cookies;
@@ -44,7 +47,8 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
     /**
      * Response data for the request
      */
-    static class Response {
+    static class Response
+    {
         boolean succeeded = false;
         URL finalUrl;
         String cookies;
@@ -55,10 +59,12 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
 
     /**
      * Generate an error response
+     *
      * @param message descriptive message
      * @return newly created response
      */
-    private Response error(String message) {
+    private Response error(String message)
+    {
         Response response = new Response();
         response.data = message;
         return response;
@@ -66,12 +72,15 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
 
     /**
      * Format request parameters as an application/x-www-form-urlencoded string
+     *
      * @param params encode these parameters
      * @return properly formatted string
      */
-    private String formatParameters(Map<String, String> params) throws UnsupportedEncodingException {
+    private String formatParameters(Map<String, String> params) throws UnsupportedEncodingException
+    {
         List<String> encodedParams = new ArrayList<>();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet())
+        {
             encodedParams.add(
                     String.format(
                             "%s=%s",
@@ -84,24 +93,30 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
     }
 
     @Override
-    protected Response doInBackground(Params... paramList) {
+    protected Response doInBackground(Params... paramList)
+    {
         Params params = paramList[0];
         HttpURLConnection connection;
-        try {
+        try
+        {
             URL url = new URL(params.url);
             Log.i(TAG, String.format("Opening connection to %s", url.toString()));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(params.method);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             return error(e.getMessage());
         }
         connection.setRequestProperty("Cookie", params.cookies);
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0");
         connection.setDoInput(true);
-        if (!params.method.equals("GET")) {
+        if (!params.method.equals("GET"))
+        {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            try {
+            try
+            {
                 byte[] paramBytes = formatParameters(params.form).getBytes();
                 connection.setRequestProperty("Content-Length", Integer.toString(paramBytes.length));
                 OutputStream stream = connection.getOutputStream();
@@ -110,25 +125,33 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
                 writer.flush();
                 writer.close();
                 stream.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 return error(e.getMessage());
             }
-        } else {
+        }
+        else
+        {
             connection.setInstanceFollowRedirects(params.followRedirects);
         }
         int responseCode;
         String responseMessage;
         String responseData;
-        try {
+        try
+        {
             responseCode = connection.getResponseCode();
             responseMessage = connection.getResponseMessage();
-            if (responseCode != HttpURLConnection.HTTP_OK) {
+            if (responseCode != HttpURLConnection.HTTP_OK)
+            {
                 return error(String.format("HTTP response: %s", responseMessage));
             }
             InputStream in = new BufferedInputStream(connection.getInputStream());
             responseData = IOUtils.toString(in, "UTF-8");
             in.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             return error(e.getMessage());
         }
         Response response = new Response();
@@ -141,11 +164,13 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
     }
 
     @Override
-    protected void onPostExecute(Response response) {
+    protected void onPostExecute(Response response)
+    {
         mListener.onResponse(response);
     }
 
-    Request(Listener listener) {
+    Request(Listener listener)
+    {
         mListener = listener;
     }
 }

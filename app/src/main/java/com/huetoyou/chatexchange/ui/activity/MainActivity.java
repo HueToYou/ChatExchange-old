@@ -239,7 +239,8 @@ public class MainActivity extends SlidingActivity
                 if (mChatroomSlidingMenu.isMenuShowing())
                 {
                     doCloseAnimationForDrawerToggle(view);
-                } else
+                }
+                else
                 {
                     doOpenAnimationForDrawerToggle(view);
                 }
@@ -362,7 +363,8 @@ public class MainActivity extends SlidingActivity
             //noinspection ConstantConditions
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));
-        } else
+        }
+        else
         {
             //noinspection ConstantConditions
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -391,14 +393,23 @@ public class MainActivity extends SlidingActivity
             for (Fragment fragment : mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment)
+                {
                     if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing())
+                    {
                         ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                    }
+                }
             }
-            if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
-        } else if (mChatroomSlidingMenu.isMenuShowing())
+            if (mChatroomSlidingMenu.isMenuShowing())
+            {
+                mChatroomSlidingMenu.showContent(true);
+            }
+        }
+        else if (mChatroomSlidingMenu.isMenuShowing())
         {
             mChatroomSlidingMenu.showContent(true);
-        } else
+        }
+        else
         {
             super.onBackPressed();
         }
@@ -484,7 +495,8 @@ public class MainActivity extends SlidingActivity
                 {
                     authToken = accountManagerFuture.getResult().getString(AccountManager.KEY_AUTHTOKEN);
                     Log.e("Auth", authToken);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     e.printStackTrace();
                     Log.e("RI", "P");
@@ -504,14 +516,18 @@ public class MainActivity extends SlidingActivity
             startActivity(intent);
 
             finish();
-        } else if (mAccountManager.getAccounts().length < 1)
+        }
+        else if (mAccountManager.getAccounts().length < 1)
         {
             startActivity(new Intent(this, AuthenticatorActivity.class));
             finish();
-        } else
+        }
+        else
         {
             if (mFragmentManager.findFragmentByTag("home") == null)
+            {
                 mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+            }
             mAccountManager.getAuthToken(mAccountManager.getAccounts()[0], Authenticator.ACCOUNT_TYPE, null, true, accountManagerCallback, null);
         }
 
@@ -595,16 +611,20 @@ public class MainActivity extends SlidingActivity
                                 try
                                 {
                                     setFragmentByChatId(extras.getString("idSE"), "exchange");
-                                } catch (Exception e)
+                                }
+                                catch (Exception e)
                                 {
                                     e.printStackTrace();
                                 }
                                 if (mCurrentUsers_SlidingMenu.isMenuShowing())
+                                {
                                     mCurrentUsers_SlidingMenu.toggle();
+                                }
                             }
                         }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                    } else if (extras.containsKey("idSO"))
+                    }
+                    else if (extras.containsKey("idSO"))
                     {
                         mSOChatIDs.add(extras.getString("idSO"));
                         mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
@@ -644,12 +664,15 @@ public class MainActivity extends SlidingActivity
                                 try
                                 {
                                     setFragmentByChatId(extras.getString("idSO"), "overflow");
-                                } catch (Exception e)
+                                }
+                                catch (Exception e)
                                 {
                                     e.printStackTrace();
                                 }
                                 if (mCurrentUsers_SlidingMenu.isMenuShowing())
+                                {
                                     mCurrentUsers_SlidingMenu.toggle();
+                                }
                             }
                         }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
@@ -684,8 +707,14 @@ public class MainActivity extends SlidingActivity
         {
             while (true)
             {
-                if (!mInterface.urlFound()) continue;
-                if (!mInterface.fragmentFound()) continue;
+                if (!mInterface.urlFound())
+                {
+                    continue;
+                }
+                if (!mInterface.fragmentFound())
+                {
+                    continue;
+                }
                 break;
             }
             return null;
@@ -769,14 +798,21 @@ public class MainActivity extends SlidingActivity
             {
                 while (true)
                 {
-                    if (!mInterface.soContainsId()) continue;
+                    if (!mInterface.soContainsId())
+                    {
+                        continue;
+                    }
                     break;
                 }
-            } else if (mKey.contains("exchange"))
+            }
+            else if (mKey.contains("exchange"))
             {
                 while (true)
                 {
-                    if (!mInterface.seContainsId()) continue;
+                    if (!mInterface.seContainsId())
+                    {
+                        continue;
+                    }
                     break;
                 }
             }
@@ -810,7 +846,10 @@ public class MainActivity extends SlidingActivity
 
     private static <C> List<C> asList(SparseArray<C> sparseArray)
     {
-        if (sparseArray == null) return null;
+        if (sparseArray == null)
+        {
+            return null;
+        }
         List<C> arrayList = new ArrayList<>(sparseArray.size());
         for (int i = 0; i < sparseArray.size(); i++)
             arrayList.add(sparseArray.valueAt(i));
@@ -826,7 +865,10 @@ public class MainActivity extends SlidingActivity
 
     private static List<Integer> sparseIntArrayAsList(SparseIntArray sparseIntArray)
     {
-        if (sparseIntArray == null) return null;
+        if (sparseIntArray == null)
+        {
+            return null;
+        }
         List<Integer> arrayList = new ArrayList<>(sparseIntArray.size());
         for (int i = 0; i < sparseIntArray.size(); i++)
             arrayList.add(sparseIntArray.valueAt(i));
@@ -1010,15 +1052,22 @@ public class MainActivity extends SlidingActivity
                 try
                 {
                     Thread.sleep(350);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     e.printStackTrace();
                 }
 
                 while (true)
                 {
-                    if (chatroomsList == null) continue;
-                    if (chatroomsList.getCount() < mSEChatIDs.size() + mSOChatIDs.size()) continue;
+                    if (chatroomsList == null)
+                    {
+                        continue;
+                    }
+                    if (chatroomsList.getCount() < mSEChatIDs.size() + mSOChatIDs.size())
+                    {
+                        continue;
+                    }
                     break;
                 }
 
@@ -1133,7 +1182,8 @@ public class MainActivity extends SlidingActivity
                 String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
                 mSharedPreferences.edit().putString(url + "Name", ret).apply();
                 return ret;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 return null;
@@ -1150,7 +1200,10 @@ public class MainActivity extends SlidingActivity
                 Element link = head.select("link").first();
 
                 String fav = link.attr("href");
-                if (!fav.contains("http")) fav = "https:".concat(fav);
+                if (!fav.contains("http"))
+                {
+                    fav = "https:".concat(fav);
+                }
                 URL url = new URL(fav);
 
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
@@ -1165,7 +1218,8 @@ public class MainActivity extends SlidingActivity
 
                 return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 return null;
@@ -1263,7 +1317,8 @@ public class MainActivity extends SlidingActivity
                     WebView webView = findViewById(R.id.stars_view);
                     String url = webView.getUrl();
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                } else
+                }
+                else
                 {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentFragment));
                 }
@@ -1318,7 +1373,8 @@ public class MainActivity extends SlidingActivity
                 }
 
                 mFragmentManager.executePendingTransactions();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -1355,7 +1411,10 @@ public class MainActivity extends SlidingActivity
         colors = chatColors.toArray(colors);
 
         chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
-        if (names.length < 1) chatroomArrayAdapter.clear();
+        if (names.length < 1)
+        {
+            chatroomArrayAdapter.clear();
+        }
 //        Log.e("LE", names.length + "");
 
         chatroomsList = findViewById(R.id.chatroomsListView);
@@ -1390,7 +1449,10 @@ public class MainActivity extends SlidingActivity
 
     private void removeAllFragmentsFromList()
     {
-        if (chatroomsList != null) chatroomsList.setAdapter(null);
+        if (chatroomsList != null)
+        {
+            chatroomsList.setAdapter(null);
+        }
         resetArrays(true);
     }
 
@@ -1415,13 +1477,24 @@ public class MainActivity extends SlidingActivity
         if (domain.contains("exchange"))
         {
             if (mSEChatUrls.get(Integer.decode(id)) != null)
+            {
                 setFragmentByTag(mSEChatUrls.get(Integer.decode(id)));
-            else Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
-        } else if (domain.contains("overflow"))
+            }
+            else
+            {
+                Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (domain.contains("overflow"))
         {
             if (mSOChatUrls.get(Integer.decode(id)) != null)
+            {
                 setFragmentByTag(mSOChatUrls.get(Integer.decode(id)));
-            else Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -1458,12 +1531,14 @@ public class MainActivity extends SlidingActivity
 //                hueUtils.setActionBarColorDefault(this);
                     mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
                     ((HomeFragment) fragToAttach).hueTest();
-                } else
+                }
+                else
                 {
                     if (mFragmentManager.findFragmentByTag("home").isDetached())
                     {
                         mFragmentManager.beginTransaction().attach(fragToAttach).commit();
-                    } else
+                    }
+                    else
                     {
                         mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                     }
@@ -1476,7 +1551,8 @@ public class MainActivity extends SlidingActivity
 //                hueUtils.showAddChatFab(this, falzse);
                     ((ChatFragment) fragToAttach).hueTest();
                 }
-            } else
+            }
+            else
             {
                 Log.e("TAG", tag);
             }
@@ -1552,12 +1628,14 @@ public class MainActivity extends SlidingActivity
                     {
 //                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
                         mSOChatIDs.add(inputText);
-                    } else //noinspection StatementWithEmptyBody
+                    }
+                    else //noinspection StatementWithEmptyBody
                         if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
                         {
 //                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
                             mSEChatIDs.add(inputText);
-                        } else
+                        }
+                        else
                         {
 //                        url = inputText;
                         }
@@ -1570,7 +1648,8 @@ public class MainActivity extends SlidingActivity
 //                    mEditor.apply();
 //                    Log.e("URLSA", mChatUrls.toString());
                     doFragmentStuff();
-                } else
+                }
+                else
                 {
                     Toast.makeText(getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
                 }
@@ -1649,7 +1728,8 @@ public class MainActivity extends SlidingActivity
                                         if (domain.contains("overflow"))
                                         {
                                             mSOChatIDs.remove(id);
-                                        } else if (domain.contains("exchange"))
+                                        }
+                                        else if (domain.contains("exchange"))
                                         {
                                             mSEChatIDs.remove(id);
                                         }
@@ -1712,7 +1792,8 @@ public class MainActivity extends SlidingActivity
         if (mFragmentManager.findFragmentByTag(url) != null)
         {
             fragment = mFragmentManager.findFragmentByTag(url);
-        } else
+        }
+        else
         {
             fragment = new ChatFragment();
             Bundle args = new Bundle();

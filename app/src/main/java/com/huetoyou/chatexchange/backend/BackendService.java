@@ -15,7 +15,8 @@ import com.huetoyou.chatexchange.net.RequestFactory;
 /**
  * Service that runs in the background and creates an appropriate backend according to user settings
  */
-public class BackendService extends Service {
+public class BackendService extends Service
+{
 
     private static final String TAG = "BackendService";
 
@@ -43,12 +44,14 @@ public class BackendService extends Service {
     /**
      * Broadcaster for chat events
      */
-    class Broadcaster {
+    class Broadcaster
+    {
 
         /**
          * Broadcast the specified event
          */
-        void broadcastEvent(Event event) {
+        void broadcastEvent(Event event)
+        {
             Intent intent = new Intent();
             intent.setAction(EVENT_RECEIVED);
             intent.putExtra(EXTRA_EVENT, event);
@@ -58,10 +61,12 @@ public class BackendService extends Service {
 
     /**
      * Start the service
+     *
      * @param context context to use for sending the intent
-     * @param token account token to use for initialization
+     * @param token   account token to use for initialization
      */
-    public static void startService(Context context, String token) {
+    public static void startService(Context context, String token)
+    {
         Log.i(TAG, "starting service");
         Intent intent = new Intent(context, BackendService.class);
         intent.setAction(ACTION_START);
@@ -78,7 +83,8 @@ public class BackendService extends Service {
     private WebSocketBackend mWebSocketBackend;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -88,8 +94,10 @@ public class BackendService extends Service {
      * Stop the currently running backend
      */
     @SuppressWarnings("SameReturnValue")
-    private int stop() {
-        switch (mBackend) {
+    private int stop()
+    {
+        switch (mBackend)
+        {
             case BACKEND_WEBSOCKET:
                 mWebSocketBackend.close();
         }
@@ -101,22 +109,26 @@ public class BackendService extends Service {
     /**
      * Start the WebSocket backend
      */
-    private void startWebSocketBackend() {
+    private void startWebSocketBackend()
+    {
         mWebSocketBackend = new WebSocketBackend(mRequestFactory, INITIAL_ROOM_ID, mBroadcaster);
     }
 
     /**
      * Start the service with the current backend
-     * @param token account token
      *
-     * If an existing backend is running, it is stopped.
+     * @param token account token
+     *              <p>
+     *              If an existing backend is running, it is stopped.
      */
     @SuppressWarnings("SameReturnValue")
-    private int start(String token) {
+    private int start(String token)
+    {
         stop();
         mRequestFactory = new RequestFactory(token);
         mBackend = mSharedPreferences.getString("backend", BACKEND_WEBSOCKET);
-        switch (mBackend) {
+        switch (mBackend)
+        {
             case BACKEND_WEBSOCKET:
                 startWebSocketBackend();
         }
@@ -125,10 +137,12 @@ public class BackendService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         Log.i(TAG, String.format("received intent: %s", intent.getAction()));
 
-        switch (intent.getAction()) {
+        switch (intent.getAction())
+        {
             case ACTION_START:
                 return start(intent.getStringExtra(EXTRA_TOKEN));
             case ACTION_STOP:
@@ -139,18 +153,22 @@ public class BackendService extends Service {
 
     /**
      * Retrieve data from a page
-     * @param pageUrl URL of the page to retrieve
+     *
+     * @param pageUrl  URL of the page to retrieve
      * @param listener listener for page retrieval status
      */
-    public void retrievePage(String pageUrl, PageRetriever.Listener listener) {
+    public void retrievePage(String pageUrl, PageRetriever.Listener listener)
+    {
         new PageRetriever(mRequestFactory, pageUrl, listener);
     }
 
     /**
      * Binder for interacting with the service
      */
-    public class BackendBinder extends Binder {
-        BackendService getService() {
+    public class BackendBinder extends Binder
+    {
+        BackendService getService()
+        {
             return BackendService.this;
         }
     }
@@ -159,7 +177,8 @@ public class BackendService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return mBinder;
     }
 }

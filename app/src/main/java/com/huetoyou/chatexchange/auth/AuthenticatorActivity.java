@@ -28,7 +28,8 @@ import android.text.Html;
  * Activity shown when the account needs to be authenticated
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
-        implements StackExchangeAuth.Listener {
+        implements StackExchangeAuth.Listener
+{
 
     private ProgressDialog mProgressDialog;
 
@@ -40,7 +41,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     /**
      * Start the auth procedure (use StackExchangeAuth for now)
      */
-    private void startAuth() {
+    private void startAuth()
+    {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(getText(R.string.activity_authenticator_progress_title));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -57,15 +59,20 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     /**
      * Set the hint for an EditText to the specified string on error
+     *
      * @param editText edit widget
-     * @param resId string resource
+     * @param resId    string resource
      */
-    private void setErrorHint(EditText editText, @StringRes int resId) {
+    private void setErrorHint(EditText editText, @StringRes int resId)
+    {
         String html = "<font color='#ff0000'>" + getResources().getText(resId) + "</font>";
         CharSequence hint;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
+        {
             hint = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
-        } else {
+        }
+        else
+        {
             //noinspection deprecation
             hint = Html.fromHtml(html);
         }
@@ -73,7 +80,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_authenticator);
@@ -84,45 +92,67 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mSubmit = findViewById(R.id.auth_submit);
         mSubmit.setVisibility(View.GONE);
 
-        mEmail.addTextChangedListener(new TextWatcher() {
+        mEmail.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
 
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) mSubmit.setVisibility(View.VISIBLE);
-                else mSubmit.setVisibility(View.GONE);
-            }
-        });
-
-        mPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) mSubmit.setVisibility(View.VISIBLE);
-                else mSubmit.setVisibility(View.GONE);
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                {
+                    mSubmit.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    mSubmit.setVisibility(View.GONE);
+                }
             }
         });
 
-        mSubmit.setOnClickListener(new View.OnClickListener() {
+        mPassword.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void onClick(View v) {
+            public void afterTextChanged(Editable s)
+            {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                {
+                    mSubmit.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    mSubmit.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mSubmit.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
                 startAuth();
             }
         });
@@ -130,16 +160,19 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mAccountManager = AccountManager.get(this);
 
         CheckBox showPassword = findViewById(R.id.show_password);
-        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
                 mPassword.setInputType(isChecked ? InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_CLASS_TEXT + InputType.TYPE_TEXT_VARIATION_PASSWORD);
             }
         });
     }
 
     @Override
-    public void authSucceeded(String authToken) {
+    public void authSucceeded(String authToken)
+    {
         mProgressDialog.cancel();
 
         String accountName = mEmail.getText().toString();
@@ -156,7 +189,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         onAuthFinish(accountName, authToken);
     }
 
-    private void onAuthFinish(String accountName, String authToken) {
+    private void onAuthFinish(String accountName, String authToken)
+    {
         // Create the intent for returning to the caller
         Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, accountName);
@@ -170,12 +204,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     }
 
     @Override
-    public void authProgress(int progress) {
+    public void authProgress(int progress)
+    {
         mProgressDialog.setProgress(progress);
     }
 
     @Override
-    public void authFailed(String message) {
+    public void authFailed(String message)
+    {
         mProgressDialog.cancel();
         new AlertDialog.Builder(this)
                 .setTitle(R.string.activity_authenticator_error_title)

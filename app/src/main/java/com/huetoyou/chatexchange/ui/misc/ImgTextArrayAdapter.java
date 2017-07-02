@@ -40,7 +40,10 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
     {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        if (view == null) view = inflater.inflate(R.layout.chatroom_list_item, null, false);
+        if (view == null)
+        {
+            view = inflater.inflate(R.layout.chatroom_list_item, null, false);
+        }
 
         TextView chatroomNameTextView = view.findViewById(R.id.chatroomName);
         ImageView chatroomIconImgView = view.findViewById(R.id.chatroomImg);

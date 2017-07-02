@@ -31,7 +31,8 @@ import java.util.Set;
 /**
  * Backend using a persistent WebSocket to maintain a connection to the chat server
  */
-class WebSocketBackend {
+class WebSocketBackend
+{
 
     private static final String TAG = "WebSocketBackend";
     private static final String WEBSOCKET_URL = "https://chat.stackexchange.com/ws-auth";
@@ -39,41 +40,50 @@ class WebSocketBackend {
     /**
      * Response returned by the /ws-auth call
      */
-    private class WsAuthResponse {
+    private class WsAuthResponse
+    {
         String url;
     }
 
     /**
      * List of events for an individual room
      */
-    private class WsRoom {
-        @SerializedName("e") List<Event> events;
+    private class WsRoom
+    {
+        @SerializedName("e")
+        List<Event> events;
     }
 
     /**
      * List of rooms with events
      */
-    private class WsMessage {
+    private class WsMessage
+    {
         final List<Event> events = new ArrayList<>();
     }
 
     /**
      * Custom deserializer for room events
-     *
+     * <p>
      * The custom deserializer works around the fact that the JSON returned by
      * the chat server contains dynamic keys and duplicated events. Both are
      * dealt with by this class.
      */
-    private class WsMessageDeserializer implements JsonDeserializer<WsMessage> {
+    private class WsMessageDeserializer implements JsonDeserializer<WsMessage>
+    {
         @Override
-        public WsMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public WsMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
             JsonObject object = json.getAsJsonObject();
             WsMessage message = new WsMessage();
             Set<Integer> ids = new HashSet<>();
-            for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+            for (Map.Entry<String, JsonElement> entry : object.entrySet())
+            {
                 WsRoom room = mGson.fromJson(entry.getValue(), WsRoom.class);
-                for (Event event : room.events) {
-                    if (!ids.contains(event.getId())) {
+                for (Event event : room.events)
+                {
+                    if (!ids.contains(event.getId()))
+                    {
                         message.events.add(event);
                         ids.add(event.getId());
                     }
@@ -97,32 +107,40 @@ class WebSocketBackend {
 
     /**
      * Creates the WebSocket using the provided URI
+     *
      * @param uri WebSocket URI
      */
-    private void createWebSocket(URI uri) {
+    private void createWebSocket(URI uri)
+    {
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", mRequestFactory.cookies());
         headers.put("Origin", "https://chat.stackexchange.com");
-        mWebSocketClient = new WebSocketClient(uri, new Draft_17(), headers, 0) {
+        mWebSocketClient = new WebSocketClient(uri, new Draft_17(), headers, 0)
+        {
             @Override
-            public void onOpen(ServerHandshake serverHandshake) {
+            public void onOpen(ServerHandshake serverHandshake)
+            {
                 Log.i(TAG, "WebSocket connection opened");
             }
 
             @Override
-            public void onMessage(String s) {
-                for (Event event : mGson.fromJson(s, WsMessage.class).events) {
+            public void onMessage(String s)
+            {
+                for (Event event : mGson.fromJson(s, WsMessage.class).events)
+                {
                     mBroadcaster.broadcastEvent(event);
                 }
             }
 
             @Override
-            public void onClose(int i, String s, boolean b) {
+            public void onClose(int i, String s, boolean b)
+            {
                 // TODO
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Exception e)
+            {
                 Log.e(TAG, e.getMessage());
                 // TODO
             }
@@ -131,28 +149,35 @@ class WebSocketBackend {
 
     /**
      * Establish a connection to the WebSocket
-     *
+     * <p>
      * This is done by first obtaining the magic URL for the socket and then
      * attempting to connect with it. The response from the chat server is in
      * JSON format and must be decoded.
      */
-    private void connect() {
+    private void connect()
+    {
         Map<String, String> form = new HashMap<>();
         form.put("roomid", Integer.toString(mRoomId));
-        mRequestFactory.post(WEBSOCKET_URL, form, new RequestFactory.Listener() {
+        mRequestFactory.post(WEBSOCKET_URL, form, new RequestFactory.Listener()
+        {
             @Override
-            public void onSucceeded(URL url, String data) {
-                try {
+            public void onSucceeded(URL url, String data)
+            {
+                try
+                {
                     WsAuthResponse authResponse = mGson.fromJson(data, WsAuthResponse.class);
                     createWebSocket(new URI(authResponse.url));
-                } catch (JsonSyntaxException|URISyntaxException e) {
+                }
+                catch (JsonSyntaxException | URISyntaxException e)
+                {
                     Log.e(TAG, e.getMessage());
                     retry();
                 }
             }
 
             @Override
-            public void onFailed(String message) {
+            public void onFailed(String message)
+            {
                 Log.e(TAG, message);
                 retry();
             }
@@ -162,17 +187,20 @@ class WebSocketBackend {
     /**
      * Set a timer to retry the connection in the future
      */
-    private void retry() {
+    private void retry()
+    {
         // TODO
     }
 
     /**
      * Create a new WebSocket backend
+     *
      * @param requestFactory factory for creating the WebSocket requests
-     * @param roomId ID of the initial room to join
-     * @param broadcaster event broadcaster
+     * @param roomId         ID of the initial room to join
+     * @param broadcaster    event broadcaster
      */
-    WebSocketBackend(RequestFactory requestFactory, @SuppressWarnings("SameParameterValue") int roomId, BackendService.Broadcaster broadcaster) {
+    WebSocketBackend(RequestFactory requestFactory, @SuppressWarnings("SameParameterValue") int roomId, BackendService.Broadcaster broadcaster)
+    {
         mRequestFactory = requestFactory;
         mRoomId = roomId;
         mBroadcaster = broadcaster;
@@ -184,7 +212,8 @@ class WebSocketBackend {
     /**
      * Close the WebSocket
      */
-    public void close() {
+    public void close()
+    {
         mWebSocketClient.close();
     }
 }

@@ -55,7 +55,9 @@ public class Utils
             {
                 link = element.attr("href");
                 if (!(link.contains("http://") || link.contains("https://")))
+                {
                     link = "https:".concat(link);
+                }
             }
 
 
@@ -97,7 +99,8 @@ public class Utils
             {
                 mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
                 return Color.parseColor(colorHex);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 Log.e("UNKNOWN COLOR", url);
@@ -111,7 +114,8 @@ public class Utils
                 mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
                 return Color.parseColor(colorHex);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return Color.parseColor("#000000");
@@ -141,7 +145,8 @@ public class Utils
                     }
                 }
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }

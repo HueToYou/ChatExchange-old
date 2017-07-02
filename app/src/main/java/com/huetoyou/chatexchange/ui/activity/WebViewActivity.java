@@ -65,7 +65,10 @@ public class WebViewActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if (webView.canGoBack()) webView.goBack();
+                if (webView.canGoBack())
+                {
+                    webView.goBack();
+                }
             }
         });
 
@@ -74,7 +77,10 @@ public class WebViewActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if (webView.canGoForward()) webView.goForward();
+                if (webView.canGoForward())
+                {
+                    webView.goForward();
+                }
             }
         });
     }
@@ -101,20 +107,33 @@ public class WebViewActivity extends AppCompatActivity
 
                     while (!m.hitEnd())
                     {
-                        if (m.find()) id = m.group().replace("rooms/", "");
+                        if (m.find())
+                        {
+                            id = m.group().replace("rooms/", "");
+                        }
                     }
 
                     if (!id.isEmpty())
                     {
                         String key = "id";
-                        if (url.contains("exchange")) key = key.concat("SE");
-                        else if (url.contains("overflow")) key = key.concat("SO");
+                        if (url.contains("exchange"))
+                        {
+                            key = key.concat("SE");
+                        }
+                        else if (url.contains("overflow"))
+                        {
+                            key = key.concat("SO");
+                        }
 
                         Intent urlIntent = new Intent("idAdd").putExtra(key, id);
                         LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(urlIntent);
                         finish();
                     }
-                } else view.loadUrl(url);
+                }
+                else
+                {
+                    view.loadUrl(url);
+                }
                 return true;
             }
         });

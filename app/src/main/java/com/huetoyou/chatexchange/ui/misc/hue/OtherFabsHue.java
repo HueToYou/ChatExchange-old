@@ -101,7 +101,8 @@ public class OtherFabsHue
             textColor = HueUtils.darkenColor(activity.getResources().getColor(R.color.white), .9f);
             colorNormal = HueUtils.darkenColor(activity.getResources().getColor(android.R.color.darker_gray), .6f);
             colorPressed = colorNormal;
-        } else
+        }
+        else
         {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getResources().getColor(android.R.color.primary_text_dark);

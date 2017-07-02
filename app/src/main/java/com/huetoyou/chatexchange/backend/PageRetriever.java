@@ -11,18 +11,21 @@ import static jodd.jerry.Jerry.jerry;
 /**
  * Retrieve data for an individual page
  */
-class PageRetriever {
+class PageRetriever
+{
 
     /**
      * Information about an individual page
      */
-    public class Page {
+    public class Page
+    {
 
         private final String mName;
         private final String mIcon;
         private final int mColor;
 
-        Page(String name, String icon, int color) {
+        Page(String name, String icon, int color)
+        {
             mName = name;
             mIcon = icon;
             mColor = color;
@@ -31,31 +34,37 @@ class PageRetriever {
         /**
          * Retrieve the page name
          */
-        public String getName() {
+        public String getName()
+        {
             return mName;
         }
 
         /**
          * Retrieve the page icon
          */
-        public String getIcon() {
+        public String getIcon()
+        {
             return mIcon;
         }
 
         /**
          * Retrieve the page color
          */
-        public int getColor() {
+        public int getColor()
+        {
             return mColor;
         }
     }
 
-    public interface Listener {
+    public interface Listener
+    {
         void onSucceeded(Page page);
+
         void onFailed(String message);
     }
 
-    private Page parse(String data) {
+    private Page parse(String data)
+    {
 
         // Begin by parsing the page
         Jerry doc = jerry(data);
@@ -70,19 +79,26 @@ class PageRetriever {
         return new Page(name, icon, color);
     }
 
-    public PageRetriever(RequestFactory requestFactory, final String pageUrl, final Listener listener) {
-        requestFactory.get(pageUrl, true, new RequestFactory.Listener() {
+    public PageRetriever(RequestFactory requestFactory, final String pageUrl, final Listener listener)
+    {
+        requestFactory.get(pageUrl, true, new RequestFactory.Listener()
+        {
             @Override
-            public void onSucceeded(URL url, String data) {
-                try {
+            public void onSucceeded(URL url, String data)
+            {
+                try
+                {
                     listener.onSucceeded(parse(data));
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     listener.onFailed(e.getMessage());
                 }
             }
 
             @Override
-            public void onFailed(String message) {
+            public void onFailed(String message)
+            {
                 listener.onFailed(message);
             }
         });

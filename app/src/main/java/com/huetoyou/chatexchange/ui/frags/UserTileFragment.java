@@ -142,7 +142,8 @@ public class UserTileFragment extends Fragment
                 {
                     FileInputStream fis = getActivity().openFileInput(bmpKey);
                     mIconBitmap = BitmapFactory.decodeStream(fis);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     InputStream is = (InputStream) new URL(mUrl).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
@@ -152,7 +153,8 @@ public class UserTileFragment extends Fragment
                         FileOutputStream fos = getActivity().openFileOutput(bmpKey, Context.MODE_PRIVATE);
                         mIconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                         fos.close();
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         ex.printStackTrace();
                     }
@@ -164,7 +166,8 @@ public class UserTileFragment extends Fragment
                 int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
 
                 drawable = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
@@ -180,12 +183,14 @@ public class UserTileFragment extends Fragment
                     {
                         user_image_info.setImageDrawable(drawable1);
                         mUserInfoView.findViewById(R.id.info_loading).setVisibility(View.GONE);
-                    } else
+                    }
+                    else
                     {
                         if (Build.VERSION.SDK_INT >= 21)
                         {
                             mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
-                        } else
+                        }
+                        else
                         {
                             //noinspection deprecation
                             mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
@@ -206,9 +211,14 @@ public class UserTileFragment extends Fragment
 
     private void setIsModOwner(boolean isMod, boolean isOwner)
     {
-        if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
+        if (isMod)
+        {
+            mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }
         else if (isOwner)
+        {
             mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
+        }
     }
 
     /**
@@ -256,7 +266,8 @@ public class UserTileFragment extends Fragment
                     int sec = calendar.get(Calendar.SECOND);
 
                     time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
-                } else
+                }
+                else
                 {
                     time = "N/A";
                     d = "";
@@ -285,7 +296,8 @@ public class UserTileFragment extends Fragment
                     user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
                     user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
                     user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -299,8 +311,13 @@ public class UserTileFragment extends Fragment
             {
                 String addr;
                 if (mChatUrl.contains("stackexchange"))
+                {
                     addr = "https://chat.stackexchange.com/users/";
-                else addr = "https://chat.stackoverflow.com/users/";
+                }
+                else
+                {
+                    addr = "https://chat.stackoverflow.com/users/";
+                }
 
                 addr = addr.concat(String.valueOf(id));
 
@@ -320,7 +337,8 @@ public class UserTileFragment extends Fragment
         {
             mGetIcon.interrupt();
 //            mGetIconForInfo.interrupt();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
