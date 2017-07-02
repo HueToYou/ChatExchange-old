@@ -272,7 +272,7 @@ public class MainActivity extends SlidingActivity
                         fam.showMenuButton(true);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
-                MainActivityUtils.showChatSliderTutorial(MainActivity.this, mChatroomSlidingMenu);
+                MainActivityUtils.showChatSliderTutorial(MainActivity.this);
             }
         });
 

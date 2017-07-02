@@ -154,9 +154,8 @@ public class MainActivityUtils
         }
     }
 
-    static void showChatSliderTutorial(final Activity activity, SlidingMenu mChatroomSlidingMenu)
+    static void showChatSliderTutorial(final Activity activity)
     {
-        activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
@@ -164,7 +163,6 @@ public class MainActivityUtils
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
         final ListView dummyChats = activity.findViewById(R.id.dummy_chat_list);
-        dummyChats.setVisibility(View.VISIBLE);
 
         String[] names = new String[] {"Example 1", "Example 2", "Example 3"};
         String[] urls = new String[] {"U", "U", "U"};
@@ -179,6 +177,16 @@ public class MainActivityUtils
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
         sequence.setConfig(config);
+
+        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener()
+        {
+            @Override
+            public void onShow(MaterialShowcaseView materialShowcaseView, int i)
+            {
+                activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
+                dummyChats.setVisibility(View.VISIBLE);
+            }
+        });
 
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
         {
