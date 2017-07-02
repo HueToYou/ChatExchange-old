@@ -137,7 +137,7 @@ public class MainActivity extends SlidingActivity
 
     @SuppressLint("StaticFieldLeak")
     private static MainActivity mainActivity;
-    private AddList mAddList;
+    private MainActivityUtils.AddList mAddList;
 
     private final AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener()
     {
@@ -908,7 +908,7 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(final URL url, String data)
                 {
                     mSEChatUrls.put(Integer.decode(id), chatUrl);
-                    mAddList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener()
+                    mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
                         @Override
                         public void onStart()
@@ -979,7 +979,7 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(final URL url, String data)
                 {
                     mSOChatUrls.put(Integer.decode(id), chatUrl);
-                    AddList addList = AddList.newInstance(mSharedPrefs, data, id, chatUrl, new AddListListener()
+                    MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
                         @Override
                         public void onStart()
@@ -1113,121 +1113,8 @@ public class MainActivity extends SlidingActivity
      * (in the background to avoid ANRs)
      */
 
-    private static class AddList extends AsyncTask<String, Void, Void>
-    {
-        private final String mHtmlData;
-        private final String mChatId;
-        private final String mChatUrl;
-        private final AddListListener mAddListListener;
-        private final SharedPreferences mSharedPreferences;
-        private String mName;
-        private Drawable mIcon;
-        private Integer mColor;
 
-        static AddList newInstance(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener)
-        {
-            return new AddList(sharedPreferences, data, id, url, addListListener);
-        }
-
-        AddList(SharedPreferences sharedPreferences, String data, String id, String url, AddListListener addListListener)
-        {
-            mSharedPreferences = sharedPreferences;
-            mHtmlData = data;
-            mChatId = id;
-            mChatUrl = url;
-            mAddListListener = addListListener;
-        }
-
-        @Override
-        protected Void doInBackground(String... strings)
-        {
-            mAddListListener.onStart();
-            mName = getName(mHtmlData, mChatUrl);
-            mIcon = getIcon(mHtmlData, mChatUrl);
-            mColor = Utils.getColorInt(mainActivity, mChatUrl);
-
-            publishProgress();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            mAddListListener.onFinish();
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values)
-        {
-            mAddListListener.onProgress(mName, mIcon, mColor);
-            super.onProgressUpdate(values);
-        }
-
-        @Nullable
-        private String getName(String html, String url)
-        {
-            try
-            {
-                Elements spans = Jsoup.parse(html).select("span");
-
-                for (Element e : spans)
-                {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomname"))
-                    {
-                        mSharedPreferences.edit().putString(url + "Name", e.ownText()).apply();
-                        return e.ownText();
-                    }
-                }
-                String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
-                mSharedPreferences.edit().putString(url + "Name", ret).apply();
-                return ret;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Nullable
-        private Drawable getIcon(String html, String chatUrl)
-        {
-            try
-            {
-                Document document = Jsoup.parse(html);
-                Element head = document.head();
-                Element link = head.select("link").first();
-
-                String fav = link.attr("href");
-                if (!fav.contains("http"))
-                {
-                    fav = "https:".concat(fav);
-                }
-                URL url = new URL(fav);
-
-                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                String FILENAME = "FAVICON_" + chatUrl.replace("/", "");
-                FileOutputStream fos = mainActivity.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.close();
-
-                Resources r = mainActivity.getResources();
-                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-    private interface AddListListener
+    interface AddListListener
     {
         void onStart();
 
