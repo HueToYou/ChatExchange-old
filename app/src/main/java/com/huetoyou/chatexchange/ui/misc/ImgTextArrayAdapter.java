@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.huetoyou.chatexchange.R;
 
 public class ImgTextArrayAdapter extends ArrayAdapter<String>
@@ -23,7 +24,7 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
 
     public ImgTextArrayAdapter(Activity context, String[] chatroomNames, String[] chatroomUrls, Drawable[] icons, Integer[] chatroomColors)
     {
-        super(context, R.layout.chatroom_list_item,  chatroomNames);
+        super(context, R.layout.chatroom_list_item, chatroomNames);
         // TODO Auto-generated constructor stub
 
         this.context = context;
@@ -50,15 +51,18 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
         return view;
     }
 
-    public String[] getNames() {
+    public String[] getNames()
+    {
         return chatroomNames;
     }
 
-    public String[] getUrls() {
+    public String[] getUrls()
+    {
         return chatroomUrls;
     }
 
-    public Integer[] getColors() {
+    public Integer[] getColors()
+    {
         return chatroomColors;
     }
 }

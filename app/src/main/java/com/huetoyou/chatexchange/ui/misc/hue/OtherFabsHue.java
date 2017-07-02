@@ -25,7 +25,7 @@ public class OtherFabsHue
     public static void setAddChatFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -37,7 +37,7 @@ public class OtherFabsHue
     public static void setAddChatFabColorToSharedPrefsValue(AppCompatActivity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -51,7 +51,8 @@ public class OtherFabsHue
         }
     }
 
-    private static void setTints(ColorStateList colorStateList, Activity activity) {
+    private static void setTints(ColorStateList colorStateList, Activity activity)
+    {
         FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);
         com.github.clans.fab.FloatingActionButton home = activity.findViewById(R.id.home_fab);
         com.github.clans.fab.FloatingActionButton addChat = activity.findViewById(R.id.add_chat_fab);
@@ -69,20 +70,24 @@ public class OtherFabsHue
             chatListMenu.getMenuIconView().setImageDrawable(vectorDrawableCompat);
         }
 
-        if (home != null) {
+        if (home != null)
+        {
             setColorsOnFabs(home, colorStateList, activity, R.drawable.ic_home_white_24dp);
         }
 
-        if (addChat != null) {
+        if (addChat != null)
+        {
             setColorsOnFabs(addChat, colorStateList, activity, R.drawable.ic_add_black_24dp);
         }
 
-        if (removeChats != null) {
+        if (removeChats != null)
+        {
             setColorsOnFabs(removeChats, colorStateList, activity, R.drawable.ic_clear_all_black_24dp);
         }
     }
 
-    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
+    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable)
+    {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         @ColorInt int colorNormal;
@@ -90,12 +95,14 @@ public class OtherFabsHue
         @ColorInt int textColor;
 //        TypedArray a;
 
-        if (desiredThemeIsDark) {
+        if (desiredThemeIsDark)
+        {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = HueUtils.darkenColor(activity.getResources().getColor(R.color.white), .9f);
             colorNormal = HueUtils.darkenColor(activity.getResources().getColor(android.R.color.darker_gray), .6f);
             colorPressed = colorNormal;
-        } else {
+        } else
+        {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getResources().getColor(android.R.color.primary_text_dark);
             colorNormal = 0xFF333333;

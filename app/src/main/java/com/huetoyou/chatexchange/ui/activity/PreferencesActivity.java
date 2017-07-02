@@ -63,7 +63,8 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) {
+        switch (item.getItemId())
+        {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -90,7 +91,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity) getActivity()));
                     return true;
                 }
             });
@@ -110,7 +111,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity)getActivity()));
+                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity) getActivity()));
                     return true;
                 }
             });
@@ -199,7 +200,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 
         private void setAccount(final ListPreference listPrefernece)
         {
-            ArrayList<CharSequence> accnames = ((PreferencesActivity)getActivity()).mAccountNames;
+            ArrayList<CharSequence> accnames = ((PreferencesActivity) getActivity()).mAccountNames;
 
             CharSequence[] names = new CharSequence[accnames.size()];
             names = accnames.toArray(names);
@@ -235,11 +236,10 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 
                     mSharedPrefs.edit().putBoolean("darkTheme", pref).apply();
 
-                    if(pref != darkThemePrevState)
+                    if (pref != darkThemePrevState)
                     {
                         mSharedPrefs.edit().putBoolean("FLAG_restartMain", true).apply();
-                    }
-                    else
+                    } else
                     {
                         mSharedPrefs.edit().putBoolean("FLAG_restartMain", false).apply();
                     }
@@ -261,7 +261,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
         startActivity(i);
         super.onBackPressed();
     }*/
-
 
 
     @Override

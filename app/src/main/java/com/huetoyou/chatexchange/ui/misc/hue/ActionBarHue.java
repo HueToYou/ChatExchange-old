@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.AppCompatPreferenceActivity;
 
@@ -21,7 +22,7 @@ public class ActionBarHue
 
     public static void setActionBarColor(AppCompatActivity activity, int mAppBarColor)
     {
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -52,7 +53,7 @@ public class ActionBarHue
 
     public static void setActionBarColorToSharedPrefsValue(AppCompatActivity activity)
     {
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -85,7 +86,7 @@ public class ActionBarHue
 
     public static void setActionBarColorToSharedPrefsValue(AppCompatPreferenceActivity activity)
     {
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }

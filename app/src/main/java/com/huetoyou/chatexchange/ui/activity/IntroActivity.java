@@ -27,7 +27,7 @@ public class IntroActivity extends AppIntro
         // Note here that we DO NOT use setContentView();
 
         // AppIntro will automatically generate the dots indicator and buttons.
-        addSlide(AppIntroFragment.newInstance("Welcome!","Welcome to Chat Exchange! Thanks for downloading our app :)", R.drawable.ic_smile, getResources().getColor(R.color.colorPrimaryDark)));
+        addSlide(AppIntroFragment.newInstance("Welcome!", "Welcome to Chat Exchange! Thanks for downloading our app :)", R.drawable.ic_smile, getResources().getColor(R.color.colorPrimaryDark)));
         addSlide(AppIntroFragment.newInstance("Chat Network", "Chat Exchange is an Android client for the Stack Exchange chat network. You will need a Stack Exchange account in order to use this app.", R.drawable.ic_network, getResources().getColor(R.color.colorPrimaryDark)));
         addSlide(AppIntroFragment.newInstance("Notifications", "Chat Exchange makes participating in SE chatrooms easier by sending you push notifications when your username is mentioned", R.drawable.ic_message_notification, getResources().getColor(R.color.colorPrimaryDark)));
         addSlide(AppIntroFragment.newInstance("Credits", "This application was developed by:\n\n10,000 monkeys on the Java islands", R.drawable.ic_people, getResources().getColor(R.color.colorPrimaryDark)));

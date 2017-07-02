@@ -45,7 +45,8 @@ import android.text.Html;
  * Created by Zacha on 5/31/2017.
  */
 
-public class UserTileFragment extends Fragment {
+public class UserTileFragment extends Fragment
+{
     private View mView;
     private SharedPreferences mSharedPreferences;
     private TextView mUserInfo;
@@ -61,7 +62,8 @@ public class UserTileFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
+    {
         mView = inflater.inflate(R.layout.user_tile, container, false);
         mSharedPreferences = getActivity().getSharedPreferences(getResources().getText(R.string.app_name).toString(), Context.MODE_PRIVATE);
 
@@ -92,54 +94,66 @@ public class UserTileFragment extends Fragment {
 
     /**
      * Set the username
+     *
      * @param text username
      */
 
-    private void setUserName(String text) {
+    private void setUserName(String text)
+    {
         mUserInfo.setText(text);
         mUserInfo.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
     /**
      * Set avatar
+     *
      * @param url URL of avatar (must be image URL)
      */
 
-    private void setAvatar(String url) {
+    private void setAvatar(String url)
+    {
         mGetIcon = new GetIcon(url, 50, false);
         mGetIcon.start();
     }
 
-    private class GetIcon extends Thread {
+    private class GetIcon extends Thread
+    {
         private final String mUrl;
         private final int mSize;
         private final boolean mIsForInfoDialog;
 
-        GetIcon(String url, int size, boolean forInfo) {
+        GetIcon(String url, int size, boolean forInfo)
+        {
             mUrl = url;
             mSize = size;
             mIsForInfoDialog = forInfo;
         }
 
         @Override
-        public void run() {
+        public void run()
+        {
             Drawable drawable;
 
-            try {
+            try
+            {
                 String bmpKey = "AVATAR_" + mUrl.replace("/", "");
 
-                try {
+                try
+                {
                     FileInputStream fis = getActivity().openFileInput(bmpKey);
                     mIconBitmap = BitmapFactory.decodeStream(fis);
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     InputStream is = (InputStream) new URL(mUrl).getContent();
                     mIconBitmap = BitmapFactory.decodeStream(is);
 
-                    try {
+                    try
+                    {
                         FileOutputStream fos = getActivity().openFileOutput(bmpKey, Context.MODE_PRIVATE);
                         mIconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                         fos.close();
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         ex.printStackTrace();
                     }
                 }
@@ -150,22 +164,29 @@ public class UserTileFragment extends Fragment {
                 int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
 
                 drawable = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
                 drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_help_outline_black_24dp, null);
             }
 
             final Drawable drawable1 = drawable;
-            getActivity().runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable()
+            {
                 @Override
-                public void run() {
-                    if (mIsForInfoDialog) {
+                public void run()
+                {
+                    if (mIsForInfoDialog)
+                    {
                         user_image_info.setImageDrawable(drawable1);
                         mUserInfoView.findViewById(R.id.info_loading).setVisibility(View.GONE);
-                    } else {
-                        if (Build.VERSION.SDK_INT >= 21) {
+                    } else
+                    {
+                        if (Build.VERSION.SDK_INT >= 21)
+                        {
                             mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
-                        } else {
+                        } else
+                        {
                             //noinspection deprecation
                             mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, drawable1, null, null);
                         }
@@ -178,36 +199,45 @@ public class UserTileFragment extends Fragment {
 
     /**
      * Set appropriate text decoration for moderator/owner
-     * @param isMod If user is a mod
+     *
+     * @param isMod   If user is a mod
      * @param isOwner If user is a room owner
      */
 
-    private void setIsModOwner(boolean isMod, boolean isOwner) {
+    private void setIsModOwner(boolean isMod, boolean isOwner)
+    {
         if (isMod) mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
-        else if (isOwner) mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
+        else if (isOwner)
+            mUserInfo.setTypeface(Typeface.DEFAULT_BOLD, Typeface.ITALIC | Typeface.BOLD);
     }
 
     /**
      * Get the user's avatar in Bitmap form
+     *
      * @return a Bitmap of the user's avatar
      */
 
-    public Bitmap getmIconBitmap() {
+    public Bitmap getmIconBitmap()
+    {
         return mIconBitmap;
     }
 
     /**
      * Create a dialog showing various user info
-     * @param id User's ID
+     *
+     * @param id       User's ID
      * @param lastPost User's last post time in UNIX format
-     * @param rep User's reputation
+     * @param rep      User's reputation
      */
 
-    private void displayInfoOnTap(final int id, final int lastPost, final int rep) {
-        mUserInfo.setOnClickListener(new View.OnClickListener() {
+    private void displayInfoOnTap(final int id, final int lastPost, final int rep)
+    {
+        mUserInfo.setOnClickListener(new View.OnClickListener()
+        {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String time;
                 String d;
                 if (lastPost > 0)
@@ -226,7 +256,8 @@ public class UserTileFragment extends Fragment {
                     int sec = calendar.get(Calendar.SECOND);
 
                     time = String.format(Locale.US, "%02d:%02d:%02d", hr24, min, sec);
-                } else {
+                } else
+                {
                     time = "N/A";
                     d = "";
                 }
@@ -247,23 +278,28 @@ public class UserTileFragment extends Fragment {
                 TextView user_last_post = mUserInfoView.findViewById(R.id.user_last_post);
                 TextView user_rep = mUserInfoView.findViewById(R.id.user_rep);
 
-                try {
+                try
+                {
                     mGetIcon = new GetIcon(mArgs.getString("userAvatarUrl", ""), 140, true);
                     mGetIcon.start();
                     user_id.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_id) + " </b>"), String.valueOf(id)));
                     user_last_post.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_last_talked) + " </b>"), d + " " + time));
                     user_rep.setText(TextUtils.concat(Html.fromHtml("<b>" + getResources().getText(R.string.user_rep) + " </b>"), String.valueOf(rep)));
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
         });
 
-        mUserInfo.setOnLongClickListener(new View.OnLongClickListener() {
+        mUserInfo.setOnLongClickListener(new View.OnLongClickListener()
+        {
             @Override
-            public boolean onLongClick(View v) {
+            public boolean onLongClick(View v)
+            {
                 String addr;
-                if (mChatUrl.contains("stackexchange")) addr = "https://chat.stackexchange.com/users/";
+                if (mChatUrl.contains("stackexchange"))
+                    addr = "https://chat.stackexchange.com/users/";
                 else addr = "https://chat.stackoverflow.com/users/";
 
                 addr = addr.concat(String.valueOf(id));
@@ -278,11 +314,14 @@ public class UserTileFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        try {
+    public void onDestroy()
+    {
+        try
+        {
             mGetIcon.interrupt();
 //            mGetIconForInfo.interrupt();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
         super.onDestroy();

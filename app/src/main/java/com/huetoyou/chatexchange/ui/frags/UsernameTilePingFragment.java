@@ -30,7 +30,8 @@ public class UsernameTilePingFragment extends Fragment
 //        mSetTabCompleteName = setTabCompleteName;
 //    }
 
-    public static UsernameTilePingFragment newInstance(UserTileFragment fragment, ChatFragment.SetTabCompleteName setTabCompleteName) {
+    public static UsernameTilePingFragment newInstance(UserTileFragment fragment, ChatFragment.SetTabCompleteName setTabCompleteName)
+    {
         UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();
         pingFragment.mUserTileFragment = fragment;
         pingFragment.mSetTabCompleteName = setTabCompleteName;
@@ -52,16 +53,19 @@ public class UsernameTilePingFragment extends Fragment
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, r.getDisplayMetrics());
 
         Bitmap bmp = mUserTileFragment.getmIconBitmap();
-        if (bmp != null) userAvatar.setImageDrawable(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true)));
+        if (bmp != null)
+            userAvatar.setImageDrawable(new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true)));
 
-        if(usernameTextView != null)
+        if (usernameTextView != null)
         {
             usernameTextView.setText(mUsername);
         }
 
-        mView.setOnClickListener(new View.OnClickListener() {
+        mView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mSetTabCompleteName.setName(UsernameTilePingFragment.this);
             }
         });
@@ -69,7 +73,8 @@ public class UsernameTilePingFragment extends Fragment
         return mView;
     }
 
-    public String getmUsername() {
+    public String getmUsername()
+    {
         return mUsername;
     }
 

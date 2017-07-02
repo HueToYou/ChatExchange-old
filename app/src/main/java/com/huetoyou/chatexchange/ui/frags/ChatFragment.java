@@ -64,7 +64,8 @@ public class ChatFragment extends Fragment
     private View view;
     private boolean oncreateHasBeenCalled = false;
 
-    private @ColorInt int mAppBarColor;
+    private @ColorInt
+    int mAppBarColor;
     private SlidingMenu mSlidingMenu;
 
     private EditText messageToSend;
@@ -96,7 +97,8 @@ public class ChatFragment extends Fragment
     private String mChatDomain;
     private Integer mChatId;
 
-    public ChatFragment() {
+    public ChatFragment()
+    {
         // Required empty public constructor
     }
 
@@ -116,7 +118,7 @@ public class ChatFragment extends Fragment
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
-                if(hasFocus)
+                if (hasFocus)
                 {
                     /*Toast.makeText(getActivity(), "Got focus",
                     Toast.LENGTH_LONG).show();*/
@@ -127,7 +129,7 @@ public class ChatFragment extends Fragment
 
         mFragmentManager = getFragmentManager();
 
-        mSlidingMenu = ((MainActivity)getActivity()).getCurrentUsers_SlidingMenu();
+        mSlidingMenu = ((MainActivity) getActivity()).getCurrentUsers_SlidingMenu();
 
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");
@@ -138,33 +140,43 @@ public class ChatFragment extends Fragment
 
         addChatButtons(mChatUrl);
 
-        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
+        {
             @Override
-            public void onSucceeded(URL url, String data) {
-                GetDesc getDesc = GetDesc.newInstance(new DescGotten() {
+            public void onSucceeded(URL url, String data)
+            {
+                GetDesc getDesc = GetDesc.newInstance(new DescGotten()
+                {
                     @Override
-                    public void onSuccess(String desc) {
+                    public void onSuccess(String desc)
+                    {
                         mChatDesc = Html.fromHtml("<b>Desc: </b>" + desc);
                     }
 
                     @Override
-                    public void onFail(String message) {
+                    public void onFail(String message)
+                    {
 
                     }
                 });
 
                 getDesc.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
 
-                GetTags getTags = GetTags.newInstance(new TagsGotten() {
+                GetTags getTags = GetTags.newInstance(new TagsGotten()
+                {
                     @Override
-                    public void onSuccess(ArrayList<String> tabList) {
+                    public void onSuccess(ArrayList<String> tabList)
+                    {
                         mChatTags = tabList;
 
-                        new Thread(new Runnable() {
+                        new Thread(new Runnable()
+                        {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
                                 String tags = "";
-                                if (mChatTags != null) {
+                                if (mChatTags != null)
+                                {
                                     tags = mChatTags.toString();
                                     tags = tags.replace("[", "").replace("]", "");
                                 }
@@ -175,16 +187,20 @@ public class ChatFragment extends Fragment
                     }
 
                     @Override
-                    public void onFail(String message) {
+                    public void onFail(String message)
+                    {
 
                     }
                 });
                 getTags.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
 
-                ParseUsers parseUsers = ParseUsers.newInstance(new UserParsed() {
+                ParseUsers parseUsers = ParseUsers.newInstance(new UserParsed()
+                {
                     @Override
-                    public void onSuccess(String usersJson) {
-                        try {
+                    public void onSuccess(String usersJson)
+                    {
+                        try
+                        {
 //                            Log.e("TTTT", usersJson.substring(2058));
                             JSONObject object = new JSONObject(usersJson);
                             JSONArray jArray = object.getJSONArray("users");
@@ -203,17 +219,21 @@ public class ChatFragment extends Fragment
                                 String name = jsonObject.getString("name");
                                 String icon = jsonObject.getString("email_hash");
 
-                                if (!(icon.contains("http://") || icon.contains("https://"))) icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+                                if (!(icon.contains("http://") || icon.contains("https://")))
+                                    icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
 
-                                if (mFragmentManager.findFragmentByTag("user_" + id) == null) addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                                if (mFragmentManager.findFragmentByTag("user_" + id) == null)
+                                    addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
                             }
-                        } catch (Exception e) {
+                        } catch (Exception e)
+                        {
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onFail(String message) {
+                    public void onFail(String message)
+                    {
 
                     }
                 });
@@ -221,7 +241,8 @@ public class ChatFragment extends Fragment
             }
 
             @Override
-            public void onFailed(String message) {
+            public void onFailed(String message)
+            {
 
             }
         });
@@ -233,28 +254,36 @@ public class ChatFragment extends Fragment
 
         mChatDomain = mSharedPreferences.getString(CHAT_HOST_DOMAIN.concat(mChatUrl), null);
 
-        if (mChatDomain == null || mChatDomain.isEmpty()) {
+        if (mChatDomain == null || mChatDomain.isEmpty())
+        {
             if (mChatUrl.contains("overflow")) mChatDomain = "stackoverflow.com";
-            else {
-                mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+            else
+            {
+                mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
+                {
                     @Override
-                    public void onSucceeded(URL url, String data) {
-                        GetHostDomainFromHtml.newInstance(new DomainFoundListener() {
+                    public void onSucceeded(URL url, String data)
+                    {
+                        GetHostDomainFromHtml.newInstance(new DomainFoundListener()
+                        {
                             @Override
-                            public void onSuccess(String text) {
+                            public void onSuccess(String text)
+                            {
                                 mSharedPreferences.edit().putString(CHAT_HOST_DOMAIN.concat(mChatUrl), text).apply();
                                 mChatDomain = text;
                             }
 
                             @Override
-                            public void onFail(String text) {
+                            public void onFail(String text)
+                            {
                                 mChatDomain = text;
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
                     }
 
                     @Override
-                    public void onFailed(String message) {
+                    public void onFailed(String message)
+                    {
                         Log.e("WHOOPS", message);
                         mChatDomain = "Not Found";
                     }
@@ -263,13 +292,14 @@ public class ChatFragment extends Fragment
         }
 
         oncreateHasBeenCalled = true;
-        
+
         setUpSequence();
 
         return view;
     }
 
-    private void setUpSequence() {
+    private void setUpSequence()
+    {
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
@@ -291,7 +321,8 @@ public class ChatFragment extends Fragment
             {
                 Log.e("Pos", itemIndex + "");
 
-                switch (itemIndex) {
+                switch (itemIndex)
+                {
                     case 1:
                         fam.open(true);
                         break;
@@ -331,31 +362,39 @@ public class ChatFragment extends Fragment
      * Handle loading messages
      */
 
-    private void setupMessages() {
-        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener() {
+    private void setupMessages()
+    {
+        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
+        {
             @Override
-            public void onSucceeded(final URL url, final String data) {
+            public void onSucceeded(final URL url, final String data)
+            {
                 processMessageViews(url, data);
 
             }
 
             @Override
-            public void onFailed(String message) {
+            public void onFailed(String message)
+            {
 
             }
         });
     }
 
-    private void processMessageViews(URL url, String html) {
+    private void processMessageViews(URL url, String html)
+    {
         Document document = Jsoup.parse(html);
         Elements elements = document.select("user-container");
 
-        for (Element e : elements) {
+        for (Element e : elements)
+        {
             Elements link = e.select("a");
             Element signature = new Element("");
 
-            for (Element e1: link) {
-                if (e1.hasAttr("class") && e1.attr("class").equals("signature")) {
+            for (Element e1 : link)
+            {
+                if (e1.hasAttr("class") && e1.attr("class").equals("signature"))
+                {
                     signature = e1;
                     break;
                 }
@@ -370,13 +409,12 @@ public class ChatFragment extends Fragment
 
     private void hueAllTheThings()
     {
-        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false)) {
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+        {
             ActionBarHue.setActionBarColor((AppCompatActivity) getActivity(), mAppBarColor);
             ChatFragFabsHue.setChatFragmentFabColor((AppCompatActivity) getActivity(), mAppBarColor);
             OtherFabsHue.setAddChatFabColor((AppCompatActivity) getActivity(), mAppBarColor);
-        }
-
-        else
+        } else
         {
             ActionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
             ChatFragFabsHue.setChatFragmentFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
@@ -397,7 +435,8 @@ public class ChatFragment extends Fragment
             {
                 //noinspection StatementWithEmptyBody
 
-                while (true) {
+                while (true)
+                {
                     if (!oncreateHasBeenCalled) continue;
                     break;
                 }
@@ -419,31 +458,40 @@ public class ChatFragment extends Fragment
      * Handle ping suggestions
      */
 
-    private void setupMessagePingList() {
+    private void setupMessagePingList()
+    {
         mMessage = view.findViewById(R.id.messageToSend);
 
-        mMessage.addTextChangedListener(new TextWatcher() {
+        mMessage.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
 
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
                 ArrayList<UsernameTilePingFragment> fragments = new ArrayList<>();
 
-                if (s.toString().contains("@")) {
+                if (s.toString().contains("@"))
+                {
 
-                    for (UserTileFragment tile : mUserTiles) {
+                    for (UserTileFragment tile : mUserTiles)
+                    {
                         Bundle args = tile.getArguments();
-                        UsernameTilePingFragment pingFragment = UsernameTilePingFragment.newInstance(tile, new SetTabCompleteName() {
+                        UsernameTilePingFragment pingFragment = UsernameTilePingFragment.newInstance(tile, new SetTabCompleteName()
+                        {
                             @Override
-                            public void setName(UsernameTilePingFragment usernameTilePingFragment) {
+                            public void setName(UsernameTilePingFragment usernameTilePingFragment)
+                            {
                                 setTabCompleteName(usernameTilePingFragment);
                             }
                         });
@@ -454,33 +502,40 @@ public class ChatFragment extends Fragment
                         Pattern p = Pattern.compile("\\B@(.+?)\\b");
                         Matcher m = p.matcher(currentName);
 
-                        try {
-                            while (!m.hitEnd()) {
-                                if (m.find()) {
+                        try
+                        {
+                            while (!m.hitEnd())
+                            {
+                                if (m.find())
+                                {
                                     currentName = m.group().replace("@", "");
 //                                    Log.e("NAME", currentName);
                                 }
                             }
-                        } catch (IllegalStateException e) {
+                        } catch (IllegalStateException e)
+                        {
 //                            e.printStackTrace()
                         }
 
                         assert name != null;
-                        if (name.replace(" ", "").toLowerCase().startsWith(currentName.toLowerCase())) {
+                        if (name.replace(" ", "").toLowerCase().startsWith(currentName.toLowerCase()))
+                        {
                             fragments.add(pingFragment);
                         }
                     }
                 }
                 mFragmentManager.beginTransaction().replace(R.id.pingSuggestions, new Fragment()).commit();
 
-                for (UsernameTilePingFragment f : fragments) {
+                for (UsernameTilePingFragment f : fragments)
+                {
                     mFragmentManager.beginTransaction().add(R.id.pingSuggestions, f, "pingFrag").commit();
                 }
             }
         });
     }
 
-    private void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment) {
+    private void setTabCompleteName(UsernameTilePingFragment usernameTilePingFragment)
+    {
 //        Toast.makeText(getActivity(), usernameTilePingFragment.getmUsername(), Toast.LENGTH_SHORT).show();
         String name = usernameTilePingFragment.getmUsername();
         name = name.replace(" ", "");
@@ -489,8 +544,10 @@ public class ChatFragment extends Fragment
         Pattern p = Pattern.compile("\\B@(.+?)\\b");
         Matcher m = p.matcher(currentText);
 
-        while (!m.hitEnd()) {
-            if (m.find() && name.toLowerCase().contains(m.group().replace("@", "").toLowerCase())) {
+        while (!m.hitEnd())
+        {
+            if (m.find() && name.toLowerCase().contains(m.group().replace("@", "").toLowerCase()))
+            {
                 String before = currentText.substring(0, currentText.toLowerCase().lastIndexOf(m.group().toLowerCase()));
                 String after = currentText.substring(currentText.toLowerCase().lastIndexOf(m.group().toLowerCase()) + m.group().length());
                 String middle = "@" + name;
@@ -501,7 +558,8 @@ public class ChatFragment extends Fragment
         }
     }
 
-    public interface SetTabCompleteName {
+    public interface SetTabCompleteName
+    {
         void setName(UsernameTilePingFragment usernameTilePingFragment);
     }
 
@@ -509,26 +567,32 @@ public class ChatFragment extends Fragment
      * Parse userdata from URL
      */
 
-    private static class ParseUsers extends AsyncTask<String, Void, String> {
+    private static class ParseUsers extends AsyncTask<String, Void, String>
+    {
         private final UserParsed mUserParsed;
 
-        static ParseUsers newInstance(UserParsed userParsed) {
+        static ParseUsers newInstance(UserParsed userParsed)
+        {
             return new ParseUsers(userParsed);
         }
 
-        ParseUsers(UserParsed userParsed) {
+        ParseUsers(UserParsed userParsed)
+        {
             mUserParsed = userParsed;
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(String... params)
+        {
             Document html = new Document("");
 
             String users;
 
-            try {
+            try
+            {
                 html = Jsoup.parse(params[0]);
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
             }
 
@@ -541,11 +605,15 @@ public class ChatFragment extends Fragment
             Pattern p = Pattern.compile("\\{id:(.*?)\\}");
             Matcher m = p.matcher(users);
 
-            while (!m.hitEnd()) {
-                if (m.find()) {
-                    try {
+            while (!m.hitEnd())
+            {
+                if (m.find())
+                {
+                    try
+                    {
                         users2 = users2.concat(m.group());
-                    } catch (Exception e) {
+                    } catch (Exception e)
+                    {
                         e.printStackTrace();
                     }
                 }
@@ -574,30 +642,35 @@ public class ChatFragment extends Fragment
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String s)
+        {
             mUserParsed.onSuccess(s);
             super.onPostExecute(s);
         }
     }
 
-    private interface UserParsed {
+    private interface UserParsed
+    {
         void onSuccess(String usersJson);
+
         void onFail(String message);
     }
 
     /**
      * Add user to user {@link SlidingMenu}
-     * @param name Name of user
-     * @param imgUrl URL for user's avatar
-     * @param id Chat ID of user
+     *
+     * @param name     Name of user
+     * @param imgUrl   URL for user's avatar
+     * @param id       Chat ID of user
      * @param lastPost Last Post time in UNIX time
-     * @param rep User's total on-site reputation
-     * @param isMod Is user a mod?
-     * @param isOwner Is user a room owner? (Always true if isMod is true)
-     * @param chatUrl URL of current chat
+     * @param rep      User's total on-site reputation
+     * @param isMod    Is user a mod?
+     * @param isOwner  Is user a room owner? (Always true if isMod is true)
+     * @param chatUrl  URL of current chat
      */
 
-    private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl) {
+    private void addUser(final String name, final String imgUrl, final int id, final int lastPost, final int rep, final boolean isMod, final boolean isOwner, final String chatUrl)
+    {
         Bundle args = new Bundle();
         args.putString(USER_NAME_KEY, name);
         args.putString(USER_AVATAR_URL_KEY, imgUrl);
@@ -620,9 +693,11 @@ public class ChatFragment extends Fragment
 
     /**
      * Instantiate and handle taps of chat buttons
+     *
      * @param url Chat URL
      */
-    private void addChatButtons(final String url) {
+    private void addChatButtons(final String url)
+    {
 
 //        FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
         com.github.clans.fab.FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
@@ -637,9 +712,11 @@ public class ChatFragment extends Fragment
 //            }
 //        });
 
-        roomInfo.setOnClickListener(new View.OnClickListener() {
+        roomInfo.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 AlertDialog d = new AlertDialog.Builder(getActivity())
                         .setTitle("Info")
                         .setView(R.layout.room_desc)
@@ -669,9 +746,11 @@ public class ChatFragment extends Fragment
             }
         });
 
-        stars.setOnClickListener(new View.OnClickListener() {
+        stars.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 View web = View.inflate(getActivity(), R.layout.fragment_star_webview, null);
 
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
@@ -694,19 +773,23 @@ public class ChatFragment extends Fragment
                 webView.getSettings().setLoadWithOverviewMode(true);
                 webView.getSettings().setUseWideViewPort(true);
                 webView.getSettings().setBuiltInZoomControls(true);
-                webView.setWebViewClient(new WebViewClient(){
+                webView.setWebViewClient(new WebViewClient()
+                {
 
                     @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url){
+                    public boolean shouldOverrideUrlLoading(WebView view, String url)
+                    {
                         view.loadUrl(url);
                         return true;
                     }
                 });
 
                 assert openInWV != null;
-                openInWV.setOnClickListener(new View.OnClickListener() {
+                openInWV.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         Intent intent = new Intent(getActivity(), WebViewActivity.class);
                         intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
                         intent.setAction(Intent.ACTION_VIEW);
@@ -715,17 +798,21 @@ public class ChatFragment extends Fragment
                 });
 
                 assert back != null;
-                back.setOnClickListener(new View.OnClickListener() {
+                back.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         if (webView.canGoBack()) webView.goBack();
                     }
                 });
 
                 assert forward != null;
-                forward.setOnClickListener(new View.OnClickListener() {
+                forward.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         if (webView.canGoForward()) webView.goForward();
                     }
                 });
@@ -740,9 +827,11 @@ public class ChatFragment extends Fragment
 //            }
 //        });
 
-        users.setOnClickListener(new View.OnClickListener() {
+        users.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mSlidingMenu.toggle();
             }
         });
@@ -767,42 +856,52 @@ public class ChatFragment extends Fragment
      * Parse Description of chat
      */
 
-    private static class GetDesc extends AsyncTask<String, Void, String> {
+    private static class GetDesc extends AsyncTask<String, Void, String>
+    {
         private final DescGotten mDescGotten;
 
-        static GetDesc newInstance(DescGotten descGotten) {
+        static GetDesc newInstance(DescGotten descGotten)
+        {
             return new GetDesc(descGotten);
         }
 
-        GetDesc(DescGotten descGotten) {
+        GetDesc(DescGotten descGotten)
+        {
             mDescGotten = descGotten;
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            try {
+        protected String doInBackground(String... params)
+        {
+            try
+            {
                 Elements divs = Jsoup.parse(params[0]).select("div");
 
-                for (Element e : divs) {
+                for (Element e : divs)
+                {
                     if (e.hasAttr("id") && e.attr("id").equals("roomdesc")) return e.html();
                 }
 
                 mDescGotten.onFail("NULL");
                 return null;
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String s)
+        {
             mDescGotten.onSuccess(s);
         }
     }
 
-    private interface DescGotten {
+    private interface DescGotten
+    {
         void onSuccess(String desc);
+
         void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
 
@@ -810,90 +909,114 @@ public class ChatFragment extends Fragment
      * Parse Tags of chat
      */
 
-    private static class GetTags extends AsyncTask<String, Void, ArrayList<String>> {
+    private static class GetTags extends AsyncTask<String, Void, ArrayList<String>>
+    {
         private final TagsGotten mTagsGotten;
 
-        public static GetTags newInstance(TagsGotten tagsGotten) {
+        public static GetTags newInstance(TagsGotten tagsGotten)
+        {
             return new GetTags(tagsGotten);
         }
 
-        GetTags(TagsGotten tagsGotten) {
+        GetTags(TagsGotten tagsGotten)
+        {
             mTagsGotten = tagsGotten;
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... params) {
-            try {
+        protected ArrayList<String> doInBackground(String... params)
+        {
+            try
+            {
                 Elements divs = Jsoup.parse(params[0]).select("div").select("a");
                 ArrayList<String> tagList = new ArrayList<>();
 
-                for (Element e : divs) {
-                    if (e.hasAttr("class") && e.attr("class").equals("tag")) {
+                for (Element e : divs)
+                {
+                    if (e.hasAttr("class") && e.attr("class").equals("tag"))
+                    {
                         tagList.add(e.html());
                     }
                 }
 
                 return tagList;
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 mTagsGotten.onFail("NULL");
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> strings) {
+        protected void onPostExecute(ArrayList<String> strings)
+        {
             mTagsGotten.onSuccess(strings);
         }
     }
 
-    private interface TagsGotten {
+    private interface TagsGotten
+    {
         void onSuccess(ArrayList<String> tabList);
+
         void onFail(@SuppressWarnings("SameParameterValue") String message);
     }
 
     /**
      * Access the fragment's {@link SlidingMenu} from elsewhere
+     *
      * @return returns {@link ChatFragment#mSlidingMenu}
      */
 
-    public SlidingMenu getmSlidingMenu() {
+    public SlidingMenu getmSlidingMenu()
+    {
         return mSlidingMenu;
     }
 
     /**
      * Access all users' info from elsewhere
+     *
      * @return returns the user info Bundles
      */
 
-    public ArrayList<Bundle> getmUserInfo() {
+    public ArrayList<Bundle> getmUserInfo()
+    {
         return mUserInfo;
     }
 
     /**
      * Get the current chat color from elsewhere
+     *
      * @return returns the color int of the chat accent
      */
 
-    public int getmAppBarColor() { return mAppBarColor; }
+    public int getmAppBarColor()
+    {
+        return mAppBarColor;
+    }
 
     /*
      * Parse the chat's host domain
      */
 
-    private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String> {
+    private static class GetHostDomainFromHtml extends AsyncTask<String, Void, String>
+    {
         final DomainFoundListener mDomainFoundListener;
 
-        static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener) {
+        static GetHostDomainFromHtml newInstance(DomainFoundListener domainFoundListener)
+        {
             return new GetHostDomainFromHtml(domainFoundListener);
         }
 
-        GetHostDomainFromHtml(DomainFoundListener domainFoundListener) {
+        GetHostDomainFromHtml(DomainFoundListener domainFoundListener)
+        {
             mDomainFoundListener = domainFoundListener;
         }
 
         @Override
-        protected String doInBackground(String... strings) {
-            try {
+        protected String doInBackground(String... strings)
+        {
+            try
+            {
                 Log.e("STARTED", "DOOOO");
                 Document document = Jsoup.parse(strings[0]);
                 Log.e("DOC", document.html());
@@ -903,15 +1026,18 @@ public class ChatFragment extends Fragment
                 Pattern p = Pattern.compile("host:(.*?),");
                 Matcher m = p.matcher(scripts.html());
 
-                while (!m.hitEnd()) {
+                while (!m.hitEnd())
+                {
                     Log.e("INWHILE", "III");
-                    if (m.find()){
+                    if (m.find())
+                    {
                         Log.e("HOST", m.group());
                         return m.group().replace(",", "").replace("host: ", "").replace("'", "");
                     }
                 }
                 throw new Exception("Not Found");
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
                 Log.e("NOTFOUND", e.getMessage());
                 mDomainFoundListener.onFail(e.getMessage());
@@ -920,22 +1046,27 @@ public class ChatFragment extends Fragment
         }
 
         @Override
-        protected void onPostExecute(String domain) {
+        protected void onPostExecute(String domain)
+        {
             mDomainFoundListener.onSuccess(domain);
         }
     }
 
-    private interface DomainFoundListener {
+    private interface DomainFoundListener
+    {
         void onSuccess(String text);
+
         void onFail(String text);
     }
 
     /**
      * Access the current chat's ID from elsewhere
+     *
      * @return the chat ID as Integer
      */
 
-    public Integer getChatId() {
+    public Integer getChatId()
+    {
         return mChatId;
     }
 

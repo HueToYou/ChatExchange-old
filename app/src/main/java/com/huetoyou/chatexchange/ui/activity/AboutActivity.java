@@ -8,7 +8,8 @@ import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity
+{
 
     private SlidingMenu mSlidingMenu;
 

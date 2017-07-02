@@ -24,30 +24,35 @@ public class Utils
 {
     private static SharedPreferences mSharedPreferences = null;
 
-    public static int getColorInt(Activity activity, String url) {
+    public static int getColorInt(Activity activity, String url)
+    {
 
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        try {
+        try
+        {
             Document doc = Jsoup.connect(url).get();
 
             Elements styles = doc.select("link");
             Element element = new Element("hue");
 
-            for (int i = 0; i < styles.size(); i++) {
+            for (int i = 0; i < styles.size(); i++)
+            {
                 Element current = styles.get(i);
 
-                if (current.hasAttr("href") && current.attr("rel").equals("stylesheet")) {
+                if (current.hasAttr("href") && current.attr("rel").equals("stylesheet"))
+                {
                     element = current;
                     break;
                 }
             }
 
             String link = "";
-            if (element.hasAttr("href")) {
+            if (element.hasAttr("href"))
+            {
                 link = element.attr("href");
                 if (!(link.contains("http://") || link.contains("https://")))
                     link = "https:".concat(link);
@@ -63,7 +68,8 @@ public class Utils
             String line;
             String css = "";
 
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null)
+            {
                 css = css.concat(line);
             }
 
@@ -72,7 +78,8 @@ public class Utils
             Matcher m = p.matcher(css);
             String a = "";
 
-            if (m.find()) {
+            if (m.find())
+            {
                 a = m.group();
             }
 
@@ -81,7 +88,8 @@ public class Utils
 
             String colorHex = "#000000";
 
-            if (m.find()) {
+            if (m.find())
+            {
                 colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
             }
 
@@ -103,30 +111,38 @@ public class Utils
                 mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
                 return Color.parseColor(colorHex);
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return Color.parseColor("#000000");
         }
     }
 
-    public static ViewGroup getActionBar(View view) {
-        try {
-            if (view instanceof ViewGroup) {
+    public static ViewGroup getActionBar(View view)
+    {
+        try
+        {
+            if (view instanceof ViewGroup)
+            {
                 ViewGroup viewGroup = (ViewGroup) view;
 
-                if (viewGroup instanceof android.support.v7.widget.Toolbar) {
+                if (viewGroup instanceof android.support.v7.widget.Toolbar)
+                {
                     return viewGroup;
                 }
 
-                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                for (int i = 0; i < viewGroup.getChildCount(); i++)
+                {
                     ViewGroup actionBar = getActionBar(viewGroup.getChildAt(i));
 
-                    if (actionBar != null) {
+                    if (actionBar != null)
+                    {
                         return actionBar;
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
 

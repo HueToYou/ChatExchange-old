@@ -25,7 +25,7 @@ public class ChatFragFabsHue
     public static void setChatFragmentFabColor(AppCompatActivity activity, @ColorInt int appBarColor)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -37,7 +37,7 @@ public class ChatFragFabsHue
     public static void setChatFragmentFabColorToSharedPrefsValue(AppCompatActivity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -86,7 +86,8 @@ public class ChatFragFabsHue
 
     }
 
-    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable) {
+    private static void setColorsOnFabs(FloatingActionButton fab, ColorStateList colorStateList, Activity activity, @DrawableRes int drawable)
+    {
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         @ColorInt int colorNormal;
@@ -94,12 +95,14 @@ public class ChatFragFabsHue
         @ColorInt int textColor;
 //        TypedArray a;
 
-        if (desiredThemeIsDark) {
+        if (desiredThemeIsDark)
+        {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = HueUtils.darkenColor(activity.getResources().getColor(R.color.white), .9f);
             colorNormal = HueUtils.darkenColor(activity.getResources().getColor(android.R.color.darker_gray), .6f);
             colorPressed = colorNormal;
-        } else {
+        } else
+        {
 //            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getResources().getColor(android.R.color.primary_text_dark);
             colorNormal = 0xFF333333;

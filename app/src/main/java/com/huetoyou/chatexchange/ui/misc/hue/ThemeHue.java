@@ -20,7 +20,7 @@ public class ThemeHue
     public static void setTheme(Activity activity)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
@@ -29,7 +29,7 @@ public class ThemeHue
         boolean desiredThemeIsDark = mSharedPreferences.getBoolean("darkTheme", false);
 
         //We only need to explicitly set the theme if the user wants the dark theme, as light is the default
-        if(desiredThemeIsDark)
+        if (desiredThemeIsDark)
         {
             //NB: this *must* be called before setContentView(), else weird things happen
 //            if (activity instanceof MainActivity) activity.setTheme(R.style.DarkTheme_NoActionBar);
@@ -43,14 +43,14 @@ public class ThemeHue
     public static void setThemeOnResume(Activity activity, boolean oncreatejustcalled)
     {
         //Grab an instance of SharedPrefs if we haven't already
-        if(mSharedPreferences == null)
+        if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
         //Check to see whether or not the activity must be restarted due to a requested theme change.
         //Requires the oncreatejustcalled parameter to prevent setting the theme twice, as onResume() is called after onCreate() finishes
-        if(mSharedPreferences.getBoolean("FLAG_restartMain", false) && !oncreatejustcalled)
+        if (mSharedPreferences.getBoolean("FLAG_restartMain", false) && !oncreatejustcalled)
         {
             mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();

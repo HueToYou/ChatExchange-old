@@ -34,7 +34,8 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment
+{
 
     private AccountManager mAccountManager;
     private View view;
@@ -42,7 +43,8 @@ public class HomeFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private WebView webView;
 
-    public HomeFragment() {
+    public HomeFragment()
+    {
         // Required empty public constructor
     }
 
@@ -63,12 +65,13 @@ public class HomeFragment extends Fragment {
 
         oncreateHasBeenCalled = true;
 
-        setUpHomeFragmentSequence();
+        //setUpHomeFragmentSequence();
 
         return view;
     }
 
-    private void setUpHomeFragmentSequence() {
+    private void setUpHomeFragmentSequence()
+    {
 //        setContentView(R.layout.fragment_home);
 
         Button chooseSE = view.findViewById(R.id.chooseSEView);
@@ -85,6 +88,7 @@ public class HomeFragment extends Fragment {
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
         {
             int currentIndex = 0;
+
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
             {
@@ -114,9 +118,11 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         //noinspection StatementWithEmptyBody
-        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached()) {
+        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
+        {
             //setChatButtonTint();
         }
         super.onAttach(context);
@@ -158,7 +164,7 @@ public class HomeFragment extends Fragment {
             public void run()
             {
                 //noinspection StatementWithEmptyBody
-                while(!oncreateHasBeenCalled);
+                while (!oncreateHasBeenCalled) ;
 
                 getActivity().runOnUiThread(new Runnable()
                 {
@@ -181,7 +187,8 @@ public class HomeFragment extends Fragment {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void setupWebView() {
+    private void setupWebView()
+    {
         webView = view.findViewById(R.id.stars_view);
         Button back = view.findViewById(R.id.go_back);
         Button forward = view.findViewById(R.id.go_forward);
@@ -198,16 +205,20 @@ public class HomeFragment extends Fragment {
         webView.getSettings().setJavaScriptEnabled(true);
         client(webView);
 
-        back.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (webView.canGoBack()) webView.goBack();
             }
         });
 
-        forward.setOnClickListener(new View.OnClickListener() {
+        forward.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (webView.canGoForward()) webView.goForward();
             }
         });
@@ -236,21 +247,27 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void client(WebView webView) {
-        webView.setWebViewClient(new WebViewClient(){
+    private void client(WebView webView)
+    {
+        webView.setWebViewClient(new WebViewClient()
+        {
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url){
-                if (url.contains("/rooms/")) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url)
+            {
+                if (url.contains("/rooms/"))
+                {
                     String id = "";
                     Pattern p = Pattern.compile("rooms/(.+?)\\b");
                     Matcher m = p.matcher(url);
 
-                    while (!m.hitEnd()) {
+                    while (!m.hitEnd())
+                    {
                         if (m.find()) id = m.group().replace("rooms/", "");
                     }
 
-                    if (!id.isEmpty()) {
+                    if (!id.isEmpty())
+                    {
                         String key = "id";
                         if (url.contains("exchange")) key = key.concat("SE");
                         else if (url.contains("overflow")) key = key.concat("SO");
@@ -258,21 +275,23 @@ public class HomeFragment extends Fragment {
                         Intent urlIntent = new Intent("idAdd").putExtra(key, id);
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(urlIntent);
                     }
-                }
-                else view.loadUrl(url);
+                } else view.loadUrl(url);
                 return true;
             }
         });
     }
 
-    private void setCookieWithDomain(String domain) {
+    private void setCookieWithDomain(String domain)
+    {
         CookieSyncManager.createInstance(getActivity());
         CookieManager cookieManager = CookieManager.getInstance();
 
-        if (((MainActivity)getActivity()).getCookieString() != null) {
+        if (((MainActivity) getActivity()).getCookieString() != null)
+        {
             cookieManager.removeSessionCookie();
-            cookieManager.setCookie(domain, ((MainActivity)getActivity()).getCookieString());
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.setCookie(domain, ((MainActivity) getActivity()).getCookieString());
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            {
                 CookieSyncManager.createInstance(getActivity());
                 cookieManager.setAcceptCookie(true);
             }

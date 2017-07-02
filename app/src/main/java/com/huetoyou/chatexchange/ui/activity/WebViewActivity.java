@@ -16,13 +16,15 @@ import com.huetoyou.chatexchange.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity
+{
 
     private String mURL;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 //        FrameLayout mParentView = new FrameLayout(this);
 //        mWebView = new WebView(this);
@@ -34,7 +36,8 @@ public class WebViewActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+        if (intent.getAction().equals(Intent.ACTION_VIEW))
+        {
             mURL = intent.getStringExtra("url");
         }
 
@@ -57,16 +60,20 @@ public class WebViewActivity extends AppCompatActivity {
 
         openInWV.setVisibility(View.GONE);
 
-        back.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (webView.canGoBack()) webView.goBack();
             }
         });
 
-        forward.setOnClickListener(new View.OnClickListener() {
+        forward.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (webView.canGoForward()) webView.goForward();
             }
         });
@@ -74,24 +81,31 @@ public class WebViewActivity extends AppCompatActivity {
 
     /**
      * Set client for specified WebView (so we can intercept URL presses, and they open in the WebView itself by default)
+     *
      * @param webView the WebView to have its client set
      */
 
-    private void client(WebView webView) {
-        webView.setWebViewClient(new WebViewClient(){
+    private void client(WebView webView)
+    {
+        webView.setWebViewClient(new WebViewClient()
+        {
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url){
-                if (url.contains("/rooms/")) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url)
+            {
+                if (url.contains("/rooms/"))
+                {
                     String id = "";
                     Pattern p = Pattern.compile("rooms/(.+?)\\b");
                     Matcher m = p.matcher(url);
 
-                    while (!m.hitEnd()) {
+                    while (!m.hitEnd())
+                    {
                         if (m.find()) id = m.group().replace("rooms/", "");
                     }
 
-                    if (!id.isEmpty()) {
+                    if (!id.isEmpty())
+                    {
                         String key = "id";
                         if (url.contains("exchange")) key = key.concat("SE");
                         else if (url.contains("overflow")) key = key.concat("SO");
@@ -100,20 +114,21 @@ public class WebViewActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(urlIntent);
                         finish();
                     }
-                }
-                else view.loadUrl(url);
+                } else view.loadUrl(url);
                 return true;
             }
         });
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         super.onBackPressed();
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
+    public boolean onSupportNavigateUp()
+    {
         onBackPressed();
         return super.onSupportNavigateUp();
     }
