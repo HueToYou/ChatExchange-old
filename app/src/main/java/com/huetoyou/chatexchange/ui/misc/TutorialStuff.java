@@ -37,18 +37,14 @@ public class TutorialStuff
 
         final ListView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
-        String[] names = new String[] {"Example 1", "Example 2", "Example 3"};
-        String[] urls = new String[] {"U", "U", "U"};
         Drawable example = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_help_outline_black_24dp, null);
-        Drawable[] icons = new Drawable[] {example, example, example};
-        Integer[] colors = new Integer[] {0, 0, 0};
 
         ImgTextArrayAdapter imgTextArrayAdapter = new ImgTextArrayAdapter(activity);
-        imgTextArrayAdapter.addChat(names[0], urls[0], icons[0], colors[0]);
-        imgTextArrayAdapter.addChat(names[1], urls[1], icons[1], colors[1]);
-        imgTextArrayAdapter.addChat(names[2], urls[2], icons[2], colors[2]);
+        imgTextArrayAdapter.addChat("Example 1", "", example, 0);
+        imgTextArrayAdapter.addChat("Example 2", "", example, 0);
+        imgTextArrayAdapter.addChat("Example 3", "", example, 0);
 
-        dummyChats.setAdapter(new ImgTextArrayAdapter(activity));
+        dummyChats.setAdapter(imgTextArrayAdapter);
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
