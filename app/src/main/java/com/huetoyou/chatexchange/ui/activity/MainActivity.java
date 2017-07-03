@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -50,6 +51,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -148,7 +150,7 @@ public class MainActivity extends SlidingActivity
             chatroomsList.setSelection(position);
             chatroomsList.requestFocus();
 
-            mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
+            mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
             doCloseAnimationForDrawerToggle(mDrawerButton);
 
             mHandler.postDelayed(new Runnable()
@@ -156,7 +158,7 @@ public class MainActivity extends SlidingActivity
                 @Override
                 public void run()
                 {
-                    setFragmentByTag(chatroomArrayAdapter.getUrls()[position]);
+                    setFragmentByTag(chatroomArrayAdapter.getUrls().get(position));
                 }
             }, getResources().getInteger(R.integer.animation_duration_ms));
 
@@ -184,9 +186,35 @@ public class MainActivity extends SlidingActivity
         //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         mHandler = new Handler();
+
         preSetup();
         createUsersSlidingMenu();
         setup();
+
+        chatroomArrayAdapter = new ImgTextArrayAdapter(this);
+
+        chatroomsList = findViewById(R.id.chatroomsListView);
+        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        chatroomsList.setAdapter(chatroomArrayAdapter);
+
+        chatroomsList.setOnItemClickListener(mItemClickListener);
+
+        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                //chatroomsList.requestFocusFromTouch();
+                chatroomsList.setOnItemClickListener(null);
+                chatroomsList.setSelection(position);
+                //chatroomsList.requestFocus();
+
+                mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
+
+                confirmClose(view);
+                return true;
+            }
+        });
 
         /*android.support.v7.widget.Toolbar toolbar = new android.support.v7.widget.Toolbar(this);
         toolbar.setId(1001);
@@ -832,6 +860,9 @@ public class MainActivity extends SlidingActivity
                     mSEChatUrls.put(Integer.decode(id), chatUrl);
                     mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
+
+                        private Fragment fragment;
+
                         @Override
                         public void onStart()
                         {
@@ -841,7 +872,7 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            Fragment fragment = addFragment(chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
                             mSEChats.put(Integer.decode(id), fragment);
                             mSEChatColors.put(Integer.decode(id), color);
@@ -850,30 +881,31 @@ public class MainActivity extends SlidingActivity
                         }
 
                         @Override
-                        public void onFinish()
+                        public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-                            ArrayList<String> names = new ArrayList<>();
-                            names.addAll(asList(mSEChatNames));
-                            names.addAll(asList(mSOChatNames));
+//                            ArrayList<String> names = new ArrayList<>();
+//                            names.addAll(asList(mSEChatNames));
+//                            names.addAll(asList(mSOChatNames));
+//
+//                            ArrayList<String> urls = new ArrayList<>();
+//                            urls.addAll(asList(mSEChatUrls));
+//                            urls.addAll(asList(mSOChatUrls));
+//
+//                            ArrayList<Drawable> icons = new ArrayList<>();
+//                            icons.addAll(asList(mSEChatIcons));
+//                            icons.addAll(asList(mSOChatIcons));
+//
+//                            ArrayList<Integer> colors = new ArrayList<>();
+//                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
+//                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
+//
+//                            ArrayList<Fragment> fragments = new ArrayList<>();
+//                            fragments.addAll(asList(mSEChats));
+//                            fragments.addAll(asList(mSOChats));
 
-                            ArrayList<String> urls = new ArrayList<>();
-                            urls.addAll(asList(mSEChatUrls));
-                            urls.addAll(asList(mSOChatUrls));
-
-                            ArrayList<Drawable> icons = new ArrayList<>();
-                            icons.addAll(asList(mSEChatIcons));
-                            icons.addAll(asList(mSOChatIcons));
-
-                            ArrayList<Integer> colors = new ArrayList<>();
-                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
-                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
-
-                            ArrayList<Fragment> fragments = new ArrayList<>();
-                            fragments.addAll(asList(mSEChats));
-                            fragments.addAll(asList(mSOChats));
-
-                            addFragmentsToList(names, urls, icons, colors, fragments);
-                            initiateCurrentFragments(fragments);
+//                            addFragmentsToList(names, urls, icons, colors, fragments);
+                            addFragmentToList(name, url, icon, color);
+                            initiateFragment(fragment);
                         }
                     });
 
@@ -903,6 +935,9 @@ public class MainActivity extends SlidingActivity
                     mSOChatUrls.put(Integer.decode(id), chatUrl);
                     MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
+
+                        private Fragment fragment;
+
                         @Override
                         public void onStart()
                         {
@@ -911,7 +946,7 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            Fragment fragment = addFragment(chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             mSOChats.put(Integer.decode(id), fragment);
                             mSOChatColors.put(Integer.decode(id), color);
                             mSOChatIcons.put(Integer.decode(id), icon);
@@ -919,30 +954,32 @@ public class MainActivity extends SlidingActivity
                         }
 
                         @Override
-                        public void onFinish()
+                        public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-                            ArrayList<String> names = new ArrayList<>();
-                            names.addAll(asList(mSEChatNames));
-                            names.addAll(asList(mSOChatNames));
-
-                            ArrayList<String> urls = new ArrayList<>();
-                            urls.addAll(asList(mSEChatUrls));
-                            urls.addAll(asList(mSOChatUrls));
-
-                            ArrayList<Drawable> icons = new ArrayList<>();
-                            icons.addAll(asList(mSEChatIcons));
-                            icons.addAll(asList(mSOChatIcons));
-
-                            ArrayList<Integer> colors = new ArrayList<>();
-                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
-                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
-
-                            ArrayList<Fragment> fragments = new ArrayList<>();
-                            fragments.addAll(asList(mSEChats));
-                            fragments.addAll(asList(mSOChats));
-
-                            addFragmentsToList(names, urls, icons, colors, fragments);
-                            initiateCurrentFragments(fragments);
+//                            ArrayList<String> names = new ArrayList<>();
+//                            names.addAll(asList(mSEChatNames));
+//                            names.addAll(asList(mSOChatNames));
+//
+//                            ArrayList<String> urls = new ArrayList<>();
+//                            urls.addAll(asList(mSEChatUrls));
+//                            urls.addAll(asList(mSOChatUrls));
+//
+//                            ArrayList<Drawable> icons = new ArrayList<>();
+//                            icons.addAll(asList(mSEChatIcons));
+//                            icons.addAll(asList(mSOChatIcons));
+//
+//                            ArrayList<Integer> colors = new ArrayList<>();
+//                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
+//                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
+//
+//                            ArrayList<Fragment> fragments = new ArrayList<>();
+//                            fragments.addAll(asList(mSEChats));
+//                            fragments.addAll(asList(mSOChats));
+//
+//                            addFragmentsToList(names, urls, icons, colors, fragments);
+//                            initiateCurrentFragments(fragments);
+                            addFragmentToList(name, url, icon, color);
+                            initiateFragment(fragment);
                         }
                     });
 
@@ -1042,7 +1079,7 @@ public class MainActivity extends SlidingActivity
 
         void onProgress(String name, Drawable icon, Integer color);
 
-        void onFinish();
+        void onFinish(String name, String url, Drawable icon, Integer color);
     }
 
     /**
@@ -1190,6 +1227,30 @@ public class MainActivity extends SlidingActivity
         }
     }
 
+    private void initiateFragment(Fragment fragment) {
+        try
+        {
+            String tag = fragment.getArguments().getString("chatUrl");
+            if (mFragmentManager.findFragmentByTag(tag) == null)
+            {
+                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+            }
+
+            if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null)
+            {
+                mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+                //hueUtils.setActionBarColorToSharedPrefsValue(this);
+//                    hueUtils.setAddChatFabColorDefault(this);
+            }
+
+            mFragmentManager.executePendingTransactions();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Add fragments to the ListView/SlidingMenu
      *
@@ -1219,37 +1280,17 @@ public class MainActivity extends SlidingActivity
         Integer[] colors = new Integer[chatColors.size()];
         colors = chatColors.toArray(colors);
 
-        chatroomArrayAdapter = new ImgTextArrayAdapter(this, names, urls, ico, colors);
         if (names.length < 1)
         {
             chatroomArrayAdapter.clear();
         }
         //Log.e("LE", names.length + "");
 
-        chatroomsList = findViewById(R.id.chatroomsListView);
-        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
         // Here, you set the data in your ListView
-        chatroomsList.setAdapter(chatroomArrayAdapter);
+    }
 
-        chatroomsList.setOnItemClickListener(mItemClickListener);
-
-        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-        {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                //chatroomsList.requestFocusFromTouch();
-                chatroomsList.setOnItemClickListener(null);
-                chatroomsList.setSelection(position);
-                //chatroomsList.requestFocus();
-
-                mCurrentFragment = chatroomArrayAdapter.getUrls()[position];
-
-                confirmClose(view);
-                return true;
-            }
-        });
+    private void addFragmentToList(String name, String url, Drawable icon, Integer color) {
+        chatroomArrayAdapter.addChat(name, url, icon, color);
     }
 
     /**

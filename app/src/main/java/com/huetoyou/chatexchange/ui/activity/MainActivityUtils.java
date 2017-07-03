@@ -84,7 +84,7 @@ public class MainActivityUtils
         @Override
         protected void onPostExecute(Void aVoid)
         {
-            mAddListListener.onFinish();
+            mAddListListener.onFinish(mName, mChatUrl, mIcon, mColor);
             super.onPostExecute(aVoid);
         }
 
@@ -174,7 +174,12 @@ public class MainActivityUtils
         Drawable[] icons = new Drawable[] {example, example, example};
         Integer[] colors = new Integer[] {0, 0, 0};
 
-        dummyChats.setAdapter(new ImgTextArrayAdapter(activity, names, urls, icons, colors));
+        ImgTextArrayAdapter imgTextArrayAdapter = new ImgTextArrayAdapter(activity);
+        imgTextArrayAdapter.addChat(names[0], urls[0], icons[0], colors[0]);
+        imgTextArrayAdapter.addChat(names[1], urls[1], icons[1], colors[1]);
+        imgTextArrayAdapter.addChat(names[2], urls[2], icons[2], colors[2]);
+
+        dummyChats.setAdapter(new ImgTextArrayAdapter(activity));
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);

@@ -1,14 +1,13 @@
 package com.huetoyou.chatexchange.ui.frags;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -944,7 +943,8 @@ public class ChatFragment extends Fragment
     {
         private final TagsGotten mTagsGotten;
 
-        public static GetTags newInstance(TagsGotten tagsGotten)
+        @NonNull
+        static GetTags newInstance(TagsGotten tagsGotten)
         {
             return new GetTags(tagsGotten);
         }
@@ -1067,7 +1067,7 @@ public class ChatFragment extends Fragment
                         return m.group().replace(",", "").replace("host: ", "").replace("'", "");
                     }
                 }
-                throw new Exception("Not Found");
+                throw new Exception("Host Domain Not Found");
             }
             catch (Exception e)
             {
@@ -1094,7 +1094,6 @@ public class ChatFragment extends Fragment
 
     /**
      * Access the current chat's ID from elsewhere
-     *
      * @return the chat ID as Integer
      */
 
@@ -1103,32 +1102,4 @@ public class ChatFragment extends Fragment
         return mChatId;
     }
 
-//    private class GetStars extends AsyncTask<String, Void, ArrayList<String >> {
-//        @Override
-//        protected ArrayList<String> doInBackground(String... params) {
-//            String chatUrl = params[0];
-//            String starUrl = chatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars");
-//
-//            ArrayList<String> ret = new ArrayList<>();
-//
-//            try {
-//                Elements monologues = Jsoup.connect(starUrl).get().select("div");
-//                for (Element e : monologues) {
-//                    if (e.hasAttr("class") && e.attr("class").contains("monologue")) ret.add(e.toString());
-//                }
-//
-//                return ret;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<String> strings) {
-//            String stars = strings.toString().replace("[", "").replace("]", "").replace(">,", ">-----").replace("href=\"//", "href=\"http://");
-//            mStarsSpanned = Html.fromHtml(stars);
-//        }
-//    }
 }
