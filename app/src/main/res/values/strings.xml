@@ -39,8 +39,15 @@
     <string name="chatrooms_slidingMenu_FAM_tutorial_text">This floating action menu contains a few different things.</string>
     <string name="chatrooms_slidingMenu_homeFAB_tutorial_text">Click this button to return to the home page of the app.</string>
     <string name="chatrooms_slidingMenu_addChatFAB_tutorial_text">Click this button to add a new chatroom.</string>
-    <string name="chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text">Click this button to remove all the chatroom that you\'ve added.</string>
-
+    <string name="chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text">Click this button to remove all the chatrooms that you\'ve added.</string>
+    <string name="homeFrag_hamburger_tutorial_text">Click this hamburger menu to open the list of chatrooms. You can also swipe inwards from the left edge of the screen.</string>
+    <string name="chatFrag_hamburger_tutorial_text">The hamburger menu is also accessible from a chatroom.</string>
+    <string name="chatFrag_FAM_tutorial_text">This floating action menu contains a few different things.</string>
+    <string name="chatFrag_showUsersFAB_tutorial_text">Click this button to open the sliding panel containing the list of users currently in the chatroom.</string>
+    <string name="chatFrag_roomInfoFAB_tutorial_text">Click this button to open a popup containing the chatroom\'s description.</string>
+    <string name="chatFrag_starredMessagesFAB_tutorial_text">Click this button to open a popup containing messages currently on the starwall.</string>
+    <string name="chatFrag_messageEntryBox_tutorial_text">To send a message, first type it into this box.</string>
+    <string name="chatFrag_sendMsgBtn_tutorial_text">After you\'ve typed the message into the box, you can send it off to the interwebs by pushing this button.</string>
 
     <!-- Strings related to Settings -->
 

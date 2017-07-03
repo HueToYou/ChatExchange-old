@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -144,7 +146,7 @@ public class TutorialStuff
         });
 
         sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-                "Drawer Toggle",
+                activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
                 "OK");
 
         /*sequence.addSequenceItem(chooseSE,
@@ -174,6 +176,8 @@ public class TutorialStuff
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
         final FloatingActionButton info = view.findViewById(R.id.room_info_fab);
         final FloatingActionButton stars = view.findViewById(R.id.star_fab);
+        final EditText messageEntryBox = view.findViewById(R.id.messageToSend);
+        final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
@@ -206,23 +210,31 @@ public class TutorialStuff
         });
 
         sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-                "Drawer Toggle",
+                activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(fam.getMenuButton(),
-                "Menu",
+                activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(users,
-                "Show Users",
+                activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(info,
-                "Show Info",
+                activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(stars,
-                "Stars",
+                activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text),
+                "OK");
+
+        sequence.addSequenceItem(messageEntryBox,
+                activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text),
+                "OK");
+
+        sequence.addSequenceItem(sendMsg,
+                activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
                 "OK");
 
         sequence.start();
