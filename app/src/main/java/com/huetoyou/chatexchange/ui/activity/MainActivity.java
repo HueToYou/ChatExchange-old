@@ -64,6 +64,7 @@ import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
@@ -300,7 +301,7 @@ public class MainActivity extends SlidingActivity
                         fam.showMenuButton(true);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
-                MainActivityUtils.showChatSliderTutorial(MainActivity.this);
+                TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
             }
         });
 
