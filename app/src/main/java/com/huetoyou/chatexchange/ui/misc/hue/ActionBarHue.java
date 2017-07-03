@@ -51,6 +51,19 @@ public class ActionBarHue
         }
     }
 
+    public static int getActionBarPrefsColor(AppCompatActivity activity) {
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (activity != null)
+        {
+            return mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
+        }
+        return 0x00000000;
+    }
+
     public static void setActionBarColorToSharedPrefsValue(AppCompatActivity activity)
     {
         if (mSharedPreferences == null)

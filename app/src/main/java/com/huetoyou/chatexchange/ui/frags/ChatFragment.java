@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,7 @@ import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
+import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -316,6 +318,7 @@ public class ChatFragment extends Fragment
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
+        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "ChatFragTutorial");
         sequence.setConfig(config);

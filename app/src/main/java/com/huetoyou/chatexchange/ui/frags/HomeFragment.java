@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,10 +21,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
 import java.util.regex.Matcher;
@@ -81,6 +84,8 @@ public class HomeFragment extends Fragment
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
+        int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)getActivity());
+        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
 
         final MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "HomeFragTutorial");
         sequence.setConfig(config);

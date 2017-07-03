@@ -6,7 +6,7 @@ import android.graphics.Color;
  * This class contains common utils which the other Hue classes use
  */
 
-class HueUtils
+public class HueUtils
 {
     /*
      * This method darkens a color by the factor specified in the second parameter

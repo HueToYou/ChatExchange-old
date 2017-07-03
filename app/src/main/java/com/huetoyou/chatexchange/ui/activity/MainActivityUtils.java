@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ListView;
@@ -21,6 +23,8 @@ import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
@@ -174,6 +178,8 @@ public class MainActivityUtils
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
+        int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
+        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
         sequence.setConfig(config);

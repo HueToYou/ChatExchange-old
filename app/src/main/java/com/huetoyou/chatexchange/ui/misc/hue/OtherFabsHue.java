@@ -51,6 +51,20 @@ public class OtherFabsHue
         }
     }
 
+    public static int getPrefsFabColor(AppCompatActivity activity) {
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (activity != null)
+        {
+            return mSharedPreferences.getInt("fab_color", activity.getResources().getColor(R.color.colorAccent));
+        }
+
+        return 0x00000000;
+    }
+
     private static void setTints(ColorStateList colorStateList, Activity activity)
     {
         FloatingActionMenu chatListMenu = activity.findViewById(R.id.chat_slide_menu);

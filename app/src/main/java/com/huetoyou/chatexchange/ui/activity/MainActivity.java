@@ -295,18 +295,6 @@ public class MainActivity extends SlidingActivity
 
         System.out.println("Hellu!");
 
-        if (mFragmentManager.findFragmentByTag("home").isDetached())
-        {
-            /*noinspection ConstantConditions
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_home_white_24dp, null));*/
-        }
-        else
-        {
-            //noinspection ConstantConditions
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         mIntent = getIntent();
         respondToNotificationClick();
 
