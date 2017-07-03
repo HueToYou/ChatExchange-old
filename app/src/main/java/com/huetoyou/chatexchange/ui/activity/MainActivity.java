@@ -1590,7 +1590,8 @@ public class MainActivity extends SlidingActivity
                                         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
                                         setFragmentByTag("home");
-                                        doFragmentStuff();
+                                        chatroomArrayAdapter.removeChat(mCurrentFragment);
+//                                        doFragmentStuff();
                                     }
 
 //                                    mChatUrls.remove(remFrag.getTag());

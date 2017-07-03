@@ -78,6 +78,18 @@ public class ImgTextArrayAdapter extends ArrayAdapter<String>
         }
     }
 
+    public void removeChat(String url) {
+        if (mUrls.contains(url)) {
+            int index = mUrls.indexOf(url);
+            String name = mNames.get(index);
+            mUrls.remove(index);
+            mNames.remove(index);
+            mIcons.remove(index);
+            mColors.remove(index);
+            remove(name);
+        }
+    }
+
     public ArrayList<String> getNames()
     {
         return mNames;
