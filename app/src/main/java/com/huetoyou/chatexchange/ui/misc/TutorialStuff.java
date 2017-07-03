@@ -90,23 +90,23 @@ public class TutorialStuff
         });
 
         sequence.addSequenceItem(dummyChats,
-                "Chatrooms",
+                 activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(chatFam.getMenuButton(),
-                "Menu",
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(home,
-                "Home",
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(add,
-                "Add Chat",
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(removeAll,
-                "Remove All Chats",
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text),
                 "OK");
 
         sequence.start();

@@ -35,7 +35,11 @@
     <string name="generic_cancel">Cancel</string>
 
     <!-- Tutorial activity -->
-
+    <string name="chatrooms_slidingMenu_chats_tutorial_text">Any chatrooms that you add will appear in this list.</string>
+    <string name="chatrooms_slidingMenu_FAM_tutorial_text">This floating action menu contains a few different things.</string>
+    <string name="chatrooms_slidingMenu_homeFAB_tutorial_text">Click this button to return to the home page of the app.</string>
+    <string name="chatrooms_slidingMenu_addChatFAB_tutorial_text">Click this button to add a new chatroom.</string>
+    <string name="chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text">Click this button to remove all the chatroom that you\'ve added.</string>
 
 
     <!-- Strings related to Settings -->
