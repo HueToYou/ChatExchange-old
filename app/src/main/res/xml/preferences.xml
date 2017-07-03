@@ -39,9 +39,18 @@
     <PreferenceCategory
         android:title="Message Appearance">
 
+        <com.jrummyapps.android.colorpicker.ColorPreference
+            android:key="msg_text_color"
+            android:defaultValue="@android:color/black"
+            android:summary="Choose a custom color for the message text"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_dialogType="custom"
+            android:title="Message text color" />
+
         <CheckBoxPreference
             android:key="dynamic_msg_bgcolor"
-            android:title="Dynamic BgColor"
+            android:title="Dynamic background color"
             android:summary="Dynamically change the message background color based on color scheme of chatroom" />
 
         <com.jrummyapps.android.colorpicker.ColorPreference
@@ -51,7 +60,7 @@
             app:cpv_allowCustom="true"
             app:cpv_allowPresets="true"
             app:cpv_dialogType="custom"
-            android:title="Custom BgColor" />
+            android:title="Custom background color" />
 
     </PreferenceCategory>
 
