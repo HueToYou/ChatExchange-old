@@ -124,6 +124,17 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             setDarkTheme(darkThemePref);
 
             /*
+             * Dynamic message background color preference
+             */
+            CheckBoxPreference dyanmic_msg_bgcolor = (CheckBoxPreference) findPreference("dynamic_msg_bgcolor");
+
+            /*
+             * Custom message background color preference
+             */
+            ColorPreference msg_bgcolor = (ColorPreference) findPreference("msg_bgcolor");
+            setDynamicMsgBgColor(dyanmic_msg_bgcolor, msg_bgcolor);
+
+            /*
              * Backend preference
              */
             ListPreference backend = (ListPreference) findPreference("backend_type");
@@ -246,6 +257,22 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                     }
 
                     getActivity().recreate();
+
+                    return true;
+                }
+            });
+        }
+
+        private void setDynamicMsgBgColor(final CheckBoxPreference checkBoxPreference, final ColorPreference hue)
+        {
+            hue.setEnabled(!checkBoxPreference.isChecked());
+
+            checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o)
+                {
+                    hue.setEnabled(!(boolean) o);
 
                     return true;
                 }

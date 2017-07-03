@@ -4,7 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="Appearance">
+        android:title="General Appearance">
+
+        <CheckBoxPreference
+            android:key="dark_theme"
+            android:title="Dark theme"
+            android:summary="Enable the alternate dark theme instead of the standard light theme" />
+
+        <CheckBoxPreference
+            android:key="dynamic_bar_color"
+            android:title="Dynamic color scheme"
+            android:summary="Change color scheme based on color of current chat" />
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="default_color"
@@ -15,11 +25,6 @@
             app:cpv_dialogType="custom"
             android:title="Action bar color" />
 
-        <CheckBoxPreference
-            android:key="dynamic_bar_color"
-            android:title="Dynamic color scheme"
-            android:summary="Change color scheme based on color of current chat" />
-
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="fab_color"
             android:defaultValue="@color/colorAccent"
@@ -29,10 +34,24 @@
             app:cpv_allowPresets="true"
             android:title="FAB color" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Message Appearance">
+
         <CheckBoxPreference
-            android:key="dark_theme"
-            android:title="Dark theme"
-            android:summary="Enable the alternate dark theme instead of the standard light theme" />
+            android:key="dynamic_msg_bgcolor"
+            android:title="Dynamic BgColor"
+            android:summary="Dynamically change the message background color based on color scheme of chatroom" />
+
+        <com.jrummyapps.android.colorpicker.ColorPreference
+            android:key="msg_bgcolor"
+            android:defaultValue="@color/colorPrimaryLight"
+            android:summary="Choose a custom message background color"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_dialogType="custom"
+            android:title="Custom BgColor" />
 
     </PreferenceCategory>
 
