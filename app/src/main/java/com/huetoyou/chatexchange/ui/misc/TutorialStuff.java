@@ -1,8 +1,10 @@
 package com.huetoyou.chatexchange.ui.misc;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,11 +26,15 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class TutorialStuff
 {
+    private static SharedPreferences mSharedPreferences;
+
     /*
      * Main Activity
      */
     public static void showChatSliderTutorial_MainActivity(final Activity activity)
     {
+
+        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
@@ -115,12 +121,8 @@ public class TutorialStuff
      */
     public static void homeFragTutorial(Activity activity, View view)
     {
-        //setContentView(R.layout.fragment_home);
 
-        Button chooseSE = view.findViewById(R.id.chooseSEView);
-        Button chooseSO = view.findViewById(R.id.chooseSOView);
-        //WebView webView = view.findViewById(R.id.stars_view);
-        //webView.loadUrl("https://chat.stackexchange.com");
+        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
@@ -168,6 +170,8 @@ public class TutorialStuff
     public static void chatFragTutorial(Activity activity, View view, int mAppBarColor)
     {
 
+        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
         final FloatingActionButton info = view.findViewById(R.id.room_info_fab);
@@ -177,7 +181,14 @@ public class TutorialStuff
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
-        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
+
+        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+        {
+            config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
+        } else {
+            int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
+            config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+        }
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatFragTutorial");
         sequence.setConfig(config);
