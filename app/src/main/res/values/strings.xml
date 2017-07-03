@@ -43,7 +43,7 @@
     <string name="homeFrag_hamburger_tutorial_text">Click this hamburger menu to open the list of chatrooms. You can also swipe inwards from the left edge of the screen.</string>
     <string name="chatFrag_hamburger_tutorial_text">The hamburger menu is also accessible from a chatroom.</string>
     <string name="chatFrag_FAM_tutorial_text">This floating action menu contains a few different things.</string>
-    <string name="chatFrag_showUsersFAB_tutorial_text">Click this button to open the sliding panel containing the list of users currently in the chatroom.</string>
+    <string name="chatFrag_showUsersFAB_tutorial_text">Click this button to open the sliding panel containing the list of users currently in the chatroom. You can also swipe inwards from the right edge of the screen.</string>
     <string name="chatFrag_roomInfoFAB_tutorial_text">Click this button to open a popup containing the chatroom\'s description.</string>
     <string name="chatFrag_starredMessagesFAB_tutorial_text">Click this button to open a popup containing messages currently on the starwall.</string>
     <string name="chatFrag_messageEntryBox_tutorial_text">To send a message, first type it into this box.</string>
