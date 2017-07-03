@@ -663,6 +663,7 @@ public class ChatFragment extends Fragment
         com.github.clans.fab.FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
         com.github.clans.fab.FloatingActionButton stars = view.findViewById(R.id.star_fab);
         com.github.clans.fab.FloatingActionButton users = view.findViewById(R.id.show_users_fab);
+        final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
 
 //        openInBrowser.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -799,6 +800,7 @@ public class ChatFragment extends Fragment
             public void onClick(View v)
             {
                 mSlidingMenu.toggle();
+                fam.close(true);
             }
         });
     }
