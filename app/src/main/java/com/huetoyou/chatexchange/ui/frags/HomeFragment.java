@@ -69,33 +69,6 @@ public class HomeFragment extends Fragment
 
         TutorialStuff.homeFragTutorial(getActivity(), view);
 
-        Button chooseSE = view.findViewById(R.id.chooseSEView);
-        Button chooseSO = view.findViewById(R.id.chooseSOView);
-
-        chooseSE.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra("url", getResources().getText(R.string.stackexchange).toString());
-                startActivity(intent);
-            }
-        });
-
-        chooseSO.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra("url", getResources().getText(R.string.stackoverflow).toString());
-                startActivity(intent);
-            }
-        });
-
         return view;
     }
 
