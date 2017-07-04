@@ -84,8 +84,8 @@ public class MainActivity extends SlidingActivity
 
     private SlidingMenu mChatroomSlidingMenu;
     private RecyclerView chatroomsList; //TODO: convert to RecyclerView at some point
-    private SlidingMenu mCurrentUsers_SlidingMenu;
-    private FragmentManager mFragmentManager;
+    private static SlidingMenu mCurrentUsers_SlidingMenu;
+    private static FragmentManager mFragmentManager;
 
     private BroadcastReceiver mAddChatReceiver;
 
@@ -1355,7 +1355,7 @@ public class MainActivity extends SlidingActivity
      * @param tag the chat's fragment tag (should be its URL)
      */
 
-    private void setFragmentByTag(String tag)
+    public static void setFragmentByTag(String tag)
     {
         Log.e("TAG", tag);
         if (mFragmentManager.getFragments() != null)
