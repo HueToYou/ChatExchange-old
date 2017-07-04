@@ -12,48 +12,6 @@
     android:orientation="vertical"
     tools:targetApi="o">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/show_chats_fab"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="toggleChatsSlide"
-            android:tint="#fff"
-            android:visibility="gone"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_chat_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/show_chats_fab"
-            android:layout_toRightOf="@+id/show_chats_fab"
-            android:clickable="true"
-            android:focusable="true"
-            android:tint="#fff"
-            android:visibility="gone"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_close_black_24dp"
-            app:useCompatPadding="true" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:tint="#fff"
-            android:visibility="gone"
-            app:elevation="4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
-            app:useCompatPadding="true" />
-
         <ImageButton
             android:id="@+id/sendMessageBtn"
             android:layout_width="wrap_content"
@@ -97,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/pingSuggestionsScrollView"
-            android:layout_below="@id/show_chats_fab"
             tools:ignore="UselessParent">
 
             <LinearLayout
@@ -114,52 +71,6 @@
                     android:layout_height="match_parent" />
             </LinearLayout>
         </ScrollView>
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:gravity="end"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/show_users_fab"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:tint="#fff"-->
-        <!--app:elevation="4dp"-->
-        <!--app:fabSize="mini"-->
-        <!--app:srcCompat="@drawable/ic_supervisor_account_black_24dp"-->
-        <!--app:useCompatPadding="true" />-->
-
-        <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/room_info_fab"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:tint="#fff"-->
-        <!--app:elevation="4dp"-->
-        <!--app:fabSize="mini"-->
-        <!--app:srcCompat="@drawable/ic_info_outline_black_24dp"-->
-        <!--app:useCompatPadding="true" />-->
-
-        <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/star_fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:tint="#fff"-->
-        <!--app:elevation="4dp"-->
-        <!--app:fabSize="mini"-->
-        <!--app:srcCompat="@drawable/ic_star_black_24dp"-->
-        <!--app:useCompatPadding="true" />-->
-
-        <!--</LinearLayout>-->
 
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/chat_menu"

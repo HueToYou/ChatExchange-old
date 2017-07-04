@@ -80,4 +80,5 @@
 
     <string name="sename">StackExchange</string>
     <string name="soname">StackOverflow</string>
+    <string name="notifications">Notifications</string>
 </resources>

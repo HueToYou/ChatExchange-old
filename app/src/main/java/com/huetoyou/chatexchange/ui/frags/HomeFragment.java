@@ -24,6 +24,7 @@ import android.widget.Button;
 import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
+import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
@@ -64,12 +65,39 @@ public class HomeFragment extends Fragment
 
         mAccountManager = AccountManager.get(getActivity());
 
-        view.findViewById(R.id.open_in_webview).setVisibility(View.GONE);
-        setupWebView();
+//        view.findViewById(R.id.open_in_webview).setVisibility(View.GONE);
+//        setupWebView();
 
         oncreateHasBeenCalled = true;
 
         TutorialStuff.homeFragTutorial(getActivity(), view);
+
+        Button chooseSE = view.findViewById(R.id.chooseSEView);
+        Button chooseSO = view.findViewById(R.id.chooseSOView);
+
+        chooseSE.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.putExtra("url", getResources().getText(R.string.stackexchange).toString());
+                startActivity(intent);
+            }
+        });
+
+        chooseSO.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.putExtra("url", getResources().getText(R.string.stackoverflow).toString());
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -141,140 +169,5 @@ public class HomeFragment extends Fragment
 
         ActionBarHue.setActionBarColorToSharedPrefsValue((AppCompatActivity) getActivity());
         OtherFabsHue.setAddChatFabColorToSharedPrefsValue((AppCompatActivity) getActivity());
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private void setupWebView()
-    {
-        webView = view.findViewById(R.id.stars_view);
-        Button back = view.findViewById(R.id.go_back);
-        Button forward = view.findViewById(R.id.go_forward);
-
-        setCookieWithDomain("openid.stackexchange.com");
-
-        webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
-//        webView.loadUrl("https://stackexchange.com");
-//                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-//                webView.setInitialScale();
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        client(webView);
-
-        back.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (webView.canGoBack())
-                {
-                    webView.goBack();
-                }
-            }
-        });
-
-        forward.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (webView.canGoForward())
-                {
-                    webView.goForward();
-                }
-            }
-        });
-
-        Button chooseSE = view.findViewById(R.id.chooseSEView);
-        Button chooseSO = view.findViewById(R.id.chooseSOView);
-
-        chooseSE.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                setCookieWithDomain("openid.stackexchange.com");
-                webView.loadUrl(getResources().getText(R.string.stackexchange).toString());
-            }
-        });
-
-        chooseSO.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                setCookieWithDomain("openid.stackexchange.com");
-                webView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
-            }
-        });
-    }
-
-    private void client(WebView webView)
-    {
-        webView.setWebViewClient(new WebViewClient()
-        {
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
-            {
-                if (url.contains("/rooms/"))
-                {
-                    String id = "";
-                    Pattern p = Pattern.compile("rooms/(.+?)\\b");
-                    Matcher m = p.matcher(url);
-
-                    while (!m.hitEnd())
-                    {
-                        if (m.find())
-                        {
-                            id = m.group().replace("rooms/", "");
-                        }
-                    }
-
-                    if (!id.isEmpty())
-                    {
-                        String key = "id";
-                        if (url.contains("exchange"))
-                        {
-                            key = key.concat("SE");
-                        }
-                        else if (url.contains("overflow"))
-                        {
-                            key = key.concat("SO");
-                        }
-
-                        Intent urlIntent = new Intent("idAdd").putExtra(key, id);
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(urlIntent);
-                    }
-                }
-                else
-                {
-                    view.loadUrl(url);
-                }
-                return true;
-            }
-        });
-    }
-
-    private void setCookieWithDomain(String domain)
-    {
-        CookieSyncManager.createInstance(getActivity());
-        CookieManager cookieManager = CookieManager.getInstance();
-
-        if (((MainActivity) getActivity()).getCookieString() != null)
-        {
-            cookieManager.removeSessionCookie();
-            cookieManager.setCookie(domain, ((MainActivity) getActivity()).getCookieString());
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            {
-                CookieSyncManager.createInstance(getActivity());
-                cookieManager.setAcceptCookie(true);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            {
-                cookieManager.setAcceptThirdPartyCookies(webView, true);
-            }
-        }
     }
 }
