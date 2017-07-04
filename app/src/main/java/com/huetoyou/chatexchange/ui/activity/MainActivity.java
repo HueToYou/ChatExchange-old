@@ -5,7 +5,6 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1009,6 +1008,10 @@ public class MainActivity extends SlidingActivity
                 }
                 startActivity(browserIntent);
                 break;
+            case R.id.explore_chats:
+                Intent exploreintent = new Intent(getApplicationContext(), ChatroomsExplorationActivity.class);
+                startActivity(exploreintent);
+
             default:
                 /**
                  * @see MainActivity#onCreate(Bundle) for drawer toggle!

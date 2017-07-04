@@ -104,6 +104,7 @@ dependencies {
 //    compile 'com.github.huetoyou:floatingactionbutton:v1.6.7'
 
     testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:support-v13:26.0.0-beta2'
 }
 
 apply plugin: 'com.google.gms.google-services' //KEEP THIS AT THE BOTTOM

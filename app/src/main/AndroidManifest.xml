@@ -22,11 +22,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".ui.activity.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,16 +34,17 @@
         </activity>
 
         <!-- Main activity -->
-        <activity
-            android:name=".ui.activity.MainActivity">
-            <!--android:configChanges="keyboardHidden|orientation|screenSize">-->
+        <activity android:name=".ui.activity.MainActivity">
+
+            <!-- android:configChanges="keyboardHidden|orientation|screenSize"> -->
         </activity>
 
         <!-- Authenticator activity -->
         <activity android:name=".auth.AuthenticatorActivity" />
 
         <!-- Authenticator service -->
-        <service android:name=".auth.AuthenticatorService"
+        <service
+            android:name=".auth.AuthenticatorService"
             android:permission=""
             tools:ignore="ExportedService">
             <intent-filter>
@@ -60,14 +60,16 @@
         <service android:name=".backend.BackendService" />
 
         <!-- Firebase services -->
-        <service android:name=".firebase.FirebaseService"
+        <service
+            android:name=".firebase.FirebaseService"
             android:permission=""
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".firebase.FirebaseMessaging"
+        <service
+            android:name=".firebase.FirebaseMessaging"
             android:permission=""
             tools:ignore="ExportedService">
             <intent-filter>
@@ -92,7 +94,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.IntroActivity" />
-
+        <activity
+            android:name=".ui.activity.ChatroomsExplorationActivity"
+            android:label="@string/title_activity_chatrooms_exploration"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
     </application>
 
 </manifest>

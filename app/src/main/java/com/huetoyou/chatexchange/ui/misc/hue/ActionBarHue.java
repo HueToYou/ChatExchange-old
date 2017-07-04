@@ -97,6 +97,26 @@ public class ActionBarHue
         }
     }
 
+    public static void setTabBarColorToSharedPrefsValue(AppCompatActivity activity)
+    {
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (activity != null)
+        {
+            ActionBar actionBar = activity.getSupportActionBar();
+
+            if (actionBar != null)
+            {
+                int initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
+                actionBar.setStackedBackgroundDrawable(new ColorDrawable(initialColor));
+
+            }
+        }
+    }
+
     public static void setActionBarColorToSharedPrefsValue(AppCompatPreferenceActivity activity)
     {
         if (mSharedPreferences == null)

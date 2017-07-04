@@ -14,6 +14,10 @@
         <item
             android:id="@+id/action_browser"
             android:title="@string/options_menu_browser" />
+
+        <item
+            android:id="@+id/explore_chats"
+            android:title="Explore Chats" />
     </group>
 
 </menu>
