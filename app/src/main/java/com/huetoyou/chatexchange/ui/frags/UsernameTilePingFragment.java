@@ -25,11 +25,6 @@ public class UsernameTilePingFragment extends Fragment
     private String mUsername;
     private ChatFragment.SetTabCompleteName mSetTabCompleteName;
 
-//    public UsernameTilePingFragment(UserTileFragment fragment, ChatFragment.SetTabCompleteName setTabCompleteName) {
-//        mUserTileFragment = fragment;
-//        mSetTabCompleteName = setTabCompleteName;
-//    }
-
     public static UsernameTilePingFragment newInstance(UserTileFragment fragment, ChatFragment.SetTabCompleteName setTabCompleteName)
     {
         UsernameTilePingFragment pingFragment = new UsernameTilePingFragment();

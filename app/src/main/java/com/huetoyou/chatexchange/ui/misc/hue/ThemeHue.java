@@ -33,7 +33,6 @@ public class ThemeHue
         if (desiredThemeIsDark)
         {
             //NB: this *must* be called before setContentView(), else weird things happen
-//            if (activity instanceof MainActivity) activity.setTheme(R.style.DarkTheme_NoActionBar);
             activity.setTheme(R.style.DarkTheme);
         }
     }

@@ -84,17 +84,6 @@ public class RecyclerAdapter
         holder.setImage(position);
     }
 
-//    public MyViewHolder getViewHolder() {
-//        return mViewHolder;
-//    }
-
-    //Set new mNames.
-//    public void setmNames(@NonNull final List<String> mNames) {
-//        applyAndAnimateRemovals(mNames);
-//        applyAndAnimateAdditions(mNames);
-//        applyAndAnimateMovedItems(mNames);
-//    }
-
     //Remove an item at position and notify changes.
     public String removeItem(int position) {
         if (mNames.get(position) != null)

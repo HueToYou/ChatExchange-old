@@ -65,9 +65,6 @@ public class HomeFragment extends Fragment
 
         mAccountManager = AccountManager.get(getActivity());
 
-//        view.findViewById(R.id.open_in_webview).setVisibility(View.GONE);
-//        setupWebView();
-
         oncreateHasBeenCalled = true;
 
         TutorialStuff.homeFragTutorial(getActivity(), view);
@@ -105,11 +102,6 @@ public class HomeFragment extends Fragment
     @Override
     public void onAttach(Context context)
     {
-        //noinspection StatementWithEmptyBody
-        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
-        {
-            //setChatButtonTint();
-        }
         super.onAttach(context);
     }
 
@@ -118,22 +110,8 @@ public class HomeFragment extends Fragment
     {
         hueAllTheThings();
 
-        //noinspection StatementWithEmptyBody
-        if (!getActivity().getSupportFragmentManager().findFragmentByTag("home").isDetached())
-        {
-            //setChatButtonTint();
-        }
-//        setChatButtonTint();
         super.onResume();
     }
-
-    /*private void setChatButtonTint() {
-        mHueUtils = new Utils();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int initialColor = mSharedPreferences.getInt("default_color", getResources().getColor(R.color.colorPrimary));
-        ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
-        mHueUtils.showChatsTint(colorStateList, (AppCompatActivity)getActivity());
-    }*/
 
     /*
      * Set appropriate colors

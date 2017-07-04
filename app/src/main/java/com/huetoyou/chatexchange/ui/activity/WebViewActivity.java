@@ -26,10 +26,7 @@ public class WebViewActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        FrameLayout mParentView = new FrameLayout(this);
-//        mWebView = new WebView(this);
 
-//        mParentView.addView(mWebView);
         setContentView(R.layout.fragment_star_webview);
         Intent intent = getIntent();
 

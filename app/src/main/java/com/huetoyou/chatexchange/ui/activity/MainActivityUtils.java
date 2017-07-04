@@ -6,25 +6,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
-import android.view.View;
-import android.widget.ListView;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
-import com.github.clans.fab.Util;
-import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.Utils;
-import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
-import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,11 +21,6 @@ import org.jsoup.select.Elements;
 
 import java.io.FileOutputStream;
 import java.net.URL;
-
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
-import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
 class MainActivityUtils
 {

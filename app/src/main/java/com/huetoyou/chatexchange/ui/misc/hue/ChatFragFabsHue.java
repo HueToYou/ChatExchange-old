@@ -93,25 +93,19 @@ public class ChatFragFabsHue
         @ColorInt int colorNormal;
         @ColorInt int colorPressed;
         @ColorInt int textColor;
-//        TypedArray a;
 
         if (desiredThemeIsDark)
         {
-//            a = activity.getTheme().obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = HueUtils.darkenColor(activity.getResources().getColor(R.color.white), .9f);
             colorNormal = HueUtils.darkenColor(activity.getResources().getColor(android.R.color.darker_gray), .6f);
             colorPressed = colorNormal;
         }
         else
         {
-//            a = activity.getTheme().obtainStyledAttributes(R.style.DarkTheme, new int[] {R.attr.colorBackgroundFloating});
             textColor = activity.getResources().getColor(android.R.color.primary_text_dark);
             colorNormal = 0xFF333333;
             colorPressed = 0xFF444444;
         }
-
-//        color = a.getColor(0, 0);
-//        a.recycle();
 
         VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(activity.getResources(), drawable, null);
         assert vectorDrawableCompat != null;

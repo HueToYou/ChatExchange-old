@@ -37,7 +37,6 @@ import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
@@ -46,7 +45,6 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -68,7 +66,6 @@ import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +80,7 @@ public class MainActivity extends SlidingActivity
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
-    private RecyclerView chatroomsList; //TODO: convert to RecyclerView at some point
+    private RecyclerView chatroomsList;
     private static SlidingMenu mCurrentUsers_SlidingMenu;
     private static FragmentManager mFragmentManager;
 
@@ -119,37 +116,7 @@ public class MainActivity extends SlidingActivity
 
     private String mCookieString = null;
 
-    private int mCurrentItem = 0;
-
-//    @SuppressLint("StaticFieldLeak")
-//    private static MainActivity mainActivity;
     private MainActivityUtils.AddList mAddList;
-
-//    private final View.OnClickListener mItemClickListener = new View.OnClickListener()
-//    {
-//        @Override
-//        public void onClick(View view)
-//        {
-//            chatroomsList.requestFocusFromTouch();
-////            chatroomsList.setSelection(position);
-//            chatroomsList.requestFocus();
-//
-////            mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
-//            mCurrentFragment = mAdapter.getUrlAt(mAdapter.getViewHolder().getAdapterPosition());
-//            doCloseAnimationForDrawerToggle(mDrawerButton);
-//            getmChatroomSlidingMenu().toggle();
-//
-//            mHandler.postDelayed(new Runnable()
-//            {
-//                @Override
-//                public void run()
-//                {
-//                    setFragmentByTag(mCurrentFragment);
-//                }
-//            }, getResources().getInteger(R.integer.animation_duration_ms));
-//
-//        }
-//    };
 
     private VectorDrawableCompat drawable;
     private ViewGroup mActionBar;
@@ -183,7 +150,6 @@ public class MainActivity extends SlidingActivity
             public void onClick(View view, int position)
             {
                 Log.e("CLICKED", position + "");
-                mCurrentItem = position;
 
                 mCurrentFragment = mAdapter.getUrlAt(position);
                 doCloseAnimationForDrawerToggle(mDrawerButton);
@@ -207,39 +173,10 @@ public class MainActivity extends SlidingActivity
         });
 
         chatroomsList = findViewById(R.id.chatroomsListView);
-//        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         chatroomsList.setAdapter(mAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
                 DividerItemDecoration.VERTICAL);
         chatroomsList.addItemDecoration(dividerItemDecoration);
-
-//        chatroomsList.setOnItemClickListener(mItemClickListener);
-
-//        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-//        {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
-//            {
-//                //chatroomsList.requestFocusFromTouch();
-//                chatroomsList.setOnItemClickListener(null);
-//                chatroomsList.setSelection(position);
-//                //chatroomsList.requestFocus();
-//
-//                mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
-//
-//                confirmClose(view);
-//                return true;
-//            }
-//        });
-
-        /*android.support.v7.widget.Toolbar toolbar = new android.support.v7.widget.Toolbar(this);
-        toolbar.setId(1001);
-        TypedValue typedValue = new TypedValue();
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics()));
-        toolbar.setLayoutParams(layoutParams);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-        setSupportActionBar(toolbar);*/
 
         assert getSupportActionBar() != null;
 
@@ -341,16 +278,6 @@ public class MainActivity extends SlidingActivity
 
         mIntent = getIntent();
         respondToNotificationClick();
-
-        /*if (!mFragmentManager.findFragmentByTag("home").isDetached())
-        {
-            actionBarHue.setActionBarColorToSharedPrefsValue(this);
-        }
-
-        else if (!mSharedPrefs.getBoolean("dynamicallyColorBar", false))
-        {
-            actionBarHue.setActionBarColorToSharedPrefsValue(this);
-        }*/
     }
 
     @Override
@@ -402,9 +329,6 @@ public class MainActivity extends SlidingActivity
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         mEditor = mSharedPrefs.edit();
         mEditor.apply();
-//        Log.e("URLS", mChatUrls.toString());
-
-        //mEditor.putInt("tabIndex", 0).apply();
         mFragmentManager = getSupportFragmentManager();
 
         mIntent = getIntent();
@@ -503,19 +427,12 @@ public class MainActivity extends SlidingActivity
 
     private void doCloseAnimationForDrawerToggle(View view)
     {
-        /*Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_close_animation);
-        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
-        view.startAnimation(animation);*/
-
         mOpenAnimSet.cancel();
         mCloseAnimSet.start();
     }
 
     private void doOpenAnimationForDrawerToggle(View view)
     {
-        /*Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drawer_toggle_open_animation);
-        animation.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
-        view.startAnimation(animation);*/
         mCloseAnimSet.cancel();
         mOpenAnimSet.start();
     }
@@ -541,21 +458,6 @@ public class MainActivity extends SlidingActivity
                         mSEChatIDs.add(extras.getString("idSE"));
                         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
                         doFragmentStuff();
-                        /*new AsyncTask<Void, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(Void... voids) {
-                                while (mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) == null);
-                                while (mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) == null);
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                 try { setFragmentByChatId(extras.getString("idSE"), "exchange"); }
-                                 catch (Exception e) { e.printStackTrace(); }
-                                 super.onPostExecute(aVoid);
-                            }
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
 
                         ReceiveACB.newInstance(new ACBInterface()
                         {
@@ -595,21 +497,7 @@ public class MainActivity extends SlidingActivity
                         mSOChatIDs.add(extras.getString("idSO"));
                         mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                         doFragmentStuff();
-                        /*new AsyncTask<Void, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(Void... voids) {
-                                while (mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) == null);
-                                while (mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) == null);
-                                return null;
-                            }
 
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                 try { setFragmentByChatId(extras.getString("idSO"), "overflow"); }
-                                 catch (Exception e) { e.printStackTrace(); }
-                                 super.onPostExecute(aVoid);
-                            }
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
                         ReceiveACB.newInstance(new ACBInterface()
                         {
                             @Override
@@ -951,29 +839,6 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-//                            ArrayList<String> names = new ArrayList<>();
-//                            names.addAll(asList(mSEChatNames));
-//                            names.addAll(asList(mSOChatNames));
-//
-//                            ArrayList<String> urls = new ArrayList<>();
-//                            urls.addAll(asList(mSEChatUrls));
-//                            urls.addAll(asList(mSOChatUrls));
-//
-//                            ArrayList<Drawable> icons = new ArrayList<>();
-//                            icons.addAll(asList(mSEChatIcons));
-//                            icons.addAll(asList(mSOChatIcons));
-//
-//                            ArrayList<Integer> colors = new ArrayList<>();
-//                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
-//                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
-//
-//                            ArrayList<Fragment> fragments = new ArrayList<>();
-//                            fragments.addAll(asList(mSEChats));
-//                            fragments.addAll(asList(mSOChats));
-//
-//                            addFragmentsToList(names, urls, icons, colors, fragments);
-//                            initiateCurrentFragments(fragments);
-                            addFragmentToList(name, url, icon, color);
                             initiateFragment(fragment);
                         }
                     });
@@ -1036,30 +901,6 @@ public class MainActivity extends SlidingActivity
                 });
             }
         }).start();
-        /*mAddListItemsFromURLList = AddListItemsFromURLList.newInstance(new AddItemsListener() {
-            @Override
-            public void onStart() {
-                mCanAddChat = false;
-            }
-
-            @Override
-            public void onProgressMade(String url, ArrayList<String> names, ArrayList<String> urls, ArrayList<Drawable> icons, ArrayList<Integer> colors, ArrayList<Fragment> fragments) {
-                fragments = addTab(url, names, urls, icons, colors, fragments);
-                if (fragments.size() > 0) {
-                    initiateCurrentFragments(fragments);
-                    addFragmentsToList(names, urls, icons, colors, fragments);
-                } else {
-                    removeAllFragmentsFromList();
-                }
-            }
-
-            @Override
-            public void onFinished() {
-                mCanAddChat = true;
-                findViewById(R.id.loading_progress).setVisibility(View.GONE);
-            }
-        });
-        mAddListItemsFromURLList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mChatUrls);*/
     }
 
     /**
@@ -1166,17 +1007,9 @@ public class MainActivity extends SlidingActivity
                 startActivity(browserIntent);
                 break;
             default:
-                /*setFragmentByTag("home");
-                for (Fragment fragment : mFragmentManager.getFragments()) {
-                    if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment) if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing()) ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
-                }
-                if (mChatroomSlidingMenu.isMenuShowing()) mChatroomSlidingMenu.showContent(true);
-                mChatroomSlidingMenu.toggle();
-                drawable.start();
-                ((AnimatedVectorDrawableCompat)item.getIcon()).start();
-                onSupportNavigateUp();
-
-                LOOK UNDER onCreate() for Drawer Toggle!*/
+                /**
+                 * @see MainActivity#onCreate(Bundle) for drawer toggle!
+                 */
                 break;
         }
 
@@ -1188,39 +1021,10 @@ public class MainActivity extends SlidingActivity
      */
 
     /**
-     * Add specified fragments to the {@link FragmentManager}
+     * Add specified fragment to the {@link FragmentManager}
      *
-     * @param fragments list of Fragments to be added
+     * @param fragment Fragment to be added
      */
-
-    private void initiateCurrentFragments(ArrayList<Fragment> fragments)
-    {
-        for (int i = 0; i < fragments.size(); i++)
-        {
-            try
-            {
-                Fragment fragment = fragments.get(i);
-                String tag = fragment.getArguments().getString("chatUrl");
-                if (mFragmentManager.findFragmentByTag(tag) == null)
-                {
-                    mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
-                }
-
-                if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null)
-                {
-                    mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-                    //hueUtils.setActionBarColorToSharedPrefsValue(this);
-//                    hueUtils.setAddChatFabColorDefault(this);
-                }
-
-                mFragmentManager.executePendingTransactions();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private void initiateFragment(Fragment fragment) {
         try
@@ -1234,8 +1038,6 @@ public class MainActivity extends SlidingActivity
             if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null)
             {
                 mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-                //hueUtils.setActionBarColorToSharedPrefsValue(this);
-//                    hueUtils.setAddChatFabColorDefault(this);
             }
 
             mFragmentManager.executePendingTransactions();
@@ -1247,49 +1049,15 @@ public class MainActivity extends SlidingActivity
     }
 
     /**
-     * Add fragments to the ListView/SlidingMenu
-     *
-     * @param chatroomNames list of chat names
-     * @param chatUrls      list of corresponding chat URLs
-     * @param chatIcons     list of corresponding chat favicons
-     * @param chatColors    list of corresponding chat accent colors
-     * @param chatFragments list of chat fragments (TODO: remove this variable?)
+     * Add fragment info to the RecyclerView list
+     * @param name Chat name
+     * @param url Chat URL
+     * @param icon Chat favicon
+     * @param color Chat color
      */
-
-    private void addFragmentsToList(ArrayList<String> chatroomNames,
-                                    ArrayList<String> chatUrls,
-                                    ArrayList<Drawable> chatIcons,
-                                    ArrayList<Integer> chatColors,
-                                    ArrayList<Fragment> chatFragments)
-    {
-
-        String[] names = new String[chatroomNames.size()];
-        names = chatroomNames.toArray(names);
-
-        String[] urls = new String[chatUrls.size()];
-        urls = chatUrls.toArray(urls);
-
-        Drawable[] ico = new Drawable[chatIcons.size()];
-        ico = chatIcons.toArray(ico);
-
-        Integer[] colors = new Integer[chatColors.size()];
-        colors = chatColors.toArray(colors);
-
-        if (names.length < 1)
-        {
-//            chatroomsList.
-        }
-        //Log.e("LE", names.length + "");
-
-        // Here, you set the data in your ListView
-    }
 
     private void addFragmentToList(String name, String url, Drawable icon, Integer color) {
         Log.e("ADD", "ADD");
-//        mAdapter.applyAndAnimateAdditions(new ArrayList<String>(Arrays.asList(name)),
-//                new ArrayList<String>(Arrays.asList(url)),
-//                new ArrayList<Drawable>(Arrays.asList(icon)),
-//                new ArrayList<Integer>(Arrays.asList(color)));
         mAdapter.addItem(mAdapter.getItemCount(), name, url, icon, color);
     }
 
@@ -1316,13 +1084,6 @@ public class MainActivity extends SlidingActivity
 
     private void setFragmentByChatId(String id, String domain)
     {
-        /*for (String url : mChatUrls) {
-            if (url.contains(domain) && url.contains(id)) {
-                setFragmentByTag(url);
-                break;
-            }
-        }*/
-
         Log.e("SETID", id.concat(domain));
 
         if (domain.contains("exchange"))
@@ -1375,11 +1136,6 @@ public class MainActivity extends SlidingActivity
                 if (tag.equals("home"))
                 {
                     mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                    /*noinspection ConstantConditions
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    hueUtils.showAddChatFab(this, true);
-                    hueUtils.setAddChatFabColorToSharedPrefsValue(this);
-                    hueUtils.setActionBarColorDefault(this);*/
                     mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
                     ((HomeFragment) fragToAttach).hueTest();
                 }
@@ -1394,13 +1150,6 @@ public class MainActivity extends SlidingActivity
                         mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                     }
                     mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-                    /*noinspection ConstantConditions
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    VectorDrawableCompat drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
-                    drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
-                    getSupportActionBar().setHomeAsUpIndicator(drawable);
-                    hueUtils.showAddChatFab(this, falzse);
-                        ((ChatFragment) fragToAttach).hueTest();*/
                 }
             }
             else
@@ -1417,17 +1166,10 @@ public class MainActivity extends SlidingActivity
 
     /**
      * Handle adding chats
-     * TODO: remove add-by-URL option
      */
 
     private void showAddTabDialog()
     {
-//        if (/*mCanAddChat*/true) { //TODO: Experiment with adding a chat while chats are loading, then fix this
-//
-//
-//        } else {
-//            Toast.makeText(this, getResources().getText(R.string.cant_add_chat), Toast.LENGTH_LONG).show();
-//        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
@@ -1469,30 +1211,19 @@ public class MainActivity extends SlidingActivity
                 String inputText = input.getText().toString();
                 if (!inputText.isEmpty())
                 {
-//                    String url;
-//                    if (mAddList != null && !mAddList.getStatus().equals(AsyncTask.Status.FINISHED))
-//                    {
-//                        mAddList.cancel(true);
-//                    }
 
                     if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString()))
                     {
-//                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
                         mSOChatIDs.add(inputText);
                     }
                     else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
                     {
-//                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
                         mSEChatIDs.add(inputText);
                     }
 
                     mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                     mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
-//                    mChatUrls.add(url);
-//                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
-//                    mEditor.apply();
-//                    Log.e("URLSA", mChatUrls.toString());
                     doFragmentStuff();
                 }
                 else
@@ -1584,17 +1315,9 @@ public class MainActivity extends SlidingActivity
                                     mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                                     mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
-//                                    setFragmentByTag("home");
-//                                    mAdapter.applyAndAnimateRemovals(new ArrayList<>(Arrays.asList(mAdapter.getUrlAt(position))));
+                                    if (mAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
                                     mAdapter.removeItem(position);
-//                                        doFragmentStuff();
                                 }
-
-//                                    mChatUrls.remove(remFrag.getTag());
-//                                    Log.e("TAG", remFrag.getTag());
-//                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
-//                                    mEditor.apply();
-//                                    Log.e("URLSR", mChatUrls.toString());
                             }
                         })
                         .setNegativeButton(getResources().getText(R.string.generic_no), null)
@@ -1656,12 +1379,6 @@ public class MainActivity extends SlidingActivity
     @Override
     public boolean onSupportNavigateUp()
     {
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                setFragmentByTag("home");
-//            }
-//        }, 400);
         mChatroomSlidingMenu.toggle();
         return true;
     }

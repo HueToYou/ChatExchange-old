@@ -122,8 +122,6 @@ public class ChatFragment extends Fragment
             {
                 if (hasFocus)
                 {
-                    /*Toast.makeText(getActivity(), "Got focus",
-                    Toast.LENGTH_LONG).show();*/
                     pingSuggestionsScrollView.setVisibility(View.VISIBLE);
                 }
             }
@@ -203,7 +201,6 @@ public class ChatFragment extends Fragment
                     {
                         try
                         {
-//                            Log.e("TTTT", usersJson.substring(2058));
                             JSONObject object = new JSONObject(usersJson);
                             JSONArray jArray = object.getJSONArray("users");
 

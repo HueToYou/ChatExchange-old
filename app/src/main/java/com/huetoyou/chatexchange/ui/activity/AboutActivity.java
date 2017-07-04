@@ -10,14 +10,9 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class AboutActivity extends AppCompatActivity
 {
-
-    private SlidingMenu mSlidingMenu;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        ThemeHue themeHue = new ThemeHue();
-        ActionBarHue actionBarHue = new ActionBarHue();
         ThemeHue.setTheme(AboutActivity.this);
 
         super.onCreate(savedInstanceState);
