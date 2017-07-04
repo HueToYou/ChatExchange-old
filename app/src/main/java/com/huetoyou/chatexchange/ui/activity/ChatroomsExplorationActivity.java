@@ -24,6 +24,7 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 public class ChatroomsExplorationActivity extends AppCompatActivity implements android.support.v7.app.ActionBar.TabListener
 {
@@ -46,6 +47,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatrooms_exploration);
         // Create the adapter that will return a fragment for each of the three
