@@ -17,9 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 
@@ -170,8 +172,11 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("hue2");
+
+            WebView webView = rootView.findViewById(R.id.stars_view);
+            CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
+            customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+
             return rootView;
         }
     }
@@ -204,8 +209,10 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("hue");
+
+            WebView webView = rootView.findViewById(R.id.stars_view);
+            CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
+            customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
             return rootView;
         }
     }

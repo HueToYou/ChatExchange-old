@@ -1455,6 +1455,7 @@ public class MainActivity extends SlidingActivity
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         removeAllFragmentsFromList();
+                        setFragmentByTag("home");
                     }
                 })
                 .setNegativeButton(getResources().getText(R.string.generic_no), null)

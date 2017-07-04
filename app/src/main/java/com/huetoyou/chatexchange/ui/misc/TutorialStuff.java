@@ -65,6 +65,7 @@ public class TutorialStuff
         config.setFadeDuration(250);
         int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
         config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+        config.setRenderOverNavigationBar(true);
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
         sequence.setConfig(config);
@@ -138,6 +139,7 @@ public class TutorialStuff
         config.setFadeDuration(250);
         int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
         config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+        config.setRenderOverNavigationBar(true);
 
         final MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "HomeFragTutorial");
         sequence.setConfig(config);
@@ -178,6 +180,7 @@ public class TutorialStuff
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(0);
         config.setFadeDuration(250);
+        config.setRenderOverNavigationBar(true);
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
         {
