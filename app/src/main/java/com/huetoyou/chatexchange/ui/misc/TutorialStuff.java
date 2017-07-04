@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -55,6 +56,9 @@ public class TutorialStuff
         recyclerAdapter.addItem(2, "Example 3", "U", drawable, 0);
 
         dummyChats.setAdapter(recyclerAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
+                DividerItemDecoration.VERTICAL);
+        dummyChats.addItemDecoration(dividerItemDecoration);
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(0);

@@ -28,6 +28,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
@@ -208,6 +209,9 @@ public class MainActivity extends SlidingActivity
         chatroomsList = findViewById(R.id.chatroomsListView);
 //        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         chatroomsList.setAdapter(mAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
+                DividerItemDecoration.VERTICAL);
+        chatroomsList.addItemDecoration(dividerItemDecoration);
 
 //        chatroomsList.setOnItemClickListener(mItemClickListener);
 
