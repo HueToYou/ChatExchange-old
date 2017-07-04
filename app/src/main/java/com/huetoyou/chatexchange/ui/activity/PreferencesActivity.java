@@ -126,13 +126,29 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             /*
              * Dynamic message background color preference
              */
-            CheckBoxPreference dyanmic_msg_bgcolor = (CheckBoxPreference) findPreference("dynamic_msg_bgcolor");
+            CheckBoxPreference dynamic_msg_bgcolor = (CheckBoxPreference) findPreference("dynamic_msg_bgcolor");
+
+            /*
+             * Dynamic message background [dark theme] color preference
+             */
+            ColorPreference msg_bgcolor_darkTheme = (ColorPreference) findPreference("msg_bgcolor_darkTheme");
 
             /*
              * Custom message background color preference
              */
             ColorPreference msg_bgcolor = (ColorPreference) findPreference("msg_bgcolor");
-            setDynamicMsgBgColor(dyanmic_msg_bgcolor, msg_bgcolor);
+            setDynamicMsgBgColor(dynamic_msg_bgcolor, msg_bgcolor, msg_bgcolor_darkTheme);
+
+            if(darkThemePref.isChecked())
+            {
+                msg_bgcolor_darkTheme.setEnabled(!dynamic_msg_bgcolor.isChecked());
+                msg_bgcolor.setEnabled(false);
+            }
+            else
+            {
+                msg_bgcolor.setEnabled(!dynamic_msg_bgcolor.isChecked());
+                msg_bgcolor_darkTheme.setEnabled(false);
+            }
 
             /*
              * Backend preference
@@ -243,7 +259,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    boolean pref = Boolean.parseBoolean(newValue.toString());
+                    boolean pref = (Boolean)newValue;
 
                     mSharedPrefs.edit().putBoolean("darkTheme", pref).apply();
 
@@ -263,16 +279,27 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             });
         }
 
-        private void setDynamicMsgBgColor(final CheckBoxPreference checkBoxPreference, final ColorPreference hue)
+        private void setDynamicMsgBgColor(final CheckBoxPreference checkBoxPreference, final ColorPreference hue, final ColorPreference hueDark)
         {
             hue.setEnabled(!checkBoxPreference.isChecked());
+            hueDark.setEnabled(!checkBoxPreference.isChecked());
+            final CheckBoxPreference darkThemePref = (CheckBoxPreference) findPreference("dark_theme");
 
             checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o)
                 {
-                    hue.setEnabled(!(boolean) o);
+                    if(darkThemePref.isChecked())
+                    {
+                        hueDark.setEnabled(!(boolean) o);
+                        hue.setEnabled(false);
+                    }
+                    else
+                    {
+                        hue.setEnabled(!(boolean) o);
+                        hueDark.setEnabled(false);
+                    }
 
                     return true;
                 }

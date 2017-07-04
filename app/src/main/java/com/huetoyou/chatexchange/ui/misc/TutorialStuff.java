@@ -57,8 +57,8 @@ public class TutorialStuff
         dummyChats.setAdapter(recyclerAdapter);
 
         ShowcaseConfig config = new ShowcaseConfig();
-        config.setFadeDuration(300);
         config.setDelay(0);
+        config.setFadeDuration(250);
         int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
         config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
 
@@ -130,8 +130,8 @@ public class TutorialStuff
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         ShowcaseConfig config = new ShowcaseConfig();
-        config.setFadeDuration(300);
         config.setDelay(0);
+        config.setFadeDuration(250);
         int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
         config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
 
@@ -186,8 +186,8 @@ public class TutorialStuff
         final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
         ShowcaseConfig config = new ShowcaseConfig();
-        config.setFadeDuration(300);
         config.setDelay(0);
+        config.setFadeDuration(250);
 
         if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
         {

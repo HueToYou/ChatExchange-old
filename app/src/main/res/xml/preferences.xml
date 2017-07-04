@@ -60,7 +60,16 @@
             app:cpv_allowCustom="true"
             app:cpv_allowPresets="true"
             app:cpv_dialogType="custom"
-            android:title="Custom background color" />
+            android:title="Background color" />
+
+        <com.jrummyapps.android.colorpicker.ColorPreference
+            android:key="msg_bgcolor_darkTheme"
+            android:defaultValue="@color/colorPrimaryLight"
+            android:summary="Choose a custom message background color for when the dark theme is activated"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_dialogType="custom"
+            android:title="Background color [dark theme]" />
 
     </PreferenceCategory>
 
