@@ -25,12 +25,13 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/chatroomsListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/dummy_chat_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

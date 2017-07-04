@@ -34,6 +34,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -42,6 +43,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
@@ -64,9 +66,9 @@ import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
-import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
@@ -79,8 +81,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,8 +105,7 @@ public class MainActivity extends SlidingActivity
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
-    private ListView chatroomsList; //TODO: convert to RecyclerView at some point
-    private ImgTextArrayAdapter chatroomArrayAdapter;
+    private RecyclerView chatroomsList; //TODO: convert to RecyclerView at some point
     private SlidingMenu mCurrentUsers_SlidingMenu;
     private FragmentManager mFragmentManager;
 
@@ -138,41 +141,45 @@ public class MainActivity extends SlidingActivity
 
     private String mCookieString = null;
 
-    @SuppressLint("StaticFieldLeak")
-    private static MainActivity mainActivity;
+    private int mCurrentItem = 0;
+
+//    @SuppressLint("StaticFieldLeak")
+//    private static MainActivity mainActivity;
     private MainActivityUtils.AddList mAddList;
 
-    private final AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener()
-    {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, final int position, long id)
-        {
-            chatroomsList.requestFocusFromTouch();
-            chatroomsList.setSelection(position);
-            chatroomsList.requestFocus();
+//    private final View.OnClickListener mItemClickListener = new View.OnClickListener()
+//    {
+//        @Override
+//        public void onClick(View view)
+//        {
+//            chatroomsList.requestFocusFromTouch();
+////            chatroomsList.setSelection(position);
+//            chatroomsList.requestFocus();
+//
+////            mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
+//            mCurrentFragment = mAdapter.getUrlAt(mAdapter.getViewHolder().getAdapterPosition());
+//            doCloseAnimationForDrawerToggle(mDrawerButton);
+//            getmChatroomSlidingMenu().toggle();
+//
+//            mHandler.postDelayed(new Runnable()
+//            {
+//                @Override
+//                public void run()
+//                {
+//                    setFragmentByTag(mCurrentFragment);
+//                }
+//            }, getResources().getInteger(R.integer.animation_duration_ms));
+//
+//        }
+//    };
 
-            mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
-            doCloseAnimationForDrawerToggle(mDrawerButton);
-
-            mHandler.postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setFragmentByTag(chatroomArrayAdapter.getUrls().get(position));
-                }
-            }, getResources().getInteger(R.integer.animation_duration_ms));
-
-
-            getmChatroomSlidingMenu().toggle();
-        }
-    };
     private VectorDrawableCompat drawable;
     private ViewGroup mActionBar;
     private AppCompatImageButton mDrawerButton;
 
     private final AnimatorSet mOpenAnimSet = new AnimatorSet();
     private final AnimatorSet mCloseAnimSet = new AnimatorSet();
+    private RecyclerAdapter mAdapter;
 
     /*
      * Activity Lifecycle
@@ -181,7 +188,7 @@ public class MainActivity extends SlidingActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        mainActivity = this;
+//        mainActivity = this;
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
@@ -192,30 +199,57 @@ public class MainActivity extends SlidingActivity
         createUsersSlidingMenu();
         setup();
 
-        chatroomArrayAdapter = new ImgTextArrayAdapter(this);
-
-        chatroomsList = findViewById(R.id.chatroomsListView);
-        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        chatroomsList.setAdapter(chatroomArrayAdapter);
-
-        chatroomsList.setOnItemClickListener(mItemClickListener);
-
-        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        mAdapter = new RecyclerAdapter(this, new RecyclerAdapter.OnItemClicked()
         {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
+            public void onClick(View view, int position)
             {
-                //chatroomsList.requestFocusFromTouch();
-                chatroomsList.setOnItemClickListener(null);
-                chatroomsList.setSelection(position);
-                //chatroomsList.requestFocus();
+                Log.e("CLICKED", position + "");
+                mCurrentItem = position;
 
-                mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
+                mCurrentFragment = mAdapter.getUrlAt(position);
+                doCloseAnimationForDrawerToggle(mDrawerButton);
+                getmChatroomSlidingMenu().toggle();
 
-                confirmClose(view);
-                return true;
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        setFragmentByTag(mCurrentFragment);
+                    }
+                }, getResources().getInteger(R.integer.animation_duration_ms));
+            }
+
+            @Override
+            public void onCloseClick(View view, int position)
+            {
+                confirmClose(position);
             }
         });
+
+        chatroomsList = findViewById(R.id.chatroomsListView);
+//        chatroomsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        chatroomsList.setAdapter(mAdapter);
+
+//        chatroomsList.setOnItemClickListener(mItemClickListener);
+
+//        chatroomsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+//        {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id)
+//            {
+//                //chatroomsList.requestFocusFromTouch();
+//                chatroomsList.setOnItemClickListener(null);
+//                chatroomsList.setSelection(position);
+//                //chatroomsList.requestFocus();
+//
+//                mCurrentFragment = chatroomArrayAdapter.getUrls().get(position);
+//
+//                confirmClose(view);
+//                return true;
+//            }
+//        });
 
         /*android.support.v7.widget.Toolbar toolbar = new android.support.v7.widget.Toolbar(this);
         toolbar.setId(1001);
@@ -424,7 +458,7 @@ public class MainActivity extends SlidingActivity
                         Log.e("POS", "DEFL");
                         setFragmentByTag("home");
                     }
-                }, R.integer.animation_duration_ms);
+                }, getResources().getInteger(R.integer.animation_duration_ms));
 
                 doCloseAnimationForDrawerToggle(mDrawerButton);
                 mChatroomSlidingMenu.toggle();
@@ -859,7 +893,7 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(final URL url, String data)
                 {
                     mSEChatUrls.put(Integer.decode(id), chatUrl);
-                    mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
+                    mAddList = MainActivityUtils.AddList.newInstance(MainActivity.this, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
 
                         private Fragment fragment;
@@ -884,27 +918,6 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-//                            ArrayList<String> names = new ArrayList<>();
-//                            names.addAll(asList(mSEChatNames));
-//                            names.addAll(asList(mSOChatNames));
-//
-//                            ArrayList<String> urls = new ArrayList<>();
-//                            urls.addAll(asList(mSEChatUrls));
-//                            urls.addAll(asList(mSOChatUrls));
-//
-//                            ArrayList<Drawable> icons = new ArrayList<>();
-//                            icons.addAll(asList(mSEChatIcons));
-//                            icons.addAll(asList(mSOChatIcons));
-//
-//                            ArrayList<Integer> colors = new ArrayList<>();
-//                            colors.addAll(sparseIntArrayAsList(mSEChatColors));
-//                            colors.addAll(sparseIntArrayAsList(mSOChatColors));
-//
-//                            ArrayList<Fragment> fragments = new ArrayList<>();
-//                            fragments.addAll(asList(mSEChats));
-//                            fragments.addAll(asList(mSOChats));
-
-//                            addFragmentsToList(names, urls, icons, colors, fragments);
                             addFragmentToList(name, url, icon, color);
                             initiateFragment(fragment);
                         }
@@ -934,7 +947,7 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(final URL url, String data)
                 {
                     mSOChatUrls.put(Integer.decode(id), chatUrl);
-                    MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mSharedPrefs, data, id, chatUrl, new AddListListener()
+                    MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(MainActivity.this, mSharedPrefs, data, id, chatUrl, new AddListListener()
                     {
 
                         private Fragment fragment;
@@ -1024,7 +1037,7 @@ public class MainActivity extends SlidingActivity
                     {
                         continue;
                     }
-                    if (chatroomsList.getCount() < mSEChatIDs.size() + mSOChatIDs.size())
+                    if (mAdapter.getItemCount() < mSEChatIDs.size() + mSOChatIDs.size())
                     {
                         continue;
                     }
@@ -1283,7 +1296,7 @@ public class MainActivity extends SlidingActivity
 
         if (names.length < 1)
         {
-            chatroomArrayAdapter.clear();
+//            chatroomsList.
         }
         //Log.e("LE", names.length + "");
 
@@ -1291,7 +1304,12 @@ public class MainActivity extends SlidingActivity
     }
 
     private void addFragmentToList(String name, String url, Drawable icon, Integer color) {
-        chatroomArrayAdapter.addChat(name, url, icon, color);
+        Log.e("ADD", "ADD");
+//        mAdapter.applyAndAnimateAdditions(new ArrayList<String>(Arrays.asList(name)),
+//                new ArrayList<String>(Arrays.asList(url)),
+//                new ArrayList<Drawable>(Arrays.asList(icon)),
+//                new ArrayList<Integer>(Arrays.asList(color)));
+        mAdapter.addItem(mAdapter.getItemCount(), name, url, icon, color);
     }
 
     /**
@@ -1302,7 +1320,8 @@ public class MainActivity extends SlidingActivity
     {
         if (chatroomsList != null)
         {
-            chatroomsList.setAdapter(null);
+            mAdapter = new RecyclerAdapter(this, null);
+            chatroomsList.setAdapter(mAdapter);
         }
         resetArrays(true);
     }
@@ -1470,26 +1489,21 @@ public class MainActivity extends SlidingActivity
                 if (!inputText.isEmpty())
                 {
 //                    String url;
-                    if (mAddList != null && !mAddList.getStatus().equals(AsyncTask.Status.FINISHED))
-                    {
-                        mAddList.cancel(true);
-                    }
+//                    if (mAddList != null && !mAddList.getStatus().equals(AsyncTask.Status.FINISHED))
+//                    {
+//                        mAddList.cancel(true);
+//                    }
 
                     if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString()))
                     {
 //                        url = getResources().getText(R.string.stackoverflow).toString().concat("rooms/").concat(inputText);
                         mSOChatIDs.add(inputText);
                     }
-                    else //noinspection StatementWithEmptyBody
-                        if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
-                        {
+                    else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
+                    {
 //                        url = getResources().getText(R.string.stackexchange).toString().concat("rooms/").concat(inputText);
-                            mSEChatIDs.add(inputText);
-                        }
-                        else
-                        {
-//                        url = inputText;
-                        }
+                        mSEChatIDs.add(inputText);
+                    }
 
                     mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
                     mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
@@ -1522,99 +1536,91 @@ public class MainActivity extends SlidingActivity
     /**
      * Handle removing a chat
      *
-     * @param v the view that called this method
+     * @param position the position of the item in the chat list
      */
 
-    public void confirmClose(View v)
+    public void confirmClose(final int position)
     {
-        if (chatroomsList.getSelectedItemPosition() != 0)
+
+        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        vib.vibrate(100);
+
+        runOnUiThread(new Runnable()
         {
-            Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
-            vib.vibrate(100);
-
-            runOnUiThread(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
-                            .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
-                            .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
+                        .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
+                        .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
                             {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
+                                String domain = "";
+                                String id = "";
+
+                                Pattern domP = Pattern.compile("//(.+?)\\.com");
+                                Matcher domM = domP.matcher(mAdapter.getUrlAt(position));
+
+                                while (!domM.hitEnd())
                                 {
-                                    String domain = "";
-                                    String id = "";
-
-                                    Pattern domP = Pattern.compile("//(.+?)\\.com");
-                                    Matcher domM = domP.matcher(mCurrentFragment);
-
-                                    while (!domM.hitEnd())
+                                    if (domM.find())
                                     {
-                                        if (domM.find())
-                                        {
-                                            domain = domM.group();
-                                        }
+                                        domain = domM.group();
+                                    }
+                                }
+
+                                Pattern idP = Pattern.compile("rooms/(.+?)\\b");
+                                Matcher idM = idP.matcher(mAdapter.getUrlAt(position));
+
+                                while (!idM.hitEnd())
+                                {
+                                    if (idM.find())
+                                    {
+                                        id = idM.group().replace("rooms/", "");
+                                    }
+                                }
+
+                                Log.e("IDDDDD", id);
+                                Log.e("DOMAIN", domain);
+
+                                if (!domain.isEmpty() && !id.isEmpty())
+                                {
+                                    if (domain.contains("overflow"))
+                                    {
+                                        mSOChatIDs.remove(id);
+                                    }
+                                    else if (domain.contains("exchange"))
+                                    {
+                                        mSEChatIDs.remove(id);
                                     }
 
-                                    Pattern idP = Pattern.compile("rooms/(.+?)\\b");
-                                    Matcher idM = idP.matcher(mCurrentFragment);
+                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mAdapter.getUrlAt(position)));
 
-                                    while (!idM.hitEnd())
-                                    {
-                                        if (idM.find())
-                                        {
-                                            id = idM.group().replace("rooms/", "");
-                                        }
-                                    }
+                                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
-                                    Log.e("IDDDDD", id);
-                                    Log.e("DOMAIN", domain);
-
-                                    if (!domain.isEmpty() && !id.isEmpty())
-                                    {
-                                        if (domain.contains("overflow"))
-                                        {
-                                            mSOChatIDs.remove(id);
-                                        }
-                                        else if (domain.contains("exchange"))
-                                        {
-                                            mSEChatIDs.remove(id);
-                                        }
-
-                                        mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mCurrentFragment));
-
-                                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
-
-                                        setFragmentByTag("home");
-                                        chatroomArrayAdapter.removeChat(mCurrentFragment);
+//                                    setFragmentByTag("home");
+//                                    mAdapter.applyAndAnimateRemovals(new ArrayList<>(Arrays.asList(mAdapter.getUrlAt(position))));
+                                    mAdapter.removeItem(position);
 //                                        doFragmentStuff();
-                                    }
+                                }
 
 //                                    mChatUrls.remove(remFrag.getTag());
 //                                    Log.e("TAG", remFrag.getTag());
 //                                    mEditor.putStringSet(CHAT_URLS_KEY, mChatUrls);
 //                                    mEditor.apply();
 //                                    Log.e("URLSR", mChatUrls.toString());
-                                }
-                            })
-                            .setNegativeButton(getResources().getText(R.string.generic_no), null)
-                            .setOnDismissListener(new DialogInterface.OnDismissListener()
-                            {
-                                @Override
-                                public void onDismiss(DialogInterface dialogInterface)
-                                {
-                                    chatroomsList.setOnItemClickListener(mItemClickListener);
-                                }
-                            })
-                            .show();
-                }
-            });
-        }
+                            }
+                        })
+                        .setNegativeButton(getResources().getText(R.string.generic_no), null)
+                        .show();
+            }
+        });
+
     }
 
     /**

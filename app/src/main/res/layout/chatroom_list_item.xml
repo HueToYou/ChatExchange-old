@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Definig a container for you List Item-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingBottom="16dp"
@@ -20,30 +21,50 @@
         android:src="@mipmap/ic_launcher"
         tools:ignore="ContentDescription" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingStart="5dp"
-        tools:ignore="RtlSymmetry">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/chatroomName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Ask Ubuntu General Room"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:ignore="HardcodedText,RtlHardcoded" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            tools:ignore="RtlSymmetry">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Huehuehuehue"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/chatroomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="left|center_vertical"
+                android:text="Ask Ubuntu General Room"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Huehuehuehue"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/close_chat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:tint="@color/white"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
+
+    </FrameLayout>
 
 
 </LinearLayout>

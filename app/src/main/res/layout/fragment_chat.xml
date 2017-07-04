@@ -34,7 +34,6 @@
             android:layout_toRightOf="@+id/show_chats_fab"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="confirmClose"
             android:tint="#fff"
             android:visibility="gone"
             app:elevation="4dp"

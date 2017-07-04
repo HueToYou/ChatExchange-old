@@ -21,7 +21,6 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.misc.ImgTextArrayAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
@@ -40,7 +39,7 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
-public class MainActivityUtils
+class MainActivityUtils
 {
     static class AddList extends AsyncTask<String, Void, Void>
     {

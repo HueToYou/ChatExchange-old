@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,8 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
+
+import java.util.ArrayList;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -41,16 +45,16 @@ public class TutorialStuff
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
-        final ListView dummyChats = activity.findViewById(R.id.dummy_chat_list);
+        final Drawable drawable = VectorDrawableCompat.create(activity.getResources(), R.mipmap.ic_launcher, null);
 
-        Drawable example = VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_help_outline_black_24dp, null);
+        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
-        ImgTextArrayAdapter imgTextArrayAdapter = new ImgTextArrayAdapter(activity);
-        imgTextArrayAdapter.addChat("Example 1", "", example, 0);
-        imgTextArrayAdapter.addChat("Example 2", "", example, 0);
-        imgTextArrayAdapter.addChat("Example 3", "", example, 0);
+        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null);
+        recyclerAdapter.addItem(0, "Example 1", "U", drawable, 0);
+        recyclerAdapter.addItem(1, "Example 2", "U", drawable, 0);
+        recyclerAdapter.addItem(2, "Example 3", "U", drawable, 0);
 
-        dummyChats.setAdapter(imgTextArrayAdapter);
+        dummyChats.setAdapter(recyclerAdapter);
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setFadeDuration(300);
