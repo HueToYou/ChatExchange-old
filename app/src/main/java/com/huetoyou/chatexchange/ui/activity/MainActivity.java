@@ -974,6 +974,10 @@ public class MainActivity extends SlidingActivity
         return true;
     }
 
+    /**
+     * @see MainActivity#onCreate(Bundle) for drawer toggle!
+     */
+
     @Override
     public boolean onOptionsItemSelected(final MenuItem item)
     {
@@ -994,28 +998,10 @@ public class MainActivity extends SlidingActivity
                 Intent startHelpActivity = new Intent(getApplicationContext(), HelpActivity.class);
                 startActivity(startHelpActivity);
                 break;
-            case R.id.action_browser:
-                Intent browserIntent;
-                if (mCurrentFragment == null || mCurrentFragment.equals("home"))
-                {
-                    WebView webView = findViewById(R.id.stars_view);
-                    String url = webView.getUrl();
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                }
-                else
-                {
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentFragment));
-                }
-                startActivity(browserIntent);
-                break;
             case R.id.explore_chats:
                 Intent exploreintent = new Intent(getApplicationContext(), ChatroomsExplorationActivity.class);
                 startActivity(exploreintent);
-
             default:
-                /**
-                 * @see MainActivity#onCreate(Bundle) for drawer toggle!
-                 */
                 break;
         }
 

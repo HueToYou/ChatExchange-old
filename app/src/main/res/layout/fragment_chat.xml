@@ -73,47 +73,56 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/chat_menu"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/chat_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:foregroundGravity="right"
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorAccent"
+        app:menu_fab_animation_duration="@integer/animation_duration_ms"
+        app:menu_fab_open_rotation_left="180"
+        app:menu_fab_open_rotation_right="-180"
+        app:menu_openDirection="down">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/open_in_browser_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:foregroundGravity="right"
-            app:menu_colorNormal="@color/colorAccent"
-            app:menu_colorPressed="@color/colorAccent"
-            app:menu_openDirection="down"
-            app:menu_fab_open_rotation_left="180"
-            app:menu_fab_open_rotation_right="-180"
-            app:menu_fab_animation_duration="@integer/animation_duration_ms">
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Open In Browser"
+            app:fab_size="mini" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/star_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_label="Starred messages"
-                app:fab_colorPressed="@color/colorAccent"
-                app:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/star_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Starred messages"
+            app:fab_size="mini" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/room_info_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_label="Room info"
-                app:fab_colorPressed="@color/colorAccent"
-                app:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/room_info_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Room info"
+            app:fab_size="mini" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/show_users_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_label="Show users"
-                app:fab_colorPressed="@color/colorAccent"
-                app:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/show_users_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Show users"
+            app:fab_size="mini" />
 
-        </com.github.clans.fab.FloatingActionMenu>
+    </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>

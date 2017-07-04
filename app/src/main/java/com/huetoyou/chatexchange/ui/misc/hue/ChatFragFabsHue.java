@@ -55,6 +55,7 @@ public class ChatFragFabsHue
         com.github.clans.fab.FloatingActionButton showUsers = activity.findViewById(R.id.show_users_fab);
         com.github.clans.fab.FloatingActionButton roomInfo = activity.findViewById(R.id.room_info_fab);
         com.github.clans.fab.FloatingActionButton stars = activity.findViewById(R.id.star_fab);
+        FloatingActionButton browser = activity.findViewById(R.id.open_in_browser_fab);
         FloatingActionMenu menu = activity.findViewById(R.id.chat_menu);
 
         if (menu != null)
@@ -82,6 +83,10 @@ public class ChatFragFabsHue
         if (stars != null)
         {
             setColorsOnFabs(stars, colorStateList, activity, R.drawable.ic_star_black_24dp);
+        }
+
+        if (browser != null) {
+            setColorsOnFabs(browser, colorStateList, activity, R.drawable.ic_open_in_browser_black_24dp);
         }
 
     }

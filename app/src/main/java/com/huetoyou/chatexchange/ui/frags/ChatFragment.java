@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.frags;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -137,6 +138,8 @@ public class ChatFragment extends Fragment
         mChatId = args.getInt("chatId", -1);
 
         mAppBarColor = args.getInt("chatColor", -1);
+
+        showThatFam();
 
         addChatButtons(mChatUrl);
 
@@ -662,6 +665,7 @@ public class ChatFragment extends Fragment
         com.github.clans.fab.FloatingActionButton roomInfo = view.findViewById(R.id.room_info_fab);
         com.github.clans.fab.FloatingActionButton stars = view.findViewById(R.id.star_fab);
         com.github.clans.fab.FloatingActionButton users = view.findViewById(R.id.show_users_fab);
+        FloatingActionButton browser = view.findViewById(R.id.open_in_browser_fab);
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
 
 //        openInBrowser.setOnClickListener(new View.OnClickListener() {
@@ -711,87 +715,22 @@ public class ChatFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                View web = View.inflate(getActivity(), R.layout.fragment_star_webview, null);
-
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getText(R.string.stars))
-                        .setView(web);
-//                        .setPositiveButton(getResources().getText(R.string.ok), null);
-
-                final AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
-                final WebView webView = alertDialog.findViewById(R.id.stars_view);
-                Button openInWV = alertDialog.findViewById(R.id.open_in_webview);
-                Button back = alertDialog.findViewById(R.id.go_back);
-                Button forward = alertDialog.findViewById(R.id.go_forward);
-
-                assert webView != null;
-                webView.loadUrl(mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
-//                webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-//                webView.setInitialScale();
-                webView.getSettings().setLoadWithOverviewMode(true);
-                webView.getSettings().setUseWideViewPort(true);
-                webView.getSettings().setBuiltInZoomControls(true);
-                webView.setWebViewClient(new WebViewClient()
-                {
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url)
-                    {
-                        view.loadUrl(url);
-                        return true;
-                    }
-                });
-
-                assert openInWV != null;
-                openInWV.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                        intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
-                        intent.setAction(Intent.ACTION_VIEW);
-                        startActivity(intent);
-                    }
-                });
-
-                assert back != null;
-                back.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        if (webView.canGoBack())
-                        {
-                            webView.goBack();
-                        }
-                    }
-                });
-
-                assert forward != null;
-                forward.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        if (webView.canGoForward())
-                        {
-                            webView.goForward();
-                        }
-                    }
-                });
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", mChatUrl.replace("rooms/", "rooms/info/").replace("#", "").concat("/?tab=stars"));
+                intent.setAction(Intent.ACTION_VIEW);
+                startActivity(intent);
             }
         });
 
-//        showChats.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                MainActivity activity = (MainActivity) getActivity();
-//                activity.getmChatroomSlidingMenu().toggle();
-//            }
-//        });
+        browser.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mChatUrl));
+                startActivity(intent);
+            }
+        });
 
         users.setOnClickListener(new View.OnClickListener()
         {
@@ -809,14 +748,18 @@ public class ChatFragment extends Fragment
     {
         super.onResume();
 
-        FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
-        fam.hideMenuButton(false);
-        fam.showMenuButton(true);
+        if (view.findViewById(R.id.chat_menu).getVisibility() != View.VISIBLE) showThatFam();
 
         System.out.println("Chat Frag OnResume");
 
         hueAllTheThings();
 
+    }
+
+    private void showThatFam() {
+        FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
+        fam.hideMenuButton(false);
+        fam.showMenuButton(true);
     }
 
     /*
