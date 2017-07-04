@@ -424,7 +424,7 @@ public class MainActivity extends SlidingActivity
                         Log.e("POS", "DEFL");
                         setFragmentByTag("home");
                     }
-                }, R.integer.animation_duration_ms);
+                },400);
 
                 doCloseAnimationForDrawerToggle(mDrawerButton);
                 mChatroomSlidingMenu.toggle();
