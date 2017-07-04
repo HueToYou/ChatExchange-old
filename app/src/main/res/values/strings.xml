@@ -48,7 +48,7 @@
     <string name="chatFrag_starredMessagesFAB_tutorial_text">Click this button to open a popup containing messages currently on the starwall.</string>
     <string name="chatFrag_messageEntryBox_tutorial_text">To send a message, first type it into this box.</string>
     <string name="chatFrag_sendMsgBtn_tutorial_text">After you\'ve typed the message into the box, you can send it off to the interwebs by pushing this button.</string>
-
+    <string name="chatFrag_openInBrowserFAB_tutorial_text">Click this button to open the current chatroom in the web browser application.</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
