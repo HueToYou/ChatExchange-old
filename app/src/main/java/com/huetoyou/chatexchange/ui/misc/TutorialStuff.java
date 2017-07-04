@@ -46,7 +46,7 @@ public class TutorialStuff
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
-        final Drawable drawable = VectorDrawableCompat.create(activity.getResources(), R.mipmap.ic_launcher, null);
+        final Drawable drawable = activity.getResources().getDrawable(R.mipmap.ic_launcher);
 
         final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
@@ -122,7 +122,7 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text),
                 "OK");
 
-//        sequence.start();
+        sequence.start();
     }
 
     /*
@@ -157,7 +157,7 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
                 "OK");
 
-//        sequence.start();
+        sequence.start();
     }
 
     /*
@@ -241,6 +241,6 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
                 "OK");
 
-//        sequence.start();
+        sequence.start();
     }
 }

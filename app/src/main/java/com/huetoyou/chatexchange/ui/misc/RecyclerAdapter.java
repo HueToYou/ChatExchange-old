@@ -63,10 +63,6 @@ public class RecyclerAdapter
         return mIcons.get(position);
     }
 
-//    public RecyclerAdapter(@NonNull ArrayList<String> mNames) {
-//        this.mNames = mNames;
-//    }
-
     public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked) {
         this.mContext = activity;
         this.onItemClicked = onItemClicked;
@@ -125,46 +121,6 @@ public class RecyclerAdapter
         mColors.add(toPosition, color);
 
         notifyItemMoved(fromPosition, toPosition);
-    }
-
-    //Remove items that no longer exist in the new mNames.
-    public void applyAndAnimateRemovals(@NonNull final ArrayList<String> urls) {
-        for (int i = mUrls.size() - 1; i >= 0; i--) {
-            final String model = mUrls.get(i);
-            if (urls.contains(model)) {
-                removeItem(i);
-            }
-        }
-    }
-
-    //Add items that do not exist in the old mNames.
-    public void applyAndAnimateAdditions(@NonNull final ArrayList<String> newNames,
-                                          @NonNull final ArrayList<String> newUrls,
-                                          @NonNull final ArrayList<Drawable> newIcons,
-                                          @NonNull final ArrayList<Integer> newColors) {
-        for (int i = 0, count = newNames.size(); i < count; i++) {
-            final String name = newNames.get(i);
-            final String url = newUrls.get(i);
-            final Drawable icon = newIcons.get(i);
-            final Integer color = newColors.get(i);
-
-            if (!mNames.contains(name)) {
-                if (newNames.size() < 2) addItem(i + mNames.size(), name, url, icon, color);
-                else addItem(i, name, url, icon, color);
-            }
-
-        }
-    }
-
-    //Move items that have changed their position.
-    public void applyAndAnimateMovedItems(@NonNull final ArrayList<String> urls) {
-        for (int toPosition = urls.size() - 1; toPosition >= 0; toPosition--) {
-            final String url = urls.get(toPosition);
-            final int fromPosition = mUrls.indexOf(url);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -239,4 +195,44 @@ public class RecyclerAdapter
         void onClick(View view, int position);
         void onCloseClick(View view, int position);
     }
+
+    //    //Remove items that no longer exist in the new mNames.
+//    public void applyAndAnimateRemovals(@NonNull final ArrayList<String> urls) {
+//        for (int i = mUrls.size() - 1; i >= 0; i--) {
+//            final String model = mUrls.get(i);
+//            if (urls.contains(model)) {
+//                removeItem(i);
+//            }
+//        }
+//    }
+//
+//    //Add items that do not exist in the old mNames.
+//    public void applyAndAnimateAdditions(@NonNull final ArrayList<String> newNames,
+//                                          @NonNull final ArrayList<String> newUrls,
+//                                          @NonNull final ArrayList<Drawable> newIcons,
+//                                          @NonNull final ArrayList<Integer> newColors) {
+//        for (int i = 0, count = newNames.size(); i < count; i++) {
+//            final String name = newNames.get(i);
+//            final String url = newUrls.get(i);
+//            final Drawable icon = newIcons.get(i);
+//            final Integer color = newColors.get(i);
+//
+//            if (!mNames.contains(name)) {
+//                if (newNames.size() < 2) addItem(i + mNames.size(), name, url, icon, color);
+//                else addItem(i, name, url, icon, color);
+//            }
+//
+//        }
+//    }
+//
+//    //Move items that have changed their position.
+//    public void applyAndAnimateMovedItems(@NonNull final ArrayList<String> urls) {
+//        for (int toPosition = urls.size() - 1; toPosition >= 0; toPosition--) {
+//            final String url = urls.get(toPosition);
+//            final int fromPosition = mUrls.indexOf(url);
+//            if (fromPosition >= 0 && fromPosition != toPosition) {
+//                moveItem(fromPosition, toPosition);
+//            }
+//        }
+//    }
 }
