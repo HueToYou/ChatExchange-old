@@ -5,6 +5,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,14 +34,18 @@ import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.BaseInputConnection;
 import android.webkit.WebView;
+import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -54,6 +59,7 @@ import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -220,6 +226,7 @@ public class MainActivity extends SlidingActivity
             public void onClick(View view)
             {
                 Log.e("CLICKED", "CLICKED");
+
                 if (mChatroomSlidingMenu.isMenuShowing())
                 {
                     doCloseAnimationForDrawerToggle(view);
@@ -259,9 +266,17 @@ public class MainActivity extends SlidingActivity
             }
         });
 
+        Log.e("FEATURE", String.valueOf(getWindow().hasFeature(Window.FEATURE_OPTIONS_PANEL)));
+
         oncreatejustcalled = true;
     }
 
+    @Override
+    public void openOptionsMenu()
+    {
+        android.support.v7.widget.ActionMenuView actionMenuView = (android.support.v7.widget.ActionMenuView) mActionBar.getChildAt(2);
+        actionMenuView.showOverflowMenu();
+    }
 
     @Override
     protected void onResume()
@@ -442,7 +457,7 @@ public class MainActivity extends SlidingActivity
     /**
      * BroadcastReceiver listening for click on chat URL from WebViewActivity
      *
-     * @see WebViewActivity#client(WebView)
+     * @see CustomWebView#client()
      */
 
     private void setupACBR()

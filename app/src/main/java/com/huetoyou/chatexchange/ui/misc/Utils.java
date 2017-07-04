@@ -122,13 +122,13 @@ public class Utils
         }
     }
 
-    public static ViewGroup getActionBar(View view)
+    public static ViewGroup getActionBar(View windowDecorView)
     {
         try
         {
-            if (view instanceof ViewGroup)
+            if (windowDecorView instanceof ViewGroup)
             {
-                ViewGroup viewGroup = (ViewGroup) view;
+                ViewGroup viewGroup = (ViewGroup) windowDecorView;
 
                 if (viewGroup instanceof android.support.v7.widget.Toolbar)
                 {
