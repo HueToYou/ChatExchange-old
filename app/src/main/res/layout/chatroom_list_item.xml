@@ -66,6 +66,7 @@
             android:tint="@color/white"
             app:backgroundTint="@android:color/holo_red_dark"
             app:elevation="4dp"
+            android:elevation="4dp"
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
     </FrameLayout>
