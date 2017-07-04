@@ -125,6 +125,7 @@ public class MainActivity extends SlidingActivity
     private final AnimatorSet mOpenAnimSet = new AnimatorSet();
     private final AnimatorSet mCloseAnimSet = new AnimatorSet();
     private RecyclerAdapter mAdapter;
+    private RecyclerAdapter.OnItemClicked mItemClickedListener;
 
     /*
      * Activity Lifecycle
@@ -144,7 +145,7 @@ public class MainActivity extends SlidingActivity
         createUsersSlidingMenu();
         setup();
 
-        mAdapter = new RecyclerAdapter(this, new RecyclerAdapter.OnItemClicked()
+        mItemClickedListener = new RecyclerAdapter.OnItemClicked()
         {
             @Override
             public void onClick(View view, int position)
@@ -170,7 +171,9 @@ public class MainActivity extends SlidingActivity
             {
                 confirmClose(position);
             }
-        });
+        };
+
+        mAdapter = new RecyclerAdapter(this, mItemClickedListener);
 
         chatroomsList = findViewById(R.id.chatroomsListView);
         chatroomsList.setAdapter(mAdapter);
@@ -1069,7 +1072,7 @@ public class MainActivity extends SlidingActivity
     {
         if (chatroomsList != null)
         {
-            mAdapter = new RecyclerAdapter(this, null);
+            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
             chatroomsList.setAdapter(mAdapter);
         }
         resetArrays(true);

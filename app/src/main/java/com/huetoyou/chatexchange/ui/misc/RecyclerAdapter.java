@@ -196,8 +196,16 @@ public class RecyclerAdapter
                 @Override
                 public void onClick(View view)
                 {
-                    if (mCloseChat.getVisibility() == View.VISIBLE) mCloseChat.setVisibility(View.INVISIBLE);
-                    else if (onItemClicked != null) onItemClicked.onClick(view, position);
+                    Log.e("CLICKED", position + "");
+
+                    if (mCloseChat.getVisibility() == View.VISIBLE) {
+                        mCloseChat.setVisibility(View.INVISIBLE);
+                        Log.e("CLOSE", "HIDING");
+                    }
+                    else if (onItemClicked != null) {
+                        Log.e("SENDING", "CLICKTERFACE");
+                        onItemClicked.onClick(view, position);
+                    }
                 }
             });
         }

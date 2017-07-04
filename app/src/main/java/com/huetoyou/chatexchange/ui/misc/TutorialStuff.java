@@ -122,7 +122,7 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text),
                 "OK");
 
-        sequence.start();
+//        sequence.start();
     }
 
     /*
@@ -157,21 +157,7 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
                 "OK");
 
-        /*sequence.addSequenceItem(chooseSE,
-                "Load SE Chats",
-                "OK");
-
-        sequence.addSequenceItem(chooseSO,
-                "Load SO Chats",
-                "OK");
-
-        config.setShape(new RectangleShape(webView.getWidth(), webView.getHeight()));
-
-        sequence.addSequenceItem(webView,
-                "Explore Chats",
-                "OK");*/
-
-        sequence.start();
+//        sequence.start();
     }
 
     /*
@@ -255,6 +241,6 @@ public class TutorialStuff
                 activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
                 "OK");
 
-        sequence.start();
+//        sequence.start();
     }
 }
