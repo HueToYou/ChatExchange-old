@@ -174,6 +174,7 @@ public class TutorialStuff
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
         final FloatingActionButton info = view.findViewById(R.id.room_info_fab);
         final FloatingActionButton stars = view.findViewById(R.id.star_fab);
+        final FloatingActionButton openInBrowser = view.findViewById(R.id.open_in_browser_fab);
         final EditText messageEntryBox = view.findViewById(R.id.messageToSend);
         final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
@@ -207,7 +208,7 @@ public class TutorialStuff
                     case 1:
                         fam.open(true);
                         break;
-                    case 4:
+                    case 5:
                         fam.close(true);
                         break;
                 }
@@ -234,6 +235,10 @@ public class TutorialStuff
 
         sequence.addSequenceItem(stars,
                 activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text),
+                "OK");
+
+        sequence.addSequenceItem(openInBrowser,
+                activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text),
                 "OK");
 
         sequence.addSequenceItem(messageEntryBox,
