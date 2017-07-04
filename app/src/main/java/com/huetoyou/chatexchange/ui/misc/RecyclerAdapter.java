@@ -1,5 +1,9 @@
 package com.huetoyou.chatexchange.ui.misc;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -11,6 +15,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -130,12 +138,88 @@ public class RecyclerAdapter
         ImageButton mCloseChat;
         View mItem;
 
+        private final AnimatorSet mCloseButtonRevealSet = new AnimatorSet();
+        private final AnimatorSet mCloseButtonHideSet = new AnimatorSet();
+        private final AnimatorListenerAdapter mRevealListener = new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation)
+            {
+                mCloseChat.setVisibility(View.VISIBLE);
+                super.onAnimationStart(animation);
+            }
+        };
+        private final AnimatorListenerAdapter mHideListener = new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                mCloseChat.setVisibility(View.INVISIBLE);
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation)
+            {
+                super.onAnimationStart(animation);
+            }
+        };
+
         MyViewHolder(View v) {
             super(v); // done this way instead of view tagging
             mItem = v;
             mTextView = v.findViewById(R.id.chatroomName);
             mImageView =  v.findViewById(R.id.chatroomImg);
             mCloseChat = v.findViewById(R.id.close_chat_button);
+
+            mCloseChat.setScaleX(0f);
+            mCloseChat.setScaleY(0f);
+
+            ObjectAnimator revealAnimatorX = ObjectAnimator.ofFloat(
+                    mCloseChat,
+                    "scaleX",
+                    0f,
+                    1.0f
+            );
+
+            ObjectAnimator revealAnimatorY = ObjectAnimator.ofFloat(
+                    mCloseChat,
+                    "scaleY",
+                    0f,
+                    1.0f
+            );
+
+            mCloseButtonRevealSet.play(revealAnimatorX);
+            mCloseButtonRevealSet.play(revealAnimatorY);
+            mCloseButtonRevealSet.setInterpolator(new OvershootInterpolator());
+            mCloseButtonRevealSet.setDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms));
+            mCloseButtonRevealSet.addListener(mRevealListener);
+
+            ObjectAnimator hideAnimatorX = ObjectAnimator.ofFloat(
+                    mCloseChat,
+                    "scaleX",
+                    1.0f,
+                    0f
+            );
+
+            ObjectAnimator hideAnimatorY = ObjectAnimator.ofFloat(
+                    mCloseChat,
+                    "scaleY",
+                    1.0f,
+                    0f
+            );
+
+            mCloseButtonHideSet.play(hideAnimatorX);
+            mCloseButtonHideSet.play(hideAnimatorY);
+            mCloseButtonHideSet.setInterpolator(new AnticipateInterpolator());
+            mCloseButtonHideSet.setDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms));
+            mCloseButtonHideSet.addListener(mHideListener);
         }
 
         public void setText(int position) {
@@ -154,8 +238,10 @@ public class RecyclerAdapter
                 {
                     Log.e("CLICKED", position + "");
 
-                    if (mCloseChat.getVisibility() == View.VISIBLE) {
-                        mCloseChat.setVisibility(View.INVISIBLE);
+                    if (mCloseChat.getScaleX() == 1.0f) {
+                        mCloseButtonRevealSet.cancel();
+                        mCloseButtonHideSet.start();
+//                        mCloseChat.setVisibility(View.INVISIBLE);
                         Log.e("CLOSE", "HIDING");
                     }
                     else if (onItemClicked != null) {
@@ -172,8 +258,18 @@ public class RecyclerAdapter
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (mCloseChat.getVisibility() == View.INVISIBLE) mCloseChat.setVisibility(View.VISIBLE);
-                    else mCloseChat.setVisibility(View.INVISIBLE);
+                    if (mCloseChat.getScaleX() == 0f)
+                    {
+                        mCloseButtonHideSet.cancel();
+                        mCloseButtonRevealSet.start();
+//                        mCloseChat.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        mCloseButtonRevealSet.cancel();
+                        mCloseButtonHideSet.start();
+//                        mCloseChat.setVisibility(View.INVISIBLE);
+                    }
                     return true;
                 }
             });
