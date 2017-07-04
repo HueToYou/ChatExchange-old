@@ -226,6 +226,8 @@ public class ChatFragment extends Fragment
                                 if (mFragmentManager.findFragmentByTag("user_" + id) == null)
                                 {
                                     addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                                } else {
+                                    mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag("user_" + id)).show(mFragmentManager.findFragmentByTag("user_" + id)).commit();
                                 }
                             }
                         }
