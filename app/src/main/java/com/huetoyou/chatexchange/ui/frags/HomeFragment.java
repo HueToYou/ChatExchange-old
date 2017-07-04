@@ -46,7 +46,6 @@ public class HomeFragment extends Fragment
     private View view;
     private boolean oncreateHasBeenCalled = false;
     private SharedPreferences mSharedPreferences;
-    private WebView webView;
 
     public HomeFragment()
     {
