@@ -102,7 +102,9 @@ public class RequestFactory
                 {
                     if (response.cookies != null)
                     {
-                        addCookies(response.cookies);
+                        for (String cookie : response.cookies) {
+                            addCookies(cookie);
+                        }
                     }
                     listener.onSucceeded(response.finalUrl, response.data);
                 }

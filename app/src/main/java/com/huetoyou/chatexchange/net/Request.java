@@ -24,7 +24,6 @@ import java.util.Map;
  */
 class Request extends AsyncTask<Request.Params, Void, Request.Response>
 {
-
     private static final String TAG = "Request";
 
     interface Listener
@@ -51,7 +50,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response>
     {
         boolean succeeded = false;
         URL finalUrl;
-        String cookies;
+        List<String> cookies;
         String data;
     }
 
@@ -157,7 +156,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response>
         Response response = new Response();
         response.succeeded = true;
         response.finalUrl = connection.getURL();
-        response.cookies = connection.getHeaderField("Set-Cookie");
+        response.cookies = connection.getHeaderFields().get("Set-Cookie");
         response.data = responseData;
         connection.disconnect();
         return response;
