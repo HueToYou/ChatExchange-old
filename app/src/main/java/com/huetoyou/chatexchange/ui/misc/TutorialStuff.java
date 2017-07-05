@@ -199,7 +199,7 @@ public class TutorialStuff
      */
     public static void chatFragTutorial(Activity activity, View view, int mAppBarColor)
     {
-
+        ((MainActivity)activity).getmChatroomSlidingMenu().showMenu();
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
