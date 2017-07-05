@@ -407,7 +407,7 @@ public class SlidingMenu extends RelativeLayout
     public void setContent(View view)
     {
         mViewAbove.setContent(view);
-        showContent();
+        hideMenu();
     }
 
     /**
@@ -592,9 +592,9 @@ public class SlidingMenu extends RelativeLayout
     /**
      * Closes the menu and shows the above view.
      */
-    public void showContent()
+    public void hideMenu()
     {
-        showContent(true);
+        hideMenu(true);
     }
 
     /**
@@ -602,7 +602,7 @@ public class SlidingMenu extends RelativeLayout
      *
      * @param animate true to animate the transition, false to ignore animation
      */
-    public void showContent(boolean animate)
+    public void hideMenu(boolean animate)
     {
         mViewAbove.setCurrentItem(1, animate);
     }
@@ -624,7 +624,7 @@ public class SlidingMenu extends RelativeLayout
     {
         if (isMenuShowing())
         {
-            showContent(animate);
+            hideMenu(animate);
         }
         else
         {
