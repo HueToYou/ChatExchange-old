@@ -26,6 +26,7 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 
@@ -199,7 +200,11 @@ public class TutorialStuff
      */
     public static void chatFragTutorial(Activity activity, View view, int mAppBarColor)
     {
-        ((MainActivity)activity).getmChatroomSlidingMenu().hideMenu();
+        SlidingMenu chatroomsMenu = ((MainActivity)activity).getmChatroomSlidingMenu();
+        if(chatroomsMenu.isMenuShowing())
+        {
+            chatroomsMenu.hideMenu(false);
+        }
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
