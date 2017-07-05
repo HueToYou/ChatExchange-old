@@ -35,6 +35,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -66,6 +67,7 @@ import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.HueRecyclerViewSwipeHelperHue;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -193,6 +195,10 @@ public class MainActivity extends SlidingActivity
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
                 DividerItemDecoration.VERTICAL);
         chatroomsList.addItemDecoration(dividerItemDecoration);
+
+        ItemTouchHelper.Callback callback = new HueRecyclerViewSwipeHelperHue(mAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(chatroomsList);
 
         assert getSupportActionBar() != null;
 

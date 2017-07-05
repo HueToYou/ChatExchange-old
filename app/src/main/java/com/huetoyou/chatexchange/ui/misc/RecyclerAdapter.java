@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,12 +28,8 @@ import com.huetoyou.chatexchange.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Zacha on 7/3/2017.
- */
-
-public class RecyclerAdapter
-        extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
+{
 
     private Activity mContext;
     private ArrayList<String> mNames = new ArrayList<>();
@@ -59,27 +56,33 @@ public class RecyclerAdapter
         return myViewHolder;
     }
 
-    public String getNameAt(int position) {
+    public String getNameAt(int position)
+    {
         return mNames.get(position);
     }
 
-    public String getUrlAt(int position) {
+    public String getUrlAt(int position)
+    {
         return mUrls.get(position);
     }
 
-    public Integer getColorAt(int position) {
+    public Integer getColorAt(int position)
+    {
         return mColors.get(position);
     }
 
-    public Drawable getIconAt(int position) {
+    public Drawable getIconAt(int position)
+    {
         return mIcons.get(position);
     }
 
-    public MyViewHolder getViewHolderAt(int position) {
+    public MyViewHolder getViewHolderAt(int position)
+    {
         return mVHs.get(position);
     }
 
-    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked) {
+    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked)
+    {
         this.mContext = activity;
         this.onItemClicked = onItemClicked;
     }
@@ -87,7 +90,7 @@ public class RecyclerAdapter
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-//        mViewHolder = holder;
+        //mViewHolder = holder;
         Log.e("POS", position + "");
         holder.setClickListener(position);
         holder.setOnLongClickListener(position);
@@ -98,7 +101,8 @@ public class RecyclerAdapter
     }
 
     //Remove an item at position and notify changes.
-    public String removeItem(int position) {
+    public String removeItem(int position)
+    {
         if (mNames.get(position) != null)
         {
             final String model = mNames.remove(position);
@@ -112,7 +116,8 @@ public class RecyclerAdapter
     }
 
     //Add an item at position and notify changes.
-    public void addItem(int position, String name, String url, Drawable icon, Integer color) {
+    public void addItem(int position, String name, String url, Drawable icon, Integer color)
+    {
         if (!mNames.contains(name))
         {
             mNames.add(position, name);
@@ -123,8 +128,27 @@ public class RecyclerAdapter
         }
     }
 
+    public void addItem(ChatroomRecyclerObject hueObjet)
+    {
+        if (!mNames.contains(hueObjet.getName()))
+        {
+            int position = hueObjet.getPosition();
+            mNames.add(position, hueObjet.getName());
+            mUrls.add(position, hueObjet.getUrl());
+            mIcons.add(position, hueObjet.getIcon());
+            mColors.add(position, hueObjet.getColor());
+            notifyItemInserted(position);
+        }
+    }
+
+    public ChatroomRecyclerObject getItem(int position)
+    {
+        return new ChatroomRecyclerObject(position, mNames.get(position), mUrls.get(position), mIcons.get(position), mColors.get(position));
+    }
+
     //Move an item at fromPosition to toPosition and notify changes.
-    public void moveItem(int fromPosition, int toPosition) {
+    public void moveItem(int fromPosition, int toPosition)
+    {
         final String model = mNames.remove(fromPosition);
         mNames.add(toPosition, model);
 
@@ -140,7 +164,8 @@ public class RecyclerAdapter
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder
+    {
         // TODO: whatever views you need to bind
         TextView mTextView;
         ImageView mImageView;
@@ -180,11 +205,12 @@ public class RecyclerAdapter
             }
         };
 
-        MyViewHolder(View v) {
+        MyViewHolder(View v)
+        {
             super(v); // done this way instead of view tagging
             mItem = v;
             mTextView = v.findViewById(R.id.chatroomName);
-            mImageView =  v.findViewById(R.id.chatroomImg);
+            mImageView = v.findViewById(R.id.chatroomImg);
             mCloseChat = v.findViewById(R.id.close_chat_button);
 
             mCloseChat.setScaleX(0f);
@@ -231,23 +257,34 @@ public class RecyclerAdapter
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
-        public View getItem() {
+        public View getItem()
+        {
             return mItem;
         }
 
-        public ImageButton getCloseChatButton() {
+        public ImageButton getCloseChatButton()
+        {
             return mCloseChat;
         }
 
-        public void setText(int position) {
-            if (mNames.size() > 0) mTextView.setText(mNames.get(position));
+        public void setText(int position)
+        {
+            if (mNames.size() > 0)
+            {
+                mTextView.setText(mNames.get(position));
+            }
         }
 
-        public void setImage(int position) {
-            if (mIcons.size() > 0) mImageView.setImageDrawable(mIcons.get(position));
+        public void setImage(int position)
+        {
+            if (mIcons.size() > 0)
+            {
+                mImageView.setImageDrawable(mIcons.get(position));
+            }
         }
 
-        public void setClickListener(final int position) {
+        public void setClickListener(final int position)
+        {
             mItem.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -255,13 +292,15 @@ public class RecyclerAdapter
                 {
                     Log.e("CLICKED", position + "");
 
-                    if (mCloseChat.getScaleX() == 1.0f) {
+                    if (mCloseChat.getScaleX() == 1.0f)
+                    {
                         mCloseButtonRevealSet.cancel();
                         mCloseButtonHideSet.start();
-//                        mCloseChat.setVisibility(View.INVISIBLE);
+                        //mCloseChat.setVisibility(View.INVISIBLE);
                         Log.e("CLOSE", "HIDING");
                     }
-                    else if (onItemClicked != null) {
+                    else if (onItemClicked != null)
+                    {
                         Log.e("SENDING", "CLICKTERFACE");
                         onItemClicked.onClick(view, position);
                     }
@@ -269,22 +308,24 @@ public class RecyclerAdapter
             });
         }
 
-        public void performLongClick() {
+        public void performLongClick()
+        {
             if (mCloseChat.getScaleX() == 0f)
             {
                 mCloseButtonHideSet.cancel();
                 mCloseButtonRevealSet.start();
-//                        mCloseChat.setVisibility(View.VISIBLE);
+                //mCloseChat.setVisibility(View.VISIBLE);
             }
             else
             {
                 mCloseButtonRevealSet.cancel();
                 mCloseButtonHideSet.start();
-//                        mCloseChat.setVisibility(View.INVISIBLE);
+                //mCloseChat.setVisibility(View.INVISIBLE);
             }
         }
 
-        public void setOnLongClickListener(final int position) {
+        public void setOnLongClickListener(final int position)
+        {
             mItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
@@ -296,60 +337,66 @@ public class RecyclerAdapter
             });
         }
 
-        public void setCloseClickListener(final int position) {
+        public void setCloseClickListener(final int position)
+        {
             mCloseChat.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    if (onItemClicked != null) onItemClicked.onCloseClick(mCloseChat, position);
+                    if (onItemClicked != null)
+                    {
+                        onItemClicked.onCloseClick(mCloseChat, position);
+                    }
                 }
             });
         }
     }
 
-    public interface OnItemClicked {
+    public interface OnItemClicked
+    {
         void onClick(View view, int position);
+
         void onCloseClick(View view, int position);
     }
 
-    //    //Remove items that no longer exist in the new mNames.
-//    public void applyAndAnimateRemovals(@NonNull final ArrayList<String> urls) {
-//        for (int i = mUrls.size() - 1; i >= 0; i--) {
-//            final String model = mUrls.get(i);
-//            if (urls.contains(model)) {
-//                removeItem(i);
-//            }
-//        }
-//    }
-//
-//    //Add items that do not exist in the old mNames.
-//    public void applyAndAnimateAdditions(@NonNull final ArrayList<String> newNames,
-//                                          @NonNull final ArrayList<String> newUrls,
-//                                          @NonNull final ArrayList<Drawable> newIcons,
-//                                          @NonNull final ArrayList<Integer> newColors) {
-//        for (int i = 0, count = newNames.size(); i < count; i++) {
-//            final String name = newNames.get(i);
-//            final String url = newUrls.get(i);
-//            final Drawable icon = newIcons.get(i);
-//            final Integer color = newColors.get(i);
-//
-//            if (!mNames.contains(name)) {
-//                if (newNames.size() < 2) addItem(i + mNames.size(), name, url, icon, color);
-//                else addItem(i, name, url, icon, color);
-//            }
-//
-//        }
-//    }
-//
-//    //Move items that have changed their position.
-//    public void applyAndAnimateMovedItems(@NonNull final ArrayList<String> urls) {
-//        for (int toPosition = urls.size() - 1; toPosition >= 0; toPosition--) {
-//            final String url = urls.get(toPosition);
-//            final int fromPosition = mUrls.indexOf(url);
-//            if (fromPosition >= 0 && fromPosition != toPosition) {
-//                moveItem(fromPosition, toPosition);
-//            }
-//        }
-//    }
+    /*//Remove items that no longer exist in the new mNames.
+    public void applyAndAnimateRemovals(@NonNull final ArrayList<String> urls) {
+        for (int i = mUrls.size() - 1; i >= 0; i--) {
+            final String model = mUrls.get(i);
+            if (urls.contains(model)) {
+                removeItem(i);
+            }
+        }
+    }
+
+    //Add items that do not exist in the old mNames.
+    public void applyAndAnimateAdditions(@NonNull final ArrayList<String> newNames,
+                                          @NonNull final ArrayList<String> newUrls,
+                                          @NonNull final ArrayList<Drawable> newIcons,
+                                          @NonNull final ArrayList<Integer> newColors) {
+        for (int i = 0, count = newNames.size(); i < count; i++) {
+            final String name = newNames.get(i);
+            final String url = newUrls.get(i);
+            final Drawable icon = newIcons.get(i);
+            final Integer color = newColors.get(i);
+
+            if (!mNames.contains(name)) {
+                if (newNames.size() < 2) addItem(i + mNames.size(), name, url, icon, color);
+                else addItem(i, name, url, icon, color);
+            }
+
+        }
+    }
+
+    //Move items that have changed their position.
+    public void applyAndAnimateMovedItems(@NonNull final ArrayList<String> urls) {
+        for (int toPosition = urls.size() - 1; toPosition >= 0; toPosition--) {
+            final String url = urls.get(toPosition);
+            final int fromPosition = mUrls.indexOf(url);
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition);
+            }
+        }
+    }*/
 }
