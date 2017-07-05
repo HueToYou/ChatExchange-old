@@ -19,7 +19,6 @@ import static jodd.jerry.Jerry.jerry;
  */
 class StackExchangeAuth
 {
-
     private static final String TAG = "StackExchangeAuth";
 
     /**
