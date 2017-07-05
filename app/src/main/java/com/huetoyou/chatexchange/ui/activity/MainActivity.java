@@ -345,18 +345,18 @@ public class MainActivity extends SlidingActivity
                 {
                     if (((ChatFragment) fragment).getmSlidingMenu().isMenuShowing())
                     {
-                        ((ChatFragment) fragment).getmSlidingMenu().showContent(true);
+                        ((ChatFragment) fragment).getmSlidingMenu().hideMenu(true);
                     }
                 }
             }
             if (mChatroomSlidingMenu.isMenuShowing())
             {
-                mChatroomSlidingMenu.showContent(true);
+                mChatroomSlidingMenu.hideMenu(true);
             }
         }
         else if (mChatroomSlidingMenu.isMenuShowing())
         {
-            mChatroomSlidingMenu.showContent(true);
+            mChatroomSlidingMenu.hideMenu(true);
         }
         else
         {
@@ -994,7 +994,7 @@ public class MainActivity extends SlidingActivity
             {
                 if (getmChatroomSlidingMenu().isMenuShowing())
                 {
-                    getmChatroomSlidingMenu().showContent(true);
+                    getmChatroomSlidingMenu().hideMenu(true);
                 }
             }
         });

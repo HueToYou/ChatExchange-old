@@ -94,7 +94,7 @@ public class SlidingActivityHelper
                 }
                 else
                 {
-                    mSlidingMenu.showContent(false);
+                    mSlidingMenu.hideMenu(false);
                 }
             }
         });
@@ -214,7 +214,7 @@ public class SlidingActivityHelper
      */
     public void showContent()
     {
-        mSlidingMenu.showContent();
+        mSlidingMenu.hideMenu();
     }
 
     /**
