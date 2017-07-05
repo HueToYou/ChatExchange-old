@@ -456,8 +456,11 @@ public class MainActivity extends SlidingActivity
             }
         };
 
-        mSOChatIDs = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
-        mSEChatIDs = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
+        Set<String> seChatsTemp = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
+        Set<String> soChatsTemp = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
+
+        mSOChatIDs = new HashSet<>(soChatsTemp);
+        mSEChatIDs = new HashSet<>(seChatsTemp);
 
         if (mSharedPrefs.getBoolean("isFirstRun", true))
         {
@@ -514,8 +517,7 @@ public class MainActivity extends SlidingActivity
                 {
                     if (extras.containsKey("idSE"))
                     {
-                        mSEChatIDs.add(extras.getString("idSE"));
-                        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+                        addIdToSEList(extras.getString("idSE"));
                         doFragmentStuff();
 
                         ReceiveACB.newInstance(new ACBInterface()
@@ -553,8 +555,7 @@ public class MainActivity extends SlidingActivity
                     }
                     else if (extras.containsKey("idSO"))
                     {
-                        mSOChatIDs.add(extras.getString("idSO"));
-                        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                        addIdToSOList(extras.getString("idSO"));
                         doFragmentStuff();
 
                         ReceiveACB.newInstance(new ACBInterface()
@@ -858,8 +859,8 @@ public class MainActivity extends SlidingActivity
                 public void onFailed(String message)
                 {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
-                    mSEChatIDs.remove(id);
-                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+
+                    removeIdFromSEList(id);
                     Log.e("Couldn't load SE chat ".concat(id), message);
                 }
             });
@@ -909,8 +910,7 @@ public class MainActivity extends SlidingActivity
                 public void onFailed(String message)
                 {
                     Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
-                    mSOChatIDs.remove(id);
-                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+                    removeIdFromSOList(id);
                     Log.e("Couldn't load SO chat ".concat(id), message);
                 }
             });
@@ -1265,15 +1265,12 @@ public class MainActivity extends SlidingActivity
 
                     if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString()))
                     {
-                        mSOChatIDs.add(inputText);
+                        addIdToSOList(inputText);
                     }
                     else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
                     {
-                        mSEChatIDs.add(inputText);
+                        addIdToSEList(inputText);
                     }
-
-                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
                     doFragmentStuff();
                 }
@@ -1354,17 +1351,14 @@ public class MainActivity extends SlidingActivity
                                 {
                                     if (domain.contains("overflow"))
                                     {
-                                        mSOChatIDs.remove(id);
+                                        removeIdFromSOList(id);
                                     }
                                     else if (domain.contains("exchange"))
                                     {
-                                        mSEChatIDs.remove(id);
+                                        removeIdFromSEList(id);
                                     }
 
                                     mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mAdapter.getUrlAt(position)));
-
-                                    mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
-                                    mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
 
                                     if (mAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
                                     mAdapter.removeItem(position);
@@ -1464,8 +1458,8 @@ public class MainActivity extends SlidingActivity
         {
             mSEChatIDs = new HashSet<>(0);
             mSOChatIDs = new HashSet<>(0);
-            mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
-            mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+            setSOStringSet();
+            setSEStringSet();
         }
 
         mSEChatUrls = new SparseArray<>();
@@ -1520,5 +1514,35 @@ public class MainActivity extends SlidingActivity
 
     public android.support.v7.widget.ActionMenuView getActionMenu() {
         return mActionMenuView;
+    }
+
+    private void removeIdFromSEList(String id) {
+        mSEChatIDs.remove(id);
+        setSEStringSet();
+    }
+
+    private void addIdToSEList(String id) {
+        mSEChatIDs.add(id);
+        setSEStringSet();
+    }
+
+    private void setSEStringSet() {
+        mEditor.remove("SEChatIDs").apply();
+        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+    }
+
+    private void removeIdFromSOList(String id) {
+        mSOChatIDs.remove(id);
+        setSOStringSet();
+    }
+
+    private void addIdToSOList(String id) {
+        mSOChatIDs.add(id);
+        setSOStringSet();
+    }
+
+    private void setSOStringSet() {
+        mEditor.remove("SOChatIDs").apply();
+        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
     }
 }
