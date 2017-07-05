@@ -12,16 +12,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -29,11 +34,13 @@ import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,6 +58,7 @@ import android.widget.Spinner;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.Util;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -124,7 +132,7 @@ public class MainActivity extends SlidingActivity
     private MainActivityUtils.AddList mAddList;
 
     private VectorDrawableCompat drawable;
-    private ViewGroup mActionBar;
+    private Toolbar mActionBar;
     private AppCompatImageButton mDrawerButton;
 
     private final AnimatorSet mOpenAnimSet = new AnimatorSet();
@@ -196,8 +204,14 @@ public class MainActivity extends SlidingActivity
         final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
         fam.hideMenuButton(false);
 
-        mActionBar = Utils.getActionBar(getWindow().getDecorView());
+        mActionBar = (Toolbar) Utils.getActionBar(getWindow().getDecorView());
         assert mActionBar != null;
+
+        Log.e("ACTIONBAR", mActionBar.getClass().toString());
+
+//        mActionBar.removeViewAt(1);
+//        mActionBar.addView(newDrawer, 1);
+
         mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
 
         ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
@@ -267,7 +281,6 @@ public class MainActivity extends SlidingActivity
         });
 
         Log.e("FEATURE", String.valueOf(getWindow().hasFeature(Window.FEATURE_OPTIONS_PANEL)));
-        mActionBar = Utils.getActionBar(getWindow().getDecorView());
         mActionMenuView = (ActionMenuView) mActionBar.getChildAt(2);
 
         oncreatejustcalled = true;
@@ -288,10 +301,15 @@ public class MainActivity extends SlidingActivity
 
     }
 
+    public void openOptionsMenu(View v) {
+        openOptionsMenu();
+    }
+
     @Override
     public void openOptionsMenu()
     {
-        mActionMenuView.showOverflowMenu();
+//        mActionMenuView.showOverflowMenu();
+        mActionBar.showOverflowMenu();
         super.openOptionsMenu();
     }
 
