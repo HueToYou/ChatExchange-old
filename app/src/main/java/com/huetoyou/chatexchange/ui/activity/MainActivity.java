@@ -5,7 +5,6 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +15,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -27,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -39,13 +38,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.BaseInputConnection;
-import android.webkit.WebView;
-import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -69,7 +67,9 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -131,6 +131,7 @@ public class MainActivity extends SlidingActivity
     private final AnimatorSet mCloseAnimSet = new AnimatorSet();
     private RecyclerAdapter mAdapter;
     private RecyclerAdapter.OnItemClicked mItemClickedListener;
+    private ActionMenuView mActionMenuView;
 
     /*
      * Activity Lifecycle
@@ -139,10 +140,9 @@ public class MainActivity extends SlidingActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-//        mainActivity = this;
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
-        //Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
         setContentView(R.layout.activity_main);
         mHandler = new Handler();
 
@@ -267,20 +267,38 @@ public class MainActivity extends SlidingActivity
         });
 
         Log.e("FEATURE", String.valueOf(getWindow().hasFeature(Window.FEATURE_OPTIONS_PANEL)));
+        mActionBar = Utils.getActionBar(getWindow().getDecorView());
+        mActionMenuView = (ActionMenuView) mActionBar.getChildAt(2);
 
         oncreatejustcalled = true;
+
+        //forces options menu overflow icon to show on devices with physical menu keys
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        }
+        catch (Exception e) {
+            // presumably, not relevant
+        }
+
     }
 
     @Override
     public void openOptionsMenu()
     {
-        android.support.v7.widget.ActionMenuView actionMenuView = (android.support.v7.widget.ActionMenuView) mActionBar.getChildAt(2);
-        actionMenuView.showOverflowMenu();
+        mActionMenuView.showOverflowMenu();
+        super.openOptionsMenu();
     }
 
     @Override
     protected void onResume()
     {
+
         ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
         if (oncreatejustcalled)
@@ -986,6 +1004,8 @@ public class MainActivity extends SlidingActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
+        TutorialStuff.homeFragTutorial(this);
+
         return true;
     }
 
@@ -1472,5 +1492,9 @@ public class MainActivity extends SlidingActivity
     public String getCookieString()
     {
         return mCookieString;
+    }
+
+    public android.support.v7.widget.ActionMenuView getActionMenu() {
+        return mActionMenuView;
     }
 }

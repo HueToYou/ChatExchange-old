@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
         <item
             android:id="@+id/action_settings"
-            android:title="@string/options_menu_settings" />
+            android:title="@string/options_menu_settings"
+            android:actionViewClass="android.view.View"
+            app:actionViewClass="android.view.View"/>
         <item
             android:id="@+id/action_help"
-            android:title="@string/options_menu_help" />
+            android:title="@string/options_menu_help"
+            android:actionViewClass="android.view.View"
+            app:actionViewClass="android.view.View"/>
         <item
             android:id="@+id/action_about"
-            android:title="@string/options_menu_about" />
+            android:title="@string/options_menu_about"
+            android:actionViewClass="android.view.View"
+            app:actionViewClass="android.view.View"/>
         <item
             android:id="@+id/explore_chats"
-            android:title="Explore Chats" />
+            android:title="Explore Chats"
+            android:actionViewClass="android.view.View"
+            app:actionViewClass="android.view.View"/>
     </group>
 
 </menu>

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -66,8 +67,13 @@ public class HomeFragment extends Fragment
 
         oncreateHasBeenCalled = true;
 
-        TutorialStuff.homeFragTutorial(getActivity(), view);
+        return view;
+    }
 
+    @Nullable
+    @Override
+    public View getView()
+    {
         return view;
     }
 

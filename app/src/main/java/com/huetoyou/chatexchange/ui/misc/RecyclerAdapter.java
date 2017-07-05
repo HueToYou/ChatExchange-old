@@ -42,6 +42,8 @@ public class RecyclerAdapter
 
     private OnItemClicked onItemClicked;
 
+    private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
+
     @Override
     public int getItemCount()
     {
@@ -52,7 +54,9 @@ public class RecyclerAdapter
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatroom_list_item, parent, false);
-        return new MyViewHolder(mView);
+
+        MyViewHolder myViewHolder = new MyViewHolder(mView);
+        return myViewHolder;
     }
 
     public String getNameAt(int position) {
@@ -71,6 +75,10 @@ public class RecyclerAdapter
         return mIcons.get(position);
     }
 
+    public MyViewHolder getViewHolderAt(int position) {
+        return mVHs.get(position);
+    }
+
     public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked) {
         this.mContext = activity;
         this.onItemClicked = onItemClicked;
@@ -86,6 +94,7 @@ public class RecyclerAdapter
         holder.setCloseClickListener(position);
         holder.setText(position);
         holder.setImage(position);
+        mVHs.add(position, holder);
     }
 
     //Remove an item at position and notify changes.
@@ -222,6 +231,14 @@ public class RecyclerAdapter
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
+        public View getItem() {
+            return mItem;
+        }
+
+        public ImageButton getCloseChatButton() {
+            return mCloseChat;
+        }
+
         public void setText(int position) {
             if (mNames.size() > 0) mTextView.setText(mNames.get(position));
         }
@@ -252,24 +269,28 @@ public class RecyclerAdapter
             });
         }
 
+        public void performLongClick() {
+            if (mCloseChat.getScaleX() == 0f)
+            {
+                mCloseButtonHideSet.cancel();
+                mCloseButtonRevealSet.start();
+//                        mCloseChat.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mCloseButtonRevealSet.cancel();
+                mCloseButtonHideSet.start();
+//                        mCloseChat.setVisibility(View.INVISIBLE);
+            }
+        }
+
         public void setOnLongClickListener(final int position) {
             mItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (mCloseChat.getScaleX() == 0f)
-                    {
-                        mCloseButtonHideSet.cancel();
-                        mCloseButtonRevealSet.start();
-//                        mCloseChat.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        mCloseButtonRevealSet.cancel();
-                        mCloseButtonHideSet.start();
-//                        mCloseChat.setVisibility(View.INVISIBLE);
-                    }
+                    performLongClick();
                     return true;
                 }
             });

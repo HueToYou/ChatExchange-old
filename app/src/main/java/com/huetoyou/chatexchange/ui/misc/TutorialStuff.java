@@ -8,9 +8,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +23,7 @@ import android.widget.ListView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 
@@ -28,6 +32,7 @@ import java.util.ArrayList;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 
 public class TutorialStuff
 {
@@ -46,18 +51,17 @@ public class TutorialStuff
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
-        final Drawable drawable = activity.getResources().getDrawable(R.mipmap.ic_launcher);
-
         final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null);
-        recyclerAdapter.addItem(0, "Example 1", "U", drawable, 0);
-        recyclerAdapter.addItem(1, "Example 2", "U", drawable, 0);
-        recyclerAdapter.addItem(2, "Example 3", "U", drawable, 0);
+        final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
 
-        dummyChats.setAdapter(recyclerAdapter);
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null);
+        recyclerAdapter.addItem(0, "Example 1", "U", ico, 0);
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
                 DividerItemDecoration.VERTICAL);
+
+        dummyChats.setAdapter(recyclerAdapter);
         dummyChats.addItemDecoration(dividerItemDecoration);
 
         ShowcaseConfig config = new ShowcaseConfig();
@@ -89,10 +93,16 @@ public class TutorialStuff
             {
                 switch (position)
                 {
+                    case 0:
+                        recyclerAdapter.getViewHolderAt(0).performLongClick();
+                        break;
                     case 1:
+                        recyclerAdapter.getViewHolderAt(0).performLongClick();
+                        break;
+                    case 2:
                         chatFam.open(true);
                         break;
-                    case 4:
+                    case 5:
                         chatFam.close(true);
                         dummyChats.setVisibility(View.GONE);
                         activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
@@ -103,9 +113,24 @@ public class TutorialStuff
             }
         });
 
+        ShowcaseConfig config1 = new ShowcaseConfig();
+        config1.setDelay(0);
+        config1.setFadeDuration(250);
+        config1.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+        config1.setRenderOverNavigationBar(true);
+        config1.setShape(new RectangleShape(0, 0));
+
+        sequence.setConfig(config1);
+
         sequence.addSequenceItem(dummyChats,
                  activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text),
                 "OK");
+
+        sequence.addSequenceItem(dummyChats,
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_long_press_text),
+                "OK");
+
+        sequence.setConfig(config);
 
         sequence.addSequenceItem(chatFam.getMenuButton(),
                 activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text),
@@ -129,7 +154,7 @@ public class TutorialStuff
     /*
      * Home fragment
      */
-    public static void homeFragTutorial(Activity activity, View view)
+    public static void homeFragTutorial(final MainActivity activity)
     {
 
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -137,7 +162,7 @@ public class TutorialStuff
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(0);
         config.setFadeDuration(250);
-        int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
+        int color = ActionBarHue.getActionBarPrefsColor(activity);
         config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
         config.setRenderOverNavigationBar(true);
 
@@ -151,12 +176,19 @@ public class TutorialStuff
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
             {
+
                 currentIndex++; //keep at bottom
             }
         });
 
+//        Log.e("COUNT", ((ActionMenuView)Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).getcla + "");
+
         sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
                 activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
+                "OK");
+
+        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
+                activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
                 "OK");
 
         sequence.start();
