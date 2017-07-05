@@ -19,10 +19,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:preferenceCategoryStyle">@style/PreferenceCategoryMaterial</item>-->
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <!--<item name="android:windowTranslucentNavigation">false</item>-->
         <!--<item name="android:fitsSystemWindows">true</item>-->
     </style>
+
+    <!--<style name="PreferenceCategoryMaterial">-->
+        <!--<item name="android:layout">@layout/preference_category_layout</item>-->
+    <!--</style>-->
 
     <!--<style name="CustomShowcaseTheme" parent="ShowcaseView.Light">-->
         <!--<item name="sv_backgroundColor">#5900bbff</item>-->

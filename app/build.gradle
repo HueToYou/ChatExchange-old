@@ -99,6 +99,11 @@ dependencies {
     compile 'org.jodd:jodd-lagarto:3.4.2'
     compile 'org.jsoup:jsoup:1.10.2'
 
+    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
+    compile 'com.afollestad.material-dialogs:core:0.9.4.5'
+    compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
+    compile 'com.github.AndroidDeveloperLB:MaterialPreferenceLibrary:10'
+
 //    compile 'com.github.clans:fab:1.6.4'
 
 //    compile 'com.github.huetoyou:floatingactionbutton:v1.6.7'

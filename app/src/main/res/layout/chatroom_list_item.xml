@@ -63,10 +63,11 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical|end"
+            android:elevation="4dp"
             android:tint="@color/white"
+            android:visibility="invisible"
             app:backgroundTint="@android:color/holo_red_dark"
             app:elevation="4dp"
-            android:elevation="4dp"
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
     </FrameLayout>

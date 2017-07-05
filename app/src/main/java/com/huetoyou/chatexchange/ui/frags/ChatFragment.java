@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
@@ -681,29 +683,30 @@ public class ChatFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                AlertDialog d = new AlertDialog.Builder(getActivity())
-                        .setTitle("Info")
-                        .setView(R.layout.room_desc)
-                        .setPositiveButton(getResources().getText(R.string.generic_ok), null)
-                        .create();
-                d.show();
+                View roomInfo = View.inflate(getActivity(), R.layout.room_desc, null);
 
-                TextView desc = d.findViewById(R.id.desc_text);
+                new MaterialDialog.Builder(getActivity())
+                        .title("Info")
+                        .customView(R.layout.room_desc, true)
+                        .positiveText(R.string.generic_ok)
+                        .show();
+
+                TextView desc = roomInfo.findViewById(R.id.desc_text);
                 assert desc != null;
                 desc.setText(mChatDesc);
                 desc.setMovementMethod(LinkMovementMethod.getInstance());
 
-                TextView tag = d.findViewById(R.id.tag_text);
+                TextView tag = roomInfo.findViewById(R.id.tag_text);
                 assert tag != null;
                 tag.setText(mChatTagsSpanned);
                 tag.setMovementMethod(LinkMovementMethod.getInstance());
 
-                TextView url = d.findViewById(R.id.url_text);
+                TextView url = roomInfo.findViewById(R.id.url_text);
                 assert url != null;
                 url.setText(Html.fromHtml("<b>URL: </b><a href=\"".concat(mChatUrl).concat("\">").concat(mChatUrl).concat("</a>")));
                 url.setMovementMethod(LinkMovementMethod.getInstance());
 
-                TextView host = d.findViewById(R.id.domain_text);
+                TextView host = roomInfo.findViewById(R.id.domain_text);
                 assert host != null;
                 host.setText(Html.fromHtml("<b>Domain: </b><a href=\"".concat("https://").concat(mChatDomain).concat("\">").concat("https://").concat(mChatDomain).concat("</a>")));
                 host.setMovementMethod(LinkMovementMethod.getInstance());

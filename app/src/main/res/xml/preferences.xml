@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="General Appearance">
+        android:title="General Appearance"
+        android:layout="@layout/preference_layout">
 
         <CheckBoxPreference
             android:key="dark_theme"
@@ -37,7 +38,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Message Appearance">
+        android:title="Message Appearance"
+        android:layout="@layout/preference_layout">
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="msg_text_color"
@@ -74,7 +76,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Backend">
+        android:title="Backend"
+        android:layout="@layout/preference_layout">
 
         <CheckBoxPreference
             android:key="backend"
@@ -90,7 +93,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Accounts">
+        android:title="Accounts"
+        android:layout="@layout/preference_layout">
 
         <ListPreference
             android:key="account_select"

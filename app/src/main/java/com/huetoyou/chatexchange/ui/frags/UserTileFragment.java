@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
 
@@ -275,14 +276,11 @@ public class UserTileFragment extends Fragment
 
                 mUserInfoView = View.inflate(getActivity(), R.layout.user_info, null);
 
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                        .setCancelable(true)
-                        .setTitle(getResources().getText(R.string.user_info) + " | " + mArgs.getString("userName", "Not Found!"))
-                        .setView(mUserInfoView)
-                        .setPositiveButton("OK", null)
-                        .create();
-
-                alertDialog.show();
+                new MaterialDialog.Builder(getActivity())
+                        .title(getResources().getText(R.string.user_info) + " | " + mArgs.getString("userName", "Not Found!"))
+                        .customView(mUserInfoView, true)
+                        .positiveText("OK")
+                        .show();
 
                 user_image_info = mUserInfoView.findViewById(R.id.user_image);
                 TextView user_id = mUserInfoView.findViewById(R.id.user_id);
