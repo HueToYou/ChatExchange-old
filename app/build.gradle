@@ -104,6 +104,10 @@ dependencies {
     compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
     compile 'com.github.AndroidDeveloperLB:MaterialPreferenceLibrary:10'
 
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6@aar'){
+        transitive=true
+    }
+
 //    compile 'com.github.clans:fab:1.6.4'
 
 //    compile 'com.github.huetoyou:floatingactionbutton:v1.6.7'

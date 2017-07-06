@@ -5,30 +5,36 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstants;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemViewHolder;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAction;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection;
+import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
+import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.huetoyou.chatexchange.R;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
+        implements SwipeableItemAdapter<RecyclerAdapter.MyViewHolder>
 {
 
     private Activity mContext;
@@ -37,14 +43,77 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private ArrayList<Integer> mColors = new ArrayList<>();
     private ArrayList<Drawable> mIcons = new ArrayList<>();
 
+    private View.OnClickListener mSwipeableViewContainerOnClickListener;
+    private View.OnClickListener mUnderSwipeableViewButtonOnClickListener;
+
+    private EventListener mEventListener;
+
     private OnItemClicked onItemClicked;
 
     private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
+    private ArrayList<ChatroomRecyclerObject> mChatroomObjects = new ArrayList<>();
+
+    private RecyclerViewSwipeManager mSwipeManager;
+
+    public interface EventListener {
+        void onItemPinned(int position);
+
+        void onItemViewClicked(View v);
+
+        void onUnderSwipeableViewButtonClicked(View v);
+    }
+
+    @Override
+    public SwipeResultAction onSwipeItem(MyViewHolder holder, int position, int result)
+    {
+        Log.d("SWIPED", "onSwipeItem(position = " + position + ", result = " + result + ")");
+
+        switch (result) {
+            // swipe left --- pin
+            case Swipeable.RESULT_SWIPED_LEFT:
+                holder.revealCloseButton();
+                return new SwipeLeftResultAction(this, position);
+            // other --- do nothing
+            case Swipeable.RESULT_SWIPED_RIGHT:
+            case Swipeable.RESULT_CANCELED:
+            default:
+                holder.hideCloseButton();
+                if (position != RecyclerView.NO_POSITION) {
+                    return new UnpinResultAction(this, position);
+                } else {
+                    return null;
+                }
+        }
+    }
+
+    public EventListener getEventListener() {
+        return mEventListener;
+    }
+
+    public void setEventListener(EventListener eventListener) {
+        mEventListener = eventListener;
+    }
+
+    @Override
+    public void onSetSwipeBackground(MyViewHolder holder, int position, int type)
+    {
+//        if (type == Swipeable.DRAWABLE_SWIPE_LEFT_BACKGROUND) {
+//            holder.itemView.setBackgroundColor(Color.YELLOW);
+//        } else {
+//            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+//        }
+    }
+
+    @Override
+    public int onGetSwipeReactionType(MyViewHolder holder, int position, int x, int y)
+    {
+        return Swipeable.REACTION_CAN_SWIPE_LEFT;
+    }
 
     @Override
     public int getItemCount()
     {
-        return mNames.size();
+        return mChatroomObjects.size();
     }
 
     @Override
@@ -81,23 +150,86 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return mVHs.get(position);
     }
 
-    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked)
+    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
     {
         this.mContext = activity;
         this.onItemClicked = onItemClicked;
+        this.mSwipeManager = swipeManager;
+
+        mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSwipeableViewContainerClick(v);
+            }
+        };
+        mUnderSwipeableViewButtonOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUnderSwipeableViewButtonClick(v);
+            }
+        };
+
+        // SwipeableItemAdapter requires stable ID, and also
+        // have to implement the getItemId() method appropriately.
+        setHasStableIds(true);
+
+//        RecyclerViewSwipeManager manager = new RecyclerViewSwipeManager();
+//        manager.createWrappedAdapter(this);
+    }
+
+    public RecyclerViewSwipeManager getSwipeManager() {
+        return mSwipeManager;
+    }
+
+    private void onSwipeableViewContainerClick(View v) {
+        if (mEventListener != null) {
+            mEventListener.onItemViewClicked(
+                    RecyclerViewAdapterUtils.getParentViewHolderItemView(v));
+        }
+    }
+
+    private void onUnderSwipeableViewButtonClick(View v) {
+        if (mEventListener != null) {
+            mEventListener.onUnderSwipeableViewButtonClicked(
+                    RecyclerViewAdapterUtils.getParentViewHolderItemView(v));
+        }
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return mChatroomObjects.get(position).getId();
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return mChatroomObjects.get(position).getViewType();
+    }
+
+    private interface Swipeable extends SwipeableItemConstants
+    {
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
+        ChatroomRecyclerObject item = mChatroomObjects.get(position);
+
         //mViewHolder = holder;
-        Log.e("POS", position + "");
         holder.setClickListener(position);
-        holder.setOnLongClickListener(position);
+//        holder.setOnLongClickListener(position);
         holder.setCloseClickListener(position);
         holder.setText(position);
         holder.setImage(position);
         mVHs.add(position, holder);
+
+//        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
+//        holder.mCloseChat.setOnClickListener(mUnderSwipeableViewButtonOnClickListener);
+
+        holder.setMaxLeftSwipeAmount(-0.25f);
+        holder.setMaxRightSwipeAmount(0);
+        holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.25f : 0);
     }
 
     //Remove an item at position and notify changes.
@@ -109,6 +241,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mUrls.remove(position);
             mIcons.remove(position);
             mColors.remove(position);
+            mChatroomObjects.remove(position);
             notifyItemRemoved(position);
             return model;
         }
@@ -116,34 +249,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     //Add an item at position and notify changes.
-    public void addItem(int position, String name, String url, Drawable icon, Integer color)
-    {
-        if (!mNames.contains(name))
-        {
-            mNames.add(position, name);
-            mUrls.add(position, url);
-            mIcons.add(position, icon);
-            mColors.add(position, color);
-            notifyItemInserted(position);
-        }
-    }
+//    public void addItem(int position, String name, String url, Drawable icon, Integer color)
+//    {
+//        if (!mNames.contains(name))
+//        {
+//            mNames.add(position, name);
+//            mUrls.add(position, url);
+//            mIcons.add(position, icon);
+//            mColors.add(position, color);
+//            notifyItemInserted(position);
+//        }
+//    }
 
-    public void addItem(ChatroomRecyclerObject hueObjet)
+    public void addItem(ChatroomRecyclerObject hueObject)
     {
-        if (!mNames.contains(hueObjet.getName()))
+        if (!mNames.contains(hueObject.getName()))
         {
-            int position = hueObjet.getPosition();
-            mNames.add(position, hueObjet.getName());
-            mUrls.add(position, hueObjet.getUrl());
-            mIcons.add(position, hueObjet.getIcon());
-            mColors.add(position, hueObjet.getColor());
+            int position = hueObject.getPosition();
+            mNames.add(position, hueObject.getName());
+            mUrls.add(position, hueObject.getUrl());
+            mIcons.add(position, hueObject.getIcon());
+            mColors.add(position, hueObject.getColor());
+            mChatroomObjects.add(position, hueObject);
             notifyItemInserted(position);
         }
     }
 
     public ChatroomRecyclerObject getItem(int position)
     {
-        return new ChatroomRecyclerObject(position, mNames.get(position), mUrls.get(position), mIcons.get(position), mColors.get(position));
+        return mChatroomObjects.get(position);
     }
 
     //Move an item at fromPosition to toPosition and notify changes.
@@ -164,13 +298,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder
+    public class MyViewHolder extends AbstractSwipeableItemViewHolder
+        implements SwipeableItemViewHolder
     {
         // TODO: whatever views you need to bind
         TextView mTextView;
         ImageView mImageView;
         ImageButton mCloseChat;
         View mItem;
+
+        FrameLayout mContainer;
+        RelativeLayout mBehind;
 
         private final AnimatorSet mCloseButtonRevealSet = new AnimatorSet();
         private final AnimatorSet mCloseButtonHideSet = new AnimatorSet();
@@ -212,6 +350,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mTextView = v.findViewById(R.id.chatroomName);
             mImageView = v.findViewById(R.id.chatroomImg);
             mCloseChat = v.findViewById(R.id.close_chat_button);
+
+            mBehind = v.findViewById(R.id.behind_views);
+            mContainer = v.findViewById(R.id.chat_item_container);
 
             mCloseChat.setScaleX(0f);
             mCloseChat.setScaleY(0f);
@@ -257,6 +398,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
+        @Override
+        public View getSwipeableContainerView()
+        {
+            return mContainer;
+        }
+
         public View getItem()
         {
             return mItem;
@@ -269,17 +416,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public void setText(int position)
         {
-            if (mNames.size() > 0)
+            if (mChatroomObjects.size() > position)
             {
-                mTextView.setText(mNames.get(position));
+                mTextView.setText(mChatroomObjects.get(position).getName());
             }
         }
 
         public void setImage(int position)
         {
-            if (mIcons.size() > 0)
+            if (mChatroomObjects.size() > position)
             {
-                mImageView.setImageDrawable(mIcons.get(position));
+                mImageView.setImageDrawable(mChatroomObjects.get(position).getIcon());
             }
         }
 
@@ -312,16 +459,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         {
             if (mCloseChat.getScaleX() == 0f)
             {
-                mCloseButtonHideSet.cancel();
-                mCloseButtonRevealSet.start();
+                revealCloseButton();
                 //mCloseChat.setVisibility(View.VISIBLE);
             }
             else
             {
-                mCloseButtonRevealSet.cancel();
-                mCloseButtonHideSet.start();
+                hideCloseButton();
                 //mCloseChat.setVisibility(View.INVISIBLE);
             }
+        }
+
+        public void revealCloseButton() {
+            mCloseButtonHideSet.cancel();
+            mCloseButtonRevealSet.start();
+        }
+
+        public void hideCloseButton() {
+            mCloseButtonRevealSet.cancel();
+            mCloseButtonHideSet.start();
         }
 
         public void setOnLongClickListener(final int position)
@@ -358,6 +513,76 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         void onClick(View view, int position);
 
         void onCloseClick(View view, int position);
+    }
+
+    private static class SwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection
+    {
+        private RecyclerAdapter mAdapter;
+        private final int mPosition;
+        private boolean mSetPinned;
+
+        SwipeLeftResultAction(RecyclerAdapter adapter, int position) {
+            mAdapter = adapter;
+            mPosition = position;
+        }
+
+        @Override
+        protected void onPerformAction() {
+            super.onPerformAction();
+
+            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
+
+            if (!item.isPinned()) {
+                item.setIsPinned(true);
+                mAdapter.notifyItemChanged(mPosition);
+                mSetPinned = true;
+            }
+        }
+
+        @Override
+        protected void onSlideAnimationEnd() {
+            super.onSlideAnimationEnd();
+
+            if (mSetPinned && mAdapter.mEventListener != null) {
+                mAdapter.mEventListener.onItemPinned(mPosition);
+            }
+        }
+
+        @Override
+        protected void onCleanUp() {
+            super.onCleanUp();
+            // clear the references
+            mAdapter = null;
+        }
+    }
+
+    private static class UnpinResultAction extends SwipeResultActionDefault
+    {
+        private RecyclerAdapter mAdapter;
+        private final int mPosition;
+
+        UnpinResultAction(RecyclerAdapter adapter, int position) {
+            mAdapter = adapter;
+            mPosition = position;
+        }
+
+        @Override
+        protected void onPerformAction() {
+            super.onPerformAction();
+
+            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
+            if (item.isPinned()) {
+                item.setIsPinned(false);
+                mAdapter.notifyItemChanged(mPosition);
+            }
+        }
+
+        @Override
+        protected void onCleanUp() {
+            super.onCleanUp();
+            // clear the references
+            mAdapter = null;
+        }
     }
 
     /*//Remove items that no longer exist in the new mNames.

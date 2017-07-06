@@ -12,21 +12,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -34,24 +29,20 @@ import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.view.inputmethod.BaseInputConnection;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -59,15 +50,15 @@ import android.widget.Spinner;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.github.clans.fab.Util;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
-import com.huetoyou.chatexchange.ui.misc.HueRecyclerViewSwipeHelperHue;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -79,7 +70,6 @@ import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -139,9 +129,11 @@ public class MainActivity extends SlidingActivity
 
     private final AnimatorSet mOpenAnimSet = new AnimatorSet();
     private final AnimatorSet mCloseAnimSet = new AnimatorSet();
-    private RecyclerAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerAdapter.OnItemClicked mItemClickedListener;
     private ActionMenuView mActionMenuView;
+    private RecyclerAdapter mWrappedAdapter;
+    private RecyclerViewSwipeManager mSwipeManager;
 
     /*
      * Activity Lifecycle
@@ -167,7 +159,7 @@ public class MainActivity extends SlidingActivity
             {
                 Log.e("CLICKED", position + "");
 
-                mCurrentFragment = mAdapter.getUrlAt(position);
+                mCurrentFragment = mWrappedAdapter.getUrlAt(position);
                 doCloseAnimationForDrawerToggle(mDrawerButton);
                 getmChatroomSlidingMenu().toggle();
 
@@ -188,17 +180,27 @@ public class MainActivity extends SlidingActivity
             }
         };
 
-        mAdapter = new RecyclerAdapter(this, mItemClickedListener);
-
         chatroomsList = findViewById(R.id.chatroomsListView);
+
+        mSwipeManager = new RecyclerViewSwipeManager();
+
+        mWrappedAdapter = new RecyclerAdapter(this, mItemClickedListener, mSwipeManager);
+        mAdapter = mSwipeManager.createWrappedAdapter(mWrappedAdapter);
+
         chatroomsList.setAdapter(mAdapter);
+
+        // disable change animations
+        ((SimpleItemAnimator) chatroomsList.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        mSwipeManager.attachRecyclerView(chatroomsList);
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
                 DividerItemDecoration.VERTICAL);
         chatroomsList.addItemDecoration(dividerItemDecoration);
 
-        ItemTouchHelper.Callback callback = new HueRecyclerViewSwipeHelperHue(mAdapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(chatroomsList);
+//        ItemTouchHelper.Callback callback = new HueRecyclerViewSwipeHelperHue(mAdapter);
+//        ItemTouchHelper helper = new ItemTouchHelper(callback);
+//        helper.attachToRecyclerView(chatroomsList);
 
         assert getSupportActionBar() != null;
 
@@ -847,7 +849,7 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-                            addFragmentToList(name, url, icon, color);
+                            addFragmentToList(name, url, icon, color, id);
                             initiateFragment(fragment);
                         }
                     });
@@ -942,7 +944,7 @@ public class MainActivity extends SlidingActivity
                     {
                         continue;
                     }
-                    if (mAdapter.getItemCount() < mSEChatIDs.size() + mSOChatIDs.size())
+                    if (mWrappedAdapter.getItemCount() < mSEChatIDs.size() + mSOChatIDs.size())
                     {
                         continue;
                     }
@@ -1107,9 +1109,22 @@ public class MainActivity extends SlidingActivity
      * @param color Chat color
      */
 
-    private void addFragmentToList(String name, String url, Drawable icon, Integer color) {
+    private void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
         Log.e("ADD", "ADD");
-        mAdapter.addItem(mAdapter.getItemCount(), name, url, icon, color);
+        int identifier;
+
+        if (url.contains("overflow")) identifier = -Integer.decode(id);
+        else identifier = Integer.decode(id);
+
+        mWrappedAdapter.addItem(new ChatroomRecyclerObject(
+                mWrappedAdapter.getItemCount(),
+                name,
+                url,
+                icon,
+                color,
+                0,
+                identifier
+        ));
     }
 
     /**
@@ -1120,8 +1135,11 @@ public class MainActivity extends SlidingActivity
     {
         if (chatroomsList != null)
         {
-            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
-            chatroomsList.setAdapter(mAdapter);
+//            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
+//            chatroomsList.setAdapter(mAdapter);
+            for (int i = 0; i < mWrappedAdapter.getItemCount(); i++) {
+                mWrappedAdapter.removeItem(i);
+            }
         }
         resetArrays(true);
     }
@@ -1323,7 +1341,7 @@ public class MainActivity extends SlidingActivity
                                 String id = "";
 
                                 Pattern domP = Pattern.compile("//(.+?)\\.com");
-                                Matcher domM = domP.matcher(mAdapter.getUrlAt(position));
+                                Matcher domM = domP.matcher(mWrappedAdapter.getUrlAt(position));
 
                                 while (!domM.hitEnd())
                                 {
@@ -1334,7 +1352,7 @@ public class MainActivity extends SlidingActivity
                                 }
 
                                 Pattern idP = Pattern.compile("rooms/(.+?)\\b");
-                                Matcher idM = idP.matcher(mAdapter.getUrlAt(position));
+                                Matcher idM = idP.matcher(mWrappedAdapter.getUrlAt(position));
 
                                 while (!idM.hitEnd())
                                 {
@@ -1358,10 +1376,11 @@ public class MainActivity extends SlidingActivity
                                         removeIdFromSEList(id);
                                     }
 
-                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mAdapter.getUrlAt(position)));
+                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getUrlAt(position)));
 
-                                    if (mAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
-                                    mAdapter.removeItem(position);
+                                    if (mWrappedAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
+                                    mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
+                                    mWrappedAdapter.removeItem(position);
                                 }
                             }
                         })

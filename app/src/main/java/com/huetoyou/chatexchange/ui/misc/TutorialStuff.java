@@ -5,30 +5,23 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.support.annotation.DrawableRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
-import java.util.ArrayList;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -56,14 +49,41 @@ public class TutorialStuff
 
         final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
 
-        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null);
-        recyclerAdapter.addItem(0, "Example 1", "U", ico, 0);
+        final RecyclerViewSwipeManager swipeManager = new RecyclerViewSwipeManager();
+
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null, swipeManager);
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(
+                0, "Example 1", "U", ico, 0, 0, 0
+        ));
+
+        RecyclerView.Adapter adapter = swipeManager.createWrappedAdapter(recyclerAdapter);
+
+        dummyChats.setAdapter(adapter);
+
+        // disable change animations
+        ((SimpleItemAnimator) dummyChats.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        swipeManager.attachRecyclerView(dummyChats);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
                 DividerItemDecoration.VERTICAL);
 
-        dummyChats.setAdapter(recyclerAdapter);
         dummyChats.addItemDecoration(dividerItemDecoration);
+
+        final OnSwipeListener onSwipeListener = new OnSwipeListener()
+        {
+            @Override
+            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
+            {
+                swipeManager.performFakeSwipe(viewHolder, 2);
+            }
+
+            @Override
+            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
+            {
+                swipeManager.performFakeSwipe(viewHolder, 1);
+            }
+        };
 
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(0);
@@ -95,10 +115,13 @@ public class TutorialStuff
                 switch (position)
                 {
                     case 0:
-                        recyclerAdapter.getViewHolderAt(0).performLongClick();
+//                        recyclerAdapter.getViewHolderAt(0).performLongClick();
+//                        recyclerAdapter.getSwipeManager().performFakeSwipe(recyclerAdapter.getViewHolderAt(0), 1);
+                        onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
                         break;
                     case 1:
-                        recyclerAdapter.getViewHolderAt(0).performLongClick();
+                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+//                        recyclerAdapter.getSwipeManager().performFakeSwipe(recyclerAdapter.getViewHolderAt(0), 0);
                         break;
                     case 2:
                         chatFam.open(true);
@@ -128,7 +151,7 @@ public class TutorialStuff
                 "OK");
 
         sequence.addSequenceItem(dummyChats,
-                activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_long_press_text),
+                activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text),
                 "OK");
 
         sequence.setConfig(config);
@@ -287,5 +310,10 @@ public class TutorialStuff
                 "OK");
 
         sequence.start();
+    }
+
+    public interface OnSwipeListener {
+        void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
+        void onSwipeRight(RecyclerView.ViewHolder viewHolder);
     }
 }
