@@ -17,15 +17,14 @@ import static jodd.jerry.Jerry.jerry;
 /**
  * Perform Stack Exchange login via email and password
  */
-class StackExchangeAuth
-{
+class StackExchangeAuth {
+
     private static final String TAG = "StackExchangeAuth";
 
     /**
      * Callbacks for activity during the login process
      */
-    interface Listener
-    {
+    interface Listener {
 
         /**
          * Authentication succeeded
@@ -66,11 +65,9 @@ class StackExchangeAuth
     /**
      * Implement the onFailed() method since it is always handled the same way
      */
-    private abstract class RequestListener implements RequestFactory.Listener
-    {
+    private abstract class RequestListener implements RequestFactory.Listener {
         @Override
-        public void onFailed(String message)
-        {
+        public void onFailed(String message) {
             Log.e(TAG, message);
             mListener.authFailed(message);
         }
@@ -82,8 +79,7 @@ class StackExchangeAuth
      * Occasionally, a second page is shown after POSTing the credentials
      * requiring the user to confirm the OpenID transaction.
      */
-    private void confirmOpenId()
-    {
+    private void confirmOpenId() {
         Log.d(TAG, "confirming OpenID...");
         Map<String, String> form = new HashMap<>();
         form.put("session", mSessionId);
@@ -91,18 +87,13 @@ class StackExchangeAuth
         mRequestFactory.post(
                 "https://openid.stackexchange.com/account/prompt/submit",
                 form,
-                new RequestListener()
-                {
+                new RequestListener() {
                     @Override
-                    public void onSucceeded(URL url, String data)
-                    {
+                    public void onSucceeded(URL url, String data) {
                         mListener.authProgress(90);
-                        if (!url.getPath().equals("/"))
-                        {
+                        if (!url.getPath().equals("/")) {
                             mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_confirm_openid).toString());
-                        }
-                        else
-                        {
+                        } else {
                             mListener.authSucceeded(mRequestFactory.cookies());
                         }
                     }
@@ -113,32 +104,23 @@ class StackExchangeAuth
     /**
      * Attempt to complete the login process
      */
-    private void completeLogin()
-    {
+    private void completeLogin() {
         Log.d(TAG, "completing login...");
-        mRequestFactory.get(mAuthUrl, true, new RequestListener()
-        {
+        mRequestFactory.get(mAuthUrl, true, new RequestListener() {
             @Override
-            public void onSucceeded(URL url, String data)
-            {
+            public void onSucceeded(URL url, String data) {
                 mListener.authProgress(80);
-                if (url.getPath().equals("/account/prompt"))
-                {
+                if (url.getPath().equals("/account/prompt")) {
                     Jerry doc = jerry(data);
                     mSessionId = doc.$("input[name=session]").attr("value");
                     mSessionFkey = doc.$("input[name=fkey]").attr("value");
                     if (mSessionId == null || mSessionId.isEmpty() ||
-                            mSessionFkey == null || mSessionId.isEmpty())
-                    {
+                            mSessionFkey == null || mSessionId.isEmpty()) {
                         mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_session).toString());
-                    }
-                    else
-                    {
+                    } else {
                         confirmOpenId();
                     }
-                }
-                else if (url.getPath().equals("/"))
-                {
+                } else if (url.getPath().equals("/")) {
                     mListener.authSucceeded(mRequestFactory.cookies());
                 }
             }
@@ -148,8 +130,7 @@ class StackExchangeAuth
     /**
      * Submit the credentials the user supplied
      */
-    private void fetchAuthUrl()
-    {
+    private void fetchAuthUrl() {
         Log.d(TAG, "fetching auth URL...");
         Map<String, String> form = new HashMap<>();
         form.put("email", mEmail);
@@ -159,19 +140,14 @@ class StackExchangeAuth
         mRequestFactory.post(
                 "https://openid.stackexchange.com/affiliate/form/login/submit",
                 form,
-                new RequestListener()
-                {
+                new RequestListener() {
                     @Override
-                    public void onSucceeded(URL url, String data)
-                    {
+                    public void onSucceeded(URL url, String data) {
                         mListener.authProgress(60);
                         mAuthUrl = jerry(data).$("noscript a").attr("href");
-                        if (mAuthUrl == null || mAuthUrl.isEmpty())
-                        {
+                        if (mAuthUrl == null || mAuthUrl.isEmpty()) {
                             mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_url).toString());
-                        }
-                        else
-                        {
+                        } else {
                             completeLogin();
                         }
                     }
@@ -182,22 +158,16 @@ class StackExchangeAuth
     /**
      * Retrieve the network fkey from the login form
      */
-    private void fetchNetworkFkey()
-    {
+    private void fetchNetworkFkey() {
         Log.d(TAG, "fetching network fkey...");
-        mRequestFactory.get(mLoginUrl, true, new RequestListener()
-        {
+        mRequestFactory.get(mLoginUrl, true, new RequestListener() {
             @Override
-            public void onSucceeded(URL url, String data)
-            {
+            public void onSucceeded(URL url, String data) {
                 mListener.authProgress(40);
                 mNetworkFkey = jerry(data).$("#fkey").attr("value");
-                if (mNetworkFkey == null || mNetworkFkey.isEmpty())
-                {
+                if (mNetworkFkey == null || mNetworkFkey.isEmpty()) {
                     mListener.authFailed(mContext.getResources().getText(R.string.se_auth_unable_to_read_fkey).toString());
-                }
-                else
-                {
+                } else {
                     fetchAuthUrl();
                 }
             }
@@ -207,17 +177,14 @@ class StackExchangeAuth
     /**
      * Retrieve the URL of the page that contains the login form
      */
-    private void fetchLoginUrl()
-    {
+    private void fetchLoginUrl() {
         Log.d(TAG, "fetching login URL...");
         mRequestFactory.get(
                 "https://stackexchange.com/users/signin",
                 true,
-                new RequestListener()
-                {
+                new RequestListener() {
                     @Override
-                    public void onSucceeded(URL url, String data)
-                    {
+                    public void onSucceeded(URL url, String data) {
                         mListener.authProgress(20);
                         mLoginUrl = data;
                         fetchNetworkFkey();
@@ -234,8 +201,7 @@ class StackExchangeAuth
      * @param listener callback listener
      * @param context  app context for string resources
      */
-    StackExchangeAuth(String email, String password, Listener listener, Context context)
-    {
+    StackExchangeAuth(String email, String password, Listener listener, Context context) {
         mEmail = email;
         mPassword = password;
         mListener = listener;
