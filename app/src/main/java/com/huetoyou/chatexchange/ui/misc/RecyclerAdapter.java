@@ -38,10 +38,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 {
 
     private Activity mContext;
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mUrls = new ArrayList<>();
-    private ArrayList<Integer> mColors = new ArrayList<>();
-    private ArrayList<Drawable> mIcons = new ArrayList<>();
 
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
     private View.OnClickListener mUnderSwipeableViewButtonOnClickListener;
@@ -127,22 +123,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public String getNameAt(int position)
     {
-        return mNames.get(position);
+        return mChatroomObjects.get(position).getName();
     }
 
     public String getUrlAt(int position)
     {
-        return mUrls.get(position);
+        return mChatroomObjects.get(position).getUrl();
     }
 
     public Integer getColorAt(int position)
     {
-        return mColors.get(position);
+        return mChatroomObjects.get(position).getColor();
     }
 
     public Drawable getIconAt(int position)
     {
-        return mIcons.get(position);
+        return mChatroomObjects.get(position).getIcon();
     }
 
     public MyViewHolder getViewHolderAt(int position)
@@ -233,19 +229,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     //Remove an item at position and notify changes.
-    public String removeItem(int position)
+    public void removeItem(int position)
     {
-        if (mNames.get(position) != null)
+        if (mChatroomObjects.get(position) != null)
         {
-            final String model = mNames.remove(position);
-            mUrls.remove(position);
-            mIcons.remove(position);
-            mColors.remove(position);
             mChatroomObjects.remove(position);
             notifyItemRemoved(position);
-            return model;
         }
-        return null;
     }
 
     //Add an item at position and notify changes.
@@ -263,13 +253,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public void addItem(ChatroomRecyclerObject hueObject)
     {
-        if (!mNames.contains(hueObject.getName()))
+        if (!mChatroomObjects.contains(hueObject))
         {
             int position = hueObject.getPosition();
-            mNames.add(position, hueObject.getName());
-            mUrls.add(position, hueObject.getUrl());
-            mIcons.add(position, hueObject.getIcon());
-            mColors.add(position, hueObject.getColor());
             mChatroomObjects.add(position, hueObject);
             notifyItemInserted(position);
         }
@@ -283,17 +269,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     //Move an item at fromPosition to toPosition and notify changes.
     public void moveItem(int fromPosition, int toPosition)
     {
-        final String model = mNames.remove(fromPosition);
-        mNames.add(toPosition, model);
-
-        final String url = mUrls.remove(fromPosition);
-        mUrls.add(toPosition, url);
-
-        final Drawable icon = mIcons.remove(fromPosition);
-        mIcons.add(toPosition, icon);
-
-        final Integer color = mColors.remove(fromPosition);
-        mColors.add(toPosition, color);
+        final ChatroomRecyclerObject object = mChatroomObjects.remove(fromPosition);
+        mChatroomObjects.add(toPosition, object);
 
         notifyItemMoved(fromPosition, toPosition);
     }
