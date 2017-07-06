@@ -109,6 +109,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         // Prepare the connection
         Log.i(TAG, String.format("%s %s", params.method, requestUrl.toString()));
         connection = (HttpURLConnection) requestUrl.openConnection();
+        connection.setInstanceFollowRedirects(false);  // we do this by hand
         connection.setRequestMethod(params.method);
         connection.setRequestProperty("Cookie", TextUtils.join("; ", cookieList));
         connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -168,7 +169,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
                     case HttpURLConnection.HTTP_MOVED_TEMP:
                     case HttpURLConnection.HTTP_MOVED_PERM:
                         if (params.followRedirects) {
-                            url = connection.getHeaderField("Location");
+                            url = new URL(new URL(url), connection.getHeaderField("Location")).toString();
                             if (url == null) {
                                 throw new IOException("redirect without a location header");
                             }
