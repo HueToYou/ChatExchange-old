@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -229,6 +231,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.setMaxLeftSwipeAmount(-0.25f);
         holder.setMaxRightSwipeAmount(0);
         holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.25f : 0);
+    }
+
+    //Remove an item at position and notify changes.
+    public void removeItemWithSnackbar(Activity activity, final int position)
+    {
+        if (mChatroomObjects.get(position) != null)
+        {
+            final ChatroomRecyclerObject huehuehue = mChatroomObjects.get(position);
+            mChatroomObjects.remove(position);
+            notifyItemRemoved(position);
+
+            String chatroomName = huehuehue.getName();
+            final View parentLayout = activity.findViewById(android.R.id.content);
+            Snackbar snackbar = Snackbar
+                    .make(parentLayout, "Deleted " + chatroomName, Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            Snackbar hue = Snackbar.make(parentLayout, "Chatroom restored!", Snackbar.LENGTH_SHORT);
+                            hue.show();
+                            addItem(huehuehue);
+                            notifyItemInserted(position);
+                        }
+                    });
+
+            snackbar.show();
+        }
     }
 
     //Remove an item at position and notify changes.

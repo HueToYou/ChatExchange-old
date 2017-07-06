@@ -1381,7 +1381,7 @@ public class MainActivity extends SlidingActivity
 
                                     if (mWrappedAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
                                     mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
-                                    mWrappedAdapter.removeItem(position);
+                                    mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position);
                                 }
                             }
                         })
