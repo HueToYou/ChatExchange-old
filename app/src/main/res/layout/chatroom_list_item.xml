@@ -4,24 +4,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:animateLayoutChanges="true"
-    android:gravity="center_vertical"
-    android:paddingBottom="10dp"
-    android:paddingEnd="5dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingStart="5dp"
-    android:paddingTop="10dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:gravity="center_vertical">
 
     <!-- Defining where should text be placed. You set you text color here-->
+
+    <RelativeLayout
+        android:id="@+id/behind_views"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:gravity="end"
+        android:paddingBottom="10dp"
+        android:paddingEnd="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingStart="5dp"
+        android:paddingTop="10dp">
+
+        <ImageView
+            android:id="@+id/close_chat_img"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:tint="@android:color/holo_red_dark"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_close_black_24dp"
+            android:background="?android:attr/selectableItemBackground"
+            />
+
+        <!--<android.support.v7.widget.AppCompatImageButton-->
+            <!--android:id="@+id/close_chat_button"-->
+            <!--style="@style/Widget.AppCompat.Button.Colored"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="center_vertical|end"-->
+            <!--android:background="?android:attr/selectableItemBackground"-->
+            <!--android:backgroundTintMode="src_over"-->
+            <!--android:tint="@color/white"-->
+            <!--android:visibility="invisible"-->
+            <!--app:backgroundTint="@android:color/holo_red_dark"-->
+            <!--app:elevation="4dp"-->
+            <!--app:srcCompat="@drawable/ic_close_black_24dp" />-->
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/chat_item_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="10dp"
+        android:paddingEnd="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingStart="5dp"
+        android:paddingTop="10dp"
+        android:background="?android:attr/selectableItemBackground" >
 
         <ImageView
             android:id="@+id/chatroomImg"
@@ -63,26 +101,6 @@
         </LinearLayout>
 
     </FrameLayout>
-
-    <RelativeLayout
-        android:id="@+id/behind_views"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end">
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/close_chat_button"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical|end"
-            android:elevation="4dp"
-            android:tint="@color/white"
-            android:visibility="invisible"
-            app:backgroundTint="@android:color/holo_red_dark"
-            app:elevation="4dp"
-            app:srcCompat="@drawable/ic_close_black_24dp" />
-    </RelativeLayout>
 
 
 </FrameLayout>

@@ -5,10 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -284,7 +287,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         // TODO: whatever views you need to bind
         TextView mTextView;
         ImageView mImageView;
-        ImageButton mCloseChat;
+        ImageView mCloseChat;
         View mItem;
 
         FrameLayout mContainer;
@@ -329,7 +332,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mItem = v;
             mTextView = v.findViewById(R.id.chatroomName);
             mImageView = v.findViewById(R.id.chatroomImg);
-            mCloseChat = v.findViewById(R.id.close_chat_button);
+            mCloseChat = v.findViewById(R.id.close_chat_img);
 
             mBehind = v.findViewById(R.id.behind_views);
             mContainer = v.findViewById(R.id.chat_item_container);
@@ -389,7 +392,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             return mItem;
         }
 
-        public ImageButton getCloseChatButton()
+        public ImageView getCloseChatButton()
         {
             return mCloseChat;
         }
@@ -423,6 +426,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     {
                         mCloseButtonRevealSet.cancel();
                         mCloseButtonHideSet.start();
+                        getSwipeManager().performFakeSwipe(mVHs.get(position), 1);
                         //mCloseChat.setVisibility(View.INVISIBLE);
                         Log.e("CLOSE", "HIDING");
                     }

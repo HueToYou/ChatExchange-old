@@ -938,7 +938,7 @@ public class ChatFragment extends Fragment
             {
                 Log.e("STARTED", "DOOOO");
                 Document document = Jsoup.parse(strings[0]);
-                Log.e("DOC", document.html());
+//                Log.e("DOC", document.html());
                 Elements scripts = document.select("script");
                 Log.e("S", scripts.html());
 
