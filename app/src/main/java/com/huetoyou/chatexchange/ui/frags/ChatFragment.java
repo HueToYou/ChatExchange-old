@@ -687,7 +687,7 @@ public class ChatFragment extends Fragment
 
                 new MaterialDialog.Builder(getActivity())
                         .title("Info")
-                        .customView(R.layout.room_desc, true)
+                        .customView(roomInfo, true)
                         .positiveText(R.string.generic_ok)
                         .show();
 

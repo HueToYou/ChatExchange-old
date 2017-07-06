@@ -332,7 +332,7 @@ public class MainActivity extends SlidingActivity
             oncreatejustcalled = false;
         }
 
-        doFragmentStuff();
+//        doFragmentStuff();
         super.onResume();
 
         System.out.println("Hellu!");
@@ -811,7 +811,7 @@ public class MainActivity extends SlidingActivity
             }
         });
 //        Looper.prepare();
-        Log.e("IDS", mSEChatIDs.toString());
+        Log.e("IDS", mSEChatIDs.toString().concat(mSOChatIDs.toString()));
 
         for (String s : mSEChatIDs)
         {
@@ -901,6 +901,7 @@ public class MainActivity extends SlidingActivity
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
+                            addFragmentToList(name, url, icon, color, id);
                             initiateFragment(fragment);
                         }
                     });
