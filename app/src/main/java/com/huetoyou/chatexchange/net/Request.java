@@ -107,7 +107,7 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
         }
 
         // Prepare the connection
-        Log.i(TAG, String.format("Opening connection to %s", requestUrl.toString()));
+        Log.i(TAG, String.format("%s %s", params.method, requestUrl.toString()));
         connection = (HttpURLConnection) requestUrl.openConnection();
         connection.setRequestMethod(params.method);
         connection.setRequestProperty("Cookie", TextUtils.join("; ", cookieList));
@@ -160,7 +160,11 @@ class Request extends AsyncTask<Request.Params, Void, Request.Response> {
 
             // If an HTTP redirect is encountered (and followRedirects is set), redo the request
             try {
-                switch (connection.getResponseCode()) {
+                int responseCode = connection.getResponseCode();
+                String responseMessage = connection.getResponseMessage();
+                Log.i(TAG, String.format("response: %d %s", responseCode, responseMessage));
+
+                switch (responseCode) {
                     case HttpURLConnection.HTTP_MOVED_TEMP:
                     case HttpURLConnection.HTTP_MOVED_PERM:
                         if (params.followRedirects) {
