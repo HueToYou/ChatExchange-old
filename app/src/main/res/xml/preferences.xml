@@ -10,7 +10,7 @@
         <CheckBoxPreference
             android:key="dark_theme"
             android:title="Dark theme"
-            android:summary="Enable the alternate dark theme instead of the standard light theme" />
+            android:summary="Enable alternate dark theme instead of standard light theme" />
 
         <CheckBoxPreference
             android:key="dynamic_bar_color"
@@ -53,7 +53,7 @@
         <CheckBoxPreference
             android:key="dynamic_msg_bgcolor"
             android:title="Dynamic background color"
-            android:summary="Dynamically change the message background color based on color scheme of chatroom" />
+            android:summary="Dynamically change message background color based on color scheme of chatroom" />
 
         <com.jrummyapps.android.colorpicker.ColorPreference
             android:key="msg_bgcolor"
