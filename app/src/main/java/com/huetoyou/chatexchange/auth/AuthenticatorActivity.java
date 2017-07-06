@@ -12,6 +12,7 @@ import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import android.text.Html;
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements StackExchangeAuth.Listener
 {
+    private static final String TAG = "AuthenticatorActivity";
 
     private ProgressDialog mProgressDialog;
 
@@ -173,6 +175,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public void authSucceeded(String authToken)
     {
+        Log.d(TAG, String.format("auth token: %s", authToken));
+
         mProgressDialog.cancel();
 
         String accountName = mEmail.getText().toString();
