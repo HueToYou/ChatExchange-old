@@ -74,7 +74,7 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        resetSpotlights(activity); //FOR DEBUGGING PURPOSES
+        //resetSpotlights(activity); //FOR DEBUGGING PURPOSES
         if (mConfig == null)
         {
             setConfig(activity);
@@ -408,5 +408,12 @@ public class TutorialStuff
         manager.reset(CHAT_ITEM_ADD);
         manager.reset(CHAT_ITEM_REMOVE_ALL);
         manager.reset(CHAT_ITEM_HOME);
+        manager.reset(CHAT_FRAG_FAM);
+        manager.reset(CHAT_FRAG_USERS_FAB);
+        manager.reset(CHAT_FRAG_INFO_FAB);
+        manager.reset(CHAT_FRAG_STARS_FAB);
+        manager.reset(CHAT_FRAG_OPENINBROWSER_FAB);
+        manager.reset(CHAT_FRAG_MESSG_ENTRY_BOX);
+        manager.reset(CHAT_FRAG_SEND_MESSG_BTN);
     }
 }
