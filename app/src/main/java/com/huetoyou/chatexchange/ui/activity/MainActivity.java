@@ -286,6 +286,14 @@ public class MainActivity extends SlidingActivity
                         fam.showMenuButton(true);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
+            }
+        });
+
+        mChatroomSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener()
+        {
+            @Override
+            public void onOpened()
+            {
                 TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
             }
         });
@@ -1049,6 +1057,7 @@ public class MainActivity extends SlidingActivity
         TutorialStuff.homeFragTutorial(this);
 
         return true;
+
     }
 
     /**

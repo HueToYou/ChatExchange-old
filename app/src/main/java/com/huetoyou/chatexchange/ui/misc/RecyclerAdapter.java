@@ -181,10 +181,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     //Remove an item at position and notify changes.
     public ChatroomRecyclerObject removeItem(int position)
     {
-        if (mChatroomObjects.get(position) != null)
+        if (mChatroomObjects.size() > position && mChatroomObjects.get(position) != null)
         {
             final ChatroomRecyclerObject item = mChatroomObjects.remove(position);
-            mVHs.remove(position);
+            if (mVHs.size() > position && mVHs.get(position) != null) mVHs.remove(position);
             notifyItemRemoved(position);
             return item;
         }
@@ -264,6 +264,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         FrameLayout mContainer;
         RelativeLayout mBehind;
+
+        boolean closeButtonRevealed = false;
 
         private final AnimatorSet mCloseButtonRevealSet = new AnimatorSet();
         private final AnimatorSet mCloseButtonHideSet = new AnimatorSet();
@@ -414,11 +416,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         public void revealCloseButton() {
             mCloseButtonHideSet.cancel();
             mCloseButtonRevealSet.start();
+            setCloseButtonRevealed(true);
         }
 
         public void hideCloseButton() {
             mCloseButtonRevealSet.cancel();
             mCloseButtonHideSet.start();
+            setCloseButtonRevealed(false);
         }
 
         public void setCloseClickListener()
@@ -434,6 +438,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     }
                 }
             });
+        }
+
+        public boolean isCloseButtonRevealed() {
+            return closeButtonRevealed;
+        }
+
+        public void setCloseButtonRevealed(boolean set) {
+            closeButtonRevealed = set;
         }
     }
 

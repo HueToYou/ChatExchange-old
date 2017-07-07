@@ -35,6 +35,11 @@ android {
     }
     productFlavors {
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 repositories {
