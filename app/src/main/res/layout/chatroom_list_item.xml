@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:gravity="center_vertical">
 
@@ -27,25 +27,24 @@
             android:id="@+id/close_chat_img"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
             android:tint="@android:color/holo_red_dark"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_close_black_24dp"
-            android:background="?android:attr/selectableItemBackground"
-            />
+            app:srcCompat="@drawable/ic_close_black_24dp" />
 
         <!--<android.support.v7.widget.AppCompatImageButton-->
-            <!--android:id="@+id/close_chat_button"-->
-            <!--style="@style/Widget.AppCompat.Button.Colored"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center_vertical|end"-->
-            <!--android:background="?android:attr/selectableItemBackground"-->
-            <!--android:backgroundTintMode="src_over"-->
-            <!--android:tint="@color/white"-->
-            <!--android:visibility="invisible"-->
-            <!--app:backgroundTint="@android:color/holo_red_dark"-->
-            <!--app:elevation="4dp"-->
-            <!--app:srcCompat="@drawable/ic_close_black_24dp" />-->
+        <!--android:id="@+id/close_chat_button"-->
+        <!--style="@style/Widget.AppCompat.Button.Colored"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical|end"-->
+        <!--android:background="?android:attr/selectableItemBackground"-->
+        <!--android:backgroundTintMode="src_over"-->
+        <!--android:tint="@color/white"-->
+        <!--android:visibility="invisible"-->
+        <!--app:backgroundTint="@android:color/holo_red_dark"-->
+        <!--app:elevation="4dp"-->
+        <!--app:srcCompat="@drawable/ic_close_black_24dp" />-->
     </RelativeLayout>
 
     <FrameLayout
@@ -90,13 +89,6 @@
                 android:text="Ask Ubuntu General Room"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 tools:ignore="HardcodedText,RtlHardcoded" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Huehuehuehue"
-                android:visibility="gone"
-                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 
