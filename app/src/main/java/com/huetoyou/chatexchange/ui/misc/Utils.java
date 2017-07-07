@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -152,5 +153,9 @@ public class Utils
         }
 
         return null;
+    }
+
+    public static int spToPixels(int sp, Activity activity) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, activity.getResources().getDisplayMetrics());
     }
 }
