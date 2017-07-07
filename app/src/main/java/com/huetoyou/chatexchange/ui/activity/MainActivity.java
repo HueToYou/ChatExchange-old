@@ -1368,22 +1368,49 @@ public class MainActivity extends SlidingActivity
         Log.e("IDDDDD", id);
         Log.e("DOMAIN", domain);
 
+        String soId = "";
+        String seId = "";
+
         if (!domain.isEmpty() && !id.isEmpty())
         {
             if (domain.contains("overflow"))
             {
                 removeIdFromSOList(id);
+                soId = id;
             }
             else if (domain.contains("exchange"))
             {
                 removeIdFromSEList(id);
+                seId = id;
             }
 
-            mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getItemAt(position).getUrl()));
-
             if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) setFragmentByTag("home");
-            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
-            mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position);
+//            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
+
+            final String soId1 = soId;
+            final String seId1 = seId;
+
+            mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position, new RecyclerAdapter.SnackbarListener()
+            {
+                @Override
+                public void onUndo()
+                {
+                    if (!soId1.isEmpty())
+                    {
+                        addIdToSOList(soId1);
+                    } else if (!seId1.isEmpty())
+                    {
+                        addIdToSEList(seId1);
+                    }
+                }
+
+                @Override
+                public void onUndoExpire(String url)
+                {
+                    Log.e("UNDO", "Undo Expired");
+                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(url));
+                }
+            });
         }
     }
 

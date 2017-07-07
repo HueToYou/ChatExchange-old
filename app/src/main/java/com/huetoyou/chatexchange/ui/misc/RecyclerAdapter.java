@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ImageViewCompat;
@@ -84,11 +85,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         ChatroomRecyclerObject item = mChatroomObjects.get(position);
 
         //mViewHolder = holder;
-        holder.setClickListener(position);
+        holder.setClickListener();
 //        holder.setOnLongClickListener(position);
-        holder.setCloseClickListener(position);
-        holder.setText(position);
-        holder.setImage(position);
+        holder.setCloseClickListener();
+        holder.setText();
+        holder.setImage();
         mVHs.add(position, holder);
 
 //        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
@@ -192,7 +193,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     //Remove an item at position and notify changes.
-    public void removeItemWithSnackbar(Activity activity, final int position)
+    public void removeItemWithSnackbar(Activity activity, final int position, final SnackbarListener listener)
     {
         if (mChatroomObjects.get(position) != null)
         {
@@ -213,10 +214,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                                 Snackbar hue = Snackbar.make(parentLayout, "Chatroom restored!", Snackbar.LENGTH_SHORT);
                                 hue.show();
                                 addItem(huehuehue);
+                                listener.onUndo();
                             }
                         });
 
                 snackbar.show();
+                snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>()
+                {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event)
+                    {
+                        listener.onUndoExpire(huehuehue.getUrl());
+                    }
+                });
             }
         }
     }
@@ -226,6 +236,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         void onClick(View view, int position);
 
         void onCloseClick(View view, int position);
+    }
+
+    public interface SnackbarListener {
+        void onUndo();
+        void onUndoExpire(String url);
     }
 
     private interface Swipeable extends SwipeableItemConstants
@@ -348,60 +363,46 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             return mCloseChat;
         }
 
-        public void setText(int position)
+        public void setText()
         {
-            if (mChatroomObjects.size() > position)
+            if (mChatroomObjects.size() > getAdapterPosition())
             {
-                mTextView.setText(mChatroomObjects.get(position).getName());
+                mTextView.setText(mChatroomObjects.get(getAdapterPosition()).getName());
             }
         }
 
-        public void setImage(int position)
+        public void setImage()
         {
-            if (mChatroomObjects.size() > position)
+            if (mChatroomObjects.size() > getAdapterPosition())
             {
-                mImageView.setImageDrawable(mChatroomObjects.get(position).getIcon());
+                mImageView.setImageDrawable(mChatroomObjects.get(getAdapterPosition()).getIcon());
             }
         }
 
-        public void setClickListener(final int position)
+        public void setClickListener()
         {
             mItem.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    Log.e("CLICKED", position + "");
+                    Log.e("CLICKED", getAdapterPosition() + "");
 
                     if (mCloseChat.getScaleX() == 1.0f)
                     {
                         mCloseButtonRevealSet.cancel();
                         mCloseButtonHideSet.start();
-                        getSwipeManager().performFakeSwipe(mVHs.get(position), 1);
+                        getSwipeManager().performFakeSwipe(mVHs.get(getAdapterPosition()), 1);
                         //mCloseChat.setVisibility(View.INVISIBLE);
                         Log.e("CLOSE", "HIDING");
                     }
                     else if (onItemClicked != null)
                     {
                         Log.e("SENDING", "CLICKTERFACE");
-                        onItemClicked.onClick(view, position);
+                        onItemClicked.onClick(view, getAdapterPosition());
                     }
                 }
             });
-        }
-
-        public void performLongClick()
-        {
-            if (mCloseChat.getScaleX() == 0f)
-            {
-                revealCloseButton();
-                //mCloseChat.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                hideCloseButton();
-                //mCloseChat.setVisibility(View.INVISIBLE);
-            }
         }
 
         public void revealCloseButton() {
@@ -414,20 +415,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonHideSet.start();
         }
 
-        public void setOnLongClickListener(final int position)
-        {
-            mItem.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View view)
-                {
-                    performLongClick();
-                    return true;
-                }
-            });
-        }
-
-        public void setCloseClickListener(final int position)
+        public void setCloseClickListener()
         {
             mCloseChat.setOnClickListener(new View.OnClickListener()
             {
@@ -436,7 +424,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 {
                     if (onItemClicked != null)
                     {
-                        onItemClicked.onCloseClick(mCloseChat, position);
+                        onItemClicked.onCloseClick(mCloseChat, getAdapterPosition());
                     }
                 }
             });
