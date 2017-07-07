@@ -410,7 +410,7 @@ public class TutorialStuff
         args.putBoolean(USER_IS_MOD_KEY, false);
         args.putBoolean(USER_IS_OWNER_KEY, false);
 
-        UserTileFragment userTileFragment = new UserTileFragment();
+        final UserTileFragment userTileFragment = new UserTileFragment();
         userTileFragment.setArguments(args);
 
         args = new Bundle();
@@ -425,7 +425,7 @@ public class TutorialStuff
         args.putBoolean(USER_IS_MOD_KEY, true);
         args.putBoolean(USER_IS_OWNER_KEY, false);
 
-        UserTileFragment userTileFragment1 = new UserTileFragment();
+        final UserTileFragment userTileFragment1 = new UserTileFragment();
         userTileFragment1.setArguments(args);
 
         args = new Bundle();
@@ -440,7 +440,7 @@ public class TutorialStuff
         args.putBoolean(USER_IS_MOD_KEY, false);
         args.putBoolean(USER_IS_OWNER_KEY, true);
 
-        UserTileFragment userTileFragment2 = new UserTileFragment();
+        final UserTileFragment userTileFragment2 = new UserTileFragment();
         userTileFragment2.setArguments(args);
 
         PreferencesManager manager = new PreferencesManager(activity);
@@ -510,6 +510,8 @@ public class TutorialStuff
                         for (int i = 0; i < fragments.size(); i++) {
                             ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().show(fragments.get(i)).commit();
                         }
+
+                        ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().remove(userTileFragment).remove(userTileFragment1).remove(userTileFragment2).commit();
                         break;
                 }
             }
