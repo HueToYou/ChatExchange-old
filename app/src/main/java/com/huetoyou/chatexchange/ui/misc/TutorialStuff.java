@@ -539,9 +539,9 @@ public class TutorialStuff
         mCategoryConfig.setFadingTextDuration(300L);
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
-        mCategoryConfig.setHeadingTvSize(48);
+        mCategoryConfig.setHeadingTvSize(32);
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
-        mCategoryConfig.setSubHeadingTvSize(24);
+        mCategoryConfig.setSubHeadingTvSize(16);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#99000000"));
         mCategoryConfig.setLineAnimationDuration(300L);
