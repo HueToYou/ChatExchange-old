@@ -47,6 +47,16 @@ public class TutorialStuff
     private static PreferencesManager mPrefsMan;
     private static SpotlightConfig mConfig;
 
+    private static final String CHAT_ITEM = "ChatItem";
+    private static final String CHAT_ITEM_SLIDE = "ChatItemSlide";
+    private static final String CHAT_ITEM_FAM = "ChatItemFam";
+    private static final String CHAT_ITEM_ADD = "ChatItemAdd";
+    private static final String CHAT_ITEM_HOME = "ChatItemHome";
+    private static final String CHAT_ITEM_REMOVE_ALL = "ChatItemRemAll";
+
+    private static final String MAIN_DRAWER = "MainDrawer";
+    private static final String MAIN_MENU = "MainMenu";
+
     /*
      * Main Activity
      */
@@ -110,39 +120,82 @@ public class TutorialStuff
                 .setConfiguration(mConfig)
                 .headingTvText("Chats")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text))
-                .usageId("ChatItem")
+                .usageId(CHAT_ITEM)
                 .show();
 
         final SpotlightView.Builder chatsSwipe = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
                 .headingTvText("Slide To Delete")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
-                .usageId("ChatItemSlide");
+                .usageId(CHAT_ITEM_SLIDE);
 
-        SpotlightListener listener1 = new SpotlightListener()
+        final SpotlightView.Builder chatFAM = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .target(chatFam.getMenuButton())
+                .headingTvText("Menu")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text))
+                .usageId(CHAT_ITEM_FAM);
+
+        final SpotlightView.Builder chatHome = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .target(chatFam.findViewById(R.id.home_fab))
+                .headingTvText("Home")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text))
+                .usageId(CHAT_ITEM_HOME);
+
+        final SpotlightView.Builder chatAdd = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .target(chatFam.findViewById(R.id.add_chat_fab))
+                .headingTvText("Add Chat")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text))
+                .usageId(CHAT_ITEM_ADD);
+
+        final SpotlightView.Builder chatRemAll = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .target(chatFam.findViewById(R.id.remove_all_chats_fab))
+                .headingTvText("Remove All Chats")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text))
+                .usageId(CHAT_ITEM_REMOVE_ALL);
+
+        SpotlightListener listener = new SpotlightListener()
         {
             @Override
             public void onUserClicked(String s)
             {
-                chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
-                onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
+                switch (s) {
+                    case CHAT_ITEM:
+                        chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
+                        onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
+                        break;
+                    case CHAT_ITEM_SLIDE:
+                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+                        chatFAM.show();
+                        break;
+                    case CHAT_ITEM_FAM:
+                        chatFam.open(true);
+                        chatHome.show();
+                        break;
+                    case CHAT_ITEM_HOME:
+                        chatAdd.show();
+                        break;
+                    case CHAT_ITEM_ADD:
+                        chatRemAll.show();
+                        break;
+                    case CHAT_ITEM_REMOVE_ALL:
+                        chatFam.close(true);
+                        activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
+                        dummyChats.setVisibility(View.GONE);
+                        break;
+                }
             }
         };
 
-        chats.setListener(listener1);
-
-        SpotlightListener listener2 = new SpotlightListener()
-        {
-            @Override
-            public void onUserClicked(String s)
-            {
-                onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
-                activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
-                dummyChats.setVisibility(View.GONE);
-            }
-        };
-
-        chatsSwipe.setListener(listener2);
+        chats.setListener(listener);
+        chatsSwipe.setListener(listener);
+        chatFAM.setListener(listener);
+        chatHome.setListener(listener);
+        chatAdd.setListener(listener);
+        chatRemAll.setListener(listener);
 
 //        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 //
@@ -289,11 +342,11 @@ public class TutorialStuff
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
                         "Drawer",
                         activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
-                        "DrawerTut")
+                        MAIN_DRAWER)
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
                         "Menu",
                         activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
-                        "MenuTut")
+                        MAIN_MENU)
                 .startSequence();
 
 
@@ -435,7 +488,7 @@ public class TutorialStuff
         mConfig = new SpotlightConfig();
         mConfig.setIntroAnimationDuration(400);
         mConfig.setRevealAnimationEnabled(true);
-        mConfig.setPerformClick(true);
+        mConfig.setPerformClick(false);
         mConfig.setFadingTextDuration(400);
         mConfig.setHeadingTvColor(Color.WHITE);
         mConfig.setHeadingTvText("Drawer");
@@ -452,9 +505,13 @@ public class TutorialStuff
 
     private static void resetSpotlights(Activity activity) {
         PreferencesManager manager =  new PreferencesManager(activity);
-        manager.reset("DrawerTut");
-        manager.reset("MenuTut");
-        manager.reset("ChatItem");
-        manager.reset("ChatItemSlide");
+        manager.reset(MAIN_DRAWER);
+        manager.reset(MAIN_MENU);
+        manager.reset(CHAT_ITEM);
+        manager.reset(CHAT_ITEM_SLIDE);
+        manager.reset(CHAT_ITEM_FAM);
+        manager.reset(CHAT_ITEM_ADD);
+        manager.reset(CHAT_ITEM_REMOVE_ALL);
+        manager.reset(CHAT_ITEM_HOME);
     }
 }
