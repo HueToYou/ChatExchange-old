@@ -41,14 +41,7 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
         implements SwipeableItemAdapter<RecyclerAdapter.MyViewHolder>
 {
-
     private Activity mContext;
-
-    private View.OnClickListener mSwipeableViewContainerOnClickListener;
-    private View.OnClickListener mUnderSwipeableViewButtonOnClickListener;
-
-    private EventListener mEventListener;
-
     private OnItemClicked onItemClicked;
 
     private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
@@ -56,13 +49,74 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     private RecyclerViewSwipeManager mSwipeManager;
 
-    public interface EventListener {
-        void onItemPinned(int position);
+    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
+    {
+        this.mContext = activity;
+        this.onItemClicked = onItemClicked;
+        this.mSwipeManager = swipeManager;
 
-        void onItemViewClicked(View v);
-
-        void onUnderSwipeableViewButtonClicked(View v);
+        // SwipeableItemAdapter requires stable ID, and also
+        // have to implement the getItemId() method appropriately.
+        setHasStableIds(true);
     }
+
+    @Override
+    public int getItemCount()
+    {
+        return mChatroomObjects.size();
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return mChatroomObjects.get(position).getId();
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return mChatroomObjects.get(position).getViewType();
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position)
+    {
+        ChatroomRecyclerObject item = mChatroomObjects.get(position);
+
+        //mViewHolder = holder;
+        holder.setClickListener(position);
+//        holder.setOnLongClickListener(position);
+        holder.setCloseClickListener(position);
+        holder.setText(position);
+        holder.setImage(position);
+        mVHs.add(position, holder);
+
+//        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
+//        holder.mCloseChat.setOnClickListener(mUnderSwipeableViewButtonOnClickListener);
+
+        holder.setMaxLeftSwipeAmount(-0.25f);
+        holder.setMaxRightSwipeAmount(0);
+        holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.25f : 0);
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatroom_list_item, parent, false);
+
+        MyViewHolder myViewHolder = new MyViewHolder(mView);
+        return myViewHolder;
+    }
+
+    @Override
+    public int onGetSwipeReactionType(MyViewHolder holder, int position, int x, int y)
+    {
+        return Swipeable.REACTION_CAN_SWIPE_LEFT;
+    }
+
+    @Override
+    public void onSetSwipeBackground(MyViewHolder holder, int position, int type)
+    {}
 
     @Override
     public SwipeResultAction onSwipeItem(MyViewHolder holder, int position, int result)
@@ -87,63 +141,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    public EventListener getEventListener() {
-        return mEventListener;
-    }
-
-    public void setEventListener(EventListener eventListener) {
-        mEventListener = eventListener;
-    }
-
-    @Override
-    public void onSetSwipeBackground(MyViewHolder holder, int position, int type)
+    public void addItem(ChatroomRecyclerObject hueObject)
     {
-//        if (type == Swipeable.DRAWABLE_SWIPE_LEFT_BACKGROUND) {
-//            holder.itemView.setBackgroundColor(Color.YELLOW);
-//        } else {
-//            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-//        }
+        for (int i = 0; i < mChatroomObjects.size(); i++) {
+            if (mChatroomObjects.get(i).getId() == hueObject.getId()) {
+                return;
+            }
+        }
+
+        int position = hueObject.getPosition();
+        mChatroomObjects.add(position, hueObject);
+        notifyItemInserted(position);
     }
 
-    @Override
-    public int onGetSwipeReactionType(MyViewHolder holder, int position, int x, int y)
+    public ChatroomRecyclerObject getItemAt(int position)
     {
-        return Swipeable.REACTION_CAN_SWIPE_LEFT;
+        return mChatroomObjects.get(position);
     }
 
-    @Override
-    public int getItemCount()
-    {
-        return mChatroomObjects.size();
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatroom_list_item, parent, false);
-
-        MyViewHolder myViewHolder = new MyViewHolder(mView);
-        return myViewHolder;
-    }
-
-    public String getNameAt(int position)
-    {
-        return mChatroomObjects.get(position).getName();
-    }
-
-    public String getUrlAt(int position)
-    {
-        return mChatroomObjects.get(position).getUrl();
-    }
-
-    public Integer getColorAt(int position)
-    {
-        return mChatroomObjects.get(position).getColor();
-    }
-
-    public Drawable getIconAt(int position)
-    {
-        return mChatroomObjects.get(position).getIcon();
+    public RecyclerViewSwipeManager getSwipeManager() {
+        return mSwipeManager;
     }
 
     public MyViewHolder getViewHolderAt(int position)
@@ -151,86 +168,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return mVHs.get(position);
     }
 
-    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
+    //Move an item at fromPosition to toPosition and notify changes.
+    public void moveItem(int fromPosition, int toPosition)
     {
-        this.mContext = activity;
-        this.onItemClicked = onItemClicked;
-        this.mSwipeManager = swipeManager;
+        final ChatroomRecyclerObject object = mChatroomObjects.remove(fromPosition);
+        mChatroomObjects.add(toPosition, object);
 
-        mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
-            }
-        };
-        mUnderSwipeableViewButtonOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onUnderSwipeableViewButtonClick(v);
-            }
-        };
-
-        // SwipeableItemAdapter requires stable ID, and also
-        // have to implement the getItemId() method appropriately.
-        setHasStableIds(true);
-
-//        RecyclerViewSwipeManager manager = new RecyclerViewSwipeManager();
-//        manager.createWrappedAdapter(this);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
-    public RecyclerViewSwipeManager getSwipeManager() {
-        return mSwipeManager;
-    }
-
-    private void onSwipeableViewContainerClick(View v) {
-        if (mEventListener != null) {
-            mEventListener.onItemViewClicked(
-                    RecyclerViewAdapterUtils.getParentViewHolderItemView(v));
+    //Remove an item at position and notify changes.
+    public void removeItem(int position)
+    {
+        if (mChatroomObjects.get(position) != null)
+        {
+            mChatroomObjects.remove(position);
+            notifyItemRemoved(position);
         }
-    }
-
-    private void onUnderSwipeableViewButtonClick(View v) {
-        if (mEventListener != null) {
-            mEventListener.onUnderSwipeableViewButtonClicked(
-                    RecyclerViewAdapterUtils.getParentViewHolderItemView(v));
-        }
-    }
-
-    @Override
-    public long getItemId(int position)
-    {
-        return mChatroomObjects.get(position).getId();
-    }
-
-    @Override
-    public int getItemViewType(int position)
-    {
-        return mChatroomObjects.get(position).getViewType();
-    }
-
-    private interface Swipeable extends SwipeableItemConstants
-    {
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position)
-    {
-        ChatroomRecyclerObject item = mChatroomObjects.get(position);
-
-        //mViewHolder = holder;
-        holder.setClickListener(position);
-//        holder.setOnLongClickListener(position);
-        holder.setCloseClickListener(position);
-        holder.setText(position);
-        holder.setImage(position);
-        mVHs.add(position, holder);
-
-//        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
-//        holder.mCloseChat.setOnClickListener(mUnderSwipeableViewButtonOnClickListener);
-
-        holder.setMaxLeftSwipeAmount(-0.25f);
-        holder.setMaxRightSwipeAmount(0);
-        holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.25f : 0);
     }
 
     //Remove an item at position and notify changes.
@@ -262,58 +216,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    //Remove an item at position and notify changes.
-    public void removeItem(int position)
+    public interface OnItemClicked
     {
-        if (mChatroomObjects.get(position) != null)
-        {
-            mChatroomObjects.remove(position);
-            notifyItemRemoved(position);
-        }
+        void onClick(View view, int position);
+
+        void onCloseClick(View view, int position);
     }
 
-    //Add an item at position and notify changes.
-//    public void addItem(int position, String name, String url, Drawable icon, Integer color)
-//    {
-//        if (!mNames.contains(name))
-//        {
-//            mNames.add(position, name);
-//            mUrls.add(position, url);
-//            mIcons.add(position, icon);
-//            mColors.add(position, color);
-//            notifyItemInserted(position);
-//        }
-//    }
-
-    public void addItem(ChatroomRecyclerObject hueObject)
+    private interface Swipeable extends SwipeableItemConstants
     {
-        for (int i = 0; i < mChatroomObjects.size(); i++) {
-            if (mChatroomObjects.get(i).getId() == hueObject.getId()) {
-                return;
-            }
-        }
-
-        int position = hueObject.getPosition();
-        mChatroomObjects.add(position, hueObject);
-        notifyItemInserted(position);
-    }
-
-    public ChatroomRecyclerObject getItem(int position)
-    {
-        return mChatroomObjects.get(position);
-    }
-
-    //Move an item at fromPosition to toPosition and notify changes.
-    public void moveItem(int fromPosition, int toPosition)
-    {
-        final ChatroomRecyclerObject object = mChatroomObjects.remove(fromPosition);
-        mChatroomObjects.add(toPosition, object);
-
-        notifyItemMoved(fromPosition, toPosition);
     }
 
     public class MyViewHolder extends AbstractSwipeableItemViewHolder
-        implements SwipeableItemViewHolder
+            implements SwipeableItemViewHolder
     {
         // TODO: whatever views you need to bind
         TextView mTextView;
@@ -523,13 +438,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    public interface OnItemClicked
-    {
-        void onClick(View view, int position);
-
-        void onCloseClick(View view, int position);
-    }
-
     private static class SwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection
     {
         private RecyclerAdapter mAdapter;
@@ -557,10 +465,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         @Override
         protected void onSlideAnimationEnd() {
             super.onSlideAnimationEnd();
-
-            if (mSetPinned && mAdapter.mEventListener != null) {
-                mAdapter.mEventListener.onItemPinned(mPosition);
-            }
         }
 
         @Override
@@ -599,44 +503,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mAdapter = null;
         }
     }
-
-    /*//Remove items that no longer exist in the new mNames.
-    public void applyAndAnimateRemovals(@NonNull final ArrayList<String> urls) {
-        for (int i = mUrls.size() - 1; i >= 0; i--) {
-            final String model = mUrls.get(i);
-            if (urls.contains(model)) {
-                removeItem(i);
-            }
-        }
-    }
-
-    //Add items that do not exist in the old mNames.
-    public void applyAndAnimateAdditions(@NonNull final ArrayList<String> newNames,
-                                          @NonNull final ArrayList<String> newUrls,
-                                          @NonNull final ArrayList<Drawable> newIcons,
-                                          @NonNull final ArrayList<Integer> newColors) {
-        for (int i = 0, count = newNames.size(); i < count; i++) {
-            final String name = newNames.get(i);
-            final String url = newUrls.get(i);
-            final Drawable icon = newIcons.get(i);
-            final Integer color = newColors.get(i);
-
-            if (!mNames.contains(name)) {
-                if (newNames.size() < 2) addItem(i + mNames.size(), name, url, icon, color);
-                else addItem(i, name, url, icon, color);
-            }
-
-        }
-    }
-
-    //Move items that have changed their position.
-    public void applyAndAnimateMovedItems(@NonNull final ArrayList<String> urls) {
-        for (int toPosition = urls.size() - 1; toPosition >= 0; toPosition--) {
-            final String url = urls.get(toPosition);
-            final int fromPosition = mUrls.indexOf(url);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
-    }*/
 }

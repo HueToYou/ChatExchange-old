@@ -161,7 +161,7 @@ public class MainActivity extends SlidingActivity
             {
                 Log.e("CLICKED", position + "");
 
-                mCurrentFragment = mWrappedAdapter.getUrlAt(position);
+                mCurrentFragment = mWrappedAdapter.getItemAt(position).getUrl();
                 doCloseAnimationForDrawerToggle(mDrawerButton);
                 getmChatroomSlidingMenu().toggle();
 
@@ -1357,7 +1357,7 @@ public class MainActivity extends SlidingActivity
                                 String id = "";
 
                                 Pattern domP = Pattern.compile("//(.+?)\\.com");
-                                Matcher domM = domP.matcher(mWrappedAdapter.getUrlAt(position));
+                                Matcher domM = domP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
 
                                 while (!domM.hitEnd())
                                 {
@@ -1368,7 +1368,7 @@ public class MainActivity extends SlidingActivity
                                 }
 
                                 Pattern idP = Pattern.compile("rooms/(.+?)\\b");
-                                Matcher idM = idP.matcher(mWrappedAdapter.getUrlAt(position));
+                                Matcher idM = idP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
 
                                 while (!idM.hitEnd())
                                 {
@@ -1392,9 +1392,9 @@ public class MainActivity extends SlidingActivity
                                         removeIdFromSEList(id);
                                     }
 
-                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getUrlAt(position)));
+                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getItemAt(position).getUrl()));
 
-                                    if (mWrappedAdapter.getUrlAt(position).equals(mCurrentFragment)) setFragmentByTag("home");
+                                    if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) setFragmentByTag("home");
                                     mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
                                     mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position);
                                 }

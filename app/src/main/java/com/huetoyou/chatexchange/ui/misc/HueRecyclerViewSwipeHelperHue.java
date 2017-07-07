@@ -2,7 +2,6 @@ package com.huetoyou.chatexchange.ui.misc;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.widget.Toast;
 
 public class HueRecyclerViewSwipeHelperHue extends ItemTouchHelper.SimpleCallback
 {
@@ -24,7 +23,7 @@ public class HueRecyclerViewSwipeHelperHue extends ItemTouchHelper.SimpleCallbac
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
     {
-        final ChatroomRecyclerObject hueObject = mHueAdapter.getItem(viewHolder.getAdapterPosition());
+        final ChatroomRecyclerObject hueObject = mHueAdapter.getItemAt(viewHolder.getAdapterPosition());
         mHueAdapter.removeItem(viewHolder.getAdapterPosition());
 
         /*try
