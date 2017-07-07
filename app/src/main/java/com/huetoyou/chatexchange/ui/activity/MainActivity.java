@@ -1337,74 +1337,54 @@ public class MainActivity extends SlidingActivity
     {
 
         Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        vib.vibrate(100);
+        // Vibrate for 50 milliseconds
+        vib.vibrate(50);
 
-        runOnUiThread(new Runnable()
+        String domain = "";
+        String id = "";
+
+        Pattern domP = Pattern.compile("//(.+?)\\.com");
+        Matcher domM = domP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
+
+        while (!domM.hitEnd())
         {
-            @Override
-            public void run()
+            if (domM.find())
             {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(getResources().getText(R.string.activity_main_delete_chat_title))
-                        .setMessage(getResources().getText(R.string.activity_main_delete_chat_message))
-                        .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                String domain = "";
-                                String id = "";
-
-                                Pattern domP = Pattern.compile("//(.+?)\\.com");
-                                Matcher domM = domP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
-
-                                while (!domM.hitEnd())
-                                {
-                                    if (domM.find())
-                                    {
-                                        domain = domM.group();
-                                    }
-                                }
-
-                                Pattern idP = Pattern.compile("rooms/(.+?)\\b");
-                                Matcher idM = idP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
-
-                                while (!idM.hitEnd())
-                                {
-                                    if (idM.find())
-                                    {
-                                        id = idM.group().replace("rooms/", "");
-                                    }
-                                }
-
-                                Log.e("IDDDDD", id);
-                                Log.e("DOMAIN", domain);
-
-                                if (!domain.isEmpty() && !id.isEmpty())
-                                {
-                                    if (domain.contains("overflow"))
-                                    {
-                                        removeIdFromSOList(id);
-                                    }
-                                    else if (domain.contains("exchange"))
-                                    {
-                                        removeIdFromSEList(id);
-                                    }
-
-                                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getItemAt(position).getUrl()));
-
-                                    if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) setFragmentByTag("home");
-                                    mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
-                                    mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position);
-                                }
-                            }
-                        })
-                        .setNegativeButton(getResources().getText(R.string.generic_no), null)
-                        .show();
+                domain = domM.group();
             }
-        });
+        }
 
+        Pattern idP = Pattern.compile("rooms/(.+?)\\b");
+        Matcher idM = idP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
+
+        while (!idM.hitEnd())
+        {
+            if (idM.find())
+            {
+                id = idM.group().replace("rooms/", "");
+            }
+        }
+
+        Log.e("IDDDDD", id);
+        Log.e("DOMAIN", domain);
+
+        if (!domain.isEmpty() && !id.isEmpty())
+        {
+            if (domain.contains("overflow"))
+            {
+                removeIdFromSOList(id);
+            }
+            else if (domain.contains("exchange"))
+            {
+                removeIdFromSEList(id);
+            }
+
+            mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(mWrappedAdapter.getItemAt(position).getUrl()));
+
+            if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) setFragmentByTag("home");
+            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
+            mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position);
+        }
     }
 
     /**
