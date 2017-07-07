@@ -53,9 +53,16 @@ public class TutorialStuff
     private static final String CHAT_ITEM_ADD = "ChatItemAdd";
     private static final String CHAT_ITEM_HOME = "ChatItemHome";
     private static final String CHAT_ITEM_REMOVE_ALL = "ChatItemRemAll";
-
+    private static final String CHAT_FRAG_MENU_BTN = "ChatFragMenuBtn";
     private static final String MAIN_DRAWER = "MainDrawer";
     private static final String MAIN_MENU = "MainMenu";
+    private static final String CHAT_FRAG_FAM = "ChatFragFam";
+    private static final String CHAT_FRAG_USERS_FAB = "ChatFragUsersFab";
+    private static final String CHAT_FRAG_INFO_FAB = "ChatFragInfoFab";
+    private static final String CHAT_FRAG_STARS_FAB = "ChatFragStarsFab";
+    private static final String CHAT_FRAG_OPENINBROWSER_FAB = "ChatFragOpeninbrowserFab";
+    private static final String CHAT_FRAG_MESSG_ENTRY_BOX = "ChatFragMessgEntryBox";
+    private static final String CHAT_FRAG_SEND_MESSG_BTN = "ChatFragSendMessgBtn";
 
     /*
      * Main Activity
@@ -257,78 +264,110 @@ public class TutorialStuff
         final EditText messageEntryBox = view.findViewById(R.id.messageToSend);
         final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
-//        ShowcaseConfig config = new ShowcaseConfig();
-//        mConfig.setDelay(0);
-//        mConfig.setFadeDuration(250);
-//        mConfig.setRenderOverNavigationBar(true);
-//
-//        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
-//        {
-//            mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
-//        } else {
-//            int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
-//            mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        }
-//
-//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatFragTutorial");
-//        sequence.setConfig(config);
-//
-//        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
-//        {
-//            int itemIndex = 0; //i should be the current position, but it isn't working so we need this
-//
-//            @Override
-//            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
-//            {
-//                Log.e("Pos", itemIndex + "");
-//
-//                switch (itemIndex)
-//                {
-//                    case 1:
-//                        fam.open(true);
-//                        break;
-//                    case 5:
-//                        fam.close(true);
-//                        break;
-//                }
-//
-//                itemIndex++;
-//            }
-//        });
-//
-//        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-//                activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(fam.getMenuButton(),
-//                activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(users,
-//                activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(info,
-//                activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(stars,
-//                activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(openInBrowser,
-//                activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(messageEntryBox,
-//                activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(sendMsg,
-//                activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
-//                "OK");
-//
-//        sequence.start();
+        final SpotlightView menuBtn = new SpotlightView.Builder(activity)
+                .target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
+                .setConfiguration(mConfig)
+                .headingTvText("Menu")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text))
+                .usageId(CHAT_FRAG_MENU_BTN)
+                .show();
+
+        final SpotlightView.Builder chatFragFam = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(fam.getMenuButton())
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text))
+                .usageId(CHAT_FRAG_FAM);
+
+        final SpotlightView.Builder chatFragUsersFAB = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(users)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text))
+                .usageId(CHAT_FRAG_USERS_FAB);
+
+        final SpotlightView.Builder chatFragInfoFAB = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(info)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text))
+                .usageId(CHAT_FRAG_INFO_FAB);
+
+        final SpotlightView.Builder chatFragStarsFAB = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(stars)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text))
+                .usageId(CHAT_FRAG_STARS_FAB);
+
+        final SpotlightView.Builder chatFragOpenInBrowserFAB = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(openInBrowser)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text))
+                .usageId(CHAT_FRAG_OPENINBROWSER_FAB);
+
+        final SpotlightView.Builder chatFragMessageEntryBox = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(messageEntryBox)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text))
+                .usageId(CHAT_FRAG_MESSG_ENTRY_BOX);
+
+        final SpotlightView.Builder chatFragSendMessageButton = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Hue")
+                .target(sendMsg)
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text))
+                .usageId(CHAT_FRAG_SEND_MESSG_BTN);
+
+        SpotlightListener huehuelistener = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                switch (s)
+                {
+                    case CHAT_FRAG_MENU_BTN:
+                        chatFragFam.show();
+                        break;
+
+                    case CHAT_FRAG_FAM:
+                        fam.open(true);
+                        chatFragUsersFAB.show();
+                        break;
+
+                    case CHAT_FRAG_USERS_FAB:
+                        chatFragInfoFAB.show();
+                        break;
+
+                    case CHAT_FRAG_INFO_FAB:
+                        chatFragStarsFAB.show();
+                        break;
+
+                    case CHAT_FRAG_STARS_FAB:
+                        chatFragOpenInBrowserFAB.show();
+                        break;
+
+                    case CHAT_FRAG_OPENINBROWSER_FAB:
+                        fam.close(true);
+                        chatFragMessageEntryBox.show();
+                        break;
+
+                    case CHAT_FRAG_MESSG_ENTRY_BOX:
+                        chatFragSendMessageButton.show();
+                        break;
+                }
+            }
+        };
+
+        menuBtn.setListener(huehuelistener);
+        chatFragFam.setListener(huehuelistener);
+        chatFragUsersFAB.setListener(huehuelistener);
+        chatFragInfoFAB.setListener(huehuelistener);
+        chatFragStarsFAB.setListener(huehuelistener);
+        chatFragOpenInBrowserFAB.setListener(huehuelistener);
+        chatFragMessageEntryBox.setListener(huehuelistener);
     }
 
     public interface OnSwipeListener
