@@ -178,13 +178,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     //Remove an item at position and notify changes.
-    public void removeItem(int position)
+    public ChatroomRecyclerObject removeItem(int position)
     {
         if (mChatroomObjects.get(position) != null)
         {
-            mChatroomObjects.remove(position);
+            final ChatroomRecyclerObject item = mChatroomObjects.remove(position);
+            mVHs.remove(position);
             notifyItemRemoved(position);
+            return item;
         }
+
+        return null;
     }
 
     //Remove an item at position and notify changes.
@@ -192,27 +196,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         if (mChatroomObjects.get(position) != null)
         {
-            final ChatroomRecyclerObject huehuehue = mChatroomObjects.get(position);
-            mChatroomObjects.remove(position);
-            notifyItemRemoved(position);
+            final ChatroomRecyclerObject huehuehue = removeItem(position);
 
-            String chatroomName = huehuehue.getName();
-            final View parentLayout = activity.findViewById(android.R.id.content);
-            Snackbar snackbar = Snackbar
-                    .make(parentLayout, "Deleted " + chatroomName, Snackbar.LENGTH_LONG)
-                    .setAction("UNDO", new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
+            if (huehuehue != null)
+            {
+
+                String chatroomName = huehuehue.getName();
+                final View parentLayout = activity.findViewById(android.R.id.content);
+                Snackbar snackbar = Snackbar
+                        .make(parentLayout, "Deleted " + chatroomName, Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener()
                         {
-                            Snackbar hue = Snackbar.make(parentLayout, "Chatroom restored!", Snackbar.LENGTH_SHORT);
-                            hue.show();
-                            addItem(huehuehue);
-                            notifyItemInserted(position);
-                        }
-                    });
+                            @Override
+                            public void onClick(View view)
+                            {
+                                Snackbar hue = Snackbar.make(parentLayout, "Chatroom restored!", Snackbar.LENGTH_SHORT);
+                                hue.show();
+                                addItem(huehuehue);
+                            }
+                        });
 
-            snackbar.show();
+                snackbar.show();
+            }
         }
     }
 
