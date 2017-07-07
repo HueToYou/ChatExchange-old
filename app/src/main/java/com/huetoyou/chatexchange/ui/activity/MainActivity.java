@@ -1019,18 +1019,15 @@ public class MainActivity extends SlidingActivity
         mCurrentUsers_SlidingMenu.setFadeDegree(0.35f);
         mCurrentUsers_SlidingMenu.attachToActivity(MainActivity.this, SlidingMenu.SLIDING_CONTENT);
         mCurrentUsers_SlidingMenu.setMenu(R.layout.users_slideout);
-        mCurrentUsers_SlidingMenu.setSecondaryOnOpenListner(new SlidingMenu.OnOpenListener()
+        mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        mCurrentUsers_SlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener()
         {
             @Override
-            public void onOpen()
+            public void onOpened()
             {
-                if (getmChatroomSlidingMenu().isMenuShowing())
-                {
-                    getmChatroomSlidingMenu().hideMenu(true);
-                }
+                TutorialStuff.showUsersTutorial(MainActivity.this);
             }
         });
-        mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
     }
 
     /**

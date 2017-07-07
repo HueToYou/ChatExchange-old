@@ -2,50 +2,39 @@ package com.huetoyou.chatexchange.ui.misc;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
-import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
-import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
+import com.huetoyou.chatexchange.ui.frags.UserTileFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wooplr.spotlight.SpotlightConfig;
 import com.wooplr.spotlight.SpotlightView;
 import com.wooplr.spotlight.prefs.PreferencesManager;
-import com.wooplr.spotlight.shape.Circle;
-import com.wooplr.spotlight.target.ViewTarget;
 import com.wooplr.spotlight.utils.SpotlightListener;
 import com.wooplr.spotlight.utils.SpotlightSequence;
 
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
-import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
-import uk.co.deanwild.materialshowcaseview.target.Target;
+import java.util.List;
 
 public class TutorialStuff
 {
     private static SharedPreferences mSharedPreferences;
     private static PreferencesManager mPrefsMan;
-    private static SpotlightConfig mConfig;
+    private static SpotlightConfig mCategoryConfig;
 
     private static final String CHAT_ITEM = "ChatItem";
     private static final String CHAT_ITEM_SLIDE = "ChatItemSlide";
@@ -63,6 +52,21 @@ public class TutorialStuff
     private static final String CHAT_FRAG_OPENINBROWSER_FAB = "ChatFragOpeninbrowserFab";
     private static final String CHAT_FRAG_MESSG_ENTRY_BOX = "ChatFragMessgEntryBox";
     private static final String CHAT_FRAG_SEND_MESSG_BTN = "ChatFragSendMessgBtn";
+    private static final String USERS_SLIDE_INTRO = "UsersSlideIntro";
+    private static final String USER_ONE = "User1";
+    private static final String USER_MOD = "UserMod";
+    private static final String USER_OWNER = "UserOwner";
+
+    private static final String USER_NAME_KEY = "userName";
+    private static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
+    private static final String USER_URL_KEY = "chatUrl";
+    private static final String USER_ID_KEY = "id";
+    private static final String USER_LAST_POST_KEY = "lastPost";
+    private static final String USER_REP_KEY = "rep";
+    private static final String USER_IS_MOD_KEY = "isMod";
+    private static final String USER_IS_OWNER_KEY = "isOwner";
+
+    private static SpotlightConfig mItemConfig;
 
     /*
      * Main Activity
@@ -74,10 +78,12 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        if (mConfig == null)
+        if (mCategoryConfig == null)
         {
-            setConfig(activity);
+            setCategoryConfig(activity);
         }
+
+        if (mItemConfig == null) setItemConfig(activity);
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
@@ -132,42 +138,42 @@ public class TutorialStuff
 
         SpotlightView chats = new SpotlightView.Builder(activity)
                 .target(activity.findViewById(R.id.chatroomsListView))
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Chats")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text))
                 .usageId(CHAT_ITEM)
                 .show();
 
         final SpotlightView.Builder chatsSwipe = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Slide To Delete")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
                 .usageId(CHAT_ITEM_SLIDE);
 
         final SpotlightView.Builder chatFAM = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .target(chatFam.getMenuButton())
                 .headingTvText("Menu")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text))
                 .usageId(CHAT_ITEM_FAM);
 
         final SpotlightView.Builder chatHome = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
-                .target(chatFam.findViewById(R.id.home_fab))
+                .setConfiguration(mItemConfig)
+                .target(home)
                 .headingTvText("Home")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text))
                 .usageId(CHAT_ITEM_HOME);
 
         final SpotlightView.Builder chatAdd = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
-                .target(chatFam.findViewById(R.id.add_chat_fab))
+                .setConfiguration(mItemConfig)
+                .target(add)
                 .headingTvText("Add Chat")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text))
                 .usageId(CHAT_ITEM_ADD);
 
         final SpotlightView.Builder chatRemAll = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
-                .target(chatFam.findViewById(R.id.remove_all_chats_fab))
+                .setConfiguration(mItemConfig)
+                .target(removeAll)
                 .headingTvText("Remove All Chats")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text))
                 .usageId(CHAT_ITEM_REMOVE_ALL);
@@ -225,12 +231,12 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        if (mConfig == null)
+        if (mCategoryConfig == null)
         {
-            setConfig(activity);
+            setCategoryConfig(activity);
         }
 
-        SpotlightSequence.getInstance(activity, mConfig)
+        SpotlightSequence.getInstance(activity, mCategoryConfig)
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
                         "Drawer",
                         activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
@@ -257,10 +263,12 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        if (mConfig == null)
+        if (mCategoryConfig == null)
         {
-            setConfig(activity);
+            setCategoryConfig(activity);
         }
+
+        if (mItemConfig == null) setItemConfig(activity);
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
@@ -272,56 +280,56 @@ public class TutorialStuff
 
         final SpotlightView menuBtn = new SpotlightView.Builder(activity)
                 .target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Menu")
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text))
                 .usageId(CHAT_FRAG_MENU_BTN)
                 .show();
 
         final SpotlightView.Builder chatFragFam = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Floating Action Menu")
                 .target(fam.getMenuButton())
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text))
                 .usageId(CHAT_FRAG_FAM);
 
         final SpotlightView.Builder chatFragUsersFAB = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mItemConfig)
                 .headingTvText("Users")
                 .target(users)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text))
                 .usageId(CHAT_FRAG_USERS_FAB);
 
         final SpotlightView.Builder chatFragInfoFAB = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mItemConfig)
                 .headingTvText("Info")
                 .target(info)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text))
                 .usageId(CHAT_FRAG_INFO_FAB);
 
         final SpotlightView.Builder chatFragStarsFAB = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mItemConfig)
                 .headingTvText("Stars")
                 .target(stars)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text))
                 .usageId(CHAT_FRAG_STARS_FAB);
 
         final SpotlightView.Builder chatFragOpenInBrowserFAB = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mItemConfig)
                 .headingTvText("Open in Browser")
                 .target(openInBrowser)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text))
                 .usageId(CHAT_FRAG_OPENINBROWSER_FAB);
 
         final SpotlightView.Builder chatFragMessageEntryBox = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Message Box")
                 .target(messageEntryBox)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text))
                 .usageId(CHAT_FRAG_MESSG_ENTRY_BOX);
 
         final SpotlightView.Builder chatFragSendMessageButton = new SpotlightView.Builder(activity)
-                .setConfiguration(mConfig)
+                .setConfiguration(mCategoryConfig)
                 .headingTvText("Send Message")
                 .target(sendMsg)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text))
@@ -376,6 +384,143 @@ public class TutorialStuff
         chatFragMessageEntryBox.setListener(huehuelistener);
     }
 
+    public static void showUsersTutorial(final Activity activity) {
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (mCategoryConfig == null)
+        {
+            setCategoryConfig(activity);
+        }
+
+        if (mItemConfig == null) setItemConfig(activity);
+
+
+        Bundle args = new Bundle();
+        args.putString(USER_NAME_KEY, "Example 1");
+        args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
+        args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+
+        args.putInt(USER_ID_KEY, 12345);
+        args.putInt(USER_LAST_POST_KEY, 0);
+        args.putInt(USER_REP_KEY, 123);
+
+        args.putBoolean(USER_IS_MOD_KEY, false);
+        args.putBoolean(USER_IS_OWNER_KEY, false);
+
+        UserTileFragment userTileFragment = new UserTileFragment();
+        userTileFragment.setArguments(args);
+
+        args = new Bundle();
+        args.putString(USER_NAME_KEY, "Example 2");
+        args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
+        args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+
+        args.putInt(USER_ID_KEY, 12346);
+        args.putInt(USER_LAST_POST_KEY, 0);
+        args.putInt(USER_REP_KEY, 123);
+
+        args.putBoolean(USER_IS_MOD_KEY, true);
+        args.putBoolean(USER_IS_OWNER_KEY, false);
+
+        UserTileFragment userTileFragment1 = new UserTileFragment();
+        userTileFragment1.setArguments(args);
+
+        args = new Bundle();
+        args.putString(USER_NAME_KEY, "Example 2");
+        args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
+        args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+
+        args.putInt(USER_ID_KEY, 12347);
+        args.putInt(USER_LAST_POST_KEY, 0);
+        args.putInt(USER_REP_KEY, 123);
+
+        args.putBoolean(USER_IS_MOD_KEY, false);
+        args.putBoolean(USER_IS_OWNER_KEY, true);
+
+        UserTileFragment userTileFragment2 = new UserTileFragment();
+        userTileFragment2.setArguments(args);
+
+        PreferencesManager manager = new PreferencesManager(activity);
+
+        LinearLayout users = activity.findViewById(R.id.users_scroll_slide);
+
+        if (!manager.isDisplayed(USER_ONE)) {
+            List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
+
+            for (int i = 0; i < fragments.size(); i++) {
+                ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().hide(fragments.get(i)).commit();
+            }
+
+            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment, "user_" + 12345).commit();
+            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment1, "user_" + 12346).commit();
+            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment2, "user_" + 12347).commit();
+        }
+
+        SpotlightView usersOverview = new SpotlightView.Builder(activity)
+                .target(users)
+                .setConfiguration(mCategoryConfig)
+                .headingTvText("Users")
+                .subHeadingTvText("Users")
+                .usageId(USERS_SLIDE_INTRO)
+                .show();
+
+        final SpotlightView.Builder user1 = new SpotlightView.Builder(activity)
+                .target(users.getChildAt(0))
+                .setConfiguration(mCategoryConfig)
+                .headingTvText("Normal User")
+                .subHeadingTvText("Normal User")
+                .usageId(USER_ONE);
+
+        final SpotlightView.Builder userMod = new SpotlightView.Builder(activity)
+                .target(users.getChildAt(1))
+                .setConfiguration(mCategoryConfig)
+                .headingTvText("Mod User")
+                .subHeadingTvText("Mod User")
+                .usageId(USER_MOD);
+
+        final SpotlightView.Builder userOwner = new SpotlightView.Builder(activity)
+                .setConfiguration(mCategoryConfig)
+                .target(users.getChildAt(2))
+                .headingTvText("Owner User")
+                .subHeadingTvText("Owner User")
+                .usageId(USER_OWNER);
+
+        SpotlightListener listener = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                switch (s)
+                {
+                    case USERS_SLIDE_INTRO:
+                        user1.show();
+                        break;
+                    case USER_ONE:
+                        userMod.show();
+                        break;
+                    case USER_MOD:
+                        userOwner.show();
+                        break;
+                    case USER_OWNER:
+                        List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
+
+                        for (int i = 0; i < fragments.size(); i++) {
+                            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().show(fragments.get(i)).commit();
+                        }
+                        break;
+                }
+            }
+        };
+
+        usersOverview.setListener(listener);
+        user1.setListener(listener);
+        userMod.setListener(listener);
+        userOwner.setListener(listener);
+    }
+
     public interface OnSwipeListener
     {
         void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
@@ -383,24 +528,33 @@ public class TutorialStuff
         void onSwipeRight(RecyclerView.ViewHolder viewHolder);
     }
 
-    private static void setConfig(Activity activity)
+    private static void setCategoryConfig(Activity activity)
     {
-        mConfig = new SpotlightConfig();
-        mConfig.setIntroAnimationDuration(400);
-        mConfig.setRevealAnimationEnabled(true);
-        mConfig.setPerformClick(false);
-        mConfig.setFadingTextDuration(400);
-        mConfig.setHeadingTvColor(Color.WHITE);
-        mConfig.setHeadingTvText("Drawer");
-        mConfig.setHeadingTvSize(32);
-        mConfig.setSubHeadingTvColor(Color.WHITE);
-        mConfig.setSubHeadingTvSize(16);
-        mConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
-        mConfig.setMaskColor(Color.parseColor("#99000000"));
-        mConfig.setLineAnimationDuration(400);
-        mConfig.setLineAndArcColor(Color.LTGRAY);
-        mConfig.setDismissOnTouch(true);
-        mConfig.setDismissOnBackpress(true);
+        mCategoryConfig = new SpotlightConfig();
+        mCategoryConfig.setIntroAnimationDuration(300L);
+        mCategoryConfig.setRevealAnimationEnabled(true);
+        mCategoryConfig.setPerformClick(false);
+        mCategoryConfig.setFadingTextDuration(300L);
+        mCategoryConfig.setHeadingTvColor(Color.WHITE);
+        mCategoryConfig.setHeadingTvText("Drawer");
+        mCategoryConfig.setHeadingTvSize(48);
+        mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
+        mCategoryConfig.setSubHeadingTvSize(24);
+        mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
+        mCategoryConfig.setMaskColor(Color.parseColor("#99000000"));
+        mCategoryConfig.setLineAnimationDuration(300L);
+        mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
+        mCategoryConfig.setDismissOnTouch(true);
+        mCategoryConfig.setDismissOnBackpress(true);
+        mCategoryConfig.setShowTargetArc(true);
+    }
+
+    private static void setItemConfig(Activity activity) {
+        if (mCategoryConfig == null) setCategoryConfig(activity);
+        mItemConfig = mCategoryConfig;
+        mItemConfig.setIntroAnimationDuration(100L);
+        mItemConfig.setFadingTextDuration(100L);
+        mItemConfig.setLineAnimationDuration(100L);
     }
 
     public static void resetSpotlights(Activity activity)
@@ -422,5 +576,9 @@ public class TutorialStuff
         manager.reset(CHAT_FRAG_OPENINBROWSER_FAB);
         manager.reset(CHAT_FRAG_MESSG_ENTRY_BOX);
         manager.reset(CHAT_FRAG_SEND_MESSG_BTN);
+        manager.reset(USERS_SLIDE_INTRO);
+        manager.reset(USER_ONE);
+        manager.reset(USER_MOD);
+        manager.reset(USER_OWNER);
     }
 }
