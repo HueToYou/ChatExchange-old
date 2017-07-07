@@ -224,7 +224,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event)
                     {
-                        listener.onUndoExpire(huehuehue.getUrl());
+                        switch (event) {
+                            case DISMISS_EVENT_TIMEOUT:
+                                listener.onUndoExpire(huehuehue.getUrl());
+                                break;
+                        }
                     }
                 });
             }
