@@ -62,10 +62,16 @@ public class TutorialStuff
      */
     public static void showChatSliderTutorial_MainActivity(final Activity activity)
     {
-        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
 
         resetSpotlights(activity); //FOR DEBUGGING PURPOSES
-        if (mConfig == null) setConfig(activity);
+        if (mConfig == null)
+        {
+            setConfig(activity);
+        }
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
@@ -162,7 +168,8 @@ public class TutorialStuff
             @Override
             public void onUserClicked(String s)
             {
-                switch (s) {
+                switch (s)
+                {
                     case CHAT_ITEM:
                         chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
                         onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
@@ -196,135 +203,6 @@ public class TutorialStuff
         chatHome.setListener(listener);
         chatAdd.setListener(listener);
         chatRemAll.setListener(listener);
-
-//        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
-//
-//        final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
-//
-//        final RecyclerViewSwipeManager swipeManager = new RecyclerViewSwipeManager();
-//
-//        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null, swipeManager);
-//        recyclerAdapter.addItem(new ChatroomRecyclerObject(
-//                0, "Example 1", "U", ico, 0, 0, 0
-//        ));
-//
-//        RecyclerView.Adapter adapter = swipeManager.createWrappedAdapter(recyclerAdapter);
-//
-//        dummyChats.setAdapter(adapter);
-//
-//        // disable change animations
-//        ((SimpleItemAnimator) dummyChats.getItemAnimator()).setSupportsChangeAnimations(false);
-//
-//        swipeManager.attachRecyclerView(dummyChats);
-//
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
-//                DividerItemDecoration.VERTICAL);
-//
-//        dummyChats.addItemDecoration(dividerItemDecoration);
-//
-//        final OnSwipeListener onSwipeListener = new OnSwipeListener()
-//        {
-//            @Override
-//            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
-//            {
-//                swipeManager.performFakeSwipe(viewHolder, 2);
-//            }
-//
-//            @Override
-//            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
-//            {
-//                swipeManager.performFakeSwipe(viewHolder, 1);
-//            }
-//        };
-//
-//        ShowcaseConfig config = new ShowcaseConfig();
-//        mConfig.setDelay(0);
-//        mConfig.setFadeDuration(250);
-//        int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
-//        mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        mConfig.setRenderOverNavigationBar(true);
-//
-//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
-//        sequence.setConfig(config);
-//
-//        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener()
-//        {
-//            @Override
-//            public void onShow(MaterialShowcaseView materialShowcaseView, int i)
-//            {
-//                activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
-//                dummyChats.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
-//        {
-//            int position = 0;
-//
-//            @Override
-//            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
-//            {
-//                switch (position)
-//                {
-//                    case 0:
-////                        recyclerAdapter.getViewHolderAt(0).performLongClick();
-////                        recyclerAdapter.getSwipeManager().performFakeSwipe(recyclerAdapter.getViewHolderAt(0), 1);
-//                        onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
-//                        break;
-//                    case 1:
-//                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
-////                        recyclerAdapter.getSwipeManager().performFakeSwipe(recyclerAdapter.getViewHolderAt(0), 0);
-//                        break;
-//                    case 2:
-//                        chatFam.open(true);
-//                        break;
-//                    case 5:
-//                        chatFam.close(true);
-//                        dummyChats.setVisibility(View.GONE);
-//                        activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
-//                        break;
-//                }
-//
-//                position++;
-//            }
-//        });
-//
-//        ShowcaseConfig config1 = new ShowcaseConfig();
-//        config1.setDelay(0);
-//        config1.setFadeDuration(250);
-//        config1.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        config1.setRenderOverNavigationBar(true);
-//        config1.setShape(new RectangleShape(0, 0));
-//
-//        sequence.setConfig(config1);
-//
-//        sequence.addSequenceItem(dummyChats,
-//                 activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(dummyChats,
-//                activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text),
-//                "OK");
-//
-//        sequence.setConfig(config);
-//
-//        sequence.addSequenceItem(chatFam.getMenuButton(),
-//                activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(home,
-//                activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(add,
-//                activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(removeAll,
-//                activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text),
-//                "OK");
-//
-//        sequence.start();
     }
 
     /*
@@ -333,10 +211,16 @@ public class TutorialStuff
     public static void homeFragTutorial(final MainActivity activity)
     {
 
-        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
 
         resetSpotlights(activity); //FOR DEBUGGING PURPOSES
-        if (mConfig == null) setConfig(activity);
+        if (mConfig == null)
+        {
+            setConfig(activity);
+        }
 
         SpotlightSequence.getInstance(activity, mConfig)
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
@@ -348,41 +232,6 @@ public class TutorialStuff
                         activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
                         MAIN_MENU)
                 .startSequence();
-
-
-//        ShowcaseConfig config = new ShowcaseConfig();
-//        mConfig.setDelay(0);
-//        mConfig.setFadeDuration(250);
-//        int color = ActionBarHue.getActionBarPrefsColor(activity);
-//        mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        mConfig.setRenderOverNavigationBar(true);
-
-//        final MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "HomeFragTutorial");
-//        sequence.setConfig(config);
-//
-//        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
-//        {
-//            int currentIndex = 0;
-//
-//            @Override
-//            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
-//            {
-//
-//                currentIndex++; //keep at bottom
-//            }
-//        });
-//
-////        Log.e("COUNT", ((ActionMenuView)Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).getcla + "");
-//
-//        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-//                activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
-//                "OK");
-//
-//        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
-//                activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
-//                "OK");
-//
-//        sequence.start();
     }
 
     /*
@@ -390,12 +239,15 @@ public class TutorialStuff
      */
     public static void chatFragTutorial(Activity activity, View view, int mAppBarColor)
     {
-        SlidingMenu chatroomsMenu = ((MainActivity)activity).getmChatroomSlidingMenu();
-        if(chatroomsMenu.isMenuShowing())
+        SlidingMenu chatroomsMenu = ((MainActivity) activity).getmChatroomSlidingMenu();
+        if (chatroomsMenu.isMenuShowing())
         {
             chatroomsMenu.hideMenu(false);
         }
-        if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
@@ -479,12 +331,15 @@ public class TutorialStuff
 //        sequence.start();
     }
 
-    public interface OnSwipeListener {
+    public interface OnSwipeListener
+    {
         void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
+
         void onSwipeRight(RecyclerView.ViewHolder viewHolder);
     }
 
-    private static void setConfig(Activity activity) {
+    private static void setConfig(Activity activity)
+    {
         mConfig = new SpotlightConfig();
         mConfig.setIntroAnimationDuration(400);
         mConfig.setRevealAnimationEnabled(true);
@@ -503,8 +358,9 @@ public class TutorialStuff
         mConfig.setDismissOnBackpress(true);
     }
 
-    private static void resetSpotlights(Activity activity) {
-        PreferencesManager manager =  new PreferencesManager(activity);
+    private static void resetSpotlights(Activity activity)
+    {
+        PreferencesManager manager = new PreferencesManager(activity);
         manager.reset(MAIN_DRAWER);
         manager.reset(MAIN_MENU);
         manager.reset(CHAT_ITEM);
