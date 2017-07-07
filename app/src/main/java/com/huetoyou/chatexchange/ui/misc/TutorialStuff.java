@@ -463,29 +463,29 @@ public class TutorialStuff
                 .target(users)
                 .setConfiguration(mCategoryConfig)
                 .headingTvText("Users")
-                .subHeadingTvText("Users")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text))
                 .usageId(USERS_SLIDE_INTRO)
                 .show();
 
         final SpotlightView.Builder user1 = new SpotlightView.Builder(activity)
                 .target(users.getChildAt(0))
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Normal User")
-                .subHeadingTvText("Normal User")
+                .headingTvText("Average Joe")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_normalUser_tutorial_text))
                 .usageId(USER_ONE);
 
         final SpotlightView.Builder userMod = new SpotlightView.Builder(activity)
                 .target(users.getChildAt(1))
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Mod User")
-                .subHeadingTvText("Mod User")
+                .headingTvText("Moderator")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_modUser_tutorial_text))
                 .usageId(USER_MOD);
 
         final SpotlightView.Builder userOwner = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
                 .target(users.getChildAt(2))
-                .headingTvText("Owner User")
-                .subHeadingTvText("Owner User")
+                .headingTvText("Room Owner")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_ROuser_tutorial_text))
                 .usageId(USER_OWNER);
 
         SpotlightListener listener = new SpotlightListener()
