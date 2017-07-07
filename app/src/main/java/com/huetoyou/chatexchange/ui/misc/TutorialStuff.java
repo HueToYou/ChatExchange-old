@@ -274,49 +274,49 @@ public class TutorialStuff
 
         final SpotlightView.Builder chatFragFam = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Floating Action Menu")
                 .target(fam.getMenuButton())
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text))
                 .usageId(CHAT_FRAG_FAM);
 
         final SpotlightView.Builder chatFragUsersFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Users")
                 .target(users)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text))
                 .usageId(CHAT_FRAG_USERS_FAB);
 
         final SpotlightView.Builder chatFragInfoFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Info")
                 .target(info)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text))
                 .usageId(CHAT_FRAG_INFO_FAB);
 
         final SpotlightView.Builder chatFragStarsFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Stars")
                 .target(stars)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text))
                 .usageId(CHAT_FRAG_STARS_FAB);
 
         final SpotlightView.Builder chatFragOpenInBrowserFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Open in Browser")
                 .target(openInBrowser)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text))
                 .usageId(CHAT_FRAG_OPENINBROWSER_FAB);
 
         final SpotlightView.Builder chatFragMessageEntryBox = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Message Box")
                 .target(messageEntryBox)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text))
                 .usageId(CHAT_FRAG_MESSG_ENTRY_BOX);
 
         final SpotlightView.Builder chatFragSendMessageButton = new SpotlightView.Builder(activity)
                 .setConfiguration(mConfig)
-                .headingTvText("Hue")
+                .headingTvText("Send Message")
                 .target(sendMsg)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text))
                 .usageId(CHAT_FRAG_SEND_MESSG_BTN);
