@@ -1,16 +1,27 @@
 package com.huetoyou.chatexchange.ui.misc;
 
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.auth.Authenticator;
+import com.huetoyou.chatexchange.net.RequestFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +48,9 @@ public class CustomWebView
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0");
+        webView.getSettings().setAppCacheEnabled(true);
         client();
+
 
         mOpenInWV = view.findViewById(R.id.open_in_webview);
         mBack = view.findViewById(R.id.go_back);
@@ -70,9 +83,17 @@ public class CustomWebView
         });
     }
 
-    public void loadUrl(String url) {
+    public void loadUrl(final String url) {
         if (mOverrideTitle) mContext.setTitle(url);
-        mWebView.loadUrl(url);
+        CookieManager cookieManager = CookieManager.getInstance();
+        Log.e("AUTHTOKEN", cookieManager.getCookie("https://stackexchange.com"));
+
+        Map<String, String> abc = new HashMap<>();
+        abc.put("Set-Cookie", cookieManager.getCookie("https://stackexchange.com"));
+
+        mWebView.loadUrl(url, abc);
+
+        cookieManager.setAcceptCookie(true);
     }
 
 

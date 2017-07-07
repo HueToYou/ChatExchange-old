@@ -43,6 +43,8 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -452,8 +454,21 @@ public class MainActivity extends SlidingActivity
                     e.printStackTrace();
                     Log.e("RI", "P");
                 }
+
                 mRequestFactory = new RequestFactory(authToken);
                 mCookieString = authToken;
+
+                Log.e("AUTHTOKEN", authToken);
+
+                CookieSyncManager.createInstance(MainActivity.this);
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.setAcceptCookie(true);
+                if (authToken != null) {
+                    cookieManager.removeSessionCookie();
+                    cookieManager.setCookie("https://stackexchange.com", authToken);
+                    CookieSyncManager.getInstance().sync();
+                }
+
                 doFragmentStuff();
             }
         };
