@@ -195,6 +195,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     //Remove an item at position and notify changes.
     public void removeItemWithSnackbar(Activity activity, final int position, final SnackbarListener listener)
     {
+        getSwipeManager().performFakeSwipe(mVHs.get(position), 1);
+
         if (mChatroomObjects.get(position) != null)
         {
             final ChatroomRecyclerObject huehuehue = removeItem(position);
