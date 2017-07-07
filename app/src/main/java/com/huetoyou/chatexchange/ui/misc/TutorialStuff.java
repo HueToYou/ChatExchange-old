@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -26,68 +27,122 @@ import com.huetoyou.chatexchange.ui.activity.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.wooplr.spotlight.SpotlightConfig;
+import com.wooplr.spotlight.SpotlightView;
+import com.wooplr.spotlight.prefs.PreferencesManager;
+import com.wooplr.spotlight.shape.Circle;
+import com.wooplr.spotlight.target.ViewTarget;
+import com.wooplr.spotlight.utils.SpotlightListener;
+import com.wooplr.spotlight.utils.SpotlightSequence;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.deanwild.materialshowcaseview.target.Target;
 
 public class TutorialStuff
 {
     private static SharedPreferences mSharedPreferences;
+    private static PreferencesManager mPrefsMan;
+    private static SpotlightConfig mConfig;
 
     /*
      * Main Activity
      */
     public static void showChatSliderTutorial_MainActivity(final Activity activity)
     {
-
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+
+        resetSpotlights(activity); //FOR DEBUGGING PURPOSES
+        if (mConfig == null) setConfig(activity);
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
-        chatFam.getMenuButton().setImageDrawable(VectorDrawableCompat.create(activity.getResources(), R.drawable.ic_expand_less_black_32dp, null)); //needed for tutorial to show it for some reason...
+        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
-        if (!mSharedPreferences.getBoolean("hasShownChatsMainTutorial", false)) {
-            MaterialTapTargetPrompt.PromptStateChangeListener listener = new MaterialTapTargetPrompt.PromptStateChangeListener()
+        final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
+
+        final RecyclerViewSwipeManager swipeManager = new RecyclerViewSwipeManager();
+
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null, swipeManager);
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(
+                0, "Example 1", "U", ico, 0, 0, 0
+        ));
+
+        RecyclerView.Adapter adapter = swipeManager.createWrappedAdapter(recyclerAdapter);
+
+        dummyChats.setAdapter(adapter);
+
+        // disable change animations
+        ((SimpleItemAnimator) dummyChats.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        swipeManager.attachRecyclerView(dummyChats);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
+                DividerItemDecoration.VERTICAL);
+
+        dummyChats.addItemDecoration(dividerItemDecoration);
+
+        final OnSwipeListener onSwipeListener = new OnSwipeListener()
+        {
+            @Override
+            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
             {
-                @Override
-                public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
-                {
-                    switch (state) {
-                        case MaterialTapTargetPrompt.STATE_DISMISSED:
-                        case MaterialTapTargetPrompt.STATE_FINISHED:
-                            chatFam.getMenuButton().setImageDrawable(null);
-                    }
-                }
-            };
+                swipeManager.performFakeSwipe(viewHolder, 2);
+            }
 
-            MaterialTapTargetPrompt chats = new MaterialTapTargetPrompt.Builder(activity)
-                    .setTarget(activity.findViewById(R.id.chatroomsListView))
-                    .setAnimationInterpolator(new FastOutSlowInInterpolator())
-                    .setBackButtonDismissEnabled(true)
-                    .setPrimaryText("Chatroom List")
-                    .setSecondaryText(R.string.chatrooms_slidingMenu_chats_tutorial_text)
-                    .setIdleAnimationEnabled(false)
-                    .setFocalRadius(0f)
-                    .setPromptStateChangeListener(listener)
-                    .setClipToView(activity.findViewById(R.id.chat_slideout_layout))
-                    .show();
+            @Override
+            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
+            {
+                swipeManager.performFakeSwipe(viewHolder, 1);
+            }
+        };
 
-            MaterialTapTargetPrompt chatsFam = new MaterialTapTargetPrompt.Builder(activity)
-                    .setTarget(chatFam.getMenuButton())
-                    .setAnimationInterpolator(new FastOutSlowInInterpolator())
-                    .setBackButtonDismissEnabled(true)
-                    .setPrimaryText("Chatroom List Menu")
-                    .setPromptStateChangeListener(listener)
-                    .setSecondaryText(R.string.chatrooms_slidingMenu_FAM_tutorial_text)
-                    .setIdleAnimationEnabled(false)
-                    .show();
-        }
+        activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
+        dummyChats.setVisibility(View.VISIBLE);
+
+        SpotlightView chats = new SpotlightView.Builder(activity)
+                .target(activity.findViewById(R.id.chatroomsListView))
+                .setConfiguration(mConfig)
+                .headingTvText("Chats")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text))
+                .usageId("ChatItem")
+                .show();
+
+        final SpotlightView.Builder chatsSwipe = new SpotlightView.Builder(activity)
+                .setConfiguration(mConfig)
+                .headingTvText("Slide To Delete")
+                .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
+                .usageId("ChatItemSlide");
+
+        SpotlightListener listener1 = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
+                onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
+            }
+        };
+
+        chats.setListener(listener1);
+
+        SpotlightListener listener2 = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+                activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
+                dummyChats.setVisibility(View.GONE);
+            }
+        };
+
+        chatsSwipe.setListener(listener2);
 
 //        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 //
@@ -130,11 +185,11 @@ public class TutorialStuff
 //        };
 //
 //        ShowcaseConfig config = new ShowcaseConfig();
-//        config.setDelay(0);
-//        config.setFadeDuration(250);
+//        mConfig.setDelay(0);
+//        mConfig.setFadeDuration(250);
 //        int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
-//        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        config.setRenderOverNavigationBar(true);
+//        mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+//        mConfig.setRenderOverNavigationBar(true);
 //
 //        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatSliderTutorial");
 //        sequence.setConfig(config);
@@ -227,23 +282,27 @@ public class TutorialStuff
 
         if (mSharedPreferences == null) mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
-        if (!mSharedPreferences.getBoolean("hasShownChatsMainTutorial", false))
-        {
-            MaterialTapTargetPrompt drawer = new MaterialTapTargetPrompt.Builder(activity)
-                    .setPrimaryText("Drawer")
-                    .setSecondaryText(R.string.homeFrag_hamburger_tutorial_text)
-                    .setTarget(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
-                    .setAnimationInterpolator(new FastOutSlowInInterpolator())
-                    .setIdleAnimationEnabled(false)
-                    .show();
-        }
+        resetSpotlights(activity); //FOR DEBUGGING PURPOSES
+        if (mConfig == null) setConfig(activity);
+
+        SpotlightSequence.getInstance(activity, mConfig)
+                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
+                        "Drawer",
+                        activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
+                        "DrawerTut")
+                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
+                        "Menu",
+                        activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
+                        "MenuTut")
+                .startSequence();
+
 
 //        ShowcaseConfig config = new ShowcaseConfig();
-//        config.setDelay(0);
-//        config.setFadeDuration(250);
+//        mConfig.setDelay(0);
+//        mConfig.setFadeDuration(250);
 //        int color = ActionBarHue.getActionBarPrefsColor(activity);
-//        config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-//        config.setRenderOverNavigationBar(true);
+//        mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+//        mConfig.setRenderOverNavigationBar(true);
 
 //        final MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "HomeFragTutorial");
 //        sequence.setConfig(config);
@@ -293,82 +352,109 @@ public class TutorialStuff
         final EditText messageEntryBox = view.findViewById(R.id.messageToSend);
         final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(0);
-        config.setFadeDuration(250);
-        config.setRenderOverNavigationBar(true);
-
-        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
-        {
-            config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
-        } else {
-            int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
-            config.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
-        }
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatFragTutorial");
-        sequence.setConfig(config);
-
-        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
-        {
-            int itemIndex = 0; //i should be the current position, but it isn't working so we need this
-
-            @Override
-            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
-            {
-                Log.e("Pos", itemIndex + "");
-
-                switch (itemIndex)
-                {
-                    case 1:
-                        fam.open(true);
-                        break;
-                    case 5:
-                        fam.close(true);
-                        break;
-                }
-
-                itemIndex++;
-            }
-        });
-
-        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-                activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(fam.getMenuButton(),
-                activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(users,
-                activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(info,
-                activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(stars,
-                activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(openInBrowser,
-                activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(messageEntryBox,
-                activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text),
-                "OK");
-
-        sequence.addSequenceItem(sendMsg,
-                activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
-                "OK");
-
-        sequence.start();
+//        ShowcaseConfig config = new ShowcaseConfig();
+//        mConfig.setDelay(0);
+//        mConfig.setFadeDuration(250);
+//        mConfig.setRenderOverNavigationBar(true);
+//
+//        if (mSharedPreferences.getBoolean("dynamicallyColorBar", false))
+//        {
+//            mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(mAppBarColor), Color.green(mAppBarColor), Color.blue(mAppBarColor)), 0.6f));
+//        } else {
+//            int color = ActionBarHue.getActionBarPrefsColor((AppCompatActivity)activity);
+//            mConfig.setMaskColor(HueUtils.darkenColor(Color.argb(0xbb, Color.red(color), Color.green(color), Color.blue(color)), 0.6f));
+//        }
+//
+//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "ChatFragTutorial");
+//        sequence.setConfig(config);
+//
+//        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener()
+//        {
+//            int itemIndex = 0; //i should be the current position, but it isn't working so we need this
+//
+//            @Override
+//            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i)
+//            {
+//                Log.e("Pos", itemIndex + "");
+//
+//                switch (itemIndex)
+//                {
+//                    case 1:
+//                        fam.open(true);
+//                        break;
+//                    case 5:
+//                        fam.close(true);
+//                        break;
+//                }
+//
+//                itemIndex++;
+//            }
+//        });
+//
+//        sequence.addSequenceItem(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
+//                activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(fam.getMenuButton(),
+//                activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(users,
+//                activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(info,
+//                activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(stars,
+//                activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(openInBrowser,
+//                activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(messageEntryBox,
+//                activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text),
+//                "OK");
+//
+//        sequence.addSequenceItem(sendMsg,
+//                activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text),
+//                "OK");
+//
+//        sequence.start();
     }
 
     public interface OnSwipeListener {
         void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
         void onSwipeRight(RecyclerView.ViewHolder viewHolder);
+    }
+
+    private static void setConfig(Activity activity) {
+        mConfig = new SpotlightConfig();
+        mConfig.setIntroAnimationDuration(400);
+        mConfig.setRevealAnimationEnabled(true);
+        mConfig.setPerformClick(true);
+        mConfig.setFadingTextDuration(400);
+        mConfig.setHeadingTvColor(Color.WHITE);
+        mConfig.setHeadingTvText("Drawer");
+        mConfig.setHeadingTvSize(32);
+        mConfig.setSubHeadingTvColor(Color.WHITE);
+        mConfig.setSubHeadingTvSize(16);
+        mConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
+        mConfig.setMaskColor(Color.parseColor("#99000000"));
+        mConfig.setLineAnimationDuration(400);
+        mConfig.setLineAndArcColor(Color.LTGRAY);
+        mConfig.setDismissOnTouch(true);
+        mConfig.setDismissOnBackpress(true);
+    }
+
+    private static void resetSpotlights(Activity activity) {
+        PreferencesManager manager =  new PreferencesManager(activity);
+        manager.reset("DrawerTut");
+        manager.reset("MenuTut");
+        manager.reset("ChatItem");
+        manager.reset("ChatItemSlide");
     }
 }
