@@ -124,8 +124,11 @@ public class TutorialStuff
             }
         };
 
-        activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
-        dummyChats.setVisibility(View.VISIBLE);
+        PreferencesManager manager = new PreferencesManager(activity);
+        if (!manager.isDisplayed(CHAT_ITEM)) {
+            activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
+            dummyChats.setVisibility(View.VISIBLE);
+        }
 
         SpotlightView chats = new SpotlightView.Builder(activity)
                 .target(activity.findViewById(R.id.chatroomsListView))
