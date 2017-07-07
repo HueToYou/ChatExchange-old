@@ -560,25 +560,6 @@ public class TutorialStuff
     public static void resetSpotlights(Activity activity)
     {
         PreferencesManager manager = new PreferencesManager(activity);
-        manager.reset(MAIN_DRAWER);
-        manager.reset(MAIN_MENU);
-        manager.reset(CHAT_ITEM);
-        manager.reset(CHAT_ITEM_SLIDE);
-        manager.reset(CHAT_ITEM_FAM);
-        manager.reset(CHAT_ITEM_ADD);
-        manager.reset(CHAT_ITEM_REMOVE_ALL);
-        manager.reset(CHAT_ITEM_HOME);
-        manager.reset(CHAT_FRAG_MENU_BTN);
-        manager.reset(CHAT_FRAG_FAM);
-        manager.reset(CHAT_FRAG_USERS_FAB);
-        manager.reset(CHAT_FRAG_INFO_FAB);
-        manager.reset(CHAT_FRAG_STARS_FAB);
-        manager.reset(CHAT_FRAG_OPENINBROWSER_FAB);
-        manager.reset(CHAT_FRAG_MESSG_ENTRY_BOX);
-        manager.reset(CHAT_FRAG_SEND_MESSG_BTN);
-        manager.reset(USERS_SLIDE_INTRO);
-        manager.reset(USER_ONE);
-        manager.reset(USER_MOD);
-        manager.reset(USER_OWNER);
+        manager.resetAll();
     }
 }

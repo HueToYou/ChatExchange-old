@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
-        <item
-            android:id="@+id/action_settings"
-            android:title="@string/options_menu_settings"
-            android:actionViewClass="android.view.View"
-            app:actionViewClass="android.view.View"/>
+
         <item
             android:id="@+id/action_help"
             android:title="@string/options_menu_help"
@@ -18,11 +14,18 @@
             android:title="@string/options_menu_about"
             android:actionViewClass="android.view.View"
             app:actionViewClass="android.view.View"/>
+
+        <item
+            android:id="@+id/action_settings"
+            android:title="@string/options_menu_settings"
+            android:actionViewClass="android.view.View"
+            app:actionViewClass="android.view.View"/>
+
         <item
             android:id="@+id/explore_chats"
             android:title="Explore Chats"
             android:actionViewClass="android.view.View"
             app:actionViewClass="android.view.View"/>
-    </group>
+            </group>
 
 </menu>
