@@ -74,7 +74,6 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        //resetSpotlights(activity); //FOR DEBUGGING PURPOSES
         if (mConfig == null)
         {
             setConfig(activity);
@@ -223,7 +222,6 @@ public class TutorialStuff
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
-        resetSpotlights(activity); //FOR DEBUGGING PURPOSES
         if (mConfig == null)
         {
             setConfig(activity);
@@ -254,6 +252,11 @@ public class TutorialStuff
         if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        if (mConfig == null)
+        {
+            setConfig(activity);
         }
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
@@ -397,7 +400,7 @@ public class TutorialStuff
         mConfig.setDismissOnBackpress(true);
     }
 
-    private static void resetSpotlights(Activity activity)
+    public static void resetSpotlights(Activity activity)
     {
         PreferencesManager manager = new PreferencesManager(activity);
         manager.reset(MAIN_DRAWER);
@@ -408,6 +411,7 @@ public class TutorialStuff
         manager.reset(CHAT_ITEM_ADD);
         manager.reset(CHAT_ITEM_REMOVE_ALL);
         manager.reset(CHAT_ITEM_HOME);
+        manager.reset(CHAT_FRAG_MENU_BTN);
         manager.reset(CHAT_FRAG_FAM);
         manager.reset(CHAT_FRAG_USERS_FAB);
         manager.reset(CHAT_FRAG_INFO_FAB);

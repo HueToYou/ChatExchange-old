@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
@@ -31,14 +33,7 @@ public class HelpActivity extends AppCompatActivity
 
     public void showTutorial(View v)
     {
-        PrefsManager prefsManager = new PrefsManager(this, "HomeFragTutorial");
-        prefsManager.resetShowcase();
-
-        prefsManager = new PrefsManager(this, "ChatFragTutorial");
-        prefsManager.resetShowcase();
-
-        prefsManager = new PrefsManager(this, "ChatSliderTutorial");
-        prefsManager.resetShowcase();
+        TutorialStuff.resetSpotlights(this);
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
