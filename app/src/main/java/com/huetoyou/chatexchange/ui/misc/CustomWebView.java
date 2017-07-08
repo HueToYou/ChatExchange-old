@@ -15,6 +15,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.Authenticator;
@@ -133,6 +134,8 @@ public class CustomWebView
                         {
                             key = key.concat("SO");
                         }
+
+                        Toast.makeText(mContext, "Adding room #" + id, Toast.LENGTH_LONG).show();
 
                         Intent urlIntent = new Intent("idAdd").putExtra(key, id);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(urlIntent);
