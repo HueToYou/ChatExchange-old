@@ -626,7 +626,7 @@ public class MainActivity extends SlidingActivity
     }
 
     static private class ReceiveACB extends AsyncTask<Void, Void, Void>
-    {
+        {
         final ACBInterface mInterface;
         final String mKey;
 
