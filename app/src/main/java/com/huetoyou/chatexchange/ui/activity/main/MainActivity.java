@@ -1,11 +1,10 @@
-package com.huetoyou.chatexchange.ui.activity;
+package com.huetoyou.chatexchange.ui.activity.main;
 
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.job.JobInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,12 +50,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
+import com.huetoyou.chatexchange.ui.activity.AboutActivity;
+import com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity;
+import com.huetoyou.chatexchange.ui.activity.HelpActivity;
+import com.huetoyou.chatexchange.ui.activity.IntroActivity;
+import com.huetoyou.chatexchange.ui.activity.PreferencesActivity;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
@@ -66,13 +69,10 @@ import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
-import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
-
 import android.widget.Toast;
-
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -85,12 +85,12 @@ import java.util.regex.Pattern;
 public class MainActivity extends SlidingActivity
 {
 
-    private SharedPreferences mSharedPrefs;
+    SharedPreferences mSharedPrefs;
     private SharedPreferences.Editor mEditor;
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
-    private RecyclerView chatroomsList;
+    RecyclerView chatroomsList;
     private static SlidingMenu mCurrentUsers_SlidingMenu;
     private static FragmentManager mFragmentManager;
 
@@ -104,29 +104,29 @@ public class MainActivity extends SlidingActivity
 
     private String mCurrentFragment;
 
-    private RequestFactory mRequestFactory;
+    RequestFactory mRequestFactory;
 
-    private SparseArray<Fragment> mSOChats = new SparseArray<>();
-    private SparseArray<Fragment> mSEChats = new SparseArray<>();
+    SparseArray<Fragment> mSOChats = new SparseArray<>();
+    SparseArray<Fragment> mSEChats = new SparseArray<>();
 
-    private SparseIntArray mSOChatColors = new SparseIntArray();
-    private SparseIntArray mSEChatColors = new SparseIntArray();
+    SparseIntArray mSOChatColors = new SparseIntArray();
+    SparseIntArray mSEChatColors = new SparseIntArray();
 
-    private SparseArray<String> mSOChatNames = new SparseArray<>();
-    private SparseArray<String> mSEChatNames = new SparseArray<>();
+    SparseArray<String> mSOChatNames = new SparseArray<>();
+    SparseArray<String> mSEChatNames = new SparseArray<>();
 
-    private SparseArray<String> mSOChatUrls = new SparseArray<>();
-    private SparseArray<String> mSEChatUrls = new SparseArray<>();
+    SparseArray<String> mSOChatUrls = new SparseArray<>();
+    SparseArray<String> mSEChatUrls = new SparseArray<>();
 
-    private SparseArray<Drawable> mSOChatIcons = new SparseArray<>();
-    private SparseArray<Drawable> mSEChatIcons = new SparseArray<>();
+    SparseArray<Drawable> mSOChatIcons = new SparseArray<>();
+    SparseArray<Drawable> mSEChatIcons = new SparseArray<>();
 
-    private Set<String> mSOChatIDs = new HashSet<>(0);
-    private Set<String> mSEChatIDs = new HashSet<>(0);
+    Set<String> mSOChatIDs = new HashSet<>(0);
+    Set<String> mSEChatIDs = new HashSet<>(0);
 
     private String mCookieString = null;
 
-    private MainActivityUtils.AddList mAddList;
+    MainActivityUtils.AddList mAddList;
 
     private VectorDrawableCompat drawable;
     private Toolbar mActionBar;
@@ -137,7 +137,7 @@ public class MainActivity extends SlidingActivity
     private RecyclerView.Adapter mAdapter;
     private RecyclerAdapter.OnItemClicked mItemClickedListener;
     private ActionMenuView mActionMenuView;
-    private RecyclerAdapter mWrappedAdapter;
+    RecyclerAdapter mWrappedAdapter;
     private RecyclerViewSwipeManager mSwipeManager;
 
     /*
@@ -482,7 +482,7 @@ public class MainActivity extends SlidingActivity
                     CookieSyncManager.getInstance().sync();
                 }
 
-                doFragmentStuff();
+                FragStuff.doFragmentStuff(MainActivity.this);
             }
         };
 
@@ -548,7 +548,7 @@ public class MainActivity extends SlidingActivity
                     if (extras.containsKey("idSE"))
                     {
                         addIdToSEList(extras.getString("idSE"));
-                        doFragmentStuff();
+                        FragStuff.doFragmentStuff(MainActivity.this);
 
                         ReceiveACB.newInstance(new ACBInterface()
                         {
@@ -586,7 +586,7 @@ public class MainActivity extends SlidingActivity
                     else if (extras.containsKey("idSO"))
                     {
                         addIdToSOList(extras.getString("idSO"));
-                        doFragmentStuff();
+                        FragStuff.doFragmentStuff(MainActivity.this);
 
                         ReceiveACB.newInstance(new ACBInterface()
                         {
@@ -819,180 +819,6 @@ public class MainActivity extends SlidingActivity
         return arrayList;
     }
 
-    /*
-     * Setup fragments
-     */
-
-    /**
-     * Instantiate fragments and add them to {@link MainActivity#mChatroomSlidingMenu}
-     */
-
-    private void doFragmentStuff()
-    {
-        resetArrays(false);
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
-            }
-        });
-//        Looper.prepare();
-        Log.e("IDS", mSEChatIDs.toString().concat(mSOChatIDs.toString()));
-
-        for (String s : mSEChatIDs)
-        {
-            Log.e("ID", s);
-            final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
-            final String id = s;
-            mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
-            {
-                @Override
-                public void onSucceeded(final URL url, String data)
-                {
-                    mSEChatUrls.put(Integer.decode(id), chatUrl);
-                    mAddList = MainActivityUtils.AddList.newInstance(MainActivity.this, mSharedPrefs, data, id, chatUrl, new AddListListener()
-                    {
-
-                        private Fragment fragment;
-
-                        @Override
-                        public void onStart()
-                        {
-
-                        }
-
-                        @Override
-                        public void onProgress(String name, Drawable icon, Integer color)
-                        {
-                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
-                            Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
-                            mSEChats.put(Integer.decode(id), fragment);
-                            mSEChatColors.put(Integer.decode(id), color);
-                            mSEChatIcons.put(Integer.decode(id), icon);
-                            mSEChatNames.put(Integer.decode(id), name);
-                        }
-
-                        @Override
-                        public void onFinish(String name, String url, Drawable icon, Integer color)
-                        {
-                            addFragmentToList(name, url, icon, color, id);
-                            initiateFragment(fragment);
-                        }
-                    });
-
-                    mAddList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
-
-                @Override
-                public void onFailed(String message)
-                {
-                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
-
-                    removeIdFromSEList(id);
-                    Log.e("Couldn't load SE chat ".concat(id), message);
-                }
-            });
-        }
-
-        for (String s : mSOChatIDs)
-        {
-            final String chatUrl = "https://chat.stackoverflow.com/rooms/".concat(s);
-            final String id = s;
-            mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
-            {
-                @Override
-                public void onSucceeded(final URL url, String data)
-                {
-                    mSOChatUrls.put(Integer.decode(id), chatUrl);
-                    MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(MainActivity.this, mSharedPrefs, data, id, chatUrl, new AddListListener()
-                    {
-
-                        private Fragment fragment;
-
-                        @Override
-                        public void onStart()
-                        {
-                        }
-
-                        @Override
-                        public void onProgress(String name, Drawable icon, Integer color)
-                        {
-                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
-                            mSOChats.put(Integer.decode(id), fragment);
-                            mSOChatColors.put(Integer.decode(id), color);
-                            mSOChatIcons.put(Integer.decode(id), icon);
-                            mSOChatNames.put(Integer.decode(id), name);
-                        }
-
-                        @Override
-                        public void onFinish(String name, String url, Drawable icon, Integer color)
-                        {
-                            addFragmentToList(name, url, icon, color, id);
-                            initiateFragment(fragment);
-                        }
-                    });
-
-                    addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
-
-                @Override
-                public void onFailed(String message)
-                {
-                    Toast.makeText(MainActivity.this, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
-                    removeIdFromSOList(id);
-                    Log.e("Couldn't load SO chat ".concat(id), message);
-                }
-            });
-        }
-
-        if (mSEChatIDs.size() == 0 && mSOChatIDs.size() == 0)
-        {
-            removeAllFragmentsFromList();
-            findViewById(R.id.loading_progress).setVisibility(View.GONE);
-        }
-
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Thread.sleep(350);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-                while (true)
-                {
-                    if (chatroomsList == null)
-                    {
-                        continue;
-                    }
-                    if (mWrappedAdapter.getItemCount() < mSEChatIDs.size() + mSOChatIDs.size())
-                    {
-                        continue;
-                    }
-                    break;
-                }
-
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        findViewById(R.id.loading_progress).setVisibility(View.GONE);
-                        Log.e("VIS", "GONE");
-                    }
-                });
-            }
-        }).start();
-    }
-
     /**
      * Handles the actual data parsing for chats
      * (in the background to avoid ANRs)
@@ -1128,7 +954,7 @@ public class MainActivity extends SlidingActivity
      * @param fragment Fragment to be added
      */
 
-    private void initiateFragment(Fragment fragment) {
+    void initiateFragment(Fragment fragment) {
         try
         {
             String tag = fragment.getArguments().getString("chatUrl");
@@ -1158,7 +984,7 @@ public class MainActivity extends SlidingActivity
      * @param color Chat color
      */
 
-    private void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
+    void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
         Log.e("ADD", "ADD");
         int identifier;
 
@@ -1180,7 +1006,7 @@ public class MainActivity extends SlidingActivity
      * Might be useful for a batch removal later, but right now, it just enables removal of the only chat added
      */
 
-    private void removeAllFragmentsFromList()
+    void removeAllFragmentsFromList()
     {
         if (chatroomsList != null)
         {
@@ -1339,7 +1165,7 @@ public class MainActivity extends SlidingActivity
                         addIdToSEList(inputText);
                     }
 
-                    doFragmentStuff();
+                    FragStuff.doFragmentStuff(MainActivity.this);
                 }
                 else
                 {
@@ -1468,7 +1294,7 @@ public class MainActivity extends SlidingActivity
      * @return the created Fragment
      */
 
-    private Fragment addFragment(String url, String name, Integer color, Integer id)
+    Fragment addFragment(String url, String name, Integer color, Integer id)
     {
         Fragment fragment;
         if (mFragmentManager.findFragmentByTag(url) != null)
@@ -1527,7 +1353,7 @@ public class MainActivity extends SlidingActivity
      * @param shouldEmptyIDs should the ID Set be emptied?
      */
 
-    private void resetArrays(boolean shouldEmptyIDs)
+    void resetArrays(boolean shouldEmptyIDs)
     {
         if (shouldEmptyIDs)
         {
@@ -1591,7 +1417,7 @@ public class MainActivity extends SlidingActivity
         return mActionMenuView;
     }
 
-    private void removeIdFromSEList(String id) {
+    void removeIdFromSEList(String id) {
         mSEChatIDs.remove(id);
         setSEStringSet();
     }
@@ -1606,7 +1432,7 @@ public class MainActivity extends SlidingActivity
         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
     }
 
-    private void removeIdFromSOList(String id) {
+    void removeIdFromSOList(String id) {
         mSOChatIDs.remove(id);
         setSOStringSet();
     }

@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 
 
 public class IntroActivity extends AppIntro

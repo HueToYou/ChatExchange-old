@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
-
-import uk.co.deanwild.materialshowcaseview.PrefsManager;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class HelpActivity extends AppCompatActivity
 {

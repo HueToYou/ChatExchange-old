@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange.ui.activity;
+package com.huetoyou.chatexchange.ui.activity.main;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
+import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 
 import org.jsoup.Jsoup;
