@@ -85,7 +85,37 @@ public class UserTileFragment extends Fragment
         final boolean isOwner = mArgs.getBoolean("isOwner", false);
 
         setUserName(name);
-        setAvatar(url);
+
+        if(mArgs.getBoolean("IsExampleTile"))
+        {
+            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+            Drawable hue;
+            switch (mArgs.getInt("ExampleNum"))
+            {
+                case 0:
+                    hue = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(((BitmapDrawable)getResources().getDrawable(R.drawable.edwinksl)).getBitmap(), px, px, true));
+                    mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, hue, null, null);
+                    mLoading.setVisibility(View.GONE);
+                    break;
+
+                case 1:
+                    hue = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(((BitmapDrawable)getResources().getDrawable(R.drawable.thomasward)).getBitmap(), px, px, true));
+                    mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, hue, null, null);
+                    mLoading.setVisibility(View.GONE);
+                    break;
+
+                case 2:
+                    hue = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(((BitmapDrawable)getResources().getDrawable(R.drawable.rinzy)).getBitmap(), px, px, true));
+                    mUserInfo.setCompoundDrawablesWithIntrinsicBounds(null, hue, null, null);
+                    mLoading.setVisibility(View.GONE);
+                    break;
+            }
+        }
+        else
+        {
+            setAvatar(url);
+        }
+
         setIsModOwner(isMod, isOwner);
 
         displayInfoOnTap(id, lastPost, rep);

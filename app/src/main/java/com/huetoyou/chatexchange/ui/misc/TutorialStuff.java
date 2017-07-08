@@ -411,9 +411,11 @@ public class TutorialStuff
 
 
         Bundle args = new Bundle();
-        args.putString(USER_NAME_KEY, "Example 1");
+        args.putString(USER_NAME_KEY, "Edwinksl");
         args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
         args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+        args.putBoolean("IsExampleTile", true);
+        args.putInt("ExampleNum", 0);
 
         args.putInt(USER_ID_KEY, 12345);
         args.putInt(USER_LAST_POST_KEY, 0);
@@ -426,9 +428,11 @@ public class TutorialStuff
         userTileFragment.setArguments(args);
 
         args = new Bundle();
-        args.putString(USER_NAME_KEY, "Example 2");
+        args.putString(USER_NAME_KEY, "Thomas Ward");
         args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
         args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+        args.putBoolean("IsExampleTile", true);
+        args.putInt("ExampleNum", 1);
 
         args.putInt(USER_ID_KEY, 12346);
         args.putInt(USER_LAST_POST_KEY, 0);
@@ -441,9 +445,11 @@ public class TutorialStuff
         userTileFragment1.setArguments(args);
 
         args = new Bundle();
-        args.putString(USER_NAME_KEY, "Example 3");
+        args.putString(USER_NAME_KEY, "Rinzwind");
         args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
         args.putString(USER_URL_KEY, "https://example.stackexchange.com");
+        args.putBoolean("IsExampleTile", true);
+        args.putInt("ExampleNum", 2);
 
         args.putInt(USER_ID_KEY, 12347);
         args.putInt(USER_LAST_POST_KEY, 0);
