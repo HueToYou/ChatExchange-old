@@ -339,6 +339,12 @@ public class MainActivity extends SlidingActivity
 
         mIntent = getIntent();
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
+
+        if(mSharedPrefs.getBoolean("runMainTutorial", false))
+        {
+            TutorialStuff.homeFragTutorial(MainActivity.this);
+            mEditor.putBoolean("runMainTutorial", false).apply();
+        }
     }
 
     @Override

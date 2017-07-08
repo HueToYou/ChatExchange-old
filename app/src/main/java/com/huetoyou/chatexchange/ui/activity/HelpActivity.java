@@ -1,6 +1,8 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +15,7 @@ import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 public class HelpActivity extends AppCompatActivity
 {
-
+    private SharedPreferences.Editor mSharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -26,14 +28,16 @@ public class HelpActivity extends AppCompatActivity
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
     }
 
     public void showTutorial(View v)
     {
         TutorialStuff.resetSpotlights(this);
+        mSharedPreferences.putBoolean("runMainTutorial", true).apply();
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     @Override
