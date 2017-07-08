@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.activity.main;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
+import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.net.URL;
@@ -74,8 +76,8 @@ public class FragStuff
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-                            mainActivity.addFragmentToList(name, url, icon, color, id);
-                            mainActivity.initiateFragment(fragment);
+                            addFragmentToList(mainActivity, name, url, icon, color, id);
+                            initiateFragment(mainActivity, fragment);
                         }
                     });
 
@@ -126,8 +128,8 @@ public class FragStuff
                         @Override
                         public void onFinish(String name, String url, Drawable icon, Integer color)
                         {
-                            mainActivity.addFragmentToList(name, url, icon, color, id);
-                            mainActivity.initiateFragment(fragment);
+                            addFragmentToList(mainActivity, name, url, icon, color, id);
+                            initiateFragment(mainActivity, fragment);
                         }
                     });
 
@@ -146,7 +148,7 @@ public class FragStuff
 
         if (mainActivity.mSEChatIDs.size() == 0 && mainActivity.mSOChatIDs.size() == 0)
         {
-            mainActivity.removeAllFragmentsFromList();
+            removeAllFragmentsFromList(mainActivity);
             mainActivity.findViewById(R.id.loading_progress).setVisibility(View.GONE);
         }
 
@@ -273,5 +275,80 @@ public class FragStuff
                 Toast.makeText(mainActivity, "Chat not added", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    /*
+     * Fragment Stuffs
+     */
+
+    /**
+     * Add specified fragment to the {@link FragmentManager}
+     *
+     * @param fragment Fragment to be added
+     */
+
+    static void initiateFragment(MainActivity mainActivity, Fragment fragment) {
+        try
+        {
+            String tag = fragment.getArguments().getString("chatUrl");
+            if (mainActivity.mFragmentManager.findFragmentByTag(tag) == null)
+            {
+                mainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+            }
+
+            if ((mainActivity.mCurrentFragment == null || mainActivity.mCurrentFragment.equals("home")) && mainActivity.mFragmentManager.findFragmentByTag("home") == null)
+            {
+                mainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+            }
+
+            mainActivity.mFragmentManager.executePendingTransactions();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Add fragment info to the RecyclerView list
+     * @param name Chat name
+     * @param url Chat URL
+     * @param icon Chat favicon
+     * @param color Chat color
+     */
+
+    static void addFragmentToList(MainActivity mainActivity, String name, String url, Drawable icon, Integer color, String id) {
+        Log.e("ADD", "ADD");
+        int identifier;
+
+        if (url.contains("overflow")) identifier = -Integer.decode(id);
+        else identifier = Integer.decode(id);
+
+        mainActivity.mWrappedAdapter.addItem(new ChatroomRecyclerObject(
+                mainActivity.mWrappedAdapter.getItemCount(),
+                name,
+                url,
+                icon,
+                color,
+                0,
+                identifier
+        ));
+    }
+
+    /**
+     * Might be useful for a batch removal later, but right now, it just enables removal of the only chat added
+     */
+
+    static void removeAllFragmentsFromList(MainActivity mainActivity)
+    {
+        if (mainActivity.chatroomsList != null)
+        {
+//            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
+//            chatroomsList.setAdapter(mAdapter);
+            for (int i = 0; i < mainActivity.mWrappedAdapter.getItemCount(); i++) {
+                mainActivity.mWrappedAdapter.removeItem(i);
+            }
+        }
+        mainActivity.resetArrays(true);
     }
 }

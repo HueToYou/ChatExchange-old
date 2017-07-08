@@ -102,7 +102,7 @@ public class MainActivity extends SlidingActivity
 
     private Handler mHandler;
 
-    private String mCurrentFragment;
+    String mCurrentFragment;
 
     RequestFactory mRequestFactory;
 
@@ -181,7 +181,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onCloseClick(View view, int position)
             {
-                confirmClose(position);
+                MainActivityUtils.confirmClose(MainActivity.this, position);
             }
         };
 
@@ -702,81 +702,6 @@ public class MainActivity extends SlidingActivity
     }
 
     /*
-     * Fragment Stuffs
-     */
-
-    /**
-     * Add specified fragment to the {@link FragmentManager}
-     *
-     * @param fragment Fragment to be added
-     */
-
-    void initiateFragment(Fragment fragment) {
-        try
-        {
-            String tag = fragment.getArguments().getString("chatUrl");
-            if (mFragmentManager.findFragmentByTag(tag) == null)
-            {
-                mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
-            }
-
-            if ((mCurrentFragment == null || mCurrentFragment.equals("home")) && mFragmentManager.findFragmentByTag("home") == null)
-            {
-                mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
-            }
-
-            mFragmentManager.executePendingTransactions();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Add fragment info to the RecyclerView list
-     * @param name Chat name
-     * @param url Chat URL
-     * @param icon Chat favicon
-     * @param color Chat color
-     */
-
-    void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
-        Log.e("ADD", "ADD");
-        int identifier;
-
-        if (url.contains("overflow")) identifier = -Integer.decode(id);
-        else identifier = Integer.decode(id);
-
-        mWrappedAdapter.addItem(new ChatroomRecyclerObject(
-                mWrappedAdapter.getItemCount(),
-                name,
-                url,
-                icon,
-                color,
-                0,
-                identifier
-        ));
-    }
-
-    /**
-     * Might be useful for a batch removal later, but right now, it just enables removal of the only chat added
-     */
-
-    void removeAllFragmentsFromList()
-    {
-        if (chatroomsList != null)
-        {
-//            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
-//            chatroomsList.setAdapter(mAdapter);
-            for (int i = 0; i < mWrappedAdapter.getItemCount(); i++) {
-                mWrappedAdapter.removeItem(i);
-            }
-        }
-        resetArrays(true);
-    }
-
-    /*
      * Other Stuffs
      */
 
@@ -858,92 +783,6 @@ public class MainActivity extends SlidingActivity
         al.show();
     }
 
-    /**
-     * Handle removing a chat
-     *
-     * @param position the position of the item in the chat list
-     */
-
-    public void confirmClose(final int position)
-    {
-
-        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 50 milliseconds
-        vib.vibrate(50);
-
-        String domain = "";
-        String id = "";
-
-        Pattern domP = Pattern.compile("//(.+?)\\.com");
-        Matcher domM = domP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
-
-        while (!domM.hitEnd())
-        {
-            if (domM.find())
-            {
-                domain = domM.group();
-            }
-        }
-
-        Pattern idP = Pattern.compile("rooms/(.+?)\\b");
-        Matcher idM = idP.matcher(mWrappedAdapter.getItemAt(position).getUrl());
-
-        while (!idM.hitEnd())
-        {
-            if (idM.find())
-            {
-                id = idM.group().replace("rooms/", "");
-            }
-        }
-
-        Log.e("IDDDDD", id);
-        Log.e("DOMAIN", domain);
-
-        String soId = "";
-        String seId = "";
-
-        if (!domain.isEmpty() && !id.isEmpty())
-        {
-            if (domain.contains("overflow"))
-            {
-                removeIdFromSOList(id);
-                soId = id;
-            }
-            else if (domain.contains("exchange"))
-            {
-                removeIdFromSEList(id);
-                seId = id;
-            }
-
-            if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) FragStuff.setFragmentByTag(MainActivity.this, "home");
-//            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
-
-            final String soId1 = soId;
-            final String seId1 = seId;
-
-            mWrappedAdapter.removeItemWithSnackbar(MainActivity.this, position, new RecyclerAdapter.SnackbarListener()
-            {
-                @Override
-                public void onUndo()
-                {
-                    if (!soId1.isEmpty())
-                    {
-                        addIdToSOList(soId1);
-                    } else if (!seId1.isEmpty())
-                    {
-                        addIdToSEList(seId1);
-                    }
-                }
-
-                @Override
-                public void onUndoExpire(String url)
-                {
-                    Log.e("UNDO", "Undo Expired");
-                    mFragmentManager.getFragments().remove(mFragmentManager.findFragmentByTag(url));
-                }
-            });
-        }
-    }
 
     /**
      * Get the chatroom list {@link SlidingMenu} instance from other classes
@@ -1047,32 +886,6 @@ public class MainActivity extends SlidingActivity
         mSOChatColors = new SparseIntArray();
     }
 
-    /**
-     * Removes all chats on confirmation
-     *
-     * @param v the view calling this function
-     */
-
-    public void removeAllChats(View v)
-    {
-        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
-        fam.close(true);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Are you sure?")
-                .setMessage("Are you sure you want to remove all chats?")
-                .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        removeAllFragmentsFromList();
-                        FragStuff.setFragmentByTag(MainActivity.this, "home");
-                    }
-                })
-                .setNegativeButton(getResources().getText(R.string.generic_no), null)
-                .show();
-    }
 
     /**
      * Get cookies from other classes

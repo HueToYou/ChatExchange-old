@@ -3,6 +3,7 @@ package com.huetoyou.chatexchange.ui.activity.main;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -13,13 +14,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 
+import com.github.clans.fab.FloatingActionMenu;
+import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 
 import org.jsoup.Jsoup;
@@ -29,6 +36,8 @@ import org.jsoup.select.Elements;
 
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class MainActivityUtils
 {
@@ -387,5 +396,120 @@ class MainActivityUtils
                 }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
+    }
+
+
+    /**
+     * Handle removing a chat
+     *
+     * @param position the position of the item in the chat list
+     */
+
+    static void confirmClose(final MainActivity mainActivity, final int position)
+    {
+
+        Vibrator vib = (Vibrator) mainActivity.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 50 milliseconds
+        vib.vibrate(50);
+
+        String domain = "";
+        String id = "";
+
+        Pattern domP = Pattern.compile("//(.+?)\\.com");
+        Matcher domM = domP.matcher(mainActivity.mWrappedAdapter.getItemAt(position).getUrl());
+
+        while (!domM.hitEnd())
+        {
+            if (domM.find())
+            {
+                domain = domM.group();
+            }
+        }
+
+        Pattern idP = Pattern.compile("rooms/(.+?)\\b");
+        Matcher idM = idP.matcher(mainActivity.mWrappedAdapter.getItemAt(position).getUrl());
+
+        while (!idM.hitEnd())
+        {
+            if (idM.find())
+            {
+                id = idM.group().replace("rooms/", "");
+            }
+        }
+
+        Log.e("IDDDDD", id);
+        Log.e("DOMAIN", domain);
+
+        String soId = "";
+        String seId = "";
+
+        if (!domain.isEmpty() && !id.isEmpty())
+        {
+            if (domain.contains("overflow"))
+            {
+                mainActivity.removeIdFromSOList(id);
+                soId = id;
+            }
+            else if (domain.contains("exchange"))
+            {
+                mainActivity.removeIdFromSEList(id);
+                seId = id;
+            }
+
+            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) FragStuff.setFragmentByTag(mainActivity, "home");
+//            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
+
+            final String soId1 = soId;
+            final String seId1 = seId;
+
+            mainActivity.mWrappedAdapter.removeItemWithSnackbar(mainActivity, position, new RecyclerAdapter.SnackbarListener()
+            {
+                @Override
+                public void onUndo()
+                {
+                    if (!soId1.isEmpty())
+                    {
+                        mainActivity.addIdToSOList(soId1);
+                    } else if (!seId1.isEmpty())
+                    {
+                        mainActivity.addIdToSEList(seId1);
+                    }
+                }
+
+                @Override
+                public void onUndoExpire(String url)
+                {
+                    Log.e("UNDO", "Undo Expired");
+                    mainActivity.mFragmentManager.getFragments().remove(mainActivity.mFragmentManager.findFragmentByTag(url));
+                }
+            });
+        }
+    }
+
+    /**
+     * Removes all chats on confirmation
+     *
+     * @param v the view calling this function
+     */
+
+    public void removeAllChats(final MainActivity mainActivity, View v)
+    {
+        final FloatingActionMenu fam = mainActivity.findViewById(R.id.chat_slide_menu);
+        fam.close(true);
+
+        new AlertDialog.Builder(mainActivity)
+                .setTitle("Are you sure?")
+                .setMessage("Are you sure you want to remove all chats?")
+                .setPositiveButton(mainActivity.getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        FragStuff.removeAllFragmentsFromList(mainActivity);
+                        FragStuff.setFragmentByTag(mainActivity, "home");
+                    }
+                })
+                .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)
+                .show();
     }
 }
