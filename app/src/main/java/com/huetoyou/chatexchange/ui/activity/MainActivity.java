@@ -5,6 +5,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.job.JobInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -64,6 +66,7 @@ import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
+import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
@@ -1048,12 +1051,34 @@ public class MainActivity extends SlidingActivity
      */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(final Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
-        TutorialStuff.homeFragTutorial(this);
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Looper.prepare();
+                while (true) {
+                    if (mFragmentManager.findFragmentByTag("home") == null ||
+                            mFragmentManager.findFragmentByTag("home").isDetached())
+                        continue;
+                    break;
+                }
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        TutorialStuff.homeFragTutorial(MainActivity.this);
+                    }
+                });
+            }
+        }).start();
 
         return true;
 
