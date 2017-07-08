@@ -5,23 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,7 +27,6 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
-import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.huetoyou.chatexchange.R;
 
 import java.util.ArrayList;
@@ -150,9 +142,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
         }
 
-        int position = hueObject.getPosition();
-        mChatroomObjects.add(position, hueObject);
-        notifyItemInserted(position);
+        int pos;
+
+        if (mChatroomObjects.size() <= hueObject.getPosition()) {
+            mChatroomObjects.add(hueObject);
+            pos = mChatroomObjects.indexOf(hueObject);
+            mChatroomObjects.get(pos).setPosition(pos);
+            notifyItemInserted(pos);
+        } else {
+            pos = hueObject.getPosition();
+            mChatroomObjects.add(pos, hueObject);
+
+        }
+        notifyItemInserted(pos);
+        resetPositions();
     }
 
     public ChatroomRecyclerObject getItemAt(int position)
@@ -185,6 +188,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         {
             final ChatroomRecyclerObject item = mChatroomObjects.remove(position);
             if (mVHs.size() > position && mVHs.get(position) != null) mVHs.remove(position);
+            resetPositions();
             notifyItemRemoved(position);
             return item;
         }
@@ -234,6 +238,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     }
                 });
             }
+        }
+    }
+
+    private void resetPositions() {
+        for (int i = 0; i < mChatroomObjects.size(); i++) {
+            mChatroomObjects.get(i).setPosition(i);
         }
     }
 
@@ -373,17 +383,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public void setText()
         {
-            if (mChatroomObjects.size() > getAdapterPosition())
+            if (mChatroomObjects.size() > getLayoutPosition())
             {
-                mTextView.setText(mChatroomObjects.get(getAdapterPosition()).getName());
+                mTextView.setText(mChatroomObjects.get(getLayoutPosition()).getName());
             }
         }
 
         public void setImage()
         {
-            if (mChatroomObjects.size() > getAdapterPosition())
+            if (mChatroomObjects.size() > getLayoutPosition())
             {
-                mImageView.setImageDrawable(mChatroomObjects.get(getAdapterPosition()).getIcon());
+                mImageView.setImageDrawable(mChatroomObjects.get(getLayoutPosition()).getIcon());
             }
         }
 
@@ -394,20 +404,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 @Override
                 public void onClick(View view)
                 {
-                    Log.e("CLICKED", getAdapterPosition() + "");
+                    Log.e("CLICKED", getLayoutPosition() + "");
 
                     if (mCloseChat.getScaleX() == 1.0f)
                     {
                         mCloseButtonRevealSet.cancel();
                         mCloseButtonHideSet.start();
-                        getSwipeManager().performFakeSwipe(mVHs.get(getAdapterPosition()), 1);
+                        getSwipeManager().performFakeSwipe(mVHs.get(getLayoutPosition()), 1);
                         //mCloseChat.setVisibility(View.INVISIBLE);
                         Log.e("CLOSE", "HIDING");
                     }
                     else if (onItemClicked != null)
                     {
                         Log.e("SENDING", "CLICKTERFACE");
-                        onItemClicked.onClick(view, getAdapterPosition());
+                        onItemClicked.onClick(view, getLayoutPosition());
                     }
                 }
             });
@@ -434,7 +444,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 {
                     if (onItemClicked != null)
                     {
-                        onItemClicked.onCloseClick(mCloseChat, getAdapterPosition());
+                        onItemClicked.onCloseClick(mCloseChat, getLayoutPosition());
                     }
                 }
             });

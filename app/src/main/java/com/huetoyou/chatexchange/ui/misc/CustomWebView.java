@@ -119,7 +119,15 @@ public class CustomWebView
                     {
                         if (m.find())
                         {
-                            id = m.group().replace("rooms/", "");
+                            try
+                            {
+                                Integer.decode(m.group().replace("rooms/", ""));
+                                id = m.group().replace("rooms/", "");
+                            } catch (Exception e)
+                            {
+                                view.loadUrl(url);
+                                e.printStackTrace();
+                            }
                         }
                     }
 
