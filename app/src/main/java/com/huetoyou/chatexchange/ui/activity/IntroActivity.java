@@ -27,12 +27,35 @@ public class IntroActivity extends AppIntro
         // Note here that we DO NOT use setContentView();
 
         // AppIntro will automatically generate the dots indicator and buttons.
-        addSlide(AppIntroFragment.newInstance("Welcome!", "Welcome to Chat Exchange! Thanks for downloading our app :)", R.drawable.ic_smile, getResources().getColor(R.color.colorPrimaryDark)));
-        addSlide(AppIntroFragment.newInstance("Chat Network", "Chat Exchange is an Android client for the Stack Exchange chat network. You will need a Stack Exchange account in order to use this app.", R.drawable.ic_network, getResources().getColor(R.color.colorPrimaryDark)));
-        addSlide(AppIntroFragment.newInstance("Notifications", "Chat Exchange makes participating in SE chatrooms easier by sending you push notifications when your username is mentioned", R.drawable.ic_message_notification, getResources().getColor(R.color.colorPrimaryDark)));
-        addSlide(AppIntroFragment.newInstance("Credits", "This application was developed by:\n\n10,000 monkeys on the Java islands", R.drawable.ic_people, getResources().getColor(R.color.colorPrimaryDark)));
-        addSlide(AppIntroFragment.newInstance("Bugs?", "If you find a bug or the app crashes on you, please pop us an email at huetoyou@quickmediasolutions.com instead of leaving a 1-star review on the Play Store. We'll do our best to get that bug squashed for you! :D", R.drawable.ic_bug_report, getResources().getColor(R.color.colorPrimaryDark)));
-        addSlide(AppIntroFragment.newInstance("Tutorial", "This app has a lot of buttons, so here's a quick tutorial to show you around", R.drawable.ic_tutorial, getResources().getColor(R.color.colorPrimaryDark)));
+        addSlide(AppIntroFragment.newInstance("Hellu there!",
+                getResources().getString(R.string.intro_slide_welcome_text),
+                R.drawable.ic_smile,
+                getResources().getColor(R.color.colorPrimaryDark)));
+
+        addSlide(AppIntroFragment.newInstance("Chat Network",
+                getResources().getString(R.string.intro_slide_chat_network),
+                R.drawable.ic_network,
+                getResources().getColor(R.color.colorPrimaryDark)));
+
+        addSlide(AppIntroFragment.newInstance("Notifications",
+                getResources().getString(R.string.intro_slide_notifications),
+                R.drawable.ic_message_notification,
+                getResources().getColor(R.color.colorPrimaryDark)));
+
+        addSlide(AppIntroFragment.newInstance("Credits",
+                getResources().getString(R.string.intro_slide_credits),
+                R.drawable.ic_people,
+                getResources().getColor(R.color.colorPrimaryDark)));
+
+        addSlide(AppIntroFragment.newInstance("Bugs?",
+                getResources().getString(R.string.intro_slide_bugs),
+                R.drawable.ic_bug_report,
+                getResources().getColor(R.color.colorPrimaryDark)));
+
+        addSlide(AppIntroFragment.newInstance("Tutorial",
+                getResources().getString(R.string.intro_slide_tutorial),
+                R.drawable.ic_tutorial,
+                getResources().getColor(R.color.colorPrimaryDark)));
 
         // Override bar/separator color.
         setBarColor(getResources().getColor(R.color.colorAccentDark));
