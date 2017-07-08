@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
@@ -348,5 +349,43 @@ class MainActivityUtils
         boolean fragmentFound();
 
         void onFinish();
+    }
+
+    /**
+     * If Firebase notification comes with data, and that data is room info, open the room if added
+     */
+
+    static void respondToNotificationClick(final MainActivity mainActivity)
+    {
+        if (mainActivity.getIntent().getExtras() != null)
+        {
+            Log.e("NOTIF", "NOTIF");
+            final String chatId = mainActivity.mIntent.getExtras().getString("chatId");
+            final String chatDomain = mainActivity.mIntent.getExtras().getString("chatDomain");
+
+            if (chatId != null && chatDomain != null)
+            {
+                MainActivityUtils.NotificationHandler.newInstance(new MainActivity.NHInterface()
+                {
+                    @Override
+                    public boolean seContainsId()
+                    {
+                        return mainActivity.mSEChatUrls.get(Integer.decode(chatId)) != null;
+                    }
+
+                    @Override
+                    public boolean soContainsId()
+                    {
+                        return mainActivity.mSOChatUrls.get(Integer.decode(chatId)) != null;
+                    }
+
+                    @Override
+                    public void onFinish()
+                    {
+                        mainActivity.setFragmentByChatId(chatId, chatDomain);
+                    }
+                }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
     }
 }

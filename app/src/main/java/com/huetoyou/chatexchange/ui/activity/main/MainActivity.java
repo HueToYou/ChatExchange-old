@@ -96,7 +96,7 @@ public class MainActivity extends SlidingActivity
 
     BroadcastReceiver mAddChatReceiver;
 
-    private Intent mIntent;
+    Intent mIntent;
 
     private boolean oncreatejustcalled = false;
 
@@ -353,7 +353,7 @@ public class MainActivity extends SlidingActivity
         System.out.println("Hellu!");
 
         mIntent = getIntent();
-        respondToNotificationClick();
+        MainActivityUtils.respondToNotificationClick(MainActivity.this);
     }
 
     @Override
@@ -512,8 +512,7 @@ public class MainActivity extends SlidingActivity
             }
             mAccountManager.getAuthToken(mAccountManager.getAccounts()[0], Authenticator.ACCOUNT_TYPE, null, true, accountManagerCallback, null);
         }
-
-        respondToNotificationClick();
+        MainActivityUtils.respondToNotificationClick(MainActivity.this);
         MainActivityUtils.setupACBR(this);
     }
 
@@ -528,46 +527,6 @@ public class MainActivity extends SlidingActivity
         mCloseAnimSet.cancel();
         mOpenAnimSet.start();
     }
-
-    /**
-     * If Firebase notification comes with data, and that data is room info, open the room if added
-     */
-
-    private void respondToNotificationClick()
-    {
-        if (getIntent().getExtras() != null)
-        {
-            Log.e("NOTIF", "NOTIF");
-            final String chatId = mIntent.getExtras().getString("chatId");
-            final String chatDomain = mIntent.getExtras().getString("chatDomain");
-
-            if (chatId != null && chatDomain != null)
-            {
-                MainActivityUtils.NotificationHandler.newInstance(new NHInterface()
-                {
-                    @Override
-                    public boolean seContainsId()
-                    {
-                        return mSEChatUrls.get(Integer.decode(chatId)) != null;
-                    }
-
-                    @Override
-                    public boolean soContainsId()
-                    {
-                        return mSOChatUrls.get(Integer.decode(chatId)) != null;
-                    }
-
-                    @Override
-                    public void onFinish()
-                    {
-                        setFragmentByChatId(chatId, chatDomain);
-                    }
-                }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        }
-    }
-
-
 
     interface NHInterface
     {
