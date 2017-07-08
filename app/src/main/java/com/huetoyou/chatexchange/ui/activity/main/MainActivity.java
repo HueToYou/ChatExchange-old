@@ -173,7 +173,7 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void run()
                     {
-                        setFragmentByTag(mCurrentFragment);
+                        FragStuff.setFragmentByTag(MainActivity.this, mCurrentFragment);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
             }
@@ -361,7 +361,7 @@ public class MainActivity extends SlidingActivity
     {
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
-            setFragmentByTag("home");
+            FragStuff.setFragmentByTag(MainActivity.this, "home");
             for (Fragment fragment : mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment)
@@ -437,7 +437,7 @@ public class MainActivity extends SlidingActivity
                     public void run()
                     {
                         Log.e("POS", "DEFL");
-                        setFragmentByTag("home");
+                        FragStuff.setFragmentByTag(MainActivity.this,"home");
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
 
@@ -832,7 +832,7 @@ public class MainActivity extends SlidingActivity
         {
             if (mSEChatUrls.get(Integer.decode(id)) != null)
             {
-                setFragmentByTag(mSEChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(MainActivity.this, mSEChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -843,7 +843,7 @@ public class MainActivity extends SlidingActivity
         {
             if (mSOChatUrls.get(Integer.decode(id)) != null)
             {
-                setFragmentByTag(mSOChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(MainActivity.this, mSOChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -852,55 +852,7 @@ public class MainActivity extends SlidingActivity
         }
     }
 
-    /**
-     * Open a chat using its tag
-     *
-     * @param tag the chat's fragment tag (should be its URL)
-     */
 
-    public static void setFragmentByTag(String tag)
-    {
-        Log.e("TAG", tag);
-        if (mFragmentManager.getFragments() != null)
-        {
-            for (Fragment fragment : mFragmentManager.getFragments())
-            {
-                if (fragment != null && !fragment.isDetached())
-                {
-                    mFragmentManager.beginTransaction().detach(fragment).commit();
-                }
-            }
-            Fragment fragToAttach = mFragmentManager.findFragmentByTag(tag);
-
-            if (fragToAttach != null)
-            {
-
-                if (tag.equals("home"))
-                {
-                    mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                    mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-                    ((HomeFragment) fragToAttach).hueTest();
-                }
-                else
-                {
-                    if (mFragmentManager.findFragmentByTag("home").isDetached())
-                    {
-                        mFragmentManager.beginTransaction().attach(fragToAttach).commit();
-                    }
-                    else
-                    {
-                        mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                    }
-                    mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-                }
-            }
-            else
-            {
-                Log.e("TAG", tag);
-            }
-
-        }
-    }
 
     /*
      * Other Stuffs
@@ -1041,7 +993,7 @@ public class MainActivity extends SlidingActivity
                 seId = id;
             }
 
-            if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) setFragmentByTag("home");
+            if (mWrappedAdapter.getItemAt(position).getUrl().equals(mCurrentFragment)) FragStuff.setFragmentByTag(MainActivity.this, "home");
 //            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
 
             final String soId1 = soId;
@@ -1193,7 +1145,7 @@ public class MainActivity extends SlidingActivity
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         removeAllFragmentsFromList();
-                        setFragmentByTag("home");
+                        FragStuff.setFragmentByTag(MainActivity.this, "home");
                     }
                 })
                 .setNegativeButton(getResources().getText(R.string.generic_no), null)

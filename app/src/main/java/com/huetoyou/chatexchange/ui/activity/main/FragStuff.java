@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
+import com.huetoyou.chatexchange.ui.frags.HomeFragment;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.net.URL;
 
@@ -186,5 +188,55 @@ class FragStuff
                 });
             }
         }).start();
+    }
+
+    /**
+     * Open a chat using its tag
+     *
+     * @param tag the chat's fragment tag (should be its URL)
+     */
+
+    static void setFragmentByTag(MainActivity mainActivity, String tag)
+    {
+        Log.e("TAG", tag);
+        if (mainActivity.mFragmentManager.getFragments() != null)
+        {
+            for (Fragment fragment : mainActivity.mFragmentManager.getFragments())
+            {
+                if (fragment != null && !fragment.isDetached())
+                {
+                    mainActivity.mFragmentManager.beginTransaction().detach(fragment).commit();
+                }
+            }
+            Fragment fragToAttach = mainActivity.mFragmentManager.findFragmentByTag(tag);
+
+            if (fragToAttach != null)
+            {
+
+                if (tag.equals("home"))
+                {
+                    mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    ((HomeFragment) fragToAttach).hueTest();
+                }
+                else
+                {
+                    if (mainActivity.mFragmentManager.findFragmentByTag("home").isDetached())
+                    {
+                        mainActivity.mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+                    }
+                    else
+                    {
+                        mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    }
+                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                }
+            }
+            else
+            {
+                Log.e("TAG", tag);
+            }
+
+        }
     }
 }
