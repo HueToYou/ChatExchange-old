@@ -597,9 +597,9 @@ public class TutorialStuff
     private static void setItemConfig(Activity activity) {
         if (mCategoryConfig == null) setCategoryConfig(activity);
         mItemConfig = mCategoryConfig;
-        mItemConfig.setIntroAnimationDuration(100L);
+        /*mItemConfig.setIntroAnimationDuration(100L);
         mItemConfig.setFadingTextDuration(100L);
-        mItemConfig.setLineAnimationDuration(100L);
+        mItemConfig.setLineAnimationDuration(100L);*/
     }
 
     public static void resetSpotlights(Activity activity)
