@@ -776,43 +776,6 @@ public class MainActivity extends SlidingActivity
         resetArrays(true);
     }
 
-    /**
-     * Open a chat by the specified ID
-     *
-     * @param id     the ID of the desired chat
-     * @param domain the domain of the desired chat ("exchange" or "overflow")
-     */
-
-    void setFragmentByChatId(String id, String domain)
-    {
-        Log.e("SETID", id.concat(domain));
-
-        if (domain.contains("exchange"))
-        {
-            if (mSEChatUrls.get(Integer.decode(id)) != null)
-            {
-                FragStuff.setFragmentByTag(MainActivity.this, mSEChatUrls.get(Integer.decode(id)));
-            }
-            else
-            {
-                Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (domain.contains("overflow"))
-        {
-            if (mSOChatUrls.get(Integer.decode(id)) != null)
-            {
-                FragStuff.setFragmentByTag(MainActivity.this, mSOChatUrls.get(Integer.decode(id)));
-            }
-            else
-            {
-                Toast.makeText(this, "Chat not added", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-
     /*
      * Other Stuffs
      */

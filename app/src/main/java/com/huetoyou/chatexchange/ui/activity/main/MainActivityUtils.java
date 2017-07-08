@@ -239,7 +239,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    mainActivity.setFragmentByChatId(extras.getString("idSE"), "exchange");
+                                    FragStuff.setFragmentByChatId(mainActivity, extras.getString("idSE"), "exchange");
                                 }
                                 catch (Exception e)
                                 {
@@ -277,7 +277,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    mainActivity.setFragmentByChatId(extras.getString("idSO"), "overflow");
+                                    FragStuff.setFragmentByChatId(mainActivity, extras.getString("idSO"), "overflow");
                                 }
                                 catch (Exception e)
                                 {
@@ -382,7 +382,7 @@ class MainActivityUtils
                     @Override
                     public void onFinish()
                     {
-                        mainActivity.setFragmentByChatId(chatId, chatDomain);
+                        FragStuff.setFragmentByChatId(mainActivity, chatId, chatDomain);
                     }
                 }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }

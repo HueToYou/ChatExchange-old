@@ -239,4 +239,39 @@ public class FragStuff
 
         }
     }
+
+    /**
+     * Open a chat by the specified ID
+     *
+     * @param id     the ID of the desired chat
+     * @param domain the domain of the desired chat ("exchange" or "overflow")
+     */
+
+    static void setFragmentByChatId(MainActivity mainActivity, String id, String domain)
+    {
+        Log.e("SETID", id.concat(domain));
+
+        if (domain.contains("exchange"))
+        {
+            if (mainActivity.mSEChatUrls.get(Integer.decode(id)) != null)
+            {
+                FragStuff.setFragmentByTag(mainActivity, mainActivity.mSEChatUrls.get(Integer.decode(id)));
+            }
+            else
+            {
+                Toast.makeText(mainActivity, "Chat not added", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (domain.contains("overflow"))
+        {
+            if (mainActivity.mSOChatUrls.get(Integer.decode(id)) != null)
+            {
+                FragStuff.setFragmentByTag(mainActivity, mainActivity.mSOChatUrls.get(Integer.decode(id)));
+            }
+            else
+            {
+                Toast.makeText(mainActivity, "Chat not added", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
