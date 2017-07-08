@@ -162,7 +162,7 @@ public class MainActivity extends SlidingActivity
                 Log.e("CLICKED", position + "");
 
                 mCurrentFragment = mWrappedAdapter.getItemAt(position).getUrl();
-                doCloseAnimationForDrawerToggle(mDrawerButton);
+                //doCloseAnimationForDrawerToggle(mDrawerButton);
                 getmChatroomSlidingMenu().toggle();
 
                 mHandler.postDelayed(new Runnable()
@@ -253,11 +253,11 @@ public class MainActivity extends SlidingActivity
 
                 if (mChatroomSlidingMenu.isMenuShowing())
                 {
-                    doCloseAnimationForDrawerToggle(view);
+                    //doCloseAnimationForDrawerToggle(view);
                 }
                 else
                 {
-                    doOpenAnimationForDrawerToggle(view);
+                    //doOpenAnimationForDrawerToggle(view);
                 }
                 onSupportNavigateUp();
             }
@@ -270,6 +270,7 @@ public class MainActivity extends SlidingActivity
             {
                 fam.close(false);
                 fam.hideMenuButton(false);
+                doCloseAnimationForDrawerToggle(mDrawerButton);
             }
         });
 
@@ -278,6 +279,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onOpen()
             {
+                doOpenAnimationForDrawerToggle(mDrawerButton);
                 mHandler.postDelayed(new Runnable()
                 {
                     @Override
@@ -436,7 +438,7 @@ public class MainActivity extends SlidingActivity
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
 
-                doCloseAnimationForDrawerToggle(mDrawerButton);
+                //doCloseAnimationForDrawerToggle(mDrawerButton);
                 mChatroomSlidingMenu.toggle();
                 fam.close(false);
             }
