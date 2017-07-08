@@ -91,10 +91,10 @@ public class MainActivity extends SlidingActivity
 
     private SlidingMenu mChatroomSlidingMenu;
     RecyclerView chatroomsList;
-    private static SlidingMenu mCurrentUsers_SlidingMenu;
-    private static FragmentManager mFragmentManager;
+    static SlidingMenu mCurrentUsers_SlidingMenu;
+    static FragmentManager mFragmentManager;
 
-    private BroadcastReceiver mAddChatReceiver;
+    BroadcastReceiver mAddChatReceiver;
 
     private Intent mIntent;
 
@@ -514,7 +514,7 @@ public class MainActivity extends SlidingActivity
         }
 
         respondToNotificationClick();
-        setupACBR();
+        MainActivityUtils.setupACBR(this);
     }
 
     private void doCloseAnimationForDrawerToggle(View view)
@@ -527,158 +527,6 @@ public class MainActivity extends SlidingActivity
     {
         mCloseAnimSet.cancel();
         mOpenAnimSet.start();
-    }
-
-    /**
-     * BroadcastReceiver listening for click on chat URL from WebViewActivity
-     *
-     * @see CustomWebView#client()
-     */
-
-    private void setupACBR()
-    {
-        mAddChatReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-            {
-                final Bundle extras = intent.getExtras();
-                if (extras != null)
-                {
-                    if (extras.containsKey("idSE"))
-                    {
-                        addIdToSEList(extras.getString("idSE"));
-                        FragStuff.doFragmentStuff(MainActivity.this);
-
-                        ReceiveACB.newInstance(new ACBInterface()
-                        {
-                            @Override
-                            public boolean urlFound()
-                            {
-                                return mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) != null;
-                            }
-
-                            @Override
-                            public boolean fragmentFound()
-                            {
-                                return mFragmentManager.findFragmentByTag(mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
-                            }
-
-                            @Override
-                            public void onFinish()
-                            {
-                                try
-                                {
-                                    setFragmentByChatId(extras.getString("idSE"), "exchange");
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                if (mCurrentUsers_SlidingMenu.isMenuShowing())
-                                {
-                                    mCurrentUsers_SlidingMenu.toggle();
-                                }
-                            }
-                        }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                    }
-                    else if (extras.containsKey("idSO"))
-                    {
-                        addIdToSOList(extras.getString("idSO"));
-                        FragStuff.doFragmentStuff(MainActivity.this);
-
-                        ReceiveACB.newInstance(new ACBInterface()
-                        {
-                            @Override
-                            public boolean urlFound()
-                            {
-                                return mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) != null;
-                            }
-
-                            @Override
-                            public boolean fragmentFound()
-                            {
-                                return mFragmentManager.findFragmentByTag(mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
-                            }
-
-                            @Override
-                            public void onFinish()
-                            {
-                                try
-                                {
-                                    setFragmentByChatId(extras.getString("idSO"), "overflow");
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                if (mCurrentUsers_SlidingMenu.isMenuShowing())
-                                {
-                                    mCurrentUsers_SlidingMenu.toggle();
-                                }
-                            }
-                        }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    }
-                }
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("idAdd");
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(mAddChatReceiver, intentFilter);
-    }
-
-    static private class ReceiveACB extends AsyncTask<Void, Void, Void>
-        {
-        final ACBInterface mInterface;
-        final String mKey;
-
-        static ReceiveACB newInstance(ACBInterface acbInterface, String key)
-        {
-            return new ReceiveACB(acbInterface, key);
-        }
-
-        ReceiveACB(ACBInterface acbInterface, String key)
-        {
-            mInterface = acbInterface;
-            mKey = key;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-            while (true)
-            {
-                if (!mInterface.urlFound())
-                {
-                    continue;
-                }
-                if (!mInterface.fragmentFound())
-                {
-                    continue;
-                }
-                break;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            mInterface.onFinish();
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    private interface ACBInterface
-    {
-        boolean urlFound();
-
-        boolean fragmentFound();
-
-        void onFinish();
     }
 
     /**
@@ -976,7 +824,7 @@ public class MainActivity extends SlidingActivity
      * @param domain the domain of the desired chat ("exchange" or "overflow")
      */
 
-    private void setFragmentByChatId(String id, String domain)
+    void setFragmentByChatId(String id, String domain)
     {
         Log.e("SETID", id.concat(domain));
 
@@ -1372,7 +1220,7 @@ public class MainActivity extends SlidingActivity
         setSEStringSet();
     }
 
-    private void addIdToSEList(String id) {
+    void addIdToSEList(String id) {
         mSEChatIDs.add(id);
         setSEStringSet();
     }
@@ -1387,7 +1235,7 @@ public class MainActivity extends SlidingActivity
         setSOStringSet();
     }
 
-    private void addIdToSOList(String id) {
+    void addIdToSOList(String id) {
         mSOChatIDs.add(id);
         setSOStringSet();
     }

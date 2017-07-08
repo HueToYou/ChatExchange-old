@@ -1,7 +1,10 @@
 package com.huetoyou.chatexchange.ui.activity.main;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,10 +12,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.TypedValue;
 
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
+import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 
 import org.jsoup.Jsoup;
@@ -191,5 +197,156 @@ class MainActivityUtils
             mInterface.onFinish();
             super.onPostExecute(aVoid);
         }
+    }
+
+    /**
+     * BroadcastReceiver listening for click on chat URL from WebViewActivity
+     *
+     * @see CustomWebView#client()
+     */
+    static void setupACBR(final MainActivity mainActivity)
+    {
+        mainActivity.mAddChatReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                final Bundle extras = intent.getExtras();
+                if (extras != null)
+                {
+                    if (extras.containsKey("idSE"))
+                    {
+                        mainActivity.addIdToSEList(extras.getString("idSE"));
+                        FragStuff.doFragmentStuff(mainActivity);
+
+                        ReceiveACB.newInstance(new ACBInterface()
+                        {
+                            @Override
+                            public boolean urlFound()
+                            {
+                                return mainActivity.mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) != null;
+                            }
+
+                            @Override
+                            public boolean fragmentFound()
+                            {
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
+                            }
+
+                            @Override
+                            public void onFinish()
+                            {
+                                try
+                                {
+                                    mainActivity.setFragmentByChatId(extras.getString("idSE"), "exchange");
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                {
+                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                }
+                            }
+                        }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                    }
+                    else if (extras.containsKey("idSO"))
+                    {
+                        mainActivity.addIdToSOList(extras.getString("idSO"));
+                        FragStuff.doFragmentStuff(mainActivity);
+
+                        ReceiveACB.newInstance(new ACBInterface()
+                        {
+                            @Override
+                            public boolean urlFound()
+                            {
+                                return mainActivity.mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) != null;
+                            }
+
+                            @Override
+                            public boolean fragmentFound()
+                            {
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
+                            }
+
+                            @Override
+                            public void onFinish()
+                            {
+                                try
+                                {
+                                    mainActivity.setFragmentByChatId(extras.getString("idSO"), "overflow");
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                {
+                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                }
+                            }
+                        }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("idAdd");
+
+        LocalBroadcastManager.getInstance(mainActivity).registerReceiver(mainActivity.mAddChatReceiver, intentFilter);
+    }
+
+    static private class ReceiveACB extends AsyncTask<Void, Void, Void>
+    {
+        final ACBInterface mInterface;
+        final String mKey;
+
+        static ReceiveACB newInstance(ACBInterface acbInterface, String key)
+        {
+            return new ReceiveACB(acbInterface, key);
+        }
+
+        ReceiveACB(ACBInterface acbInterface, String key)
+        {
+            mInterface = acbInterface;
+            mKey = key;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            while (true)
+            {
+                if (!mInterface.urlFound())
+                {
+                    continue;
+                }
+                if (!mInterface.fragmentFound())
+                {
+                    continue;
+                }
+                break;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            mInterface.onFinish();
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private interface ACBInterface
+    {
+        boolean urlFound();
+
+        boolean fragmentFound();
+
+        void onFinish();
     }
 }
