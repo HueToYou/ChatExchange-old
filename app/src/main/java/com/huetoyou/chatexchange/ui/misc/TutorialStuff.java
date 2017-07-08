@@ -486,7 +486,7 @@ public class TutorialStuff
                 .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_main))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_more))
                 .usageId(USERS_SLIDE_INTRO_MORE)
-                .targetPadding(Util.dpToPx(activity, 30));
+                .targetPadding(Util.dpToPx(activity, 50));
 
         final SpotlightView.Builder user1 = new SpotlightView.Builder(activity)
                 .target(users.getChildAt(0))
