@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.Util;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.MainActivity;
@@ -55,6 +56,7 @@ public class TutorialStuff
     private static final String CHAT_FRAG_MESSG_ENTRY_BOX = "ChatFragMessgEntryBox";
     private static final String CHAT_FRAG_SEND_MESSG_BTN = "ChatFragSendMessgBtn";
     private static final String USERS_SLIDE_INTRO = "UsersSlideIntro";
+    private static final String USERS_SLIDE_INTRO_MORE = "UsersSlideIntro2";
     private static final String USER_ONE = "User1";
     private static final String USER_MOD = "UserMod";
     private static final String USER_OWNER = "UserOwner";
@@ -102,6 +104,12 @@ public class TutorialStuff
         recyclerAdapter.addItem(new ChatroomRecyclerObject(
                 0, "Example 1", "U", ico, 0, 0, 0
         ));
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(
+                1, "Example 2", "U", ico, 0, 0, 1
+        ));
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(
+                2, "Example 3", "U", ico, 0, 0, 2
+        ));
 
         RecyclerView.Adapter adapter = swipeManager.createWrappedAdapter(recyclerAdapter);
 
@@ -139,44 +147,45 @@ public class TutorialStuff
         }
 
         SpotlightView chats = new SpotlightView.Builder(activity)
-                .target(activity.findViewById(R.id.chatroomsListView))
+                .target(dummyChats)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Chats")
+                .headingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text_title))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text))
                 .usageId(CHAT_ITEM)
+                .targetPadding(Util.dpToPx(activity, 50))
                 .show();
 
         final SpotlightView.Builder chatsSwipe = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Slide To Delete")
+                .headingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text_swipe_delete))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
                 .usageId(CHAT_ITEM_SLIDE);
 
         final SpotlightView.Builder chatFAM = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
                 .target(chatFam.getMenuButton())
-                .headingTvText("Menu")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_menu))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text))
                 .usageId(CHAT_ITEM_FAM);
 
         final SpotlightView.Builder chatHome = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
                 .target(home)
-                .headingTvText("Home")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_home))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text))
                 .usageId(CHAT_ITEM_HOME);
 
         final SpotlightView.Builder chatAdd = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
                 .target(add)
-                .headingTvText("Add Chat")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_add))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text))
                 .usageId(CHAT_ITEM_ADD);
 
         final SpotlightView.Builder chatRemAll = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
                 .target(removeAll)
-                .headingTvText("Remove All Chats")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_remove_all))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text))
                 .usageId(CHAT_ITEM_REMOVE_ALL);
 
@@ -240,11 +249,11 @@ public class TutorialStuff
 
         SpotlightSequence.getInstance(activity, mCategoryConfig)
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-                        "Drawer",
+                        activity.getResources().getString(R.string.tutorial_drawer),
                         activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
                         MAIN_DRAWER)
                 .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
-                        "Menu",
+                        activity.getResources().getString(R.string.tutorial_menu),
                         activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
                         MAIN_MENU)
                 .startSequence();
@@ -283,56 +292,56 @@ public class TutorialStuff
         final SpotlightView menuBtn = new SpotlightView.Builder(activity)
                 .target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Menu")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_menu))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_hamburger_tutorial_text))
                 .usageId(CHAT_FRAG_MENU_BTN)
                 .show();
 
         final SpotlightView.Builder chatFragFam = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Floating Action Menu")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_menu))
                 .target(fam.getMenuButton())
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_FAM_tutorial_text))
                 .usageId(CHAT_FRAG_FAM);
 
         final SpotlightView.Builder chatFragUsersFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
-                .headingTvText("Users")
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_main))
                 .target(users)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_showUsersFAB_tutorial_text))
                 .usageId(CHAT_FRAG_USERS_FAB);
 
         final SpotlightView.Builder chatFragInfoFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
-                .headingTvText("Info")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_info))
                 .target(info)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_roomInfoFAB_tutorial_text))
                 .usageId(CHAT_FRAG_INFO_FAB);
 
         final SpotlightView.Builder chatFragStarsFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
-                .headingTvText("Stars")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_stars))
                 .target(stars)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_starredMessagesFAB_tutorial_text))
                 .usageId(CHAT_FRAG_STARS_FAB);
 
         final SpotlightView.Builder chatFragOpenInBrowserFAB = new SpotlightView.Builder(activity)
                 .setConfiguration(mItemConfig)
-                .headingTvText("Open in Browser")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_open_browser))
                 .target(openInBrowser)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_openInBrowserFAB_tutorial_text))
                 .usageId(CHAT_FRAG_OPENINBROWSER_FAB);
 
         final SpotlightView.Builder chatFragMessageEntryBox = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Message Box")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_msg_box))
                 .target(messageEntryBox)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_messageEntryBox_tutorial_text))
                 .usageId(CHAT_FRAG_MESSG_ENTRY_BOX);
 
         final SpotlightView.Builder chatFragSendMessageButton = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Send Message")
+                .headingTvText(activity.getResources().getString(R.string.tutorial_send_btn))
                 .target(sendMsg)
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_sendMsgBtn_tutorial_text))
                 .usageId(CHAT_FRAG_SEND_MESSG_BTN);
@@ -431,7 +440,7 @@ public class TutorialStuff
         userTileFragment1.setArguments(args);
 
         args = new Bundle();
-        args.putString(USER_NAME_KEY, "Example 2");
+        args.putString(USER_NAME_KEY, "Example 3");
         args.putString(USER_AVATAR_URL_KEY, "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fimages.clipshrine.com%2Fdownload%2Fdownloadpnglarge%2FBlack-Question-Mark-2269-large.png&f=1");
         args.putString(USER_URL_KEY, "https://example.stackexchange.com");
 
@@ -464,29 +473,38 @@ public class TutorialStuff
         SpotlightView usersOverview = new SpotlightView.Builder(activity)
                 .target(users)
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Users")
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_main))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text))
                 .usageId(USERS_SLIDE_INTRO)
+                .targetPadding(Util.dpToPx(activity, 50))
                 .show();
+
+        final SpotlightView.Builder overviewMore = new SpotlightView.Builder(activity)
+                .target(users)
+                .setConfiguration(mCategoryConfig)
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_main))
+                .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_more))
+                .usageId(USERS_SLIDE_INTRO_MORE)
+                .targetPadding(Util.dpToPx(activity, 50));
 
         final SpotlightView.Builder user1 = new SpotlightView.Builder(activity)
                 .target(users.getChildAt(0))
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Average Joe")
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_user_normal))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_normalUser_tutorial_text))
                 .usageId(USER_ONE);
 
         final SpotlightView.Builder userMod = new SpotlightView.Builder(activity)
                 .target(users.getChildAt(1))
                 .setConfiguration(mCategoryConfig)
-                .headingTvText("Moderator")
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_user_mod))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_modUser_tutorial_text))
                 .usageId(USER_MOD);
 
         final SpotlightView.Builder userOwner = new SpotlightView.Builder(activity)
                 .setConfiguration(mCategoryConfig)
                 .target(users.getChildAt(2))
-                .headingTvText("Room Owner")
+                .headingTvText(activity.getResources().getString(R.string.chatFrag_usersSlidingPanel_tutorial_text_title_user_owner))
                 .subHeadingTvText(activity.getResources().getString(R.string.chatFrag_ROuser_tutorial_text))
                 .usageId(USER_OWNER);
 
@@ -498,6 +516,9 @@ public class TutorialStuff
                 switch (s)
                 {
                     case USERS_SLIDE_INTRO:
+                        overviewMore.show();
+                        break;
+                    case USERS_SLIDE_INTRO_MORE:
                         user1.show();
                         break;
                     case USER_ONE:
