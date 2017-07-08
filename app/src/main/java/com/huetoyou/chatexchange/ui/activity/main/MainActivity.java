@@ -160,7 +160,7 @@ public class MainActivity extends SlidingActivity
                     {
                         FragStuff.setFragmentByTag(mCurrentFragment);
                     }
-                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+                }, getResources().getInteger(R.integer.animation_duration_ms));
             }
 
             @Override
@@ -275,7 +275,7 @@ public class MainActivity extends SlidingActivity
                     {
                         fam.showMenuButton(true);
                     }
-                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms) - 400, MainActivity.this));
+                }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
             }
         });
 
@@ -424,7 +424,7 @@ public class MainActivity extends SlidingActivity
                         Log.e("POS", "DEFL");
                         FragStuff.setFragmentByTag("home");
                     }
-                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+                }, getResources().getInteger(R.integer.animation_duration_ms));
 
                 //doCloseAnimationForDrawerToggle(mDrawerButton);
                 mChatroomSlidingMenu.toggle();
