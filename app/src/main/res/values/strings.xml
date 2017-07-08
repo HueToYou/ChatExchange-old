@@ -86,6 +86,14 @@
     <string name="tutorial_msg_box">Message Box</string>
     <string name="tutorial_send_btn">Send Message</string>
     <string name="tutorial_drawer">Drawer</string>
+
+
+    <!-- Chatrooms exploration activity -->
+    <string name="tab_se_title">SE Rooms</string>
+    <string name="tab_so_title">SO Rooms</string>
+    <string name="tab_hue_title">Huehuehue</string>
+
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

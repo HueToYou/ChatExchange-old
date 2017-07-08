@@ -269,11 +269,11 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             switch (position)
             {
                 case 0:
-                    return "SE Rooms";
+                    return getResources().getString(R.string.tab_se_title);
                 case 1:
-                    return "So Rooms";
+                    return getResources().getString(R.string.tab_so_title);
                 case 2:
-                    return "Huehuehue";
+                    return getResources().getString(R.string.tab_hue_title);
             }
             return null;
         }
