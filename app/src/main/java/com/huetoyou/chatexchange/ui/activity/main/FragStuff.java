@@ -1,6 +1,5 @@
 package com.huetoyou.chatexchange.ui.activity.main;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,7 @@ import com.huetoyou.chatexchange.net.RequestFactory;
 
 import java.net.URL;
 
-public class FragStuff
+class FragStuff
 {
 
     /*

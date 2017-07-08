@@ -695,7 +695,7 @@ public class MainActivity extends SlidingActivity
 
             if (chatId != null && chatDomain != null)
             {
-                NotificationHandler.newInstance(new NHInterface()
+                MainActivityUtils.NotificationHandler.newInstance(new NHInterface()
                 {
                     @Override
                     public boolean seContainsId()
@@ -719,59 +719,9 @@ public class MainActivity extends SlidingActivity
         }
     }
 
-    private static class NotificationHandler extends AsyncTask<Void, Void, Void>
-    {
-        final NHInterface mInterface;
-        final String mKey;
 
-        static NotificationHandler newInstance(NHInterface nhInterface, String key)
-        {
-            return new NotificationHandler(nhInterface, key);
-        }
 
-        NotificationHandler(NHInterface nhInterface, String key)
-        {
-            mInterface = nhInterface;
-            mKey = key;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-            if (mKey.contains("overflow"))
-            {
-                while (true)
-                {
-                    if (!mInterface.soContainsId())
-                    {
-                        continue;
-                    }
-                    break;
-                }
-            }
-            else if (mKey.contains("exchange"))
-            {
-                while (true)
-                {
-                    if (!mInterface.seContainsId())
-                    {
-                        continue;
-                    }
-                    break;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            mInterface.onFinish();
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    private interface NHInterface
+    interface NHInterface
     {
         boolean seContainsId();
 

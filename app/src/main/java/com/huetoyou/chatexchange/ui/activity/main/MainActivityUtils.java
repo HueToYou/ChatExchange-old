@@ -140,4 +140,56 @@ class MainActivityUtils
             }
         }
     }
+
+    static class NotificationHandler extends AsyncTask<Void, Void, Void>
+    {
+        final MainActivity.NHInterface mInterface;
+        final String mKey;
+
+        static NotificationHandler newInstance(MainActivity.NHInterface nhInterface, String key)
+        {
+            return new NotificationHandler(nhInterface, key);
+        }
+
+        NotificationHandler(MainActivity.NHInterface nhInterface, String key)
+        {
+            mInterface = nhInterface;
+            mKey = key;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            if (mKey.contains("overflow"))
+            {
+                while (true)
+                {
+                    if (!mInterface.soContainsId())
+                    {
+                        continue;
+                    }
+                    break;
+                }
+            }
+            else if (mKey.contains("exchange"))
+            {
+                while (true)
+                {
+                    if (!mInterface.seContainsId())
+                    {
+                        continue;
+                    }
+                    break;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            mInterface.onFinish();
+            super.onPostExecute(aVoid);
+        }
+    }
 }
