@@ -2,6 +2,7 @@ package com.huetoyou.chatexchange.ui.activity.main;
 
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
+import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -65,7 +67,7 @@ public class FragStuff
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            fragment = mainActivity.addFragment(chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
                             Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
                             mainActivity.mSEChats.put(Integer.decode(id), fragment);
                             mainActivity.mSEChatColors.put(Integer.decode(id), color);
@@ -118,7 +120,7 @@ public class FragStuff
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            fragment = mainActivity.addFragment(chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
                             mainActivity.mSOChats.put(Integer.decode(id), fragment);
                             mainActivity.mSOChatColors.put(Integer.decode(id), color);
                             mainActivity.mSOChatIcons.put(Integer.decode(id), icon);
@@ -350,5 +352,36 @@ public class FragStuff
             }
         }
         mainActivity.resetArrays(true);
+    }
+
+    /**
+     * Instantiate/create the appropriate chat fragment, if necessary
+     *
+     * @param url   URL of chat
+     * @param name  Name of chat
+     * @param color Accent color of chat
+     * @param id    ID of chat
+     * @return the created Fragment
+     */
+    static Fragment addFragment(MainActivity mainActivity, String url, String name, Integer color, Integer id)
+    {
+        Fragment fragment;
+        if (mainActivity.mFragmentManager.findFragmentByTag(url) != null)
+        {
+            fragment = mainActivity.mFragmentManager.findFragmentByTag(url);
+        }
+        else
+        {
+            fragment = new ChatFragment();
+            Bundle args = new Bundle();
+            args.putString("chatTitle", name);
+            args.putString("chatUrl", url);
+            args.putInt("chatColor", color);
+            args.putInt("chatId", id);
+
+            fragment.setArguments(args);
+        }
+
+        return fragment;
     }
 }

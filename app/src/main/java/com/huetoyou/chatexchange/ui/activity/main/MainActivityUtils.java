@@ -18,9 +18,15 @@ import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
@@ -511,5 +517,83 @@ class MainActivityUtils
                 })
                 .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)
                 .show();
+    }
+
+    /**
+     * Handle adding chats
+     */
+
+    static void showAddTabDialog(final MainActivity mainActivity)
+    {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setTitle(mainActivity.getResources().getText(R.string.activity_main_add_chat));
+
+        View view = View.inflate(mainActivity, R.layout.add_chat_dialog, null);
+        final EditText input = view.findViewById(R.id.url_edittext);
+
+        final Spinner domains = view.findViewById(R.id.domain_spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mainActivity,
+                R.array.domain_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        domains.setAdapter(adapter);
+
+        domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                input.setHint(mainActivity.getResources().getText(R.string.activity_main_chat_url_hint));
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        builder.setView(view);
+        builder.setPositiveButton(mainActivity.getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+
+                String inputText = input.getText().toString();
+                if (!inputText.isEmpty())
+                {
+
+                    if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackoverflow).toString()))
+                    {
+                        mainActivity.addIdToSOList(inputText);
+                    }
+                    else if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackexchange).toString()))
+                    {
+                        mainActivity.addIdToSEList(inputText);
+                    }
+
+                    FragStuff.doFragmentStuff(mainActivity);
+                }
+                else
+                {
+                    Toast.makeText(mainActivity.getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.setNegativeButton(mainActivity.getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog al = builder.create();
+        al.show();
     }
 }

@@ -420,7 +420,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onClick(View v)
             {
-                showAddTabDialog();
+                MainActivityUtils.showAddTabDialog(MainActivity.this);
                 fam.close(true);
             }
         });
@@ -705,84 +705,6 @@ public class MainActivity extends SlidingActivity
      * Other Stuffs
      */
 
-    /**
-     * Handle adding chats
-     */
-
-    private void showAddTabDialog()
-    {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getText(R.string.activity_main_add_chat));
-
-        View view = View.inflate(this, R.layout.add_chat_dialog, null);
-        final EditText input = view.findViewById(R.id.url_edittext);
-
-        final Spinner domains = view.findViewById(R.id.domain_spinner);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.domain_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        domains.setAdapter(adapter);
-
-        domains.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                input.setHint(getResources().getText(R.string.activity_main_chat_url_hint));
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
-
-        builder.setView(view);
-        builder.setPositiveButton(getResources().getText(R.string.generic_ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-
-                String inputText = input.getText().toString();
-                if (!inputText.isEmpty())
-                {
-
-                    if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackoverflow).toString()))
-                    {
-                        addIdToSOList(inputText);
-                    }
-                    else if (domains.getSelectedItem().toString().equals(getResources().getText(R.string.stackexchange).toString()))
-                    {
-                        addIdToSEList(inputText);
-                    }
-
-                    FragStuff.doFragmentStuff(MainActivity.this);
-                }
-                else
-                {
-                    Toast.makeText(getBaseContext(), "Please enter an ID", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        builder.setNegativeButton(getResources().getText(R.string.generic_cancel), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog al = builder.create();
-        al.show();
-    }
-
 
     /**
      * Get the chatroom list {@link SlidingMenu} instance from other classes
@@ -795,39 +717,7 @@ public class MainActivity extends SlidingActivity
         return mChatroomSlidingMenu;
     }
 
-    /**
-     * Instantiate/create the appropriate chat fragment, if necessary
-     *
-     * @param url   URL of chat
-     * @param name  Name of chat
-     * @param color Accent color of chat
-     * @param id    ID of chat
-     * @return the created Fragment
-     */
-
-    Fragment addFragment(String url, String name, Integer color, Integer id)
-    {
-        Fragment fragment;
-        if (mFragmentManager.findFragmentByTag(url) != null)
-        {
-            fragment = mFragmentManager.findFragmentByTag(url);
-        }
-        else
-        {
-            fragment = new ChatFragment();
-            Bundle args = new Bundle();
-            args.putString("chatTitle", name);
-            args.putString("chatUrl", url);
-            args.putInt("chatColor", color);
-            args.putInt("chatId", id);
-
-            fragment.setArguments(args);
-        }
-
-        return fragment;
-    }
-
-    /**
+        /**
      * Handle user press of Home button in ActionBar
      *
      * @return true
