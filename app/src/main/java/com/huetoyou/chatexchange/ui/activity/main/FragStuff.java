@@ -14,7 +14,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.net.URL;
 
-class FragStuff
+public class FragStuff
 {
 
     /*
@@ -196,7 +196,7 @@ class FragStuff
      * @param tag the chat's fragment tag (should be its URL)
      */
 
-    static void setFragmentByTag(MainActivity mainActivity, String tag)
+    public static void setFragmentByTag(MainActivity mainActivity, String tag)
     {
         Log.e("TAG", tag);
         if (mainActivity.mFragmentManager.getFragments() != null)
