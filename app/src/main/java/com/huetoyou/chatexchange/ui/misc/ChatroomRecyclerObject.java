@@ -64,4 +64,8 @@ public class ChatroomRecyclerObject
     public long getId() {
         return mId;
     }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 }
