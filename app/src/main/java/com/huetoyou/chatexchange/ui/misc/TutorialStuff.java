@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
@@ -56,7 +57,7 @@ public class TutorialStuff
     private static final String CHAT_FRAG_MESSG_ENTRY_BOX = "ChatFragMessgEntryBox";
     private static final String CHAT_FRAG_SEND_MESSG_BTN = "ChatFragSendMessgBtn";
     private static final String USERS_SLIDE_INTRO = "UsersSlideIntro";
-    private static final String USERS_SLIDE_INTRO_MORE = "UsersSlideIntro2";
+    private static final String USERS_SLIDE_INTRO_MORE = "UsersSlideIntroMore";
     private static final String USER_ONE = "User1";
     private static final String USER_MOD = "UserMod";
     private static final String USER_OWNER = "UserOwner";
@@ -513,6 +514,7 @@ public class TutorialStuff
             @Override
             public void onUserClicked(String s)
             {
+                Log.e("Which", s);
                 switch (s)
                 {
                     case USERS_SLIDE_INTRO:
@@ -541,6 +543,7 @@ public class TutorialStuff
         };
 
         usersOverview.setListener(listener);
+        overviewMore.setListener(listener);
         user1.setListener(listener);
         userMod.setListener(listener);
         userOwner.setListener(listener);
