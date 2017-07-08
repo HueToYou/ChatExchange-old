@@ -40,9 +40,9 @@ public class FragStuff
             }
         });
 //        Looper.prepare();
-        Log.e("IDS", mainActivity.mSEChatIDs.toString().concat(mainActivity.mSOChatIDs.toString()));
+        Log.e("IDS", mainActivity.chatDataBundle.mSEChatIDs.toString().concat(mainActivity.chatDataBundle.mSOChatIDs.toString()));
 
-        for (String s : mainActivity.mSEChatIDs)
+        for (String s : mainActivity.chatDataBundle.mSEChatIDs)
         {
             Log.e("ID", s);
             final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
@@ -52,7 +52,7 @@ public class FragStuff
                 @Override
                 public void onSucceeded(final URL url, String data)
                 {
-                    mainActivity.mSEChatUrls.put(Integer.decode(id), chatUrl);
+                    mainActivity.chatDataBundle.mSEChatUrls.put(Integer.decode(id), chatUrl);
                     mainActivity.mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
                     {
 
@@ -69,10 +69,10 @@ public class FragStuff
                         {
                             fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
                             Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
-                            mainActivity.mSEChats.put(Integer.decode(id), fragment);
-                            mainActivity.mSEChatColors.put(Integer.decode(id), color);
-                            mainActivity.mSEChatIcons.put(Integer.decode(id), icon);
-                            mainActivity.mSEChatNames.put(Integer.decode(id), name);
+                            mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
+                            mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
+                            mainActivity.chatDataBundle.mSEChatIcons.put(Integer.decode(id), icon);
+                            mainActivity.chatDataBundle.mSEChatNames.put(Integer.decode(id), name);
                         }
 
                         @Override
@@ -97,7 +97,7 @@ public class FragStuff
             });
         }
 
-        for (String s : mainActivity.mSOChatIDs)
+        for (String s : mainActivity.chatDataBundle.mSOChatIDs)
         {
             final String chatUrl = "https://chat.stackoverflow.com/rooms/".concat(s);
             final String id = s;
@@ -106,7 +106,7 @@ public class FragStuff
                 @Override
                 public void onSucceeded(final URL url, String data)
                 {
-                    mainActivity.mSOChatUrls.put(Integer.decode(id), chatUrl);
+                    mainActivity.chatDataBundle.mSOChatUrls.put(Integer.decode(id), chatUrl);
                     MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
                     {
 
@@ -121,10 +121,10 @@ public class FragStuff
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
                             fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
-                            mainActivity.mSOChats.put(Integer.decode(id), fragment);
-                            mainActivity.mSOChatColors.put(Integer.decode(id), color);
-                            mainActivity.mSOChatIcons.put(Integer.decode(id), icon);
-                            mainActivity.mSOChatNames.put(Integer.decode(id), name);
+                            mainActivity.chatDataBundle.mSOChats.put(Integer.decode(id), fragment);
+                            mainActivity.chatDataBundle.mSOChatColors.put(Integer.decode(id), color);
+                            mainActivity.chatDataBundle.mSOChatIcons.put(Integer.decode(id), icon);
+                            mainActivity.chatDataBundle.mSOChatNames.put(Integer.decode(id), name);
                         }
 
                         @Override
@@ -148,7 +148,7 @@ public class FragStuff
             });
         }
 
-        if (mainActivity.mSEChatIDs.size() == 0 && mainActivity.mSOChatIDs.size() == 0)
+        if (mainActivity.chatDataBundle.mSEChatIDs.size() == 0 && mainActivity.chatDataBundle.mSOChatIDs.size() == 0)
         {
             removeAllFragmentsFromList(mainActivity);
             mainActivity.findViewById(R.id.loading_progress).setVisibility(View.GONE);
@@ -174,7 +174,7 @@ public class FragStuff
                     {
                         continue;
                     }
-                    if (mainActivity.mWrappedAdapter.getItemCount() < mainActivity.mSEChatIDs.size() + mainActivity.mSOChatIDs.size())
+                    if (mainActivity.mWrappedAdapter.getItemCount() < mainActivity.chatDataBundle.mSEChatIDs.size() + mainActivity.chatDataBundle.mSOChatIDs.size())
                     {
                         continue;
                     }
@@ -257,9 +257,9 @@ public class FragStuff
 
         if (domain.contains("exchange"))
         {
-            if (mainActivity.mSEChatUrls.get(Integer.decode(id)) != null)
+            if (mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)) != null)
             {
-                FragStuff.setFragmentByTag(mainActivity, mainActivity.mSEChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -268,9 +268,9 @@ public class FragStuff
         }
         else if (domain.contains("overflow"))
         {
-            if (mainActivity.mSOChatUrls.get(Integer.decode(id)) != null)
+            if (mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)) != null)
             {
-                FragStuff.setFragmentByTag(mainActivity, mainActivity.mSOChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)));
             }
             else
             {

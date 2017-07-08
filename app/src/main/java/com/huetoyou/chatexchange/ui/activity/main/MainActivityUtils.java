@@ -240,13 +240,13 @@ class MainActivityUtils
                             @Override
                             public boolean urlFound()
                             {
-                                return mainActivity.mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) != null;
+                                return mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE"))) != null;
                             }
 
                             @Override
                             public boolean fragmentFound()
                             {
-                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
                             }
 
                             @Override
@@ -278,13 +278,13 @@ class MainActivityUtils
                             @Override
                             public boolean urlFound()
                             {
-                                return mainActivity.mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) != null;
+                                return mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO"))) != null;
                             }
 
                             @Override
                             public boolean fragmentFound()
                             {
-                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
                             }
 
                             @Override
@@ -385,13 +385,13 @@ class MainActivityUtils
                     @Override
                     public boolean seContainsId()
                     {
-                        return mainActivity.mSEChatUrls.get(Integer.decode(chatId)) != null;
+                        return mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(chatId)) != null;
                     }
 
                     @Override
                     public boolean soContainsId()
                     {
-                        return mainActivity.mSOChatUrls.get(Integer.decode(chatId)) != null;
+                        return mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(chatId)) != null;
                     }
 
                     @Override

@@ -64,6 +64,7 @@ import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
+import com.huetoyou.chatexchange.ui.misc.ChatDataBundle;
 import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
@@ -106,23 +107,7 @@ public class MainActivity extends SlidingActivity
 
     RequestFactory mRequestFactory;
 
-    SparseArray<Fragment> mSOChats = new SparseArray<>();
-    SparseArray<Fragment> mSEChats = new SparseArray<>();
-
-    SparseIntArray mSOChatColors = new SparseIntArray();
-    SparseIntArray mSEChatColors = new SparseIntArray();
-
-    SparseArray<String> mSOChatNames = new SparseArray<>();
-    SparseArray<String> mSEChatNames = new SparseArray<>();
-
-    SparseArray<String> mSOChatUrls = new SparseArray<>();
-    SparseArray<String> mSEChatUrls = new SparseArray<>();
-
-    SparseArray<Drawable> mSOChatIcons = new SparseArray<>();
-    SparseArray<Drawable> mSEChatIcons = new SparseArray<>();
-
-    Set<String> mSOChatIDs = new HashSet<>(0);
-    Set<String> mSEChatIDs = new HashSet<>(0);
+    ChatDataBundle chatDataBundle = new ChatDataBundle();
 
     private String mCookieString = null;
 
@@ -489,8 +474,8 @@ public class MainActivity extends SlidingActivity
         Set<String> seChatsTemp = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
         Set<String> soChatsTemp = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
 
-        mSOChatIDs = new HashSet<>(soChatsTemp);
-        mSEChatIDs = new HashSet<>(seChatsTemp);
+        chatDataBundle.mSOChatIDs = new HashSet<>(soChatsTemp);
+        chatDataBundle.mSEChatIDs = new HashSet<>(seChatsTemp);
 
         if (mSharedPrefs.getBoolean("isFirstRun", true))
         {
@@ -758,22 +743,22 @@ public class MainActivity extends SlidingActivity
     {
         if (shouldEmptyIDs)
         {
-            mSEChatIDs = new HashSet<>(0);
-            mSOChatIDs = new HashSet<>(0);
+            chatDataBundle.mSEChatIDs = new HashSet<>(0);
+            chatDataBundle.mSOChatIDs = new HashSet<>(0);
             setSOStringSet();
             setSEStringSet();
         }
 
-        mSEChatUrls = new SparseArray<>();
-        mSOChatUrls = new SparseArray<>();
-        mSEChats = new SparseArray<>();
-        mSOChats = new SparseArray<>();
-        mSEChatNames = new SparseArray<>();
-        mSOChatNames = new SparseArray<>();
-        mSEChatIcons = new SparseArray<>();
-        mSOChatIcons = new SparseArray<>();
-        mSEChatColors = new SparseIntArray();
-        mSOChatColors = new SparseIntArray();
+        chatDataBundle.mSEChatUrls = new SparseArray<>();
+        chatDataBundle.mSOChatUrls = new SparseArray<>();
+        chatDataBundle.mSEChats = new SparseArray<>();
+        chatDataBundle.mSOChats = new SparseArray<>();
+        chatDataBundle.mSEChatNames = new SparseArray<>();
+        chatDataBundle.mSOChatNames = new SparseArray<>();
+        chatDataBundle.mSEChatIcons = new SparseArray<>();
+        chatDataBundle.mSOChatIcons = new SparseArray<>();
+        chatDataBundle.mSEChatColors = new SparseIntArray();
+        chatDataBundle.mSOChatColors = new SparseIntArray();
     }
 
 
@@ -793,32 +778,32 @@ public class MainActivity extends SlidingActivity
     }
 
     void removeIdFromSEList(String id) {
-        mSEChatIDs.remove(id);
+        chatDataBundle.mSEChatIDs.remove(id);
         setSEStringSet();
     }
 
     void addIdToSEList(String id) {
-        mSEChatIDs.add(id);
+        chatDataBundle.mSEChatIDs.add(id);
         setSEStringSet();
     }
 
     private void setSEStringSet() {
         mEditor.remove("SEChatIDs").apply();
-        mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
+        mEditor.putStringSet("SEChatIDs", chatDataBundle.mSEChatIDs).apply();
     }
 
     void removeIdFromSOList(String id) {
-        mSOChatIDs.remove(id);
+        chatDataBundle.mSOChatIDs.remove(id);
         setSOStringSet();
     }
 
     void addIdToSOList(String id) {
-        mSOChatIDs.add(id);
+        chatDataBundle.mSOChatIDs.add(id);
         setSOStringSet();
     }
 
     private void setSOStringSet() {
         mEditor.remove("SOChatIDs").apply();
-        mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
+        mEditor.putStringSet("SOChatIDs", chatDataBundle.mSOChatIDs).apply();
     }
 }
