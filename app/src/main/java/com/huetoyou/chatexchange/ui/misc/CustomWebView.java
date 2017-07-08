@@ -15,6 +15,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.Authenticator;
@@ -136,13 +137,15 @@ public class CustomWebView
                         if (url.contains("exchange"))
                         {
                             key = key.concat("SE");
+                            Toast.makeText(mContext, "Adding SE room #" + id, Toast.LENGTH_LONG).show();
                         }
                         else if (url.contains("overflow"))
                         {
                             key = key.concat("SO");
+                            Toast.makeText(mContext, "Adding SO room #" + id, Toast.LENGTH_LONG).show();
                         }
 
-                        Intent urlIntent = new Intent("idAdd").putExtra(key, id);
+                                                Intent urlIntent = new Intent("idAdd").putExtra(key, id);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(urlIntent);
                         mContext.finish();
                     }
