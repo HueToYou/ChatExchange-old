@@ -215,6 +215,7 @@ public class UserTileFragment extends Fragment
         if (isMod)
         {
             mUserInfo.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mUserInfo.setTypeface(Typeface.DEFAULT_BOLD);
         }
         else if (isOwner)
         {

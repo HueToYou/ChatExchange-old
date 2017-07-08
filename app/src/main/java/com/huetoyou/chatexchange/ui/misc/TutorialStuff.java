@@ -449,7 +449,7 @@ public class TutorialStuff
 
         LinearLayout users = activity.findViewById(R.id.users_scroll_slide);
 
-        if (!manager.isDisplayed(USER_ONE)) {
+        if (!manager.isDisplayed(USERS_SLIDE_INTRO)) {
             List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
 
             for (int i = 0; i < fragments.size(); i++) {
