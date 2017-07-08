@@ -160,7 +160,7 @@ public class MainActivity extends SlidingActivity
                     {
                         FragStuff.setFragmentByTag(mCurrentFragment);
                     }
-                }, getResources().getInteger(R.integer.animation_duration_ms));
+                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
             }
 
             @Override
@@ -220,7 +220,7 @@ public class MainActivity extends SlidingActivity
 
         mCloseAnimSet.play(closeAnimator);
         mCloseAnimSet.setInterpolator(new AnticipateInterpolator());
-        mCloseAnimSet.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+        mCloseAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
         ObjectAnimator openAnimator = ObjectAnimator.ofFloat(
                 mDrawerButton,
@@ -230,7 +230,7 @@ public class MainActivity extends SlidingActivity
 
         mOpenAnimSet.play(openAnimator);
         mOpenAnimSet.setInterpolator(new OvershootInterpolator());
-        mOpenAnimSet.setDuration(getResources().getInteger(R.integer.animation_duration_ms));
+        mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
         mDrawerButton.setOnClickListener(new View.OnClickListener()
         {
@@ -275,7 +275,7 @@ public class MainActivity extends SlidingActivity
                     {
                         fam.showMenuButton(true);
                     }
-                }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
+                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms) - 400, MainActivity.this));
             }
         });
 
@@ -424,7 +424,7 @@ public class MainActivity extends SlidingActivity
                         Log.e("POS", "DEFL");
                         FragStuff.setFragmentByTag("home");
                     }
-                }, getResources().getInteger(R.integer.animation_duration_ms));
+                }, (long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
                 //doCloseAnimationForDrawerToggle(mDrawerButton);
                 mChatroomSlidingMenu.toggle();

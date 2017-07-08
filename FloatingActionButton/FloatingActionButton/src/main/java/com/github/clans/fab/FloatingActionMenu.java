@@ -10,7 +10,9 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -33,7 +35,7 @@ import java.util.List;
 
 public class FloatingActionMenu extends ViewGroup {
 
-    private static final int ANIMATION_DURATION = 300;
+    private static final int ANIMATION_DURATION = 600;
     private static final float CLOSED_PLUS_ROTATION = 0f;
     private static final float OPENED_PLUS_ROTATION_LEFT = -90f - 45f;
     private static final float OPENED_PLUS_ROTATION_RIGHT = 90f + 45f;
@@ -134,7 +136,7 @@ public class FloatingActionMenu extends ViewGroup {
         TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionMenu, 0, 0);
         mOpenRotationLeft = attr.getInt(R.styleable.FloatingActionMenu_menu_fab_open_rotation_left, (int)OPENED_PLUS_ROTATION_LEFT);
         mOpenRotationRight = attr.getInt(R.styleable.FloatingActionMenu_menu_fab_open_rotation_right, (int)OPENED_PLUS_ROTATION_RIGHT);
-        mAnimationDuration = attr.getInt(R.styleable.FloatingActionMenu_menu_fab_animation_duration, ANIMATION_DURATION);
+        mAnimationDuration = attr.getInt((int)getAnimDuration(R.styleable.FloatingActionMenu_menu_fab_animation_duration, context), (int)getAnimDuration(ANIMATION_DURATION, context));
         mButtonSpacing = attr.getDimensionPixelSize(R.styleable.FloatingActionMenu_menu_buttonSpacing, mButtonSpacing);
         mLabelsMargin = attr.getDimensionPixelSize(R.styleable.FloatingActionMenu_menu_labels_margin, mLabelsMargin);
         mLabelsPosition = attr.getInt(R.styleable.FloatingActionMenu_menu_labels_position, LABELS_POSITION_LEFT);
@@ -208,6 +210,21 @@ public class FloatingActionMenu extends ViewGroup {
         initMenuButtonAnimations(attr);
 
         attr.recycle();
+    }
+
+    public static float getAnimDuration(float origDuration, Context context) {
+        float systemAnimScale = 1.0f;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+        {
+            systemAnimScale = Settings.Global.getFloat(context.getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f);
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        {
+            systemAnimScale = Settings.System.getFloat(context.getContentResolver(), Settings.System.ANIMATOR_DURATION_SCALE, 1.0f);
+        }
+
+        return origDuration/systemAnimScale;
     }
 
     private void initMenuButtonAnimations(TypedArray attr) {
