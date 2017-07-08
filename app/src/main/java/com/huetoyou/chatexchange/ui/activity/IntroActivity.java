@@ -27,32 +27,32 @@ public class IntroActivity extends AppIntro
         // Note here that we DO NOT use setContentView();
 
         // AppIntro will automatically generate the dots indicator and buttons.
-        addSlide(AppIntroFragment.newInstance("Hellu there!",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_welcome_title),
                 getResources().getString(R.string.intro_slide_welcome_text),
                 R.drawable.ic_smile,
                 getResources().getColor(R.color.colorPrimaryDark)));
 
-        addSlide(AppIntroFragment.newInstance("Chat Network",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_chat_network_title),
                 getResources().getString(R.string.intro_slide_chat_network),
                 R.drawable.ic_network,
                 getResources().getColor(R.color.colorPrimaryDark)));
 
-        addSlide(AppIntroFragment.newInstance("Notifications",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_notifications_title),
                 getResources().getString(R.string.intro_slide_notifications),
                 R.drawable.ic_message_notification,
                 getResources().getColor(R.color.colorPrimaryDark)));
 
-        addSlide(AppIntroFragment.newInstance("Credits",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_credits_title),
                 getResources().getString(R.string.intro_slide_credits),
                 R.drawable.ic_people,
                 getResources().getColor(R.color.colorPrimaryDark)));
 
-        addSlide(AppIntroFragment.newInstance("Bugs?",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_bugs_title),
                 getResources().getString(R.string.intro_slide_bugs),
                 R.drawable.ic_bug_report,
                 getResources().getColor(R.color.colorPrimaryDark)));
 
-        addSlide(AppIntroFragment.newInstance("Tutorial",
+        addSlide(AppIntroFragment.newInstance(getResources().getString(R.string.intro_slide_tutorial_title),
                 getResources().getString(R.string.intro_slide_tutorial),
                 R.drawable.ic_tutorial,
                 getResources().getColor(R.color.colorPrimaryDark)));

@@ -41,6 +41,12 @@
     <string name="intro_slide_credits">This application was developed by:\n\n10,000 monkeys on the Java islands</string>
     <string name="intro_slide_bugs">If you find a bug or the app crashes on you, please pop us an email at huetoyou@quickmediasolutions.com instead of leaving a 1-star review on the Play Store. We\'ll do our best to get that bug squashed for you! :D</string>
     <string name="intro_slide_tutorial">"This app has a lot of buttons, so here's a quick tutorial to show you around"</string>
+    <string name="intro_slide_welcome_title">Hellu there!</string>
+    <string name="intro_slide_chat_network_title">Chat Network</string>
+    <string name="intro_slide_notifications_title">Notifications</string>
+    <string name="intro_slide_credits_title">Credits</string>
+    <string name="intro_slide_bugs_title">Bugs?</string>
+    <string name="intro_slide_tutorial_title">Tutorial</string>
 
     <!-- Tutorial activity -->
     <string name="chatrooms_slidingMenu_chats_tutorial_text">Any chatrooms that you add will appear in this list.</string>
