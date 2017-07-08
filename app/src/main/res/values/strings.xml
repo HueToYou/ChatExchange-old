@@ -59,7 +59,8 @@
     <string name="chatFrag_messageEntryBox_tutorial_text">To send a message, first type it into this box.</string>
     <string name="chatFrag_sendMsgBtn_tutorial_text">After you\'ve typed the message into the box, you can send it off to the interwebs by pushing this button.</string>
     <string name="chatFrag_openInBrowserFAB_tutorial_text">Click this button to open the current chatroom in the web browser application.</string>
-    <string name="chatFrag_usersSlidingPanel_tutorial_text">Any users currently in the room will show up here. (Psst. it scrolls)</string>
+    <string name="chatFrag_usersSlidingPanel_tutorial_text">Any users currently in the room will show up here. (Psst. it scrolls)
+    Tap any user tile to get some more info about that user. Long press a tile to visit that user's chat page.</string>
     <string name="chatFrag_normalUser_tutorial_text">A normal user will have no special formatting applied to their username.</string>
     <string name="chatFrag_modUser_tutorial_text">A moderator\'s username will be bold, and light blue.</string>
     <string name="chatFrag_ROuser_tutorial_text">A room owner\'s username will be bold, and also be in  italics.</string>

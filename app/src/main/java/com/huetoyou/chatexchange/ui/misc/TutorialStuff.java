@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -447,7 +449,7 @@ public class TutorialStuff
 
         LinearLayout users = activity.findViewById(R.id.users_scroll_slide);
 
-        if (!manager.isDisplayed(USER_ONE)) {
+        if (!manager.isDisplayed(USERS_SLIDE_INTRO)) {
             List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
 
             for (int i = 0; i < fragments.size(); i++) {
@@ -539,9 +541,7 @@ public class TutorialStuff
         mCategoryConfig.setFadingTextDuration(300L);
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
-        mCategoryConfig.setHeadingTvSize(32);
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
-        mCategoryConfig.setSubHeadingTvSize(16);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#99000000"));
         mCategoryConfig.setLineAnimationDuration(300L);
@@ -549,6 +549,20 @@ public class TutorialStuff
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);
         mCategoryConfig.setShowTargetArc(true);
+
+        DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+
+        float density  = metrics.density;
+        float dpHeight = metrics.heightPixels / density;
+        float dpWidth  = metrics.widthPixels / density;
+
+        if (dpWidth > 600) {
+            mCategoryConfig.setHeadingTvSize(48);
+            mCategoryConfig.setSubHeadingTvSize(32);
+        } else {
+            mCategoryConfig.setHeadingTvSize(24);
+            mCategoryConfig.setSubHeadingTvSize(18);
+        }
     }
 
     private static void setItemConfig(Activity activity) {
