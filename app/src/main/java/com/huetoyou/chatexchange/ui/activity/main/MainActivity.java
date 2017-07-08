@@ -158,7 +158,7 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void run()
                     {
-                        FragStuff.setFragmentByTag(MainActivity.this, mCurrentFragment);
+                        FragStuff.setFragmentByTag(mCurrentFragment);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
             }
@@ -346,7 +346,7 @@ public class MainActivity extends SlidingActivity
     {
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
-            FragStuff.setFragmentByTag(MainActivity.this, "home");
+            FragStuff.setFragmentByTag("home");
             for (Fragment fragment : mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment)
@@ -422,7 +422,7 @@ public class MainActivity extends SlidingActivity
                     public void run()
                     {
                         Log.e("POS", "DEFL");
-                        FragStuff.setFragmentByTag(MainActivity.this,"home");
+                        FragStuff.setFragmentByTag("home");
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
 

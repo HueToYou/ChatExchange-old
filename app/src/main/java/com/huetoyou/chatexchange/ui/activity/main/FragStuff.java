@@ -67,7 +67,7 @@ public class FragStuff
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
                             mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
                             mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
@@ -120,7 +120,7 @@ public class FragStuff
                         @Override
                         public void onProgress(String name, Drawable icon, Integer color)
                         {
-                            fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
+                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                             mainActivity.chatDataBundle.mSOChats.put(Integer.decode(id), fragment);
                             mainActivity.chatDataBundle.mSOChatColors.put(Integer.decode(id), color);
                             mainActivity.chatDataBundle.mSOChatIcons.put(Integer.decode(id), icon);
@@ -200,40 +200,40 @@ public class FragStuff
      * @param tag the chat's fragment tag (should be its URL)
      */
 
-    public static void setFragmentByTag(MainActivity mainActivity, String tag)
+    public static void setFragmentByTag(String tag)
     {
         Log.e("TAG", tag);
-        if (mainActivity.mFragmentManager.getFragments() != null)
+        if (MainActivity.mFragmentManager.getFragments() != null)
         {
-            for (Fragment fragment : mainActivity.mFragmentManager.getFragments())
+            for (Fragment fragment : MainActivity.mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached())
                 {
-                    mainActivity.mFragmentManager.beginTransaction().detach(fragment).commit();
+                    MainActivity.mFragmentManager.beginTransaction().detach(fragment).commit();
                 }
             }
-            Fragment fragToAttach = mainActivity.mFragmentManager.findFragmentByTag(tag);
+            Fragment fragToAttach = MainActivity.mFragmentManager.findFragmentByTag(tag);
 
             if (fragToAttach != null)
             {
 
                 if (tag.equals("home"))
                 {
-                    mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    MainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    MainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
                     ((HomeFragment) fragToAttach).hueTest();
                 }
                 else
                 {
-                    if (mainActivity.mFragmentManager.findFragmentByTag("home").isDetached())
+                    if (MainActivity.mFragmentManager.findFragmentByTag("home").isDetached())
                     {
-                        mainActivity.mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+                        MainActivity.mFragmentManager.beginTransaction().attach(fragToAttach).commit();
                     }
                     else
                     {
-                        mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                        MainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                     }
-                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    MainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 }
             }
             else
@@ -259,7 +259,7 @@ public class FragStuff
         {
             if (mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)) != null)
             {
-                FragStuff.setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -270,7 +270,7 @@ public class FragStuff
         {
             if (mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)) != null)
             {
-                FragStuff.setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)));
+                FragStuff.setFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -289,21 +289,21 @@ public class FragStuff
      * @param fragment Fragment to be added
      */
 
-    static void initiateFragment(MainActivity mainActivity, Fragment fragment) {
+    private static void initiateFragment(MainActivity mainActivity, Fragment fragment) {
         try
         {
             String tag = fragment.getArguments().getString("chatUrl");
-            if (mainActivity.mFragmentManager.findFragmentByTag(tag) == null)
+            if (MainActivity.mFragmentManager.findFragmentByTag(tag) == null)
             {
-                mainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
+                MainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, fragment, tag).detach(fragment).commit();
             }
 
-            if ((mainActivity.mCurrentFragment == null || mainActivity.mCurrentFragment.equals("home")) && mainActivity.mFragmentManager.findFragmentByTag("home") == null)
+            if ((mainActivity.mCurrentFragment == null || mainActivity.mCurrentFragment.equals("home")) && MainActivity.mFragmentManager.findFragmentByTag("home") == null)
             {
-                mainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
+                MainActivity.mFragmentManager.beginTransaction().add(R.id.content_main, new HomeFragment(), "home").commit();
             }
 
-            mainActivity.mFragmentManager.executePendingTransactions();
+            MainActivity.mFragmentManager.executePendingTransactions();
         }
         catch (Exception e)
         {
@@ -319,7 +319,7 @@ public class FragStuff
      * @param color Chat color
      */
 
-    static void addFragmentToList(MainActivity mainActivity, String name, String url, Drawable icon, Integer color, String id) {
+    private static void addFragmentToList(MainActivity mainActivity, String name, String url, Drawable icon, Integer color, String id) {
         Log.e("ADD", "ADD");
         int identifier;
 
@@ -363,12 +363,12 @@ public class FragStuff
      * @param id    ID of chat
      * @return the created Fragment
      */
-    static Fragment addFragment(MainActivity mainActivity, String url, String name, Integer color, Integer id)
+    private static Fragment addFragment(String url, String name, Integer color, Integer id)
     {
         Fragment fragment;
-        if (mainActivity.mFragmentManager.findFragmentByTag(url) != null)
+        if (MainActivity.mFragmentManager.findFragmentByTag(url) != null)
         {
-            fragment = mainActivity.mFragmentManager.findFragmentByTag(url);
+            fragment = MainActivity.mFragmentManager.findFragmentByTag(url);
         }
         else
         {

@@ -246,7 +246,7 @@ class MainActivityUtils
                             @Override
                             public boolean fragmentFound()
                             {
-                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
+                                return MainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
                             }
 
                             @Override
@@ -260,9 +260,9 @@ class MainActivityUtils
                                 {
                                     e.printStackTrace();
                                 }
-                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                if (MainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
                                 {
-                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                    MainActivity.mCurrentUsers_SlidingMenu.toggle();
                                 }
                             }
                         }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -284,7 +284,7 @@ class MainActivityUtils
                             @Override
                             public boolean fragmentFound()
                             {
-                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
+                                return MainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
                             }
 
                             @Override
@@ -298,9 +298,9 @@ class MainActivityUtils
                                 {
                                     e.printStackTrace();
                                 }
-                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                if (MainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
                                 {
-                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                    MainActivity.mCurrentUsers_SlidingMenu.toggle();
                                 }
                             }
                         }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -462,7 +462,7 @@ class MainActivityUtils
                 seId = id;
             }
 
-            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) FragStuff.setFragmentByTag(mainActivity, "home");
+            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) FragStuff.setFragmentByTag("home");
 //            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
 
             final String soId1 = soId;
@@ -486,7 +486,7 @@ class MainActivityUtils
                 public void onUndoExpire(String url)
                 {
                     Log.e("UNDO", "Undo Expired");
-                    mainActivity.mFragmentManager.getFragments().remove(mainActivity.mFragmentManager.findFragmentByTag(url));
+                    MainActivity.mFragmentManager.getFragments().remove(MainActivity.mFragmentManager.findFragmentByTag(url));
                 }
             });
         }
@@ -512,7 +512,7 @@ class MainActivityUtils
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         FragStuff.removeAllFragmentsFromList(mainActivity);
-                        FragStuff.setFragmentByTag(mainActivity, "home");
+                        FragStuff.setFragmentByTag("home");
                     }
                 })
                 .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)

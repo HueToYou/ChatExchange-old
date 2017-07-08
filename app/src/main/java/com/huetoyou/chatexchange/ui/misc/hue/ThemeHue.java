@@ -54,7 +54,7 @@ public class ThemeHue
         {
             mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();
-            com.huetoyou.chatexchange.ui.activity.main.FragStuff.setFragmentByTag((MainActivity) activity, "home");
+            com.huetoyou.chatexchange.ui.activity.main.FragStuff.setFragmentByTag("home");
         }
     }
 }
