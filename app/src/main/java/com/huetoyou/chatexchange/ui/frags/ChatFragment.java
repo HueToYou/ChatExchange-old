@@ -34,7 +34,7 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
-import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
+import com.huetoyou.chatexchange.ui.misc.tutorial.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ChatFragFabsHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
