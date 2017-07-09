@@ -10,6 +10,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -90,6 +91,8 @@ public class ChatFragment extends Fragment
     private String mChatDomain;
     private Integer mChatId;
 
+    private SwipeRefreshLayout mRefreshLayout;
+
     public ChatFragment()
     {
         // Required empty public constructor
@@ -106,6 +109,21 @@ public class ChatFragment extends Fragment
         messageToSend = view.findViewById(R.id.messageToSend);
         pingSuggestionsScrollView = view.findViewById(R.id.pingSuggestionsScrollView);
 
+        mFragmentManager = getFragmentManager();
+
+        mSlidingMenu = ((MainActivity) getActivity()).getCurrentUsers_SlidingMenu();
+
+        mRefreshLayout = mSlidingMenu.findViewById(R.id.users_refresh_view);
+        mRefreshLayout.setScrollContainer(true);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                doUserParse();
+            }
+        });
+
         messageToSend.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
@@ -117,10 +135,6 @@ public class ChatFragment extends Fragment
                 }
             }
         });
-
-        mFragmentManager = getFragmentManager();
-
-        mSlidingMenu = ((MainActivity) getActivity()).getCurrentUsers_SlidingMenu();
 
         Bundle args = getArguments();
         mChatUrl = args.getString("chatUrl", "ERROR");
@@ -186,57 +200,6 @@ public class ChatFragment extends Fragment
                     }
                 });
                 getTags.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
-
-                ParseUsers parseUsers = ParseUsers.newInstance(new UserParsed()
-                {
-                    @Override
-                    public void onSuccess(String usersJson)
-                    {
-                        try
-                        {
-                            JSONObject object = new JSONObject(usersJson);
-                            JSONArray jArray = object.getJSONArray("users");
-
-                            for (int i = 0; i < jArray.length(); i++)
-                            {
-                                JSONObject jsonObject = jArray.getJSONObject(i);
-
-                                int id = jsonObject.getInt("id");
-                                int lastPost = jsonObject.getInt("last_post");
-                                int rep = jsonObject.getInt("reputation");
-
-                                boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
-                                boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
-
-                                String name = jsonObject.getString("name");
-                                String icon = jsonObject.getString("email_hash");
-
-                                if (!(icon.contains("http://") || icon.contains("https://")))
-                                {
-                                    icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
-                                }
-
-                                if (mFragmentManager.findFragmentByTag("user_" + id) == null)
-                                {
-                                    addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
-                                } else {
-                                    mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag("user_" + id)).show(mFragmentManager.findFragmentByTag("user_" + id)).commit();
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFail(String message)
-                    {
-
-                    }
-                });
-                parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
             }
 
             @Override
@@ -245,6 +208,8 @@ public class ChatFragment extends Fragment
 
             }
         });
+
+        doUserParse();
 
         getActivity().setTitle(mChatTitle);
 
@@ -298,6 +263,82 @@ public class ChatFragment extends Fragment
         TutorialStuff.chatFragTutorial(getActivity(), view, mAppBarColor);
 
         return view;
+    }
+
+    private void doUserParse() {
+        mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
+        {
+            @Override
+            public void onSucceeded(URL url, String data)
+            {
+                ParseUsers parseUsers = ParseUsers.newInstance(new UserParsed()
+                {
+                    @Override
+                    public void onSuccess(String usersJson)
+                    {
+                        for (int i = 0; i < mFragmentManager.getFragments().size(); i++) {
+                            Fragment fragment = mFragmentManager.getFragments().get(i);
+
+                            if (fragment.getTag() != null && fragment.getTag().contains("user")) {
+                                mFragmentManager.beginTransaction().hide(fragment).commit();
+                            }
+                        }
+
+                        try
+                        {
+                            JSONObject object = new JSONObject(usersJson);
+                            JSONArray jArray = object.getJSONArray("users");
+
+                            for (int i = 0; i < jArray.length(); i++)
+                            {
+                                JSONObject jsonObject = jArray.getJSONObject(i);
+
+                                int id = jsonObject.getInt("id");
+                                int lastPost = jsonObject.getInt("last_post");
+                                int rep = jsonObject.getInt("reputation");
+
+                                boolean isMod = jsonObject.has("is_moderator") && jsonObject.getBoolean("is_moderator");
+                                boolean isOwner = jsonObject.has("is_owner") && jsonObject.getBoolean("is_owner");
+
+                                String name = jsonObject.getString("name");
+                                String icon = jsonObject.getString("email_hash");
+
+                                if (!(icon.contains("http://") || icon.contains("https://")))
+                                {
+                                    icon = "https://www.gravatar.com/avatar/".concat(icon).concat("?d=identicon");
+                                }
+
+                                if (mFragmentManager.findFragmentByTag("user_" + id) == null)
+                                {
+                                    addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
+                                } else {
+                                    mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag("user_" + id)).show(mFragmentManager.findFragmentByTag("user_" + id)).commit();
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        mRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFail(String message)
+                    {
+
+                    }
+                });
+                parseUsers.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+
+            }
+        });
     }
 
     /*
