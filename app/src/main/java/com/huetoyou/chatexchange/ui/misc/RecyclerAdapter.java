@@ -342,7 +342,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonRevealSet.play(revealAnimatorX);
             mCloseButtonRevealSet.play(revealAnimatorY);
             mCloseButtonRevealSet.setInterpolator(new OvershootInterpolator());
-            mCloseButtonRevealSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
+            mCloseButtonRevealSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 500, mContext));
             mCloseButtonRevealSet.addListener(mRevealListener);
 
             ObjectAnimator hideAnimatorX = ObjectAnimator.ofFloat(
@@ -362,7 +362,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonHideSet.play(hideAnimatorX);
             mCloseButtonHideSet.play(hideAnimatorY);
             mCloseButtonHideSet.setInterpolator(new AnticipateInterpolator());
-            mCloseButtonHideSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
+            mCloseButtonHideSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 500, mContext));
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
@@ -510,6 +510,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
+            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
+            if (item.isPinned()) {
+                item.setIsPinned(false);
+                mAdapter.notifyItemChanged(mPosition);
+            }
         }
 
         @Override
@@ -521,11 +526,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         @Override
         protected void onCleanUp() {
             super.onCleanUp();
-            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
-            if (item.isPinned()) {
-                item.setIsPinned(false);
-                mAdapter.notifyItemChanged(mPosition);
-            }
             // clear the references
             mAdapter = null;
         }

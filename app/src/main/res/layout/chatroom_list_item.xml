@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="63dp"
     android:animateLayoutChanges="true"
     android:gravity="center_vertical">
 
@@ -14,23 +14,33 @@
         android:id="@+id/behind_views"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:gravity="start"
-        android:paddingBottom="10dp"
-        android:paddingEnd="5dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingStart="5dp"
-        android:paddingTop="10dp">
+        android:layout_gravity="center_vertical|start"
+        android:background="@android:color/holo_red_dark">
+
+        <!--<ImageView-->
+        <!---->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:contentDescription="@string/app_name"-->
+        <!--android:tint="@android:color/holo_red_dark"-->
+        <!--android:visibility="invisible"-->
+        <!--app:srcCompat="@drawable/ic_close_black_24dp" />-->
 
         <ImageView
             android:id="@+id/close_chat_img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="63dp"
+            android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
-            android:tint="@android:color/holo_red_dark"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingEnd="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingStart="15dp"
+            android:paddingTop="15dp"
+            android:tint="#fff"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_close_black_24dp" />
+            app:srcCompat="@drawable/ic_delete_black_24dp" />
 
         <!--<android.support.v7.widget.AppCompatImageButton-->
         <!--android:id="@+id/close_chat_button"-->
@@ -52,45 +62,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground"
-        android:paddingBottom="10dp"
-        android:paddingEnd="5dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingStart="5dp"
-        android:paddingTop="10dp">
+        android:background="?android:colorBackground">
 
-        <ImageView
-            android:id="@+id/chatroomImg"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_launcher"
-            tools:ignore="ContentDescription" />
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="25dp"
-            android:layout_marginStart="25dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingBottom="10dp"
+            android:paddingEnd="5dp"
             android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:paddingStart="5dp"
-            tools:ignore="RtlSymmetry">
+            android:paddingTop="10dp">
 
-            <TextView
-                android:id="@+id/chatroomName"
+            <ImageView
+                android:id="@+id/chatroomImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_launcher"
+                tools:ignore="ContentDescription" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="left|center_vertical"
-                android:text="Ask Ubuntu General Room"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                tools:ignore="HardcodedText,RtlHardcoded" />
+                android:layout_marginLeft="25dp"
+                android:layout_marginStart="25dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
+                tools:ignore="RtlSymmetry">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/chatroomName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="left|center_vertical"
+                    android:maxLines="2"
+                    android:text="Ask Ubuntu General Room"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+            </LinearLayout>
+        </FrameLayout>
 
     </FrameLayout>
 
