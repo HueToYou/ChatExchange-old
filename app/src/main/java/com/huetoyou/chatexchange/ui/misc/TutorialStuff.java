@@ -13,9 +13,12 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -596,16 +599,16 @@ public class TutorialStuff
     private static void setCategoryConfig(Activity activity)
     {
         mCategoryConfig = new SpotlightConfig();
-        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(100, activity));
         mCategoryConfig.setRevealAnimationEnabled(true);
         mCategoryConfig.setPerformClick(false);
-        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(100, activity));
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#aa000000"));
-        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(100, activity));
         mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);
