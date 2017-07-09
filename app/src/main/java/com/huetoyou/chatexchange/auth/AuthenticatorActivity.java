@@ -22,6 +22,7 @@ import android.widget.EditText;
 
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 import android.text.Html;
 
@@ -85,7 +86,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        ThemeHue.setTheme(this);
         setContentView(R.layout.activity_authenticator);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
