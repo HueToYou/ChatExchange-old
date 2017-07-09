@@ -47,7 +47,7 @@ public class FragStuff
             Log.e("ID", s);
             final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
 
-            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null)
+            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null) //TODO: Make sure fragments get removed on chat removal, otherwise users won't be able to re-add chats
             {
                 final String id = s;
                 mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
@@ -105,7 +105,7 @@ public class FragStuff
         {
             final String chatUrl = "https://chat.stackoverflow.com/rooms/".concat(s);
 
-            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null)
+            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null) //TODO: Make sure fragments get removed on chat removal, otherwise users won't be able to re-add chats
             {
                 final String id = s;
                 mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
