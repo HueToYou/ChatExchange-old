@@ -338,13 +338,32 @@ public class MainActivity extends SlidingActivity
         System.out.println("Hellu!");
 
         mIntent = getIntent();
+
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
 
-        if(mSharedPrefs.getBoolean("runMainTutorial", false))
+        new Thread(new Runnable()
         {
-            TutorialStuff.homeFragTutorial(MainActivity.this);
-            mEditor.putBoolean("runMainTutorial", false).apply();
-        }
+            @Override
+            public void run()
+            {
+                Looper.prepare();
+                while (true) {
+                    if (Utils.getActionBar(getWindow().getDecorView()).getChildAt(2) == null) {
+                        continue;
+                    }
+                    break;
+                }
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        TutorialStuff.homeFragTutorial(MainActivity.this);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -629,30 +648,6 @@ public class MainActivity extends SlidingActivity
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Looper.prepare();
-                while (true) {
-                    if (mFragmentManager.findFragmentByTag("home") == null ||
-                            mFragmentManager.findFragmentByTag("home").isDetached())
-                        continue;
-                    break;
-                }
-
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        TutorialStuff.homeFragTutorial(MainActivity.this);
-                    }
-                });
-            }
-        }).start();
 
         return true;
 

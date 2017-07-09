@@ -15,7 +15,6 @@ import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 public class HelpActivity extends AppCompatActivity
 {
-    private SharedPreferences.Editor mSharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -28,15 +27,11 @@ public class HelpActivity extends AppCompatActivity
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
     }
 
     public void showTutorial(View v)
     {
         TutorialStuff.resetSpotlights(this);
-        mSharedPreferences.putBoolean("runMainTutorial", true).apply();
-
         finish();
     }
 
