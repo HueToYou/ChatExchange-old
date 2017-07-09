@@ -193,31 +193,12 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
 
         private void setBackendMethod(final ListPreference listPreference)
         {
-            String currentSelected = mSharedPrefs.getString("backend_selected", "None");
-            int index = listPreference.findIndexOfValue(currentSelected);
-            listPreference.setValueIndex(index != -1 ? index : 0);
-
+            listPreference.setPersistent(true);
             listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_LONG).show();
-
-                    String prefVal = "";
-
-                    switch (newValue.toString().toLowerCase())
-                    {
-                        case "websocket":
-                            prefVal = BackendService.BACKEND_WEBSOCKET;
-                            break;
-                        case "none":
-                            prefVal = BackendService.BACKEND_NONE;
-                            break;
-                    }
-                    mSharedPrefs.edit().putString("backend_type", prefVal).apply();
-                    mSharedPrefs.edit().putString("backend_selected", newValue.toString()).apply();
-
                     int index = listPreference.findIndexOfValue(newValue.toString());
                     listPreference.setValueIndex(index != -1 ? index : 0);
                     return false;
@@ -225,28 +206,29 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             });
         }
 
-        private void setAccount(final ListPreference listPrefernece)
+        private void setAccount(final ListPreference listPreference)
         {
+            listPreference.setPersistent(true);
             ArrayList<CharSequence> accnames = ((PreferencesActivity) getActivity()).mAccountNames;
 
             CharSequence[] names = new CharSequence[accnames.size()];
             names = accnames.toArray(names);
 
-            listPrefernece.setEntries(names);
-            listPrefernece.setEntryValues(names);
+            listPreference.setEntries(names);
+            listPreference.setEntryValues(names);
 
-            String currentSelected = mSharedPrefs.getString("account_selected", "None");
-            int index = listPrefernece.findIndexOfValue(currentSelected);
-            listPrefernece.setValueIndex(index != -1 ? index : 0);
+//            String currentSelected = mSharedPrefs.getString("account_selected", "None");
+//            int index = listPreference.findIndexOfValue(currentSelected);
+//            listPreference.setValueIndex(index != -1 ? index : 0);
 
-            listPrefernece.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    mSharedPrefs.edit().putString("account_selected", newValue.toString()).apply();
-                    int index = listPrefernece.findIndexOfValue(newValue.toString());
-                    listPrefernece.setValueIndex(index != -1 ? index : 0);
+//                    mSharedPrefs.edit().putString("account_selected", newValue.toString()).apply();
+                    int index = listPreference.findIndexOfValue(newValue.toString());
+                    listPreference.setValueIndex(index != -1 ? index : 0);
                     return false;
                 }
             });

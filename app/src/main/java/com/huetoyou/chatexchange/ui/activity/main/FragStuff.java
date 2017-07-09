@@ -46,106 +46,114 @@ public class FragStuff
         {
             Log.e("ID", s);
             final String chatUrl = "https://chat.stackexchange.com/rooms/".concat(s);
-            final String id = s;
-            mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
+
+            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null) //TODO: Make sure fragments get removed on chat removal, otherwise users won't be able to re-add chats
             {
-                @Override
-                public void onSucceeded(final URL url, String data)
+                final String id = s;
+                mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
                 {
-                    mainActivity.chatDataBundle.mSEChatUrls.put(Integer.decode(id), chatUrl);
-                    mainActivity.mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
+                    @Override
+                    public void onSucceeded(final URL url, String data)
                     {
-
-                        private Fragment fragment;
-
-                        @Override
-                        public void onStart()
+                        mainActivity.chatDataBundle.mSEChatUrls.put(Integer.decode(id), chatUrl);
+                        mainActivity.mAddList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
                         {
 
-                        }
+                            private Fragment fragment;
 
-                        @Override
-                        public void onProgress(String name, Drawable icon, Integer color)
-                        {
-                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
-                            Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
-                            mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
-                            mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
-                            mainActivity.chatDataBundle.mSEChatIcons.put(Integer.decode(id), icon);
-                            mainActivity.chatDataBundle.mSEChatNames.put(Integer.decode(id), name);
-                        }
+                            @Override
+                            public void onStart()
+                            {
 
-                        @Override
-                        public void onFinish(String name, String url, Drawable icon, Integer color)
-                        {
-                            addFragmentToList(mainActivity, name, url, icon, color, id);
-                            initiateFragment(mainActivity, fragment);
-                        }
-                    });
+                            }
 
-                    mainActivity.mAddList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
+                            @Override
+                            public void onProgress(String name, Drawable icon, Integer color)
+                            {
+                                fragment = addFragment(chatUrl, name, color, Integer.decode(id));
+                                Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
+                                mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
+                                mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
+                                mainActivity.chatDataBundle.mSEChatIcons.put(Integer.decode(id), icon);
+                                mainActivity.chatDataBundle.mSEChatNames.put(Integer.decode(id), name);
+                            }
 
-                @Override
-                public void onFailed(String message)
-                {
-                    Toast.makeText(mainActivity, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
+                            @Override
+                            public void onFinish(String name, String url, Drawable icon, Integer color)
+                            {
+                                addFragmentToList(mainActivity, name, url, icon, color, id);
+                                initiateFragment(mainActivity, fragment);
+                            }
+                        });
 
-                    mainActivity.removeIdFromSEList(id);
-                    Log.e("Couldn't load SE chat ".concat(id), message);
-                }
-            });
+                        mainActivity.mAddList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+
+                    @Override
+                    public void onFailed(String message)
+                    {
+                        Toast.makeText(mainActivity, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
+
+                        mainActivity.removeIdFromSEList(id);
+                        Log.e("Couldn't load SE chat ".concat(id), message);
+                    }
+                });
+            }
         }
 
         for (String s : mainActivity.chatDataBundle.mSOChatIDs)
         {
             final String chatUrl = "https://chat.stackoverflow.com/rooms/".concat(s);
-            final String id = s;
-            mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
+
+            if (mainActivity.getSupportFragmentManager().findFragmentByTag(chatUrl) == null) //TODO: Make sure fragments get removed on chat removal, otherwise users won't be able to re-add chats
             {
-                @Override
-                public void onSucceeded(final URL url, String data)
+                final String id = s;
+                mainActivity.mRequestFactory.get(chatUrl, true, new RequestFactory.Listener()
                 {
-                    mainActivity.chatDataBundle.mSOChatUrls.put(Integer.decode(id), chatUrl);
-                    MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
+                    @Override
+                    public void onSucceeded(final URL url, String data)
                     {
-
-                        private Fragment fragment;
-
-                        @Override
-                        public void onStart()
+                        mainActivity.chatDataBundle.mSOChatUrls.put(Integer.decode(id), chatUrl);
+                        MainActivityUtils.AddList addList = MainActivityUtils.AddList.newInstance(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
                         {
-                        }
 
-                        @Override
-                        public void onProgress(String name, Drawable icon, Integer color)
-                        {
-                            fragment = addFragment(chatUrl, name, color, Integer.decode(id));
-                            mainActivity.chatDataBundle.mSOChats.put(Integer.decode(id), fragment);
-                            mainActivity.chatDataBundle.mSOChatColors.put(Integer.decode(id), color);
-                            mainActivity.chatDataBundle.mSOChatIcons.put(Integer.decode(id), icon);
-                            mainActivity.chatDataBundle.mSOChatNames.put(Integer.decode(id), name);
-                        }
+                            private Fragment fragment;
 
-                        @Override
-                        public void onFinish(String name, String url, Drawable icon, Integer color)
-                        {
-                            addFragmentToList(mainActivity, name, url, icon, color, id);
-                            initiateFragment(mainActivity, fragment);
-                        }
-                    });
+                            @Override
+                            public void onStart()
+                            {
+                            }
 
-                    addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
+                            @Override
+                            public void onProgress(String name, Drawable icon, Integer color)
+                            {
+                                fragment = addFragment(chatUrl, name, color, Integer.decode(id));
+                                mainActivity.chatDataBundle.mSOChats.put(Integer.decode(id), fragment);
+                                mainActivity.chatDataBundle.mSOChatColors.put(Integer.decode(id), color);
+                                mainActivity.chatDataBundle.mSOChatIcons.put(Integer.decode(id), icon);
+                                mainActivity.chatDataBundle.mSOChatNames.put(Integer.decode(id), name);
+                            }
 
-                @Override
-                public void onFailed(String message)
-                {
-                    Toast.makeText(mainActivity, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
-                    mainActivity.removeIdFromSOList(id);
-                    Log.e("Couldn't load SO chat ".concat(id), message);
-                }
-            });
+                            @Override
+                            public void onFinish(String name, String url, Drawable icon, Integer color)
+                            {
+                                addFragmentToList(mainActivity, name, url, icon, color, id);
+                                initiateFragment(mainActivity, fragment);
+                            }
+                        });
+
+                        addList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+
+                    @Override
+                    public void onFailed(String message)
+                    {
+                        Toast.makeText(mainActivity, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
+                        mainActivity.removeIdFromSOList(id);
+                        Log.e("Couldn't load SO chat ".concat(id), message);
+                    }
+                });
+            }
         }
 
         if (mainActivity.chatDataBundle.mSEChatIDs.size() == 0 && mainActivity.chatDataBundle.mSOChatIDs.size() == 0)
