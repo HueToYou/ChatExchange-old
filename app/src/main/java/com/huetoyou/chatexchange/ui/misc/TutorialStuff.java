@@ -128,15 +128,15 @@ public class TutorialStuff
         final OnSwipeListener onSwipeListener = new OnSwipeListener()
         {
             @Override
-            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
+            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
             {
-                swipeManager.performFakeSwipe(viewHolder, 2);
+                swipeManager.performFakeSwipe(viewHolder, RecyclerViewSwipeManager.RESULT_SWIPED_RIGHT);
             }
 
             @Override
-            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
+            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
             {
-                swipeManager.performFakeSwipe(viewHolder, 1);
+                swipeManager.performFakeSwipe(viewHolder, RecyclerViewSwipeManager.RESULT_SWIPED_LEFT);
             }
         };
 
@@ -198,10 +198,10 @@ public class TutorialStuff
                 {
                     case CHAT_ITEM:
                         chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
-                        onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
+                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
                         break;
                     case CHAT_ITEM_SLIDE:
-                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+                        onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
                         chatFAM.show();
                         break;
                     case CHAT_ITEM_FAM:
@@ -556,9 +556,9 @@ public class TutorialStuff
 
     public interface OnSwipeListener
     {
-        void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
-
         void onSwipeRight(RecyclerView.ViewHolder viewHolder);
+
+        void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
     }
 
     private static void setCategoryConfig(Activity activity)
