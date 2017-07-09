@@ -391,6 +391,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         {
             if (horizontalAmount >= 1.0f && isSwiping) {
                 clickClose();
+            } else if (horizontalAmount >= 0.25f && isSwiping) {
+                mChatroomObjects.get(getLayoutPosition()).setIsPinned(true);
             }
 
             super.onSlideAmountUpdated(horizontalAmount, verticalAmount, isSwiping);
