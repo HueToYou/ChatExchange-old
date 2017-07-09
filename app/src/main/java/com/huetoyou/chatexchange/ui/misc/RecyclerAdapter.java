@@ -362,7 +362,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonRevealSet.play(revealAnimatorX);
             mCloseButtonRevealSet.play(revealAnimatorY);
             mCloseButtonRevealSet.setInterpolator(new OvershootInterpolator());
-            mCloseButtonRevealSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 500, mContext));
+            mCloseButtonRevealSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
             mCloseButtonRevealSet.addListener(mRevealListener);
 
             ObjectAnimator hideAnimatorX = ObjectAnimator.ofFloat(
@@ -382,7 +382,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonHideSet.play(hideAnimatorX);
             mCloseButtonHideSet.play(hideAnimatorY);
             mCloseButtonHideSet.setInterpolator(new AnticipateInterpolator());
-            mCloseButtonHideSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 500, mContext));
+            mCloseButtonHideSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
