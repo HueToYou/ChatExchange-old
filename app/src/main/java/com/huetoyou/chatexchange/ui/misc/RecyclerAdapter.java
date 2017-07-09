@@ -88,7 +88,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 //        holder.mCloseChat.setOnClickListener(mUnderSwipeableViewButtonOnClickListener);
 
         holder.setMaxLeftSwipeAmount(0f);
-        holder.setMaxRightSwipeAmount(0.25f);
+        holder.setMaxRightSwipeAmount(1.0f);
         holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0.25f : 0);
         holder.setProportionalSwipeAmountModeEnabled(true);
     }
@@ -117,21 +117,40 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         Log.d("SWIPED", "onSwipeItem(position = " + position + ", result = " + result + ")");
 
+        ChatroomRecyclerObject item;
+
+        try {
+            item = mChatroomObjects.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            item = null;
+        }
+
         switch (result) {
             // swipe left --- pin
             case Swipeable.RESULT_SWIPED_RIGHT:
-                holder.revealCloseButton();
-                return new SwipeRightResultAction(this, position);
+                if (!holder.isCloseButtonRevealed()) holder.revealCloseButton();
+
+                if (item != null && !item.isPinned()) {
+                    item.setIsPinned(true);
+                    notifyItemChanged(position);
+                }
+                return null;
             // other --- do nothing
             case Swipeable.RESULT_SWIPED_LEFT:
             case Swipeable.RESULT_CANCELED:
             default:
-                holder.hideCloseButton();
-                if (position != RecyclerView.NO_POSITION) {
-                    return new UnpinResultAction(this, position);
-                } else {
-                    return null;
+                if (item != null && item.isPinned()) {
+                    item.setIsPinned(false);
+                    notifyItemChanged(position);
                 }
+                holder.hideCloseButton();
+//                if (position != RecyclerView.NO_POSITION) {
+//                    return new UnpinResultAction(this, position);
+//                } else {
+//                    return null;
+//                }
+                return null;
         }
     }
 
@@ -208,6 +227,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
             if (huehuehue != null)
             {
+                huehuehue.setIsPinned(false);
 
                 String chatroomName = huehuehue.getName();
                 final View parentLayout = activity.findViewById(android.R.id.content);
@@ -367,6 +387,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
 
         @Override
+        public void onSlideAmountUpdated(float horizontalAmount, float verticalAmount, boolean isSwiping)
+        {
+            if (horizontalAmount >= 1.0f && isSwiping) {
+                clickClose();
+            }
+
+            super.onSlideAmountUpdated(horizontalAmount, verticalAmount, isSwiping);
+        }
+
+        @Override
         public View getSwipeableContainerView()
         {
             return mContainer;
@@ -443,12 +473,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 @Override
                 public void onClick(View view)
                 {
-                    if (onItemClicked != null)
-                    {
-                        onItemClicked.onCloseClick(mCloseChat, getLayoutPosition());
-                    }
+                    clickClose();
                 }
             });
+        }
+
+        public void clickClose() {
+            if (onItemClicked != null)
+            {
+                onItemClicked.onCloseClick(mCloseChat, getLayoutPosition());
+            }
         }
 
         public boolean isCloseButtonRevealed() {
@@ -457,77 +491,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public void setCloseButtonRevealed(boolean set) {
             closeButtonRevealed = set;
-        }
-    }
-
-    private static class SwipeRightResultAction extends SwipeResultActionMoveToSwipedDirection
-    {
-        private RecyclerAdapter mAdapter;
-        private final int mPosition;
-        private boolean mSetPinned;
-
-        SwipeRightResultAction(RecyclerAdapter adapter, int position) {
-            mAdapter = adapter;
-            mPosition = position;
-        }
-
-        @Override
-        protected void onPerformAction() {
-            super.onPerformAction();
-
-            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
-
-            if (!item.isPinned()) {
-                item.setIsPinned(true);
-                mAdapter.notifyItemChanged(mPosition);
-                mSetPinned = true;
-            }
-        }
-
-        @Override
-        protected void onSlideAnimationEnd() {
-            super.onSlideAnimationEnd();
-        }
-
-        @Override
-        protected void onCleanUp() {
-            super.onCleanUp();
-            // clear the references
-            mAdapter = null;
-        }
-    }
-
-    private static class UnpinResultAction extends SwipeResultActionMoveToOrigin
-    {
-        private RecyclerAdapter mAdapter;
-        private final int mPosition;
-
-        UnpinResultAction(RecyclerAdapter adapter, int position) {
-            mAdapter = adapter;
-            mPosition = position;
-        }
-
-        @Override
-        protected void onPerformAction() {
-            super.onPerformAction();
-            ChatroomRecyclerObject item = mAdapter.mChatroomObjects.get(mPosition);
-            if (item.isPinned()) {
-                item.setIsPinned(false);
-                mAdapter.notifyItemChanged(mPosition);
-            }
-        }
-
-        @Override
-        protected void onSlideAnimationEnd()
-        {
-            super.onSlideAnimationEnd();
-        }
-
-        @Override
-        protected void onCleanUp() {
-            super.onCleanUp();
-            // clear the references
-            mAdapter = null;
         }
     }
 }

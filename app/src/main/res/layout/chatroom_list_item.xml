@@ -17,15 +17,6 @@
         android:layout_gravity="center_vertical|start"
         android:background="@android:color/holo_red_dark">
 
-        <!--<ImageView-->
-        <!---->
-        <!--android:layout_width="40dp"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:contentDescription="@string/app_name"-->
-        <!--android:tint="@android:color/holo_red_dark"-->
-        <!--android:visibility="invisible"-->
-        <!--app:srcCompat="@drawable/ic_close_black_24dp" />-->
-
         <ImageView
             android:id="@+id/close_chat_img"
             android:layout_width="63dp"
