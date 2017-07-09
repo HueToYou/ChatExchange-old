@@ -247,16 +247,48 @@ public class TutorialStuff
             setCategoryConfig(activity);
         }
 
-        SpotlightSequence.getInstance(activity, mCategoryConfig)
-                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
-                        activity.getResources().getString(R.string.tutorial_drawer),
-                        activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
-                        MAIN_DRAWER)
-                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
-                        activity.getResources().getString(R.string.tutorial_menu),
-                        activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
-                        MAIN_MENU)
-                .startSequence();
+//        SpotlightSequence.getInstance(activity, mCategoryConfig)
+//                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1),
+//                        activity.getResources().getString(R.string.tutorial_drawer),
+//                        activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text),
+//                        MAIN_DRAWER)
+//                .addSpotlight(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2),
+//                        activity.getResources().getString(R.string.tutorial_menu),
+//                        activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text),
+//                        MAIN_MENU)
+//                .startSequence();
+
+        SpotlightView drawer = new SpotlightView.Builder(activity)
+                .target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
+                .setConfiguration(mCategoryConfig)
+                .headingTvText(activity.getResources().getString(R.string.tutorial_drawer))
+                .subHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text))
+                .usageId(MAIN_DRAWER)
+                .show();
+
+        final SpotlightView.Builder menu = new SpotlightView.Builder(activity)
+                .setConfiguration(mCategoryConfig)
+                .headingTvText(activity.getResources().getString(R.string.tutorial_menu))
+                .subHeadingTvText(activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text))
+                .usageId(MAIN_MENU);
+
+        SpotlightListener listener = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                switch (s) {
+                    case MAIN_DRAWER:
+                        menu.target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).show();
+                        break;
+                    case MAIN_MENU:
+                        break;
+                }
+            }
+        };
+
+        drawer.setListener(listener);
+        menu.setListener(listener);
     }
 
     /*

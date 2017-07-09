@@ -341,29 +341,7 @@ public class MainActivity extends SlidingActivity
 
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
 
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Looper.prepare();
-                while (true) {
-                    if (Utils.getActionBar(getWindow().getDecorView()).getChildAt(2) == null) {
-                        continue;
-                    }
-                    break;
-                }
-
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        TutorialStuff.homeFragTutorial(MainActivity.this);
-                    }
-                });
-            }
-        }).start();
+        TutorialStuff.homeFragTutorial(MainActivity.this);
     }
 
     @Override
