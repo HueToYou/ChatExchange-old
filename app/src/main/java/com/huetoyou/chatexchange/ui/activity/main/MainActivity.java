@@ -326,7 +326,7 @@ public class MainActivity extends SlidingActivity
 
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
 
-        //TutorialStuff.homeFragTutorial(MainActivity.this);
+        TutorialStuff.homeFragTutorial(MainActivity.this);
 
     }
 

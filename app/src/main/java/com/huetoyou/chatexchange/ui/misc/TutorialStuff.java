@@ -98,7 +98,7 @@ public class TutorialStuff
 
     }
 
-    public static void homeFragTutorial(Activity activity)
+    public static void homeFragTutorial(final Activity activity)
     {
         final long duration = 500L;
         final float interpolatorFactor = 2f;
@@ -106,34 +106,28 @@ public class TutorialStuff
         /*
          * Overflow Menu
          */
-        SimpleTarget overflowMenuTarget = new SimpleTarget.Builder(activity)
-                .setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2))
+        final SimpleTarget.Builder overflowMenuTarget = new SimpleTarget.Builder(activity)
                 .setRadius(80f)
                 .setTitle(activity.getResources().getString(R.string.tutorial_menu))
-                .setDescription(activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text))
-                .build();
+                .setDescription(activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text));
 
         final Spotlight overflowMenu = Spotlight.with(activity)
                 .setDuration(duration)
                 .setBackgroundColor(activity.getResources().getColor(R.color.tutorialBackground))
-                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
-                .setTargets(overflowMenuTarget);
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor));
 
         /*
          * Hamburger
          */
-        SimpleTarget hamburgerTarget = new SimpleTarget.Builder(activity)
-                .setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
+        final SimpleTarget.Builder hamburgerTarget = new SimpleTarget.Builder(activity)
                 .setRadius(80f)
                 .setTitle(activity.getResources().getString(R.string.tutorial_drawer))
-                .setDescription(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text))
-                .build();
+                .setDescription(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
 
         Spotlight hamburger = Spotlight.with(activity)
                 .setDuration(duration)
                 .setBackgroundColor(activity.getResources().getColor(R.color.tutorialBackground))
                 .setAnimation(new DecelerateInterpolator(interpolatorFactor))
-                .setTargets(hamburgerTarget)
                 .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
                 {
                     @Override
@@ -147,10 +141,12 @@ public class TutorialStuff
                     @Override
                     public void onEnded()
                     {
+                        overflowMenu.setTargets(overflowMenuTarget.setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).build());
                         overflowMenu.start();
                     }
                 });
 
+        hamburger.setTargets(hamburgerTarget.setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1)).build());
         hamburger.start();
     }
 
@@ -287,17 +283,14 @@ public class TutorialStuff
          */
 
         System.out.println("HUE 1");
-        SimpleTarget swipeToDelTarget = new SimpleTarget.Builder(activity)
-                .setPoint(recyclerAdapter.getViewHolderAt(0).getCloseChatButton())
+        final SimpleTarget.Builder swipeToDelTarget = new SimpleTarget.Builder(activity)
                 .setRadius(80f)
                 .setTitle("HUEUEHUE")
-                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
-                .build();
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text));
 
         final Spotlight swipeToDel = Spotlight.with(activity)
                 .setDuration(duration)
                 .setAnimation(new DecelerateInterpolator(interpolatorFactor))
-                .setTargets(swipeToDelTarget)
                 .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
                 {
                     @Override
@@ -352,6 +345,7 @@ public class TutorialStuff
                     @Override
                     public void onEnded()
                     {
+                        swipeToDel.setTargets(swipeToDelTarget.setPoint(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).build());
                         swipeToDel.start();
                     }
                 });
