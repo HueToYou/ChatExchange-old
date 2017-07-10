@@ -1,4 +1,4 @@
-package com.huetoyou.chatexchange.ui.misc.tutorial;
+package com.huetoyou.chatexchange.ui.misc;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -96,6 +96,266 @@ public class TutorialStuff
         final ImageButton sendMsg = view.findViewById(R.id.sendMessageBtn);
 
 
+    }
+
+    public static void homeFragTutorial(Activity activity)
+    {
+        final long duration = 500L;
+        final float interpolatorFactor = 2f;
+
+        /*
+         * Overflow Menu
+         */
+        SimpleTarget overflowMenuTarget = new SimpleTarget.Builder(activity)
+                .setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2))
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_menu))
+                .setDescription(activity.getResources().getString(R.string.homeFrag_options_menu_tutorial_text))
+                .build();
+
+        final Spotlight overflowMenu = Spotlight.with(activity)
+                .setDuration(duration)
+                .setBackgroundColor(activity.getResources().getColor(R.color.tutorialBackground))
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(overflowMenuTarget);
+
+        /*
+         * Hamburger
+         */
+        SimpleTarget hamburgerTarget = new SimpleTarget.Builder(activity)
+                .setPoint(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_drawer))
+                .setDescription(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text))
+                .build();
+
+        Spotlight hamburger = Spotlight.with(activity)
+                .setDuration(duration)
+                .setBackgroundColor(activity.getResources().getColor(R.color.tutorialBackground))
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(hamburgerTarget)
+                .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+
+                    }
+                })
+                .setOnSpotlightEndedListener(new OnSpotlightEndedListener()
+                {
+                    @Override
+                    public void onEnded()
+                    {
+                        overflowMenu.start();
+                    }
+                });
+
+        hamburger.start();
+    }
+
+    public static void chatSlidingMenuTutoral(final Activity activity)
+    {
+        final long duration = 500L;
+        final float interpolatorFactor = 2f;
+        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
+        final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
+        final RecyclerViewSwipeManager swipeManager = new RecyclerViewSwipeManager();
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(activity, null, swipeManager);
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(0, "Example 1", "U", ico, 0, 0, 0));
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(1, "Example 2", "U", ico, 0, 0, 1));
+        recyclerAdapter.addItem(new ChatroomRecyclerObject(2, "Example 3", "U", ico, 0, 0, 2));
+        final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
+        final FloatingActionButton home = activity.findViewById(R.id.home_fab);
+        final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
+        final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
+
+        RecyclerView.Adapter adapter = swipeManager.createWrappedAdapter(recyclerAdapter);
+
+        dummyChats.setAdapter(adapter);
+
+        // disable change animations
+        ((SimpleItemAnimator) dummyChats.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        swipeManager.attachRecyclerView(dummyChats);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(dummyChats.getContext(),
+                DividerItemDecoration.VERTICAL);
+
+        dummyChats.addItemDecoration(dividerItemDecoration);
+
+        final OnSwipeListener onSwipeListener = new OnSwipeListener()
+        {
+            @Override
+            public void onSwipeRight(RecyclerView.ViewHolder viewHolder)
+            {
+                swipeManager.performFakeSwipe(viewHolder, RecyclerViewSwipeManager.RESULT_SWIPED_RIGHT);
+            }
+
+            @Override
+            public void onSwipeLeft(RecyclerView.ViewHolder viewHolder)
+            {
+                swipeManager.performFakeSwipe(viewHolder, RecyclerViewSwipeManager.RESULT_SWIPED_LEFT);
+            }
+        };
+
+        activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
+        dummyChats.setVisibility(View.VISIBLE);
+
+        /*
+         * FABs in the FAM
+         */
+        SimpleTarget homeTarget = new SimpleTarget.Builder(activity)
+                .setPoint(home)
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_home))
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_homeFAB_tutorial_text))
+                .build();
+
+        SimpleTarget addTarget = new SimpleTarget.Builder(activity)
+                .setPoint(add)
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_add))
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_addChatFAB_tutorial_text))
+                .build();
+
+        SimpleTarget remAllTarget = new SimpleTarget.Builder(activity)
+                .setPoint(removeAll)
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_remove_all))
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_removeALlChatsFAB_tutorial_text))
+                .build();
+
+        final Spotlight FABs = Spotlight.with(activity)
+                .setDuration(duration)
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(homeTarget, addTarget, remAllTarget)
+                .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+
+                    }
+                })
+                .setOnSpotlightEndedListener(new OnSpotlightEndedListener()
+                {
+                    @Override
+                    public void onEnded()
+                    {
+                        chatFam.close(true);
+                        activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
+                        dummyChats.setVisibility(View.GONE);
+                    }
+                });
+
+        /*
+         * Chat FAM
+         */
+        System.out.println("HUE 3");
+        SimpleTarget chatFAM_target = new SimpleTarget.Builder(activity)
+                .setPoint(chatFam.getMenuButton())
+                .setRadius(80f)
+                .setTitle(activity.getResources().getString(R.string.tutorial_menu))
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_FAM_tutorial_text))
+                .build();
+
+        final Spotlight FAM = Spotlight.with(activity)
+                .setDuration(duration)
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(chatFAM_target)
+                .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+
+                    }
+                })
+                .setOnSpotlightEndedListener(new OnSpotlightEndedListener()
+                {
+                    @Override
+                    public void onEnded()
+                    {
+                        chatFam.open(true);
+                        FABs.start();
+                    }
+                });
+
+        /*
+         * Swipe to delete
+         */
+
+        System.out.println("HUE 1");
+        SimpleTarget swipeToDelTarget = new SimpleTarget.Builder(activity)
+                .setPoint(recyclerAdapter.getViewHolderAt(0).getCloseChatButton())
+                .setRadius(80f)
+                .setTitle("HUEUEHUE")
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_swipe_left_text))
+                .build();
+
+        final Spotlight swipeToDel = Spotlight.with(activity)
+                .setDuration(duration)
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(swipeToDelTarget)
+                .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+                        onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+                    }
+                })
+                .setOnSpotlightEndedListener(new OnSpotlightEndedListener()
+                {
+                    @Override
+                    public void onEnded()
+                    {
+                        System.out.println("HUE 2");
+                        FAM.start();
+                    }
+                });
+
+        /*
+         * Chats recyclerview
+         */
+        Thread thread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+            }
+        });
+        thread.start();
+        SimpleTarget recyclerTarget = new SimpleTarget.Builder(activity)
+                .setPoint(dummyChats)
+                .setRadius(350f)
+                .setTitle(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text_title))
+                .setDescription(activity.getResources().getString(R.string.chatrooms_slidingMenu_chats_tutorial_text))
+                .build();
+
+        Spotlight recyclerSpotlight = Spotlight.with(activity)
+                .setDuration(duration)
+                .setAnimation(new DecelerateInterpolator(interpolatorFactor))
+                .setTargets(recyclerTarget)
+                .setOnSpotlightStartedListener(new OnSpotlightStartedListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+
+                    }
+                })
+                .setOnSpotlightEndedListener(new OnSpotlightEndedListener()
+                {
+                    @Override
+                    public void onEnded()
+                    {
+                        swipeToDel.start();
+                    }
+                });
+        recyclerSpotlight.start();
     }
 
     public static void showUsersTutorial(final Activity activity) {
@@ -311,5 +571,12 @@ public class TutorialStuff
         /*mItemConfig.setIntroAnimationDuration(100L);
         mItemConfig.setFadingTextDuration(100L);
         mItemConfig.setLineAnimationDuration(100L);*/
+    }
+
+    public interface OnSwipeListener
+    {
+        void onSwipeLeft(RecyclerView.ViewHolder viewHolder);
+
+        void onSwipeRight(RecyclerView.ViewHolder viewHolder);
     }
 }
