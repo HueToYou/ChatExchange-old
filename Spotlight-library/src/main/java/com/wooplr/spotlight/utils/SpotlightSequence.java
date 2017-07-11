@@ -85,6 +85,12 @@ public class SpotlightSequence {
                     {
 
                     }
+
+                    @Override
+                    public void onStartedDrawingSpotlight()
+                    {
+
+                    }
                 })
                 .enableDismissAfterShown(true);
         queue.add(builder);
@@ -116,6 +122,12 @@ public class SpotlightSequence {
 
                     @Override
                     public void onFinishedDrawingSpotlight()
+                    {
+
+                    }
+
+                    @Override
+                    public void onStartedDrawingSpotlight()
                     {
 
                     }

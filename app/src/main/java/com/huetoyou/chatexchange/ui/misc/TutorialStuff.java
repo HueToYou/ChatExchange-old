@@ -236,6 +236,12 @@ public class TutorialStuff
             {
                 MainActivity.touchesBlocked = false;
             }
+
+            @Override
+            public void onStartedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
+            }
         };
 
         chats.setListener(listener);
@@ -308,8 +314,16 @@ public class TutorialStuff
                 }
             }
 
+
+
             @Override
             public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
+            }
+
+            @Override
+            public void onStartedDrawingSpotlight()
             {
                 MainActivity.touchesBlocked = false;
             }
@@ -452,13 +466,19 @@ public class TutorialStuff
 
                     case CHAT_FRAG_MESSG_ENTRY_BOX:
                         chatFragSendMessageButton.show();
-                        MainActivity.touchesBlocked = true;
+                        MainActivity.touchesBlocked = false;
                         break;
                 }
             }
 
             @Override
             public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
+            }
+
+            @Override
+            public void onStartedDrawingSpotlight()
             {
                 MainActivity.touchesBlocked = false;
             }
@@ -625,13 +645,19 @@ public class TutorialStuff
                         }
 
                         ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().remove(userTileFragment).remove(userTileFragment1).remove(userTileFragment2).commit();
-                        MainActivity.touchesBlocked = true;
+                        MainActivity.touchesBlocked = false;
                         break;
                 }
             }
 
             @Override
             public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
+            }
+
+            @Override
+            public void onStartedDrawingSpotlight()
             {
                 MainActivity.touchesBlocked = false;
             }

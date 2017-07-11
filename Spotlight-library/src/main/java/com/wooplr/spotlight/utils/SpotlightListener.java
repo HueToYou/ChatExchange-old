@@ -9,4 +9,5 @@ public interface SpotlightListener {
 
     void onUserClicked(String spotlightViewId);
     void onFinishedDrawingSpotlight();
+    void onStartedDrawingSpotlight();
 }

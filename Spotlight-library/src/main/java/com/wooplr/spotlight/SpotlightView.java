@@ -336,6 +336,7 @@ public class SpotlightView extends FrameLayout {
                                         } else {
                                             startFadinAnimation(activity);
                                         }
+                                        if (listener != null) listener.onStartedDrawingSpotlight();
                                     }catch(Exception e){
                                         e.printStackTrace();
                                     }
@@ -637,7 +638,6 @@ public class SpotlightView extends FrameLayout {
         animDrawable1.setmListner(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-
             }
 
             @Override
@@ -646,14 +646,14 @@ public class SpotlightView extends FrameLayout {
                 fadeIn.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         if(enableDismissAfterShown)
                             dismissOnTouch = true;
-                        listener.onFinishedDrawingSpotlight();
+
+                        if (listener != null) listener.onFinishedDrawingSpotlight();
                     }
 
                     @Override
