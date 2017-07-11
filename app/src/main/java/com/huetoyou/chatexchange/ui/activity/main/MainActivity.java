@@ -66,8 +66,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
-
 public class MainActivity extends SlidingActivity
 {
 
