@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
+import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 import org.jsoup.Jsoup;
 
@@ -28,6 +30,7 @@ public class WebViewActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        ThemeHue.setTheme(WebViewActivity.this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.fragment_star_webview);
@@ -35,6 +38,7 @@ public class WebViewActivity extends AppCompatActivity
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBarHue.setActionBarColorToSharedPrefsValue(WebViewActivity.this);
 
         if (intent.getAction().equals(Intent.ACTION_VIEW))
         {
