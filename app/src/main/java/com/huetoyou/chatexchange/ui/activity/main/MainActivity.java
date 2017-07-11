@@ -6,25 +6,18 @@ import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageButton;
@@ -32,7 +25,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -47,10 +39,7 @@ import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
+
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
@@ -66,23 +55,17 @@ import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.ChatDataBundle;
-import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
-import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
-import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
-import android.widget.Toast;
+
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends SlidingActivity
 {
@@ -287,7 +270,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onOpened()
             {
-                TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
+                TutorialStuff.chatSlidingMenuTutoral(MainActivity.this);
             }
         });
 
@@ -350,6 +333,7 @@ public class MainActivity extends SlidingActivity
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
 
         TutorialStuff.homeFragTutorial(MainActivity.this);
+
     }
 
     @Override

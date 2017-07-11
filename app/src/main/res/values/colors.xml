@@ -9,4 +9,5 @@
     <color name="colorAccentTransparent">#3319bb9b</color>
     <color name="white">#ffffff</color>
     <color name="colorDark">#ff424242</color>
+    <color name="tutorialBackground">#bd000000</color>
 </resources>
