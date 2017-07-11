@@ -7,7 +7,11 @@ import android.app.FragmentTransaction;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -22,6 +26,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
@@ -46,6 +51,8 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
      */
     private ViewPager mViewPager;
 
+    private BroadcastReceiver hueNetworkStatusChanged;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -55,6 +62,22 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         if(Utils.areWeOnline(this))
         {
             normalOnCreate();
+
+            hueNetworkStatusChanged = new BroadcastReceiver()
+            {
+                @Override
+                public void onReceive(Context context, Intent intent)
+                {
+                    if(!Utils.areWeOnline(ChatroomsExplorationActivity.this))
+                    {
+                        Intent hueIntent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
+                        startActivity(hueIntent);
+                        finish();
+                    }
+                }
+            };
+
+            this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
         else
         {
@@ -110,6 +133,13 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     }
 
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        this.unregisterReceiver(hueNetworkStatusChanged);
+    }
+
+    @Override
     protected void onResume()
     {
         super.onResume();
@@ -119,6 +149,10 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             Intent intent = new Intent(this, OfflineActivity.class);
             startActivity(intent);
             finish();
+        }
+        else
+        {
+            this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
     }
 
