@@ -115,7 +115,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:support-v13:26.0.0-beta2'
     //compile 'com.github.wooplr:Spotlight:1.2.3'
-    implementation project(':Spotlight-library-release')
+    implementation project(':Spotlight-library-src')
 }
 
 apply plugin: 'com.google.gms.google-services' //KEEP THIS AT THE BOTTOM
