@@ -147,6 +147,7 @@ public class TutorialStuff
         if (!manager.isDisplayed(CHAT_ITEM)) {
             activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
             dummyChats.setVisibility(View.VISIBLE);
+            MainActivity.touchesBlocked = true;
         }
 
         SpotlightView chats = new SpotlightView.Builder(activity)
@@ -202,27 +203,39 @@ public class TutorialStuff
                     case CHAT_ITEM:
                         chatsSwipe.target(recyclerAdapter.getViewHolderAt(0).getCloseChatButton()).show();
                         onSwipeListener.onSwipeRight(recyclerAdapter.getViewHolderAt(0));
+                        MainActivity.touchesBlocked = true;
                         break;
                     case CHAT_ITEM_SLIDE:
                         onSwipeListener.onSwipeLeft(recyclerAdapter.getViewHolderAt(0));
+                        MainActivity.touchesBlocked = true;
                         chatFAM.show();
                         break;
                     case CHAT_ITEM_FAM:
                         chatFam.open(true);
                         chatHome.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case CHAT_ITEM_HOME:
                         chatAdd.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case CHAT_ITEM_ADD:
                         chatRemAll.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case CHAT_ITEM_REMOVE_ALL:
                         chatFam.close(true);
                         activity.findViewById(R.id.chatroomsListView).setVisibility(View.VISIBLE);
                         dummyChats.setVisibility(View.GONE);
+                        MainActivity.touchesBlocked = false;
                         break;
                 }
+            }
+
+            @Override
+            public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
             }
         };
 
@@ -261,6 +274,11 @@ public class TutorialStuff
 //                        MAIN_MENU)
 //                .startSequence();
 
+        PreferencesManager manager = new PreferencesManager(activity);
+        if (!manager.isDisplayed(MAIN_DRAWER)) {
+            MainActivity.touchesBlocked = true;
+        }
+
         SpotlightView drawer = new SpotlightView.Builder(activity)
                 .target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(1))
                 .setConfiguration(mCategoryConfig)
@@ -283,10 +301,18 @@ public class TutorialStuff
                 switch (s) {
                     case MAIN_DRAWER:
                         menu.target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case MAIN_MENU:
+                        MainActivity.touchesBlocked = false;
                         break;
                 }
+            }
+
+            @Override
+            public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
             }
         };
 
@@ -315,6 +341,11 @@ public class TutorialStuff
         }
 
         if (mItemConfig == null) setItemConfig(activity);
+
+        PreferencesManager manager = new PreferencesManager(activity);
+        if (!manager.isDisplayed(CHAT_FRAG_MENU_BTN)) {
+            MainActivity.touchesBlocked = true;
+        }
 
         final FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         final FloatingActionButton users = view.findViewById(R.id.show_users_fab);
@@ -390,34 +421,47 @@ public class TutorialStuff
                 {
                     case CHAT_FRAG_MENU_BTN:
                         chatFragFam.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_FAM:
                         fam.open(true);
                         chatFragUsersFAB.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_USERS_FAB:
                         chatFragInfoFAB.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_INFO_FAB:
                         chatFragStarsFAB.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_STARS_FAB:
                         chatFragOpenInBrowserFAB.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_OPENINBROWSER_FAB:
                         fam.close(true);
                         chatFragMessageEntryBox.show();
+                        MainActivity.touchesBlocked = true;
                         break;
 
                     case CHAT_FRAG_MESSG_ENTRY_BOX:
                         chatFragSendMessageButton.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                 }
+            }
+
+            @Override
+            public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
             }
         };
 
@@ -442,7 +486,6 @@ public class TutorialStuff
         }
 
         if (mItemConfig == null) setItemConfig(activity);
-
 
         Bundle args = new Bundle();
         args.putString(USER_NAME_KEY, "Edwinksl");
@@ -509,6 +552,7 @@ public class TutorialStuff
             ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment, "user_" + 12345).commit();
             ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment1, "user_" + 12346).commit();
             ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment2, "user_" + 12347).commit();
+            MainActivity.touchesBlocked = true;
         }
 
         SpotlightView usersOverview = new SpotlightView.Builder(activity)
@@ -559,15 +603,19 @@ public class TutorialStuff
                 {
                     case USERS_SLIDE_INTRO:
                         overviewMore.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case USERS_SLIDE_INTRO_MORE:
                         user1.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case USER_ONE:
                         userMod.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case USER_MOD:
                         userOwner.show();
+                        MainActivity.touchesBlocked = true;
                         break;
                     case USER_OWNER:
                         List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
@@ -577,8 +625,15 @@ public class TutorialStuff
                         }
 
                         ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().remove(userTileFragment).remove(userTileFragment1).remove(userTileFragment2).commit();
+                        MainActivity.touchesBlocked = true;
                         break;
                 }
+            }
+
+            @Override
+            public void onFinishedDrawingSpotlight()
+            {
+                MainActivity.touchesBlocked = false;
             }
         };
 
@@ -599,16 +654,16 @@ public class TutorialStuff
     private static void setCategoryConfig(Activity activity)
     {
         mCategoryConfig = new SpotlightConfig();
-        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(100, activity));
+        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(300, activity));
         mCategoryConfig.setRevealAnimationEnabled(true);
         mCategoryConfig.setPerformClick(false);
-        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(100, activity));
+        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(300, activity));
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#aa000000"));
-        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(100, activity));
+        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(300, activity));
         mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);

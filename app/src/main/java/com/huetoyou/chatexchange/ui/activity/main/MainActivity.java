@@ -39,6 +39,7 @@ import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
@@ -124,6 +125,8 @@ public class MainActivity extends SlidingActivity
     private ActionMenuView mActionMenuView;
     RecyclerAdapter mWrappedAdapter;
     private RecyclerViewSwipeManager mSwipeManager;
+
+    public static boolean touchesBlocked = false;
 
     /*
      * Activity Lifecycle
@@ -307,6 +310,11 @@ public class MainActivity extends SlidingActivity
             // presumably, not relevant
         }
 
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return touchesBlocked || super.dispatchTouchEvent(ev);
     }
 
     public void openOptionsMenu(View v) {
