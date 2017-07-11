@@ -30,7 +30,7 @@ public class FragStuff
      */
     static void doFragmentStuff(final MainActivity mainActivity)
     {
-        mainActivity.resetArrays(false);
+        mainActivity.chatDataBundle.resetArrays(true, mainActivity.mEditor);
         mainActivity.runOnUiThread(new Runnable()
         {
             @Override
@@ -359,7 +359,7 @@ public class FragStuff
                 mainActivity.mWrappedAdapter.removeItem(i);
             }
         }
-        mainActivity.resetArrays(true);
+        mainActivity.chatDataBundle.resetArrays(true, mainActivity.mEditor);
     }
 
     /**

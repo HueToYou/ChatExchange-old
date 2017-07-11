@@ -72,7 +72,7 @@ public class MainActivity extends SlidingActivity
 {
 
     SharedPreferences mSharedPrefs;
-    private SharedPreferences.Editor mEditor;
+    public SharedPreferences.Editor mEditor;
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
@@ -92,7 +92,7 @@ public class MainActivity extends SlidingActivity
 
     RequestFactory mRequestFactory;
 
-    ChatDataBundle chatDataBundle = new ChatDataBundle();
+    public ChatDataBundle chatDataBundle = new ChatDataBundle();
 
     private String mCookieString = null;
 
