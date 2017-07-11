@@ -711,29 +711,6 @@ public class MainActivity extends SlidingActivity
      * @param shouldEmptyIDs should the ID Set be emptied?
      */
 
-    void resetArrays(boolean shouldEmptyIDs)
-    {
-        if (shouldEmptyIDs)
-        {
-            chatDataBundle.mSEChatIDs = new HashSet<>(0);
-            chatDataBundle.mSOChatIDs = new HashSet<>(0);
-            setSOStringSet();
-            setSEStringSet();
-        }
-
-        chatDataBundle.mSEChatUrls = new SparseArray<>();
-        chatDataBundle.mSOChatUrls = new SparseArray<>();
-        chatDataBundle.mSEChats = new SparseArray<>();
-        chatDataBundle.mSOChats = new SparseArray<>();
-        chatDataBundle.mSEChatNames = new SparseArray<>();
-        chatDataBundle.mSOChatNames = new SparseArray<>();
-        chatDataBundle.mSEChatIcons = new SparseArray<>();
-        chatDataBundle.mSOChatIcons = new SparseArray<>();
-        chatDataBundle.mSEChatColors = new SparseIntArray();
-        chatDataBundle.mSOChatColors = new SparseIntArray();
-    }
-
-
     /**
      * Get cookies from other classes
      *
