@@ -56,6 +56,7 @@ import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.ChatDataBundle;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
+import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -270,7 +271,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onOpened()
             {
-                TutorialStuff.chatSlidingMenuTutoral(MainActivity.this);
+                TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
             }
         });
 

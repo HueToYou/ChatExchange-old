@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
@@ -26,7 +27,7 @@ public class HelpActivity extends AppCompatActivity
 
     public void showTutorial(View v)
     {
-        //TutorialStuff.resetSpotlights(this);
+        TutorialStuff.resetSpotlights(this);
         finish();
     }
 
