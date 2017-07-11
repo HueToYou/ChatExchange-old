@@ -49,6 +49,7 @@ import com.huetoyou.chatexchange.ui.activity.AboutActivity;
 import com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity;
 import com.huetoyou.chatexchange.ui.activity.HelpActivity;
 import com.huetoyou.chatexchange.ui.activity.IntroActivity;
+import com.huetoyou.chatexchange.ui.activity.OfflineActivity;
 import com.huetoyou.chatexchange.ui.activity.PreferencesActivity;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
@@ -316,16 +317,33 @@ public class MainActivity extends SlidingActivity
     @Override
     protected void onResume()
     {
+        super.onResume();
 
-        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
-
+        if(!oncreatejustcalled)
+        {
+            if(Utils.areWeOnline(this))
+            {
+                normalOnResume();
+            }
+            else
+            {
+                Intent intent = new Intent(this, OfflineActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
         if (oncreatejustcalled)
         {
             oncreatejustcalled = false;
         }
+    }
+
+    private void normalOnResume()
+    {
+        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
 //        doFragmentStuff();
-        super.onResume();
+        //super.onResume();
 
         System.out.println("Hellu!");
 
@@ -334,7 +352,6 @@ public class MainActivity extends SlidingActivity
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
 
         TutorialStuff.homeFragTutorial(MainActivity.this);
-
     }
 
     @Override
