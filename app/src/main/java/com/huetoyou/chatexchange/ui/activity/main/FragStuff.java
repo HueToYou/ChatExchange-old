@@ -94,8 +94,12 @@ public class FragStuff
                     {
                         Toast.makeText(mainActivity, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
 
-                        mainActivity.removeIdFromSEList(id);
                         Log.e("Couldn't load SE chat ".concat(id), message);
+
+                        if (message.toLowerCase().contains("not found")) {
+                            Log.e("Couldn't load SE chat", "Removing SE ".concat(id).concat(" from list"));
+                            mainActivity.removeIdFromSEList(id);
+                        }
                     }
                 });
             }
@@ -149,8 +153,13 @@ public class FragStuff
                     public void onFailed(String message)
                     {
                         Toast.makeText(mainActivity, "Failed to load chat ".concat(id), Toast.LENGTH_SHORT).show();
-                        mainActivity.removeIdFromSOList(id);
+
                         Log.e("Couldn't load SO chat ".concat(id), message);
+
+                        if (message.toLowerCase().contains("not found")) {
+                            Log.e("Couldn't load SO chat", "Removing SE ".concat(id).concat(" from list"));
+                            mainActivity.removeIdFromSOList(id);
+                        }
                     }
                 });
             }
