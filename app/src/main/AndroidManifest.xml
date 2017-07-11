@@ -97,7 +97,8 @@
         <activity
             android:name=".ui.activity.ChatroomsExplorationActivity"
             android:label="@string/title_activity_chatrooms_exploration"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity android:name=".ui.activity.OfflineActivity"></activity>
     </application>
 
 </manifest>
