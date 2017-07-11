@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
@@ -49,6 +51,21 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
+
+        if(Utils.areWeOnline(this))
+        {
+            normalOnCreate();
+        }
+        else
+        {
+            Intent intent = new Intent(this, OfflineActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void normalOnCreate()
+    {
         setContentView(R.layout.activity_chatrooms_exploration);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -90,7 +107,19 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
 
         ActionBarHue.setActionBarColorToSharedPrefsValue(this);
         ActionBarHue.setTabBarColorToSharedPrefsValue(this);
+    }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if(!Utils.areWeOnline(this))
+        {
+            Intent intent = new Intent(this, OfflineActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
