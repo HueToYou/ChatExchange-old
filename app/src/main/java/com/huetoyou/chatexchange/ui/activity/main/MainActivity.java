@@ -6,12 +6,15 @@ import android.accounts.AccountManagerFuture;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -113,6 +116,8 @@ public class MainActivity extends SlidingActivity
 
     public static boolean touchesBlocked = false;
 
+    private BroadcastReceiver hueNetworkStatusChanged;
+
     /*
      * Activity Lifecycle
      */
@@ -120,6 +125,22 @@ public class MainActivity extends SlidingActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        hueNetworkStatusChanged = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                if(!Utils.areWeOnline(MainActivity.this))
+                {
+                    Intent hueIntent = new Intent(MainActivity.this, OfflineActivity.class);
+                    startActivity(hueIntent);
+                    finish();
+                }
+            }
+        };
+
+        this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
@@ -336,6 +357,8 @@ public class MainActivity extends SlidingActivity
         {
             oncreatejustcalled = false;
         }
+
+        this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     private void normalOnResume()
@@ -512,6 +535,13 @@ public class MainActivity extends SlidingActivity
         }
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
         MainActivityUtils.setupACBR(this);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        this.unregisterReceiver(hueNetworkStatusChanged);
     }
 
     private void doCloseAnimationForDrawerToggle(View view)
