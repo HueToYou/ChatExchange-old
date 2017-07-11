@@ -39,7 +39,6 @@ import java.util.List;
 public class TutorialStuff
 {
     private static SharedPreferences mSharedPreferences;
-    private static PreferencesManager mPrefsMan;
     private static SpotlightConfig mCategoryConfig;
 
     private static final String CHAT_ITEM = "ChatItem";
@@ -472,6 +471,7 @@ public class TutorialStuff
         chatFragStarsFAB.setListener(huehuelistener);
         chatFragOpenInBrowserFAB.setListener(huehuelistener);
         chatFragMessageEntryBox.setListener(huehuelistener);
+        chatFragSendMessageButton.setListener(huehuelistener);
     }
 
     public static void showUsersTutorial(final Activity activity) {
@@ -654,16 +654,16 @@ public class TutorialStuff
     private static void setCategoryConfig(Activity activity)
     {
         mCategoryConfig = new SpotlightConfig();
-        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(100, activity));
         mCategoryConfig.setRevealAnimationEnabled(true);
         mCategoryConfig.setPerformClick(false);
-        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(50, activity));
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#aa000000"));
-        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(100, activity));
         mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);
