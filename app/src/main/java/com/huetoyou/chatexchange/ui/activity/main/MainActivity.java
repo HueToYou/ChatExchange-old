@@ -779,6 +779,7 @@ public class MainActivity extends SlidingActivity
     }
 
     void addIdToSEList(String id) {
+        Log.e("IDS", id);
         chatDataBundle.mSEChatIDs.add(id);
         setSEStringSet();
     }

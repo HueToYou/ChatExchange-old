@@ -569,10 +569,12 @@ class MainActivityUtils
 
                     if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackoverflow).toString()))
                     {
+                        Log.e("IDS", "SO");
                         mainActivity.addIdToSOList(inputText);
                     }
                     else if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackexchange).toString()))
                     {
+                        Log.e("IDS", "SE");
                         mainActivity.addIdToSEList(inputText);
                     }
 
