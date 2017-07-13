@@ -30,7 +30,7 @@ public class FragStuff
      */
     static void doFragmentStuff(final MainActivity mainActivity)
     {
-        mainActivity.chatDataBundle.resetArrays(false, mainActivity.mEditor);
+//        mainActivity.chatDataBundle.resetArrays(false, mainActivity.mEditor);
         mainActivity.runOnUiThread(new Runnable()
         {
             @Override

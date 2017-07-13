@@ -493,33 +493,6 @@ class MainActivityUtils
     }
 
     /**
-     * Removes all chats on confirmation
-     *
-     * @param v the view calling this function
-     */
-
-    public void removeAllChats(final MainActivity mainActivity, View v)
-    {
-        final FloatingActionMenu fam = mainActivity.findViewById(R.id.chat_slide_menu);
-        fam.close(true);
-
-        new AlertDialog.Builder(mainActivity)
-                .setTitle("Are you sure?")
-                .setMessage("Are you sure you want to remove all chats?")
-                .setPositiveButton(mainActivity.getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        FragStuff.removeAllFragmentsFromList(mainActivity);
-                        FragStuff.setFragmentByTag("home");
-                    }
-                })
-                .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)
-                .show();
-    }
-
-    /**
      * Handle adding chats
      */
 

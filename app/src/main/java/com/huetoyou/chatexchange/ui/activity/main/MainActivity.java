@@ -7,6 +7,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.DividerItemDecoration;
@@ -802,5 +804,32 @@ public class MainActivity extends SlidingActivity
     private void setSOStringSet() {
         mEditor.remove("SOChatIDs").apply();
         mEditor.putStringSet("SOChatIDs", chatDataBundle.mSOChatIDs).apply();
+    }
+
+    /**
+     * Removes all chats on confirmation
+     *
+     * @param v the view calling this function
+     */
+
+    public void removeAllChats(final MainActivity mainActivity, View v)
+    {
+        final FloatingActionMenu fam = mainActivity.findViewById(R.id.chat_slide_menu);
+        fam.close(true);
+
+        new AlertDialog.Builder(mainActivity)
+                .setTitle("Are you sure?")
+                .setMessage("Are you sure you want to remove all chats?")
+                .setPositiveButton(mainActivity.getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        FragStuff.removeAllFragmentsFromList(mainActivity);
+                        FragStuff.setFragmentByTag("home");
+                    }
+                })
+                .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)
+                .show();
     }
 }
