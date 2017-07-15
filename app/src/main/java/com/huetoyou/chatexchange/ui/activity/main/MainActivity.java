@@ -47,6 +47,7 @@ import android.webkit.CookieSyncManager;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.Util;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.auth.Authenticator;
 import com.huetoyou.chatexchange.net.RequestFactory;
@@ -344,7 +345,7 @@ public class MainActivity extends SlidingActivity
 
         if(!oncreatejustcalled)
         {
-            if(Utils.areWeOnANetwork(this))
+            if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
             {
                 normalOnResume();
             }
