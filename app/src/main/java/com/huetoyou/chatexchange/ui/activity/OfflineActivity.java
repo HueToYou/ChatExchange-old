@@ -7,9 +7,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
+
+import java.net.URL;
 
 public class OfflineActivity extends Activity
 {
@@ -20,19 +23,25 @@ public class OfflineActivity extends Activity
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_offline);
-        startAsyncPingThread();
+        waitForOnline();
     }
 
     public void checkOnlineStatus(View v)
     {
-        if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
+        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
-            reloadApp();
-        }
-        else
-        {
-            Toast.makeText(this, "You're still offline :\\", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onSucceeded(URL url, String data)
+            {
+                reloadApp();
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+                Toast.makeText(OfflineActivity.this, "You're still offline :\\", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void reloadApp()
@@ -43,49 +52,21 @@ public class OfflineActivity extends Activity
         finish();
     }
 
-    private void startAsyncPingThread()
+    private void waitForOnline()
     {
-        try
+        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
-            Thread thread = new Thread(new Runnable()
+            @Override
+            public void onSucceeded(URL url, String data)
             {
-                @Override
-                public void run()
-                {
-                    while (true)
-                    {
-                        if(Utils.areWeOnline())
-                        {
-                            OfflineActivity.this.runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    reloadApp();
-                                }
-                            });
-                            break;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                Thread.sleep(250);
-                            }
-                            catch (InterruptedException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
+                reloadApp();
+            }
 
-            thread.start();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+            @Override
+            public void onFailed(String message)
+            {
+                waitForOnline();
+            }
+        });
     }
 }

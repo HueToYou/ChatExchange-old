@@ -70,6 +70,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -133,11 +134,24 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                if(!Utils.areWeOnANetwork(MainActivity.this))
+                if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION))
                 {
-                    Intent hueIntent = new Intent(MainActivity.this, OfflineActivity.class);
-                    startActivity(hueIntent);
-                    finish();
+                    mRequestFactory.get("http://google.com", true, new RequestFactory.Listener()
+                    {
+                        @Override
+                        public void onSucceeded(URL url, String data)
+                        {
+
+                        }
+
+                        @Override
+                        public void onFailed(String message)
+                        {
+                            Intent hueIntent = new Intent(MainActivity.this, OfflineActivity.class);
+                            startActivity(hueIntent);
+                            finish();
+                        }
+                    });
                 }
             }
         };
@@ -345,16 +359,23 @@ public class MainActivity extends SlidingActivity
 
         if(!oncreatejustcalled)
         {
-            if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
+            mRequestFactory.get("http://google.com", true, new RequestFactory.Listener()
             {
-                normalOnResume();
-            }
-            else
-            {
-                Intent intent = new Intent(this, OfflineActivity.class);
-                startActivity(intent);
-                finish();
-            }
+                @Override
+                public void onSucceeded(URL url, String data)
+                {
+                    normalOnResume();
+
+                }
+
+                @Override
+                public void onFailed(String message)
+                {
+                    Intent intent = new Intent(MainActivity.this, OfflineActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
         }
         if (oncreatejustcalled)
         {

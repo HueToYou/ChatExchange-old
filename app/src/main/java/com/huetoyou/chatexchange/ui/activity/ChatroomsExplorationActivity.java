@@ -26,12 +26,16 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
+import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
+
+import java.net.URL;
 
 public class ChatroomsExplorationActivity extends AppCompatActivity implements android.support.v7.app.ActionBar.TabListener
 {
@@ -59,36 +63,55 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
 
-        if(Utils.areWeOnANetwork(this))
+        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
-            normalOnCreate();
-
-            hueNetworkStatusChanged = new BroadcastReceiver()
+            @Override
+            public void onSucceeded(URL url, String data)
             {
-                @Override
-                public void onReceive(Context context, Intent intent)
-                {
-                    if(!Utils.areWeOnANetwork(ChatroomsExplorationActivity.this))
-                    {
-                        Intent hueIntent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
-                        startActivity(hueIntent);
-                        finish();
-                    }
-                }
-            };
+                normalOnCreate();
 
-            this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-        else
-        {
-            Intent intent = new Intent(this, OfflineActivity.class);
-            startActivity(intent);
-            finish();
-        }
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+                Intent intent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void normalOnCreate()
     {
+        hueNetworkStatusChanged = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                    new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
+                    {
+                        @Override
+                        public void onSucceeded(URL url, String data)
+                        {
+
+                        }
+
+                        @Override
+                        public void onFailed(String message)
+                        {
+                            Intent hueIntent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
+                            startActivity(hueIntent);
+                            finish();
+                        }
+                    });
+                }
+            }
+        };
+
+        this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
         setContentView(R.layout.activity_chatrooms_exploration);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -144,16 +167,23 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         super.onResume();
 
-        if(!Utils.areWeOnANetwork(this) && Utils.areWeOnline())
+        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
-            Intent intent = new Intent(this, OfflineActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        else
-        {
-            this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
+            @Override
+            public void onSucceeded(URL url, String data)
+            {
+                registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+                Intent intent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override

@@ -178,26 +178,4 @@ public class Utils
 
         return origDuration/systemAnimScale;
     }
-
-    public static boolean areWeOnANetwork(Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
-    public static boolean areWeOnline()
-    {
-        Runtime runtime = Runtime.getRuntime();
-        try
-        {
-            Process mIpAddrProcess = runtime.exec("/system/bin/timeout .3 /system/bin/ping -c 1 google.com");
-            return mIpAddrProcess.waitFor() == 0;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

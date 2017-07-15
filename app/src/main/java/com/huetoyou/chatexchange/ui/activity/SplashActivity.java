@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Utils;
+
+import java.net.URL;
 
 public class SplashActivity extends AppCompatActivity
 {
@@ -14,17 +17,24 @@ public class SplashActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
+        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtras(getIntent());
-            startActivity(intent);
-        }
-        else
-        {
-            Intent intent = new Intent(this, OfflineActivity.class);
-            startActivity(intent);
-        }
+            @Override
+            public void onSucceeded(URL url, String data)
+            {
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                intent.putExtras(getIntent());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+                Intent intent = new Intent(SplashActivity.this, OfflineActivity.class);
+                startActivity(intent);
+            }
+        });
+
         finish();
     }
 }
