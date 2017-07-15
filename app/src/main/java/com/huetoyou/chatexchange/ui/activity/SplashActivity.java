@@ -14,7 +14,7 @@ public class SplashActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        if(Utils.areWeOnline(this))
+        if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
         {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtras(getIntent());

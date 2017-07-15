@@ -24,7 +24,7 @@ public class OfflineActivity extends Activity
 
     public void checkOnlineStatus(View v)
     {
-        if(Utils.areWeOnline(this))
+        if(Utils.areWeOnANetwork(this) && Utils.areWeOnline())
         {
             Toast.makeText(this, "Connection established, reloading app :)", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, SplashActivity.class);

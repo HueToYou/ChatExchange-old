@@ -59,7 +59,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
 
-        if(Utils.areWeOnline(this))
+        if(Utils.areWeOnANetwork(this))
         {
             normalOnCreate();
 
@@ -68,7 +68,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
                 @Override
                 public void onReceive(Context context, Intent intent)
                 {
-                    if(!Utils.areWeOnline(ChatroomsExplorationActivity.this))
+                    if(!Utils.areWeOnANetwork(ChatroomsExplorationActivity.this))
                     {
                         Intent hueIntent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
                         startActivity(hueIntent);
@@ -144,7 +144,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         super.onResume();
 
-        if(!Utils.areWeOnline(this))
+        if(!Utils.areWeOnANetwork(this))
         {
             Intent intent = new Intent(this, OfflineActivity.class);
             startActivity(intent);

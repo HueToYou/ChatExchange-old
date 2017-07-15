@@ -132,7 +132,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                if(!Utils.areWeOnline(MainActivity.this))
+                if(!Utils.areWeOnANetwork(MainActivity.this))
                 {
                     Intent hueIntent = new Intent(MainActivity.this, OfflineActivity.class);
                     startActivity(hueIntent);
@@ -344,7 +344,7 @@ public class MainActivity extends SlidingActivity
 
         if(!oncreatejustcalled)
         {
-            if(Utils.areWeOnline(this))
+            if(Utils.areWeOnANetwork(this))
             {
                 normalOnResume();
             }
