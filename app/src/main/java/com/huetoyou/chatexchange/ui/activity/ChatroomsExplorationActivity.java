@@ -144,7 +144,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         super.onResume();
 
-        if(!Utils.areWeOnANetwork(this))
+        if(!Utils.areWeOnANetwork(this) && Utils.areWeOnline())
         {
             Intent intent = new Intent(this, OfflineActivity.class);
             startActivity(intent);
