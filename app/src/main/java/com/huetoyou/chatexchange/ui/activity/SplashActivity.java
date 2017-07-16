@@ -25,6 +25,8 @@ public class SplashActivity extends AppCompatActivity
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 intent.putExtras(getIntent());
                 startActivity(intent);
+
+                finish();
             }
 
             @Override
@@ -32,9 +34,9 @@ public class SplashActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(SplashActivity.this, OfflineActivity.class);
                 startActivity(intent);
+
+                finish();
             }
         });
-
-        finish();
     }
 }
