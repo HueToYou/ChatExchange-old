@@ -62,13 +62,13 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         ThemeHue.setTheme(this);
         super.onCreate(savedInstanceState);
+        normalOnCreate();
 
         new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
         {
             @Override
             public void onSucceeded(URL url, String data)
             {
-                normalOnCreate();
 
             }
 
