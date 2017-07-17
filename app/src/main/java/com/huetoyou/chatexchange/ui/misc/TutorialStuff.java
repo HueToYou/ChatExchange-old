@@ -96,7 +96,7 @@ public class TutorialStuff
         final FloatingActionButton add = activity.findViewById(R.id.add_chat_fab);
         final FloatingActionButton removeAll = activity.findViewById(R.id.remove_all_chats_fab);
 
-        final RecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
+        final CustomRecyclerView dummyChats = activity.findViewById(R.id.dummy_chat_list);
 
         final Drawable ico = activity.getResources().getDrawable(R.mipmap.ic_launcher);
 

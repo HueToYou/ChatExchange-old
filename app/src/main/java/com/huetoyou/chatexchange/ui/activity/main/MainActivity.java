@@ -62,6 +62,7 @@ import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
 import com.huetoyou.chatexchange.ui.misc.ChatDataBundle;
+import com.huetoyou.chatexchange.ui.misc.CustomRecyclerView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -84,7 +85,7 @@ public class MainActivity extends SlidingActivity
     private AccountManager mAccountManager;
 
     private SlidingMenu mChatroomSlidingMenu;
-    RecyclerView chatroomsList;
+    CustomRecyclerView chatroomsList;
     static SlidingMenu mCurrentUsers_SlidingMenu;
     static FragmentManager mFragmentManager;
 
