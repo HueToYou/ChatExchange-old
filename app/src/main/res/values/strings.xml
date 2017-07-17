@@ -133,4 +133,5 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="offline_msg">Looks like you\'re offline. RIP. Check to make sure that your mobile data and/or Wi-Fi is on</string>
+    <string name="help_FAQ">FAQ:\n\nQ: Why is this app so buggy?\nA: Because @GeorgeTheDev worked on it\n\nQ: Why doesn\'t this app\'s core functionality (participating in SE chatrooms) work?\nA: Because @TheWanderer was constantly pinging @NathanOsman to work on it, and Nathan didn\'t want to so he went and hid in @ThomasWard\'s basement, where he would have easy access to LAZORS in order to terminate @TheWanderer\'s annoying pings\n\nQ: Why am I even wasting my time to write this nonsense?\nA: *shrugs*</string>
 </resources>
