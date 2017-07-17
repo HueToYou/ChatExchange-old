@@ -38,6 +38,7 @@ public class CustomWebView
     private final Button mOpenInWV;
     private final Button mBack;
     private final Button mForward;
+    private HueListener listener;
 
     public CustomWebView(Activity context, View view, WebView webView, boolean shouldOverrideTitle) {
         mContext = context;
@@ -82,6 +83,8 @@ public class CustomWebView
                 }
             }
         });
+
+        listener = null;
     }
 
     public void loadUrl(final String url) {
@@ -162,7 +165,21 @@ public class CustomWebView
             {
                 if (mOverrideTitle) mContext.setTitle(view.getTitle());
                 super.onPageFinished(view, url);
+                if(listener != null)
+                {
+                    listener.onFinishedLoading();
+                }
             }
         });
+    }
+
+    public interface HueListener
+    {
+        public void onFinishedLoading();
+    }
+
+    public void setHueListener(HueListener listener)
+    {
+        this.listener = listener;
     }
 }

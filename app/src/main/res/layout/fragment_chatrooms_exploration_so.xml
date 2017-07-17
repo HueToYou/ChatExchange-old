@@ -1,12 +1,20 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity$SO_ChatroomsFrag">
 
+    <ProgressBar
+        android:id="@+id/so_loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal" />
+
     <include
         layout="@layout/fragment_star_webview" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

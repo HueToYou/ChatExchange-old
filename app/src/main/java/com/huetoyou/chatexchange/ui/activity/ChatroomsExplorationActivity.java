@@ -240,11 +240,22 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
+            rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
             WebView webView = rootView.findViewById(R.id.stars_view);
             CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
             customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+
+            customWebView.setHueListener(new CustomWebView.HueListener()
+            {
+                @Override
+                public void onFinishedLoading()
+                {
+                    rootView.findViewById(R.id.se_loading).setVisibility(View.GONE);
+                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                }
+            });
 
             return rootView;
         }
@@ -277,11 +288,24 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
+            rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
             WebView webView = rootView.findViewById(R.id.stars_view);
             CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
             customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
+
+            customWebView.setHueListener(new CustomWebView.HueListener()
+            {
+                @Override
+                public void onFinishedLoading()
+                {
+                    rootView.findViewById(R.id.so_loading).setVisibility(View.GONE);
+                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                }
+            });
+
+
             return rootView;
         }
     }
