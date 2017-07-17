@@ -356,6 +356,7 @@ public class MainActivity extends SlidingActivity
     protected void onResume()
     {
         super.onResume();
+        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
         if(!oncreatejustcalled)
         {
@@ -365,7 +366,6 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(URL url, String data)
                 {
                     normalOnResume();
-
                 }
 
                 @Override
@@ -387,9 +387,7 @@ public class MainActivity extends SlidingActivity
 
     private void normalOnResume()
     {
-        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
-
-//        doFragmentStuff();
+        //        doFragmentStuff();
         //super.onResume();
 
         System.out.println("Hellu!");
