@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -57,6 +59,10 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
 
     private BroadcastReceiver hueNetworkStatusChanged;
 
+    private static boolean interwebsConnSucceeded = false;
+    private static Thread seThread;
+    private static Thread soThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,7 +75,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             @Override
             public void onSucceeded(URL url, String data)
             {
-
+                interwebsConnSucceeded = true;
             }
 
             @Override
@@ -77,6 +83,10 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             {
                 Intent intent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
                 startActivity(intent);
+
+                seThread.interrupt();
+                soThread.interrupt();
+
                 finish();
             }
         });
@@ -243,19 +253,40 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            WebView webView = rootView.findViewById(R.id.stars_view);
-            CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
-            customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
-
-            customWebView.setHueListener(new CustomWebView.HueListener()
+            seThread = new Thread(new Runnable()
             {
                 @Override
-                public void onFinishedLoading()
+                public void run()
                 {
-                    rootView.findViewById(R.id.se_loading).setVisibility(View.GONE);
-                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                    while (!interwebsConnSucceeded && !Thread.currentThread().isInterrupted());
+
+                    if(!Thread.currentThread().isInterrupted())
+                    {
+                        new Handler(Looper.getMainLooper()).post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                WebView webView = rootView.findViewById(R.id.stars_view);
+                                CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
+                                customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+
+                                customWebView.setHueListener(new CustomWebView.HueListener()
+                                {
+                                    @Override
+                                    public void onFinishedLoading()
+                                    {
+                                        rootView.findViewById(R.id.se_loading).setVisibility(View.GONE);
+                                        rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             });
+
+            seThread.start();
 
             return rootView;
         }
@@ -291,20 +322,40 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            WebView webView = rootView.findViewById(R.id.stars_view);
-            CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
-            customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
-
-            customWebView.setHueListener(new CustomWebView.HueListener()
+            soThread = new Thread(new Runnable()
             {
                 @Override
-                public void onFinishedLoading()
+                public void run()
                 {
-                    rootView.findViewById(R.id.so_loading).setVisibility(View.GONE);
-                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                    while (!interwebsConnSucceeded && !Thread.currentThread().isInterrupted());
+
+                    if(!Thread.currentThread().isInterrupted())
+                    {
+                        new Handler(Looper.getMainLooper()).post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                WebView webView = rootView.findViewById(R.id.stars_view);
+                                CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
+                                customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
+
+                                customWebView.setHueListener(new CustomWebView.HueListener()
+                                {
+                                    @Override
+                                    public void onFinishedLoading()
+                                    {
+                                        rootView.findViewById(R.id.so_loading).setVisibility(View.GONE);
+                                        rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             });
 
+            soThread.start();
 
             return rootView;
         }
