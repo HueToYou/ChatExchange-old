@@ -161,17 +161,7 @@ public class MainActivity extends SlidingActivity
 
         ThemeHue.setTheme(this);
 
-        SharedPreferences huePrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if(huePrefs.getBoolean("FLAG_restartMain", false))
-        {
-            super.onCreate(null);
-            huePrefs.edit().putBoolean("FLAG_restartMain", false).apply();
-        }
-        else
-        {
-            super.onCreate(savedInstanceState);
-        }
+        super.onCreate(null);
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
         setContentView(R.layout.activity_main);
         mHandler = new Handler();

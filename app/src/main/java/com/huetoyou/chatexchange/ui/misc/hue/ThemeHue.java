@@ -52,7 +52,7 @@ public class ThemeHue
         //Requires the oncreatejustcalled parameter to prevent setting the theme twice, as onResume() is called after onCreate() finishes
         if (mSharedPreferences.getBoolean("FLAG_restartMain", false) && !oncreatejustcalled)
         {
-            //mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
+            mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();
             com.huetoyou.chatexchange.ui.activity.main.FragStuff.setFragmentByTag("home");
         }
