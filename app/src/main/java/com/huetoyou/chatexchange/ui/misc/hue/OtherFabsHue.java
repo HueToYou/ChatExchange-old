@@ -44,9 +44,16 @@ public class OtherFabsHue
 
         if (activity != null)
         {
-            int hue = mSharedPreferences.getInt("fab_color", activity.getResources().getColor(R.color.colorAccent));
-
-            ColorStateList colorStateList = ColorStateList.valueOf(hue);
+            int initialColor = -1;
+            if(mSharedPreferences.getBoolean("same_fab_color", false))
+            {
+                initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
+            }
+            else
+            {
+                initialColor = mSharedPreferences.getInt("fab_color", activity.getResources().getColor(R.color.colorAccent));
+            }
+            ColorStateList colorStateList = ColorStateList.valueOf(initialColor);
             setTints(colorStateList, activity);
         }
     }

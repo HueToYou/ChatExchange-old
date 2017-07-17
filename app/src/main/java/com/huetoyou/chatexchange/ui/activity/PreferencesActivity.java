@@ -103,18 +103,22 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             setAppBarColorChange(checkBoxPreference);
 
             /*
+             * Make the FABs use action bar color pref
+             */
+            CheckBoxPreference sameFabColorCheckbox = (CheckBoxPreference) findPreference("same_fab_color");
+
+
+            /*
              * FAB color preference
              */
             fabColorPreference = (ColorPreference) findPreference("fab_color");
-            colorPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+
+            if(sameFabColorCheckbox.isChecked())
             {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    ActionBarHue.setActionBarColorToSharedPrefsValue(((PreferencesActivity) getActivity()));
-                    return true;
-                }
-            });
+                fabColorPreference.setEnabled(false);
+            }
+
+            setSameFabColor(sameFabColorCheckbox, fabColorPreference);
 
             /*
              * Dark theme preference
@@ -283,6 +287,26 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                         hueDark.setEnabled(false);
                     }
 
+                    return true;
+                }
+            });
+        }
+
+        private void setSameFabColor(final CheckBoxPreference sameFabColor, final ColorPreference hue)
+        {
+            sameFabColor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o)
+                {
+                    if((boolean)o)
+                    {
+                        hue.setEnabled(false);
+                    }
+                    else
+                    {
+                        hue.setEnabled(true);
+                    }
                     return true;
                 }
             });
