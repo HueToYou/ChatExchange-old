@@ -5,9 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -227,23 +233,54 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
             if (huehuehue != null)
             {
-                huehuehue.setIsPinned(false);
+                final SharedPreferences mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
+                huehuehue.setIsPinned(false);
                 String chatroomName = huehuehue.getName();
+                String snackTextDel = "Deleted " + chatroomName;
+                final String snackTextRestore = "Chatroom restored!";
+
+                final SpannableStringBuilder snackTextDelSSB = new SpannableStringBuilder().append(snackTextDel);
+                final SpannableStringBuilder snackTextRestoreSSB = new SpannableStringBuilder().append(snackTextRestore);
+
+
+                if(mSharedPrefs.getBoolean("darkTheme", false))
+                {
+                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)),0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)),0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+                else
+                {
+                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)),0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)),0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
                 final View parentLayout = activity.findViewById(android.R.id.content);
                 Snackbar snackbar = Snackbar
-                        .make(parentLayout, "Deleted " + chatroomName, Snackbar.LENGTH_LONG)
+                        .make(parentLayout, snackTextDelSSB, Snackbar.LENGTH_LONG)
                         .setAction("UNDO", new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View view)
                             {
-                                Snackbar hue = Snackbar.make(parentLayout, "Chatroom restored!", Snackbar.LENGTH_SHORT);
+                                Snackbar hue = Snackbar.make(parentLayout, snackTextRestoreSSB, Snackbar.LENGTH_SHORT);
+
+                                if(mSharedPrefs.getBoolean("darkTheme", false))
+                                {
+                                    hue.getView().setBackgroundColor(Color.WHITE);
+                                }
+
                                 hue.show();
                                 addItem(huehuehue);
                                 listener.onUndo();
                             }
                         });
+
+                if(mSharedPrefs.getBoolean("darkTheme", false))
+                {
+                    snackbar.getView().setBackgroundColor(activity.getResources().getColor(R.color.white));
+                }
 
                 snackbar.show();
                 snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>()

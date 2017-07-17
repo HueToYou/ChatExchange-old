@@ -160,7 +160,18 @@ public class MainActivity extends SlidingActivity
         this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         ThemeHue.setTheme(this);
-        super.onCreate(savedInstanceState);
+
+        SharedPreferences huePrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(huePrefs.getBoolean("FLAG_restartMain", false))
+        {
+            super.onCreate(null);
+            huePrefs.edit().putBoolean("FLAG_restartMain", false).apply();
+        }
+        else
+        {
+            super.onCreate(savedInstanceState);
+        }
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
         setContentView(R.layout.activity_main);
         mHandler = new Handler();
@@ -168,172 +179,6 @@ public class MainActivity extends SlidingActivity
         preSetup();
         createUsersSlidingMenu();
         setup();
-
-        mItemClickedListener = new RecyclerAdapter.OnItemClicked()
-        {
-            @Override
-            public void onClick(View view, int position)
-            {
-                Log.e("CLICKED", position + "");
-
-                mCurrentFragment = mWrappedAdapter.getItemAt(position).getUrl();
-                //doCloseAnimationForDrawerToggle(mDrawerButton);
-                getmChatroomSlidingMenu().toggle();
-
-                mHandler.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        FragStuff.setFragmentByTag(mCurrentFragment);
-                    }
-                }, getResources().getInteger(R.integer.animation_duration_ms));
-            }
-
-            @Override
-            public void onCloseClick(View view, int position)
-            {
-                MainActivityUtils.confirmClose(MainActivity.this, position);
-            }
-        };
-
-        chatroomsList = findViewById(R.id.chatroomsListView);
-
-        mSwipeManager = new RecyclerViewSwipeManager();
-
-        mWrappedAdapter = new RecyclerAdapter(this, mItemClickedListener, mSwipeManager);
-        mAdapter = mSwipeManager.createWrappedAdapter(mWrappedAdapter);
-
-        chatroomsList.setAdapter(mAdapter);
-
-        // disable change animations
-        ((SimpleItemAnimator) chatroomsList.getItemAnimator()).setSupportsChangeAnimations(false);
-
-        mSwipeManager.attachRecyclerView(chatroomsList);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
-                DividerItemDecoration.VERTICAL);
-        chatroomsList.addItemDecoration(dividerItemDecoration);
-
-//        ItemTouchHelper.Callback callback = new HueRecyclerViewSwipeHelperHue(mAdapter);
-//        ItemTouchHelper helper = new ItemTouchHelper(callback);
-//        helper.attachToRecyclerView(chatroomsList);
-
-        assert getSupportActionBar() != null;
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
-        drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
-        getSupportActionBar().setHomeAsUpIndicator(drawable);
-
-        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
-        fam.hideMenuButton(false);
-
-        mActionBar = (Toolbar) Utils.getActionBar(getWindow().getDecorView());
-        assert mActionBar != null;
-
-        Log.e("ACTIONBAR", mActionBar.getClass().toString());
-
-//        mActionBar.removeViewAt(1);
-//        mActionBar.addView(newDrawer, 1);
-
-        mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
-
-        ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
-                mDrawerButton,
-                "rotation",
-                180f,
-                0f);
-
-        mCloseAnimSet.play(closeAnimator);
-        mCloseAnimSet.setInterpolator(new AnticipateInterpolator());
-        mCloseAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
-
-        ObjectAnimator openAnimator = ObjectAnimator.ofFloat(
-                mDrawerButton,
-                "rotation",
-                -180f,
-                0f);
-
-        mOpenAnimSet.play(openAnimator);
-        mOpenAnimSet.setInterpolator(new OvershootInterpolator());
-        mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
-
-        mDrawerButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Log.e("CLICKED", "CLICKED");
-
-                if (mChatroomSlidingMenu.isMenuShowing())
-                {
-                    //doCloseAnimationForDrawerToggle(view);
-                }
-                else
-                {
-                    //doOpenAnimationForDrawerToggle(view);
-                }
-                onSupportNavigateUp();
-            }
-        });
-
-        mChatroomSlidingMenu.setOnCloseListener(new SlidingMenu.OnCloseListener()
-        {
-            @Override
-            public void onClose()
-            {
-                fam.close(false);
-                fam.hideMenuButton(false);
-                doCloseAnimationForDrawerToggle(mDrawerButton);
-            }
-        });
-
-        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener()
-        {
-            @Override
-            public void onOpen()
-            {
-                doOpenAnimationForDrawerToggle(mDrawerButton);
-                mHandler.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        fam.showMenuButton(true);
-                    }
-                }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
-            }
-        });
-
-        mChatroomSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
-            }
-        });
-
-        Log.e("FEATURE", String.valueOf(getWindow().hasFeature(Window.FEATURE_OPTIONS_PANEL)));
-        mActionMenuView = (ActionMenuView) mActionBar.getChildAt(2);
-
-        oncreatejustcalled = true;
-
-        //forces options menu overflow icon to show on devices with physical menu keys
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);
-            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-
-            if (menuKeyField != null) {
-                menuKeyField.setAccessible(true);
-                menuKeyField.setBoolean(config, false);
-            }
-        }
-        catch (Exception e) {
-            // presumably, not relevant
-        }
-
     }
 
     @Override
@@ -357,6 +202,7 @@ public class MainActivity extends SlidingActivity
     protected void onResume()
     {
         super.onResume();
+        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
 
         if(!oncreatejustcalled)
         {
@@ -366,7 +212,6 @@ public class MainActivity extends SlidingActivity
                 public void onSucceeded(URL url, String data)
                 {
                     normalOnResume();
-
                 }
 
                 @Override
@@ -388,9 +233,7 @@ public class MainActivity extends SlidingActivity
 
     private void normalOnResume()
     {
-        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
-
-//        doFragmentStuff();
+        //        doFragmentStuff();
         //super.onResume();
 
         System.out.println("Hellu!");
@@ -560,6 +403,170 @@ public class MainActivity extends SlidingActivity
         }
         MainActivityUtils.respondToNotificationClick(MainActivity.this);
         MainActivityUtils.setupACBR(this);
+
+        mItemClickedListener = new RecyclerAdapter.OnItemClicked()
+        {
+            @Override
+            public void onClick(View view, int position)
+            {
+                Log.e("CLICKED", position + "");
+
+                mCurrentFragment = mWrappedAdapter.getItemAt(position).getUrl();
+                //doCloseAnimationForDrawerToggle(mDrawerButton);
+                getmChatroomSlidingMenu().toggle();
+
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        FragStuff.setFragmentByTag(mCurrentFragment);
+                    }
+                }, getResources().getInteger(R.integer.animation_duration_ms));
+            }
+
+            @Override
+            public void onCloseClick(View view, int position)
+            {
+                MainActivityUtils.confirmClose(MainActivity.this, position);
+            }
+        };
+
+        chatroomsList = findViewById(R.id.chatroomsListView);
+
+        mSwipeManager = new RecyclerViewSwipeManager();
+
+        mWrappedAdapter = new RecyclerAdapter(this, mItemClickedListener, mSwipeManager);
+        mAdapter = mSwipeManager.createWrappedAdapter(mWrappedAdapter);
+
+        chatroomsList.setAdapter(mAdapter);
+
+        // disable change animations
+        ((SimpleItemAnimator) chatroomsList.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        mSwipeManager.attachRecyclerView(chatroomsList);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(chatroomsList.getContext(),
+                DividerItemDecoration.VERTICAL);
+        chatroomsList.addItemDecoration(dividerItemDecoration);
+
+//        ItemTouchHelper.Callback callback = new HueRecyclerViewSwipeHelperHue(mAdapter);
+//        ItemTouchHelper helper = new ItemTouchHelper(callback);
+//        helper.attachToRecyclerView(chatroomsList);
+
+        assert getSupportActionBar() != null;
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, null);
+        drawable.setTintList(ColorStateList.valueOf(Color.rgb(255, 255, 255)));
+        getSupportActionBar().setHomeAsUpIndicator(drawable);
+
+        fam.hideMenuButton(false);
+
+        mActionBar = (Toolbar) Utils.getActionBar(getWindow().getDecorView());
+        assert mActionBar != null;
+
+        Log.e("ACTIONBAR", mActionBar.getClass().toString());
+
+//        mActionBar.removeViewAt(1);
+//        mActionBar.addView(newDrawer, 1);
+
+        mDrawerButton = (AppCompatImageButton) mActionBar.getChildAt(1);
+
+        ObjectAnimator closeAnimator = ObjectAnimator.ofFloat(
+                mDrawerButton,
+                "rotation",
+                180f,
+                0f);
+
+        mCloseAnimSet.play(closeAnimator);
+        mCloseAnimSet.setInterpolator(new AnticipateInterpolator());
+        mCloseAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+
+        ObjectAnimator openAnimator = ObjectAnimator.ofFloat(
+                mDrawerButton,
+                "rotation",
+                -180f,
+                0f);
+
+        mOpenAnimSet.play(openAnimator);
+        mOpenAnimSet.setInterpolator(new OvershootInterpolator());
+        mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+
+        mDrawerButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.e("CLICKED", "CLICKED");
+
+                if (mChatroomSlidingMenu.isMenuShowing())
+                {
+                    //doCloseAnimationForDrawerToggle(view);
+                }
+                else
+                {
+                    //doOpenAnimationForDrawerToggle(view);
+                }
+                onSupportNavigateUp();
+            }
+        });
+
+        mChatroomSlidingMenu.setOnCloseListener(new SlidingMenu.OnCloseListener()
+        {
+            @Override
+            public void onClose()
+            {
+                fam.close(false);
+                fam.hideMenuButton(false);
+                doCloseAnimationForDrawerToggle(mDrawerButton);
+            }
+        });
+
+        mChatroomSlidingMenu.setOnOpenListener(new SlidingMenu.OnOpenListener()
+        {
+            @Override
+            public void onOpen()
+            {
+                doOpenAnimationForDrawerToggle(mDrawerButton);
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        fam.showMenuButton(true);
+                    }
+                }, getResources().getInteger(R.integer.animation_duration_ms) - 400);
+            }
+        });
+
+        mChatroomSlidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                TutorialStuff.showChatSliderTutorial_MainActivity(MainActivity.this);
+            }
+        });
+
+        Log.e("FEATURE", String.valueOf(getWindow().hasFeature(Window.FEATURE_OPTIONS_PANEL)));
+        mActionMenuView = (ActionMenuView) mActionBar.getChildAt(2);
+
+        oncreatejustcalled = true;
+
+        //forces options menu overflow icon to show on devices with physical menu keys
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        }
+        catch (Exception e) {
+            // presumably, not relevant
+        }
     }
 
     @Override
