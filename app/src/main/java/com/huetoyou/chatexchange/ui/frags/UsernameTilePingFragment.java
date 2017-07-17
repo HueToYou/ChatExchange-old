@@ -42,7 +42,7 @@ public class UsernameTilePingFragment extends Fragment
         userAvatar = mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
         mArgs = getArguments();
 
-        mUsername = mArgs.getString(ChatFragment.USER_NAME_KEY, "HueToYou");
+        mUsername = mArgs.getString(ChatFragment.USER_NAME_KEY, "huetoyou");
 
         Resources r = getResources();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, r.getDisplayMetrics());
