@@ -22,6 +22,7 @@ public class AboutActivity extends AppCompatActivity
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("About");
     }
 
     @Override

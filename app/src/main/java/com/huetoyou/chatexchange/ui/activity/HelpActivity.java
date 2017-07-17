@@ -23,6 +23,7 @@ public class HelpActivity extends AppCompatActivity
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Help");
     }
 
     public void showTutorial(View v)
