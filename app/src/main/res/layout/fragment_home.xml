@@ -16,7 +16,7 @@
         android:text="@string/notifications"
         android:textSize="18sp" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.huetoyou.chatexchange.ui.misc.CustomRecyclerView
         android:id="@+id/notification_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

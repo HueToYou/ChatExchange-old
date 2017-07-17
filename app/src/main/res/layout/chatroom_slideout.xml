@@ -27,13 +27,13 @@
             android:indeterminate="true"
             android:visibility="gone" />
 
-        <android.support.v7.widget.RecyclerView
+        <com.huetoyou.chatexchange.ui.misc.CustomRecyclerView
             android:id="@+id/chatroomsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
-        <android.support.v7.widget.RecyclerView
+        <com.huetoyou.chatexchange.ui.misc.CustomRecyclerView
             android:id="@+id/dummy_chat_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
