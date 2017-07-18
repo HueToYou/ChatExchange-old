@@ -1,5 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,19 +28,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.github.clans.fab.FloatingActionMenu;
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -54,6 +50,7 @@ class MainActivityUtils
         this.mainActivity = mainActivity;
     }
 
+    @SuppressLint("StaticFieldLeak")
     class AddList extends AsyncTask<String, Void, Void>
     {
         private final String mHtmlData;
@@ -170,15 +167,11 @@ class MainActivityUtils
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     class NotificationHandler extends AsyncTask<Void, Void, Void>
     {
         final MainActivity.NHInterface mInterface;
         final String mKey;
-
-        NotificationHandler newInstance(MainActivity.NHInterface nhInterface, String key)
-        {
-            return new NotificationHandler(nhInterface, key);
-        }
 
         NotificationHandler(MainActivity.NHInterface nhInterface, String key)
         {
@@ -267,9 +260,9 @@ class MainActivityUtils
                                 {
                                     e.printStackTrace();
                                 }
-                                if (MainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
                                 {
-                                    MainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
                                 }
                             }
                         }, "idSE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -305,9 +298,9 @@ class MainActivityUtils
                                 {
                                     e.printStackTrace();
                                 }
-                                if (MainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
+                                if (mainActivity.mCurrentUsers_SlidingMenu.isMenuShowing())
                                 {
-                                    MainActivity.mCurrentUsers_SlidingMenu.toggle();
+                                    mainActivity.mCurrentUsers_SlidingMenu.toggle();
                                 }
                             }
                         }, "idSO").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -322,15 +315,11 @@ class MainActivityUtils
         LocalBroadcastManager.getInstance(mainActivity).registerReceiver(mainActivity.mAddChatReceiver, intentFilter);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class ReceiveACB extends AsyncTask<Void, Void, Void>
     {
         final ACBInterface mInterface;
         final String mKey;
-
-        ReceiveACB newInstance(ACBInterface acbInterface, String key)
-        {
-            return new ReceiveACB(acbInterface, key);
-        }
 
         ReceiveACB(ACBInterface acbInterface, String key)
         {

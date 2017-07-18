@@ -86,7 +86,7 @@ public class MainActivity extends SlidingActivity
 
     private SlidingMenu mChatroomSlidingMenu;
     CustomRecyclerView chatroomsList;
-    static SlidingMenu mCurrentUsers_SlidingMenu;
+    SlidingMenu mCurrentUsers_SlidingMenu;
     FragmentManager mFragmentManager;
 
     BroadcastReceiver mAddChatReceiver;
