@@ -198,7 +198,7 @@ public class MainActivity extends SlidingActivity
     protected void onResume()
     {
         super.onResume();
-        ThemeHue.setThemeOnResume(MainActivity.this, oncreatejustcalled);
+        ThemeHue.setThemeOnResume(MainActivity.this, fragStuff, oncreatejustcalled);
 
         if(!oncreatejustcalled)
         {

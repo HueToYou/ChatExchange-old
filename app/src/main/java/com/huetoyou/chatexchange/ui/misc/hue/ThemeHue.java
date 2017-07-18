@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.main.FragStuff;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 
 /*
@@ -40,7 +41,7 @@ public class ThemeHue
     /*
      * Do *not* call this method from onCreate(); used for changing the theme on-the-fly; you should call this in onResume()
      */
-    public static void setThemeOnResume(Activity activity, boolean oncreatejustcalled)
+    public static void setThemeOnResume(MainActivity activity, FragStuff fragStuff, boolean oncreatejustcalled)
     {
         //Grab an instance of SharedPrefs if we haven't already
         if (mSharedPreferences == null)
@@ -54,7 +55,7 @@ public class ThemeHue
         {
             mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();
-            //com.huetoyou.chatexchange.ui.activity.main.FragStuff.setFragmentByTag("home");
+            fragStuff.setFragmentByTag(activity, "home");
         }
     }
 }
