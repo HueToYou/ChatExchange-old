@@ -17,27 +17,44 @@ import android.os.Looper;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionBarContainer;
+import android.support.v7.widget.ActionBarOverlayLayout;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.ScrollingTabContainerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.Window;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
 import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 import java.net.URL;
+import java.util.ArrayList;
+
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 public class ChatroomsExplorationActivity extends AppCompatActivity implements android.support.v7.app.ActionBar.TabListener
 {
@@ -60,6 +77,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     private BroadcastReceiver hueNetworkStatusChanged;
 
     private static boolean interwebsConnSucceeded = false;
+    public static boolean touchesBlocked = false;
     private static Thread seThread;
     private static Thread soThread;
 
@@ -163,6 +181,35 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
 
         ActionBarHue.setActionBarColorToSharedPrefsValue(this);
         ActionBarHue.setTabBarColorToSharedPrefsValue(this);
+
+        if(getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
+        {
+            ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
+            LinearLayout testb  = (LinearLayout) viewGroup.getChildAt(0);
+            FrameLayout testc = (FrameLayout) testb.getChildAt(1);
+            ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
+            ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
+            ScrollingTabContainerView testf = (ScrollingTabContainerView) teste.getChildAt(2);
+            LinearLayoutCompat testg = (LinearLayoutCompat) testf.getChildAt(0);
+
+            TutorialStuff.chatsExplorationTutorial(this, testg);
+        }
+        else //Landscape
+        {
+            ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
+            LinearLayout testb  = (LinearLayout) viewGroup.getChildAt(0);
+            FrameLayout testc = (FrameLayout) testb.getChildAt(1);
+            ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
+            ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
+            Toolbar teste2 = (Toolbar) teste.getChildAt(0);
+            ScrollingTabContainerView testf = (ScrollingTabContainerView) teste2.getChildAt(0);
+            LinearLayoutCompat testg = (LinearLayoutCompat) testf.getChildAt(0);
+
+            TutorialStuff.chatsExplorationTutorial(this, testg);
+        }
+
+        //Toast.makeText(this, "ARRl " + ((TextView) huelist.get(0)).getText(), Toast.LENGTH_LONG).show();
+        //System.out.println("Hueyishi: " + test5.getText());
     }
 
     @Override
@@ -170,6 +217,11 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         super.onPause();
         this.unregisterReceiver(hueNetworkStatusChanged);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return touchesBlocked || super.dispatchTouchEvent(ev);
     }
 
     @Override

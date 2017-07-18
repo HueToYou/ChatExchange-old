@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.util.DisplayMetrics;
@@ -18,6 +19,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -25,6 +27,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.Util;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity;
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.frags.UserTileFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -34,6 +37,7 @@ import com.wooplr.spotlight.prefs.PreferencesManager;
 import com.wooplr.spotlight.utils.SpotlightListener;
 import com.wooplr.spotlight.utils.SpotlightSequence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TutorialStuff
@@ -62,7 +66,6 @@ public class TutorialStuff
     private static final String USER_ONE = "User1";
     private static final String USER_MOD = "UserMod";
     private static final String USER_OWNER = "UserOwner";
-
     private static final String USER_NAME_KEY = "userName";
     private static final String USER_AVATAR_URL_KEY = "userAvatarUrl";
     private static final String USER_URL_KEY = "chatUrl";
@@ -71,6 +74,8 @@ public class TutorialStuff
     private static final String USER_REP_KEY = "rep";
     private static final String USER_IS_MOD_KEY = "isMod";
     private static final String USER_IS_OWNER_KEY = "isOwner";
+    private static final String SE_ROOMS_TAB = "SErooms";
+    private static final String SO_ROOMS_TAB = "SOrooms";
 
     private static SpotlightConfig mItemConfig;
 
@@ -250,6 +255,73 @@ public class TutorialStuff
         chatHome.setListener(listener);
         chatAdd.setListener(listener);
         chatRemAll.setListener(listener);
+    }
+
+    public static void chatsExplorationTutorial(final Activity activity, final LinearLayoutCompat hueLayout)
+    {
+        PreferencesManager manager = new PreferencesManager(activity);
+        manager.reset(SE_ROOMS_TAB);
+        manager.reset(SO_ROOMS_TAB);
+
+        if (!manager.isDisplayed(SE_ROOMS_TAB)) {
+            ChatroomsExplorationActivity.touchesBlocked = true;
+        }
+
+        if (mCategoryConfig == null)
+        {
+            setCategoryConfig(activity);
+        }
+
+        ArrayList<View> seTxtView = new ArrayList<>();
+        final ArrayList<View> soTxtView = new ArrayList<>();
+        hueLayout.getChildAt(0).findViewsWithText(seTxtView, "SE", View.FIND_VIEWS_WITH_TEXT);
+        hueLayout.getChildAt(1).findViewsWithText(soTxtView, "SO", View.FIND_VIEWS_WITH_TEXT);
+
+        SpotlightView SErooms = new SpotlightView.Builder(activity)
+                .target(seTxtView.get(0))
+                .usageId(SE_ROOMS_TAB)
+                .setConfiguration(mCategoryConfig)
+                .headingTvText(activity.getResources().getString(R.string.CEA_SErooms_tab_tutorial_heading))
+                .subHeadingTvText(activity.getResources().getString(R.string.CEA_SErooms_tab_tutorial_text))
+                .show();
+
+        final SpotlightView.Builder SOrooms = new SpotlightView.Builder(activity)
+                .setConfiguration(mCategoryConfig)
+                .headingTvText(activity.getResources().getString(R.string.CEA_SOrooms_tab_tutorial_heading))
+                .subHeadingTvText(activity.getResources().getString(R.string.CEA_SOrooms_tab_tutorial_text))
+                .usageId(SO_ROOMS_TAB);
+
+        SpotlightListener listener = new SpotlightListener()
+        {
+            @Override
+            public void onUserClicked(String s)
+            {
+                switch (s) {
+                    case SE_ROOMS_TAB:
+                        ChatroomsExplorationActivity.touchesBlocked = true;
+                        SOrooms.target(soTxtView.get(0)).show();
+                        break;
+                    case SO_ROOMS_TAB:
+                        ChatroomsExplorationActivity.touchesBlocked = false;
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinishedDrawingSpotlight()
+            {
+                ChatroomsExplorationActivity.touchesBlocked = false;
+            }
+
+            @Override
+            public void onStartedDrawingSpotlight()
+            {
+                ChatroomsExplorationActivity.touchesBlocked = false;
+            }
+        };
+
+        SErooms.setListener(listener);
+        SOrooms.setListener(listener);
     }
 
     /*

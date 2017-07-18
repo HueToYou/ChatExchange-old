@@ -92,7 +92,10 @@
     <string name="tab_se_title">SE Rooms</string>
     <string name="tab_so_title">SO Rooms</string>
     <string name="tab_hue_title">Huehuehue</string>
-
+    <string name="CEA_SErooms_tab_tutorial_heading">SE Rooms</string>
+    <string name="CEA_SOrooms_tab_tutorial_heading">SO Rooms</string>
+    <string name="CEA_SErooms_tab_tutorial_text">Click this tab to browse chatrooms on the main SE site. Clicking on a name will automatically add that chatroom to this app.</string>
+    <string name="CEA_SOrooms_tab_tutorial_text">Click this tab to browse chatrooms only on Stack Overflow.Once again, clicking on a name will automatically add that chatroom to this app.</string>
 
     <!-- Strings related to Settings -->
 
