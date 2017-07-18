@@ -1,10 +1,6 @@
 package com.huetoyou.chatexchange.ui.activity;
 
 
-import android.app.Activity;
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -12,47 +8,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.ActionBarOverlayLayout;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.ScrollingTabContainerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.Window;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
-import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
-import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
+import com.huetoyou.chatexchange.ui.misc.HueFragmentPagerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
-import com.huetoyou.chatexchange.ui.misc.Utils;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
-import com.huetoyou.chatexchange.ui.misc.hue.HueUtils;
 import com.huetoyou.chatexchange.ui.misc.hue.ThemeHue;
 
 import java.net.URL;
-import java.util.ArrayList;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
@@ -75,11 +58,8 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     private ViewPager mViewPager;
 
     private BroadcastReceiver hueNetworkStatusChanged;
-
-    private static boolean interwebsConnSucceeded = false;
     public static boolean touchesBlocked = false;
-    private static Thread seThread;
-    private static Thread soThread;
+    public static boolean internetConfirmed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,12 +68,14 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         super.onCreate(savedInstanceState);
         normalOnCreate();
 
-        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
+        new RequestFactory().get("http://www.google.com/", true, new RequestFactory.Listener()
         {
             @Override
             public void onSucceeded(URL url, String data)
             {
-                interwebsConnSucceeded = true;
+                ((SE_ChatroomsFrag)mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 0)).proceedToWebpageLoading();
+                ((SO_ChatroomsFrag)mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 1)).proceedToWebpageLoading();
+                internetConfirmed = true;
             }
 
             @Override
@@ -101,9 +83,6 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             {
                 Intent intent = new Intent(ChatroomsExplorationActivity.this, OfflineActivity.class);
                 startActivity(intent);
-
-                seThread.interrupt();
-                soThread.interrupt();
 
                 finish();
             }
@@ -118,7 +97,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             public void onReceive(Context context, Intent intent)
             {
                 if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                    new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
+                    new RequestFactory().get("http://www.google.com/", true, new RequestFactory.Listener()
                     {
                         @Override
                         public void onSucceeded(URL url, String data)
@@ -229,13 +208,12 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     {
         super.onResume();
 
-        new RequestFactory().get("http://google.com", true, new RequestFactory.Listener()
+        new RequestFactory().get("http://www.google.com/", true, new RequestFactory.Listener()
         {
             @Override
             public void onSucceeded(URL url, String data)
             {
                 registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
             }
 
             @Override
@@ -282,6 +260,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        View rootView;
 
         public SE_ChatroomsFrag()
         {
@@ -299,46 +278,34 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             return fragment;
         }
 
+        public void proceedToWebpageLoading()
+        {
+            WebView webView = rootView.findViewById(R.id.stars_view);
+            CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
+            customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
+
+            customWebView.setHueListener(new CustomWebView.HueListener()
+            {
+                @Override
+                public void onFinishedLoading()
+                {
+                    rootView.findViewById(R.id.se_loading).setVisibility(View.GONE);
+                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
+            rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            seThread = new Thread(new Runnable()
+            if(internetConfirmed)
             {
-                @Override
-                public void run()
-                {
-                    while (!interwebsConnSucceeded && !Thread.currentThread().isInterrupted());
-
-                    if(!Thread.currentThread().isInterrupted())
-                    {
-                        new Handler(Looper.getMainLooper()).post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                WebView webView = rootView.findViewById(R.id.stars_view);
-                                CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
-                                customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
-
-                                customWebView.setHueListener(new CustomWebView.HueListener()
-                                {
-                                    @Override
-                                    public void onFinishedLoading()
-                                    {
-                                        rootView.findViewById(R.id.se_loading).setVisibility(View.GONE);
-                                        rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-
-            seThread.start();
+                proceedToWebpageLoading();
+                System.out.println("HUE-247");
+            }
 
             return rootView;
         }
@@ -351,6 +318,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        View rootView;
 
         public SO_ChatroomsFrag()
         {
@@ -368,46 +336,34 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             return fragment;
         }
 
+        public void proceedToWebpageLoading()
+        {
+            WebView webView = rootView.findViewById(R.id.stars_view);
+            CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
+            customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
+
+            customWebView.setHueListener(new CustomWebView.HueListener()
+            {
+                @Override
+                public void onFinishedLoading()
+                {
+                    rootView.findViewById(R.id.so_loading).setVisibility(View.GONE);
+                    rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            final View rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
+            rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            soThread = new Thread(new Runnable()
+            if(internetConfirmed)
             {
-                @Override
-                public void run()
-                {
-                    while (!interwebsConnSucceeded && !Thread.currentThread().isInterrupted());
-
-                    if(!Thread.currentThread().isInterrupted())
-                    {
-                        new Handler(Looper.getMainLooper()).post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                WebView webView = rootView.findViewById(R.id.stars_view);
-                                CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
-                                customWebView.loadUrl(getResources().getText(R.string.stackoverflow).toString());
-
-                                customWebView.setHueListener(new CustomWebView.HueListener()
-                                {
-                                    @Override
-                                    public void onFinishedLoading()
-                                    {
-                                        rootView.findViewById(R.id.so_loading).setVisibility(View.GONE);
-                                        rootView.findViewById(R.id.webview_parent).setVisibility(View.VISIBLE);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-
-            soThread.start();
+                proceedToWebpageLoading();
+                System.out.println("HUE-248");
+            }
 
             return rootView;
         }
@@ -451,7 +407,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter
+    public class SectionsPagerAdapter extends HueFragmentPagerAdapter
     {
 
         public SectionsPagerAdapter(FragmentManager fm)
