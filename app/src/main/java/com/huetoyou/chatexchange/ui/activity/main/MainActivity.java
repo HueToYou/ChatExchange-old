@@ -489,25 +489,6 @@ public class MainActivity extends SlidingActivity
         mOpenAnimSet.setInterpolator(new OvershootInterpolator());
         mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
-        mDrawerButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Log.e("CLICKED", "CLICKED");
-
-                if (mChatroomSlidingMenu.isMenuShowing())
-                {
-                    //doCloseAnimationForDrawerToggle(view);
-                }
-                else
-                {
-                    //doOpenAnimationForDrawerToggle(view);
-                }
-                onSupportNavigateUp();
-            }
-        });
-
         mChatroomSlidingMenu.setOnCloseListener(new SlidingMenu.OnCloseListener()
         {
             @Override
