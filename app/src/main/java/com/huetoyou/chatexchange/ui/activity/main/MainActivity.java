@@ -87,7 +87,7 @@ public class MainActivity extends SlidingActivity
     private SlidingMenu mChatroomSlidingMenu;
     CustomRecyclerView chatroomsList;
     static SlidingMenu mCurrentUsers_SlidingMenu;
-    static FragmentManager mFragmentManager;
+    FragmentManager mFragmentManager;
 
     BroadcastReceiver mAddChatReceiver;
 
@@ -122,6 +122,9 @@ public class MainActivity extends SlidingActivity
     public static boolean touchesBlocked = false;
 
     private BroadcastReceiver hueNetworkStatusChanged;
+
+    FragStuff fragStuff;
+    private MainActivityUtils mainActivityUtils;
 
     /*
      * Activity Lifecycle
@@ -165,6 +168,9 @@ public class MainActivity extends SlidingActivity
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
         setContentView(R.layout.activity_main);
         mHandler = new Handler();
+
+        mainActivityUtils = new MainActivityUtils(MainActivity.this);
+        fragStuff = new FragStuff(mainActivityUtils);
 
         preSetup();
         createUsersSlidingMenu();
@@ -230,7 +236,7 @@ public class MainActivity extends SlidingActivity
 
         mIntent = getIntent();
 
-        MainActivityUtils.respondToNotificationClick(MainActivity.this);
+        mainActivityUtils.respondToNotificationClick();
 
         TutorialStuff.homeFragTutorial(MainActivity.this);
     }
@@ -240,7 +246,7 @@ public class MainActivity extends SlidingActivity
     {
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
-            FragStuff.setFragmentByTag("home");
+            fragStuff.setFragmentByTag(this, "home");
             for (Fragment fragment : mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment)
@@ -299,7 +305,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onClick(View v)
             {
-                MainActivityUtils.showAddTabDialog(MainActivity.this);
+                mainActivityUtils.showAddTabDialog();
                 fam.close(true);
             }
         });
@@ -316,7 +322,7 @@ public class MainActivity extends SlidingActivity
                     public void run()
                     {
                         Log.e("POS", "DEFL");
-                        FragStuff.setFragmentByTag("home");
+                        fragStuff.setFragmentByTag( MainActivity.this, "home");
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
 
@@ -361,7 +367,7 @@ public class MainActivity extends SlidingActivity
                     CookieSyncManager.getInstance().sync();
                 }
 
-                FragStuff.doFragmentStuff(MainActivity.this);
+                fragStuff.doFragmentStuff(MainActivity.this);
             }
         };
 
@@ -391,8 +397,8 @@ public class MainActivity extends SlidingActivity
             }
             mAccountManager.getAuthToken(mAccountManager.getAccounts()[0], Authenticator.ACCOUNT_TYPE, null, true, accountManagerCallback, null);
         }
-        MainActivityUtils.respondToNotificationClick(MainActivity.this);
-        MainActivityUtils.setupACBR(this);
+        mainActivityUtils.respondToNotificationClick();
+        mainActivityUtils.setupACBR();
 
         mItemClickedListener = new RecyclerAdapter.OnItemClicked()
         {
@@ -410,7 +416,7 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void run()
                     {
-                        FragStuff.setFragmentByTag(mCurrentFragment);
+                        fragStuff.setFragmentByTag(MainActivity.this, mCurrentFragment);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
             }
@@ -418,7 +424,7 @@ public class MainActivity extends SlidingActivity
             @Override
             public void onCloseClick(View view, int position)
             {
-                MainActivityUtils.confirmClose(MainActivity.this, position);
+                mainActivityUtils.confirmClose(position);
             }
         };
 
@@ -845,8 +851,8 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        FragStuff.removeAllFragmentsFromList(mainActivity);
-                        FragStuff.setFragmentByTag("home");
+                        fragStuff.removeAllFragmentsFromList(mainActivity);
+                        fragStuff.setFragmentByTag(MainActivity.this, "home");
                     }
                 })
                 .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)

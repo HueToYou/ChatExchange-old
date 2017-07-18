@@ -47,7 +47,14 @@ import java.util.regex.Pattern;
 
 class MainActivityUtils
 {
-    static class AddList extends AsyncTask<String, Void, Void>
+    private MainActivity mainActivity;
+
+    MainActivityUtils(MainActivity mainActivity)
+    {
+        this.mainActivity = mainActivity;
+    }
+
+    class AddList extends AsyncTask<String, Void, Void>
     {
         private final String mHtmlData;
         private final String mChatId;
@@ -59,7 +66,7 @@ class MainActivityUtils
         private Drawable mIcon;
         private Integer mColor;
 
-        static AddList newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
+        AddList newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
         {
             return new AddList(mainActivity, sharedPreferences, data, id, url, addListListener);
         }
@@ -163,12 +170,12 @@ class MainActivityUtils
         }
     }
 
-    static class NotificationHandler extends AsyncTask<Void, Void, Void>
+    class NotificationHandler extends AsyncTask<Void, Void, Void>
     {
         final MainActivity.NHInterface mInterface;
         final String mKey;
 
-        static NotificationHandler newInstance(MainActivity.NHInterface nhInterface, String key)
+        NotificationHandler newInstance(MainActivity.NHInterface nhInterface, String key)
         {
             return new NotificationHandler(nhInterface, key);
         }
@@ -220,7 +227,7 @@ class MainActivityUtils
      *
      * @see CustomWebView#client()
      */
-    static void setupACBR(final MainActivity mainActivity)
+    void setupACBR()
     {
         mainActivity.mAddChatReceiver = new BroadcastReceiver()
         {
@@ -233,9 +240,9 @@ class MainActivityUtils
                     if (extras.containsKey("idSE"))
                     {
                         mainActivity.addIdToSEList(extras.getString("idSE"));
-                        FragStuff.doFragmentStuff(mainActivity);
+                        mainActivity.fragStuff.doFragmentStuff(mainActivity);
 
-                        ReceiveACB.newInstance(new ACBInterface()
+                        new ReceiveACB(new ACBInterface()
                         {
                             @Override
                             public boolean urlFound()
@@ -246,7 +253,7 @@ class MainActivityUtils
                             @Override
                             public boolean fragmentFound()
                             {
-                                return MainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(extras.getString("idSE")))) != null;
                             }
 
                             @Override
@@ -254,7 +261,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    FragStuff.setFragmentByChatId(mainActivity, extras.getString("idSE"), "exchange");
+                                    mainActivity.fragStuff.setFragmentByChatId(mainActivity, extras.getString("idSE"), "exchange");
                                 }
                                 catch (Exception e)
                                 {
@@ -271,9 +278,9 @@ class MainActivityUtils
                     else if (extras.containsKey("idSO"))
                     {
                         mainActivity.addIdToSOList(extras.getString("idSO"));
-                        FragStuff.doFragmentStuff(mainActivity);
+                        mainActivity.fragStuff.doFragmentStuff(mainActivity);
 
-                        ReceiveACB.newInstance(new ACBInterface()
+                        new ReceiveACB(new ACBInterface()
                         {
                             @Override
                             public boolean urlFound()
@@ -284,7 +291,7 @@ class MainActivityUtils
                             @Override
                             public boolean fragmentFound()
                             {
-                                return MainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
+                                return mainActivity.mFragmentManager.findFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(extras.getString("idSO")))) != null;
                             }
 
                             @Override
@@ -292,7 +299,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    FragStuff.setFragmentByChatId(mainActivity, extras.getString("idSO"), "overflow");
+                                    mainActivity.fragStuff.setFragmentByChatId(mainActivity, extras.getString("idSO"), "overflow");
                                 }
                                 catch (Exception e)
                                 {
@@ -315,12 +322,12 @@ class MainActivityUtils
         LocalBroadcastManager.getInstance(mainActivity).registerReceiver(mainActivity.mAddChatReceiver, intentFilter);
     }
 
-    static private class ReceiveACB extends AsyncTask<Void, Void, Void>
+    private class ReceiveACB extends AsyncTask<Void, Void, Void>
     {
         final ACBInterface mInterface;
         final String mKey;
 
-        static ReceiveACB newInstance(ACBInterface acbInterface, String key)
+        ReceiveACB newInstance(ACBInterface acbInterface, String key)
         {
             return new ReceiveACB(acbInterface, key);
         }
@@ -370,7 +377,7 @@ class MainActivityUtils
      * If Firebase notification comes with data, and that data is room info, open the room if added
      */
 
-    static void respondToNotificationClick(final MainActivity mainActivity)
+    void respondToNotificationClick()
     {
         if (mainActivity.getIntent().getExtras() != null)
         {
@@ -380,7 +387,7 @@ class MainActivityUtils
 
             if (chatId != null && chatDomain != null)
             {
-                MainActivityUtils.NotificationHandler.newInstance(new MainActivity.NHInterface()
+                new NotificationHandler(new MainActivity.NHInterface()
                 {
                     @Override
                     public boolean seContainsId()
@@ -397,7 +404,7 @@ class MainActivityUtils
                     @Override
                     public void onFinish()
                     {
-                        FragStuff.setFragmentByChatId(mainActivity, chatId, chatDomain);
+                        mainActivity.fragStuff.setFragmentByChatId(mainActivity, chatId, chatDomain);
                     }
                 }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
@@ -411,7 +418,7 @@ class MainActivityUtils
      * @param position the position of the item in the chat list
      */
 
-    static void confirmClose(final MainActivity mainActivity, final int position)
+    void confirmClose(final int position)
     {
 
         Vibrator vib = (Vibrator) mainActivity.getSystemService(Context.VIBRATOR_SERVICE);
@@ -462,7 +469,7 @@ class MainActivityUtils
                 seId = id;
             }
 
-            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) FragStuff.setFragmentByTag("home");
+            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) mainActivity.fragStuff.setFragmentByTag(mainActivity, "home");
 //            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
 
             final String soId1 = soId;
@@ -486,7 +493,7 @@ class MainActivityUtils
                 public void onUndoExpire(String url)
                 {
                     Log.e("UNDO", "Undo Expired");
-                    MainActivity.mFragmentManager.getFragments().remove(MainActivity.mFragmentManager.findFragmentByTag(url));
+                    mainActivity.mFragmentManager.getFragments().remove(mainActivity.mFragmentManager.findFragmentByTag(url));
                 }
             });
         }
@@ -496,7 +503,7 @@ class MainActivityUtils
      * Handle adding chats
      */
 
-    static void showAddTabDialog(final MainActivity mainActivity)
+    void showAddTabDialog()
     {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -551,7 +558,7 @@ class MainActivityUtils
                         mainActivity.addIdToSEList(inputText);
                     }
 
-                    FragStuff.doFragmentStuff(mainActivity);
+                    mainActivity.fragStuff.doFragmentStuff(mainActivity);
                 }
                 else
                 {
