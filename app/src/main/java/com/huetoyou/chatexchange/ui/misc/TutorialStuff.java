@@ -752,16 +752,16 @@ public class TutorialStuff
     private static void setCategoryConfig(Activity activity)
     {
         mCategoryConfig = new SpotlightConfig();
-        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(100, activity));
+        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(300, activity));
         mCategoryConfig.setRevealAnimationEnabled(true);
         mCategoryConfig.setPerformClick(false);
-        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(50, activity));
+        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(200, activity));
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#aa000000"));
-        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(100, activity));
+        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(300, activity));
         mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);
