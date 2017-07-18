@@ -65,7 +65,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     protected void onCreate(Bundle savedInstanceState)
     {
         ThemeHue.setTheme(this);
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         normalOnCreate();
 
         new RequestFactory().get("http://www.google.com/", true, new RequestFactory.Listener()
