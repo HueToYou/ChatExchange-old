@@ -233,7 +233,7 @@ class MainActivityUtils
                     if (extras.containsKey("idSE"))
                     {
                         mainActivity.addIdToSEList(extras.getString("idSE"));
-                        mainActivity.fragStuff.doFragmentStuff(mainActivity);
+                        mainActivity.fragStuff.doFragmentStuff();
 
                         new ReceiveACB(new ACBInterface()
                         {
@@ -254,7 +254,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    mainActivity.fragStuff.setFragmentByChatId(mainActivity, extras.getString("idSE"), "exchange");
+                                    mainActivity.fragStuff.setFragmentByChatId(extras.getString("idSE"), "exchange");
                                 }
                                 catch (Exception e)
                                 {
@@ -271,7 +271,7 @@ class MainActivityUtils
                     else if (extras.containsKey("idSO"))
                     {
                         mainActivity.addIdToSOList(extras.getString("idSO"));
-                        mainActivity.fragStuff.doFragmentStuff(mainActivity);
+                        mainActivity.fragStuff.doFragmentStuff();
 
                         new ReceiveACB(new ACBInterface()
                         {
@@ -292,7 +292,7 @@ class MainActivityUtils
                             {
                                 try
                                 {
-                                    mainActivity.fragStuff.setFragmentByChatId(mainActivity, extras.getString("idSO"), "overflow");
+                                    mainActivity.fragStuff.setFragmentByChatId(extras.getString("idSO"), "overflow");
                                 }
                                 catch (Exception e)
                                 {
@@ -393,7 +393,7 @@ class MainActivityUtils
                     @Override
                     public void onFinish()
                     {
-                        mainActivity.fragStuff.setFragmentByChatId(mainActivity, chatId, chatDomain);
+                        mainActivity.fragStuff.setFragmentByChatId(chatId, chatDomain);
                     }
                 }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
@@ -458,7 +458,7 @@ class MainActivityUtils
                 seId = id;
             }
 
-            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) mainActivity.fragStuff.setFragmentByTag(mainActivity, "home");
+            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) mainActivity.fragStuff.setFragmentByTag("home");
 //            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
 
             final String soId1 = soId;
@@ -547,7 +547,7 @@ class MainActivityUtils
                         mainActivity.addIdToSEList(inputText);
                     }
 
-                    mainActivity.fragStuff.doFragmentStuff(mainActivity);
+                    mainActivity.fragStuff.doFragmentStuff();
                 }
                 else
                 {

@@ -14,15 +14,17 @@ import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
 import java.net.URL;
 
 public class FragStuff
 {
     private MainActivityUtils mainActivityUtils;
-    FragStuff(MainActivityUtils mainActivityUtils)
+    private MainActivity mainActivity;
+
+    FragStuff(MainActivity mainActivity, MainActivityUtils mainActivityUtils)
     {
         this.mainActivityUtils = mainActivityUtils;
+        this.mainActivity = mainActivity;
     }
     /*
      * Setup fragments
@@ -31,7 +33,7 @@ public class FragStuff
     /**
      * Instantiate fragments and add them to {@link MainActivity#mChatroomSlidingMenu}
      */
-    void doFragmentStuff(final MainActivity mainActivity)
+    void doFragmentStuff()
     {
 //        mainActivity.chatDataBundle.resetArrays(false, mainActivity.mEditor);
         mainActivity.runOnUiThread(new Runnable()
@@ -73,7 +75,7 @@ public class FragStuff
                             @Override
                             public void onProgress(String name, Drawable icon, Integer color)
                             {
-                                fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
+                                fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                                 Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
                                 mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
                                 mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
@@ -84,8 +86,8 @@ public class FragStuff
                             @Override
                             public void onFinish(String name, String url, Drawable icon, Integer color)
                             {
-                                addFragmentToList(mainActivity, name, url, icon, color, id);
-                                initiateFragment(mainActivity, fragment);
+                                addFragmentToList( name, url, icon, color, id);
+                                initiateFragment(fragment);
                             }
                         });
 
@@ -134,7 +136,7 @@ public class FragStuff
                             @Override
                             public void onProgress(String name, Drawable icon, Integer color)
                             {
-                                fragment = addFragment(mainActivity, chatUrl, name, color, Integer.decode(id));
+                                fragment = addFragment(chatUrl, name, color, Integer.decode(id));
                                 mainActivity.chatDataBundle.mSOChats.put(Integer.decode(id), fragment);
                                 mainActivity.chatDataBundle.mSOChatColors.put(Integer.decode(id), color);
                                 mainActivity.chatDataBundle.mSOChatIcons.put(Integer.decode(id), icon);
@@ -144,8 +146,8 @@ public class FragStuff
                             @Override
                             public void onFinish(String name, String url, Drawable icon, Integer color)
                             {
-                                addFragmentToList(mainActivity, name, url, icon, color, id);
-                                initiateFragment(mainActivity, fragment);
+                                addFragmentToList(name, url, icon, color, id);
+                                initiateFragment(fragment);
                             }
                         });
 
@@ -170,7 +172,7 @@ public class FragStuff
 
         if (mainActivity.chatDataBundle.mSEChatIDs.size() == 0 && mainActivity.chatDataBundle.mSOChatIDs.size() == 0)
         {
-            removeAllFragmentsFromList(mainActivity);
+            removeAllFragmentsFromList();
             mainActivity.findViewById(R.id.loading_progress).setVisibility(View.GONE);
         }
 
@@ -220,40 +222,40 @@ public class FragStuff
      * @param tag the chat's fragment tag (should be its URL)
      */
 
-    public void setFragmentByTag(MainActivity activity, String tag)
+    public void setFragmentByTag(String tag)
     {
         Log.e("TAG", tag);
-        if (activity.mFragmentManager.getFragments() != null)
+        if (mainActivity.mFragmentManager.getFragments() != null)
         {
-            for (Fragment fragment : activity.mFragmentManager.getFragments())
+            for (Fragment fragment : mainActivity.mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached())
                 {
-                    activity.mFragmentManager.beginTransaction().detach(fragment).commit();
+                    mainActivity.mFragmentManager.beginTransaction().detach(fragment).commit();
                 }
             }
-            Fragment fragToAttach = activity.mFragmentManager.findFragmentByTag(tag);
+            Fragment fragToAttach = mainActivity.mFragmentManager.findFragmentByTag(tag);
 
             if (fragToAttach != null)
             {
 
                 if (tag.equals("home"))
                 {
-                    activity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
-                    activity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
                     ((HomeFragment) fragToAttach).hueTest();
                 }
                 else
                 {
-                    if (activity.mFragmentManager.findFragmentByTag("home").isDetached())
+                    if (mainActivity.mFragmentManager.findFragmentByTag("home").isDetached())
                     {
-                        activity.mFragmentManager.beginTransaction().attach(fragToAttach).commit();
+                        mainActivity.mFragmentManager.beginTransaction().attach(fragToAttach).commit();
                     }
                     else
                     {
-                        activity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
+                        mainActivity.mFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).attach(fragToAttach).commit();
                     }
-                    activity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    mainActivity.mCurrentUsers_SlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 }
             }
             else
@@ -271,7 +273,7 @@ public class FragStuff
      * @param domain the domain of the desired chat ("exchange" or "overflow")
      */
 
-    void setFragmentByChatId(MainActivity mainActivity, String id, String domain)
+    void setFragmentByChatId(String id, String domain)
     {
         Log.e("SETID", id.concat(domain));
 
@@ -279,7 +281,7 @@ public class FragStuff
         {
             if (mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)) != null)
             {
-                setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)));
+                setFragmentByTag(mainActivity.chatDataBundle.mSEChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -290,7 +292,7 @@ public class FragStuff
         {
             if (mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)) != null)
             {
-                setFragmentByTag(mainActivity, mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)));
+                setFragmentByTag(mainActivity.chatDataBundle.mSOChatUrls.get(Integer.decode(id)));
             }
             else
             {
@@ -309,7 +311,7 @@ public class FragStuff
      * @param fragment Fragment to be added
      */
 
-    private void initiateFragment(MainActivity mainActivity, Fragment fragment) {
+    private void initiateFragment(Fragment fragment) {
         try
         {
             String tag = fragment.getArguments().getString("chatUrl");
@@ -339,7 +341,7 @@ public class FragStuff
      * @param color Chat color
      */
 
-    private void addFragmentToList(MainActivity mainActivity, String name, String url, Drawable icon, Integer color, String id) {
+    private void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
         Log.e("ADD", "ADD");
         int identifier;
 
@@ -361,7 +363,7 @@ public class FragStuff
      * Might be useful for a batch removal later, but right now, it just enables removal of the only chat added
      */
 
-    void removeAllFragmentsFromList(MainActivity mainActivity)
+    void removeAllFragmentsFromList()
     {
         if (mainActivity.chatroomsList != null)
         {
@@ -383,7 +385,7 @@ public class FragStuff
      * @param id    ID of chat
      * @return the created Fragment
      */
-    private Fragment addFragment(MainActivity mainActivity, String url, String name, Integer color, Integer id)
+    private Fragment addFragment(String url, String name, Integer color, Integer id)
     {
         Fragment fragment;
         if (mainActivity.mFragmentManager.findFragmentByTag(url) != null)

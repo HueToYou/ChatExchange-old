@@ -170,7 +170,7 @@ public class MainActivity extends SlidingActivity
         mHandler = new Handler();
 
         mainActivityUtils = new MainActivityUtils(MainActivity.this);
-        fragStuff = new FragStuff(mainActivityUtils);
+        fragStuff = new FragStuff(MainActivity.this, mainActivityUtils);
 
         preSetup();
         createUsersSlidingMenu();
@@ -246,7 +246,7 @@ public class MainActivity extends SlidingActivity
     {
         if (mFragmentManager.findFragmentByTag("home").isDetached())
         {
-            fragStuff.setFragmentByTag(this, "home");
+            fragStuff.setFragmentByTag("home");
             for (Fragment fragment : mFragmentManager.getFragments())
             {
                 if (fragment != null && !fragment.isDetached() && fragment instanceof ChatFragment)
@@ -322,7 +322,7 @@ public class MainActivity extends SlidingActivity
                     public void run()
                     {
                         Log.e("POS", "DEFL");
-                        fragStuff.setFragmentByTag( MainActivity.this, "home");
+                        fragStuff.setFragmentByTag("home");
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
 
@@ -367,7 +367,7 @@ public class MainActivity extends SlidingActivity
                     CookieSyncManager.getInstance().sync();
                 }
 
-                fragStuff.doFragmentStuff(MainActivity.this);
+                fragStuff.doFragmentStuff();
             }
         };
 
@@ -416,7 +416,7 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void run()
                     {
-                        fragStuff.setFragmentByTag(MainActivity.this, mCurrentFragment);
+                        fragStuff.setFragmentByTag(mCurrentFragment);
                     }
                 }, getResources().getInteger(R.integer.animation_duration_ms));
             }
@@ -488,6 +488,16 @@ public class MainActivity extends SlidingActivity
         mOpenAnimSet.play(openAnimator);
         mOpenAnimSet.setInterpolator(new OvershootInterpolator());
         mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+
+        mDrawerButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.e("CLICKED", "CLICKED");
+                onSupportNavigateUp();
+            }
+        });
 
         mChatroomSlidingMenu.setOnCloseListener(new SlidingMenu.OnCloseListener()
         {
@@ -832,8 +842,8 @@ public class MainActivity extends SlidingActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        fragStuff.removeAllFragmentsFromList(mainActivity);
-                        fragStuff.setFragmentByTag(MainActivity.this, "home");
+                        fragStuff.removeAllFragmentsFromList();
+                        fragStuff.setFragmentByTag("home");
                     }
                 })
                 .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)

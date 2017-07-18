@@ -55,7 +55,7 @@ public class ThemeHue
         {
             mSharedPreferences.edit().putBoolean("FLAG_restartMain", false).apply();
             activity.recreate();
-            fragStuff.setFragmentByTag(activity, "home");
+            fragStuff.setFragmentByTag("home");
         }
     }
 }
