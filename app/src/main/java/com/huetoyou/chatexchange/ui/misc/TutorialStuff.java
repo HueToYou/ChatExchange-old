@@ -260,8 +260,6 @@ public class TutorialStuff
     public static void chatsExplorationTutorial(final Activity activity, final LinearLayoutCompat hueLayout)
     {
         PreferencesManager manager = new PreferencesManager(activity);
-        manager.reset(SE_ROOMS_TAB);
-        manager.reset(SO_ROOMS_TAB);
 
         if (!manager.isDisplayed(SE_ROOMS_TAB)) {
             ChatroomsExplorationActivity.touchesBlocked = true;
