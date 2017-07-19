@@ -18,7 +18,7 @@ public class ChatroomRecyclerObject
         this.position = position;
         this.name = name;
         this.url = url;
-        this. icon = icon;
+        this.icon = icon;
         this.color = color;
         this.mViewType = viewType;
         this.mId = id;
@@ -49,23 +49,28 @@ public class ChatroomRecyclerObject
         return color;
     }
 
-    public void setIsPinned(boolean pinned) {
+    public void setIsPinned(boolean pinned)
+    {
         isPinned = pinned;
     }
 
-    public boolean isPinned() {
+    public boolean isPinned()
+    {
         return isPinned;
     }
 
-    public int getViewType() {
+    public int getViewType()
+    {
         return mViewType;
     }
 
-    public long getId() {
+    public long getId()
+    {
         return mId;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(int position)
+    {
         this.position = position;
     }
 }

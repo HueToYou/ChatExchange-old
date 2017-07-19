@@ -113,7 +113,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
              */
             fabColorPreference = (ColorPreference) findPreference("fab_color");
 
-            if(sameFabColorCheckbox.isChecked())
+            if (sameFabColorCheckbox.isChecked())
             {
                 fabColorPreference.setEnabled(false);
             }
@@ -143,7 +143,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
             ColorPreference msg_bgcolor = (ColorPreference) findPreference("msg_bgcolor");
             setDynamicMsgBgColor(dynamic_msg_bgcolor, msg_bgcolor, msg_bgcolor_darkTheme);
 
-            if(darkThemePref.isChecked())
+            if (darkThemePref.isChecked())
             {
                 msg_bgcolor_darkTheme.setEnabled(!dynamic_msg_bgcolor.isChecked());
                 msg_bgcolor.setEnabled(false);
@@ -245,7 +245,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    boolean pref = (Boolean)newValue;
+                    boolean pref = (Boolean) newValue;
 
                     mSharedPrefs.edit().putBoolean("darkTheme", pref).apply();
 
@@ -276,7 +276,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o)
                 {
-                    if(darkThemePref.isChecked())
+                    if (darkThemePref.isChecked())
                     {
                         hueDark.setEnabled(!(boolean) o);
                         hue.setEnabled(false);
@@ -299,7 +299,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o)
                 {
-                    if((boolean)o)
+                    if ((boolean) o)
                     {
                         hue.setEnabled(false);
                     }

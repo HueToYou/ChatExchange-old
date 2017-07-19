@@ -45,7 +45,7 @@ public class OtherFabsHue
         if (activity != null)
         {
             int initialColor = -1;
-            if(mSharedPreferences.getBoolean("same_fab_color", false))
+            if (mSharedPreferences.getBoolean("same_fab_color", false))
             {
                 initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
             }
@@ -58,7 +58,8 @@ public class OtherFabsHue
         }
     }
 
-    public static int getPrefsFabColor(AppCompatActivity activity) {
+    public static int getPrefsFabColor(AppCompatActivity activity)
+    {
         if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);

@@ -94,7 +94,10 @@ public class TutorialStuff
             setCategoryConfig(activity);
         }
 
-        if (mItemConfig == null) setItemConfig(activity);
+        if (mItemConfig == null)
+        {
+            setItemConfig(activity);
+        }
 
         final FloatingActionMenu chatFam = activity.findViewById(R.id.chat_slide_menu);
         final FloatingActionButton home = activity.findViewById(R.id.home_fab);
@@ -148,7 +151,8 @@ public class TutorialStuff
         };
 
         PreferencesManager manager = new PreferencesManager(activity);
-        if (!manager.isDisplayed(CHAT_ITEM)) {
+        if (!manager.isDisplayed(CHAT_ITEM))
+        {
             activity.findViewById(R.id.chatroomsListView).setVisibility(View.GONE);
             dummyChats.setVisibility(View.VISIBLE);
             MainActivity.touchesBlocked = true;
@@ -261,7 +265,8 @@ public class TutorialStuff
     {
         PreferencesManager manager = new PreferencesManager(activity);
 
-        if (!manager.isDisplayed(SE_ROOMS_TAB)) {
+        if (!manager.isDisplayed(SE_ROOMS_TAB))
+        {
             ChatroomsExplorationActivity.touchesBlocked = true;
         }
 
@@ -294,7 +299,8 @@ public class TutorialStuff
             @Override
             public void onUserClicked(String s)
             {
-                switch (s) {
+                switch (s)
+                {
                     case SE_ROOMS_TAB:
                         ChatroomsExplorationActivity.touchesBlocked = true;
                         SOrooms.target(soTxtView.get(0)).show();
@@ -350,7 +356,8 @@ public class TutorialStuff
 //                .startSequence();
 
         PreferencesManager manager = new PreferencesManager(activity);
-        if (!manager.isDisplayed(MAIN_DRAWER)) {
+        if (!manager.isDisplayed(MAIN_DRAWER))
+        {
             MainActivity.touchesBlocked = true;
         }
 
@@ -373,7 +380,8 @@ public class TutorialStuff
             @Override
             public void onUserClicked(String s)
             {
-                switch (s) {
+                switch (s)
+                {
                     case MAIN_DRAWER:
                         menu.target(Utils.getActionBar(activity.getWindow().getDecorView()).getChildAt(2)).show();
                         MainActivity.touchesBlocked = true;
@@ -383,7 +391,6 @@ public class TutorialStuff
                         break;
                 }
             }
-
 
 
             @Override
@@ -423,10 +430,14 @@ public class TutorialStuff
             setCategoryConfig(activity);
         }
 
-        if (mItemConfig == null) setItemConfig(activity);
+        if (mItemConfig == null)
+        {
+            setItemConfig(activity);
+        }
 
         PreferencesManager manager = new PreferencesManager(activity);
-        if (!manager.isDisplayed(CHAT_FRAG_MENU_BTN)) {
+        if (!manager.isDisplayed(CHAT_FRAG_MENU_BTN))
+        {
             MainActivity.touchesBlocked = true;
         }
 
@@ -564,7 +575,8 @@ public class TutorialStuff
         chatFragSendMessageButton.setListener(huehuelistener);
     }
 
-    public static void showUsersTutorial(final Activity activity) {
+    public static void showUsersTutorial(final Activity activity)
+    {
         if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -575,7 +587,10 @@ public class TutorialStuff
             setCategoryConfig(activity);
         }
 
-        if (mItemConfig == null) setItemConfig(activity);
+        if (mItemConfig == null)
+        {
+            setItemConfig(activity);
+        }
 
         Bundle args = new Bundle();
         args.putString(USER_NAME_KEY, "Edwinksl");
@@ -632,16 +647,18 @@ public class TutorialStuff
 
         LinearLayout users = activity.findViewById(R.id.users_scroll_slide);
 
-        if (!manager.isDisplayed(USERS_SLIDE_INTRO)) {
-            List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
+        if (!manager.isDisplayed(USERS_SLIDE_INTRO))
+        {
+            List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity) activity).getSupportFragmentManager().getFragments();
 
-            for (int i = 0; i < fragments.size(); i++) {
-                ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().hide(fragments.get(i)).commit();
+            for (int i = 0; i < fragments.size(); i++)
+            {
+                ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().hide(fragments.get(i)).commit();
             }
 
-            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment, "user_" + 12345).commit();
-            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment1, "user_" + 12346).commit();
-            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment2, "user_" + 12347).commit();
+            ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment, "user_" + 12345).commit();
+            ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment1, "user_" + 12346).commit();
+            ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().add(R.id.users_scroll_slide, userTileFragment2, "user_" + 12347).commit();
             MainActivity.touchesBlocked = true;
         }
 
@@ -708,13 +725,14 @@ public class TutorialStuff
                         MainActivity.touchesBlocked = true;
                         break;
                     case USER_OWNER:
-                        List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity)activity).getSupportFragmentManager().getFragments();
+                        List<android.support.v4.app.Fragment> fragments = ((AppCompatActivity) activity).getSupportFragmentManager().getFragments();
 
-                        for (int i = 0; i < fragments.size(); i++) {
-                            ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().show(fragments.get(i)).commit();
+                        for (int i = 0; i < fragments.size(); i++)
+                        {
+                            ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().show(fragments.get(i)).commit();
                         }
 
-                        ((AppCompatActivity)activity).getSupportFragmentManager().beginTransaction().remove(userTileFragment).remove(userTileFragment1).remove(userTileFragment2).commit();
+                        ((AppCompatActivity) activity).getSupportFragmentManager().beginTransaction().remove(userTileFragment).remove(userTileFragment1).remove(userTileFragment2).commit();
                         MainActivity.touchesBlocked = false;
                         break;
                 }
@@ -750,16 +768,16 @@ public class TutorialStuff
     private static void setCategoryConfig(Activity activity)
     {
         mCategoryConfig = new SpotlightConfig();
-        mCategoryConfig.setIntroAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setIntroAnimationDuration((long) Utils.getAnimDuration(300, activity));
         mCategoryConfig.setRevealAnimationEnabled(true);
         mCategoryConfig.setPerformClick(false);
-        mCategoryConfig.setFadingTextDuration((long)Utils.getAnimDuration(200, activity));
+        mCategoryConfig.setFadingTextDuration((long) Utils.getAnimDuration(200, activity));
         mCategoryConfig.setHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText("Drawer");
         mCategoryConfig.setSubHeadingTvColor(Color.WHITE);
         mCategoryConfig.setHeadingTvText(activity.getResources().getString(R.string.homeFrag_hamburger_tutorial_text));
         mCategoryConfig.setMaskColor(Color.parseColor("#aa000000"));
-        mCategoryConfig.setLineAnimationDuration((long)Utils.getAnimDuration(300, activity));
+        mCategoryConfig.setLineAnimationDuration((long) Utils.getAnimDuration(300, activity));
         mCategoryConfig.setLineAndArcColor(Color.LTGRAY);
         mCategoryConfig.setDismissOnTouch(true);
         mCategoryConfig.setDismissOnBackpress(true);
@@ -767,20 +785,27 @@ public class TutorialStuff
 
         DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
 
-        float density  = metrics.density;
-        float dpWidth  = metrics.widthPixels / density;
+        float density = metrics.density;
+        float dpWidth = metrics.widthPixels / density;
 
-        if (dpWidth > 600) {
+        if (dpWidth > 600)
+        {
             mCategoryConfig.setHeadingTvSize(48);
             mCategoryConfig.setSubHeadingTvSize(32);
-        } else {
+        }
+        else
+        {
             mCategoryConfig.setHeadingTvSize(24);
             mCategoryConfig.setSubHeadingTvSize(18);
         }
     }
 
-    private static void setItemConfig(Activity activity) {
-        if (mCategoryConfig == null) setCategoryConfig(activity);
+    private static void setItemConfig(Activity activity)
+    {
+        if (mCategoryConfig == null)
+        {
+            setCategoryConfig(activity);
+        }
         mItemConfig = mCategoryConfig;
         /*mItemConfig.setIntroAnimationDuration(100L);
         mItemConfig.setFadingTextDuration(100L);

@@ -40,7 +40,8 @@ public class CustomWebView
     private final Button mForward;
     private HueListener listener;
 
-    public CustomWebView(Activity context, View view, WebView webView, boolean shouldOverrideTitle) {
+    public CustomWebView(Activity context, View view, WebView webView, boolean shouldOverrideTitle)
+    {
         mContext = context;
         mWebView = webView;
         mOverrideTitle = shouldOverrideTitle;
@@ -87,8 +88,12 @@ public class CustomWebView
         listener = null;
     }
 
-    public void loadUrl(final String url) {
-        if (mOverrideTitle) mContext.setTitle(url);
+    public void loadUrl(final String url)
+    {
+        if (mOverrideTitle)
+        {
+            mContext.setTitle(url);
+        }
         CookieManager cookieManager = CookieManager.getInstance();
         Log.e("AUTHTOKEN", cookieManager.getCookie("https://stackexchange.com"));
 
@@ -105,7 +110,8 @@ public class CustomWebView
      * Set client for specified WebView (so we can intercept URL presses, and they open in the WebView itself by default)
      */
 
-    private void client() {
+    private void client()
+    {
         mWebView.setWebViewClient(new WebViewClient()
         {
 
@@ -126,7 +132,8 @@ public class CustomWebView
                             {
                                 Integer.decode(m.group().replace("rooms/", ""));
                                 id = m.group().replace("rooms/", "");
-                            } catch (Exception e)
+                            }
+                            catch (Exception e)
                             {
                                 view.loadUrl(url);
                                 e.printStackTrace();
@@ -148,7 +155,7 @@ public class CustomWebView
                             Toast.makeText(mContext, "Adding SO room #" + id, Toast.LENGTH_LONG).show();
                         }
 
-                                                Intent urlIntent = new Intent("idAdd").putExtra(key, id);
+                        Intent urlIntent = new Intent("idAdd").putExtra(key, id);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(urlIntent);
                         mContext.finish();
                     }
@@ -163,9 +170,12 @@ public class CustomWebView
             @Override
             public void onPageFinished(WebView view, String url)
             {
-                if (mOverrideTitle) mContext.setTitle(view.getTitle());
+                if (mOverrideTitle)
+                {
+                    mContext.setTitle(view.getTitle());
+                }
                 super.onPageFinished(view, url);
-                if(listener != null)
+                if (listener != null)
                 {
                     listener.onFinishedLoading();
                 }

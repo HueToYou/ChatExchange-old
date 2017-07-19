@@ -51,7 +51,8 @@ public class ActionBarHue
         }
     }
 
-    public static int getActionBarPrefsColor(AppCompatActivity activity) {
+    public static int getActionBarPrefsColor(AppCompatActivity activity)
+    {
         if (mSharedPreferences == null)
         {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);

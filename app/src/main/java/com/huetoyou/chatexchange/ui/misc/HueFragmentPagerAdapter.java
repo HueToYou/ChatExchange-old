@@ -200,10 +200,11 @@ public abstract class HueFragmentPagerAdapter extends PagerAdapter
 
     /**
      * @param containerViewId the ViewPager this adapter is being supplied to
-     * @param id pass in getItemId(position) as this is whats used internally in this class
+     * @param id              pass in getItemId(position) as this is whats used internally in this class
      * @return the tag used for this pages fragment
      */
-    public static String makeFragmentName(int containerViewId, long id) {
+    public static String makeFragmentName(int containerViewId, long id)
+    {
         return "android:switcher:" + containerViewId + ":" + id;
     }
 

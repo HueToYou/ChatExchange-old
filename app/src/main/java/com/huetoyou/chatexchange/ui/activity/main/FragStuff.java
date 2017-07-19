@@ -8,12 +8,14 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
 import java.net.URL;
 
 public class FragStuff
@@ -86,7 +88,7 @@ public class FragStuff
                             @Override
                             public void onFinish(String name, String url, Drawable icon, Integer color)
                             {
-                                addFragmentToList( name, url, icon, color, id);
+                                addFragmentToList(name, url, icon, color, id);
                                 initiateFragment(fragment);
                             }
                         });
@@ -101,7 +103,8 @@ public class FragStuff
 
                         Log.e("Couldn't load SE chat ".concat(id), message);
 
-                        if (message.toLowerCase().contains("not found")) {
+                        if (message.toLowerCase().contains("not found"))
+                        {
                             Log.e("Couldn't load SE chat", "Removing SE ".concat(id).concat(" from list"));
                             mainActivity.removeIdFromSEList(id);
                         }
@@ -161,7 +164,8 @@ public class FragStuff
 
                         Log.e("Couldn't load SO chat ".concat(id), message);
 
-                        if (message.toLowerCase().contains("not found")) {
+                        if (message.toLowerCase().contains("not found"))
+                        {
                             Log.e("Couldn't load SO chat", "Removing SE ".concat(id).concat(" from list"));
                             mainActivity.removeIdFromSOList(id);
                         }
@@ -311,7 +315,8 @@ public class FragStuff
      * @param fragment Fragment to be added
      */
 
-    private void initiateFragment(Fragment fragment) {
+    private void initiateFragment(Fragment fragment)
+    {
         try
         {
             String tag = fragment.getArguments().getString("chatUrl");
@@ -335,18 +340,26 @@ public class FragStuff
 
     /**
      * Add fragment info to the RecyclerView list
-     * @param name Chat name
-     * @param url Chat URL
-     * @param icon Chat favicon
+     *
+     * @param name  Chat name
+     * @param url   Chat URL
+     * @param icon  Chat favicon
      * @param color Chat color
      */
 
-    private void addFragmentToList(String name, String url, Drawable icon, Integer color, String id) {
+    private void addFragmentToList(String name, String url, Drawable icon, Integer color, String id)
+    {
         Log.e("ADD", "ADD");
         int identifier;
 
-        if (url.contains("overflow")) identifier = -Integer.decode(id);
-        else identifier = Integer.decode(id);
+        if (url.contains("overflow"))
+        {
+            identifier = -Integer.decode(id);
+        }
+        else
+        {
+            identifier = Integer.decode(id);
+        }
 
         mainActivity.mWrappedAdapter.addItem(new ChatroomRecyclerObject(
                 mainActivity.mWrappedAdapter.getItemCount(),
@@ -369,7 +382,8 @@ public class FragStuff
         {
 //            mAdapter = new RecyclerAdapter(this, mItemClickedListener);
 //            chatroomsList.setAdapter(mAdapter);
-            for (int i = 0; i < mainActivity.mWrappedAdapter.getItemCount(); i++) {
+            for (int i = 0; i < mainActivity.mWrappedAdapter.getItemCount(); i++)
+            {
                 mainActivity.mWrappedAdapter.removeItem(i);
             }
         }

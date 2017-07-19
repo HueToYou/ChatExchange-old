@@ -178,11 +178,13 @@ public class MainActivity extends SlidingActivity
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev)
+    {
         return touchesBlocked || super.dispatchTouchEvent(ev);
     }
 
-    public void openOptionsMenu(View v) {
+    public void openOptionsMenu(View v)
+    {
         openOptionsMenu();
     }
 
@@ -200,7 +202,7 @@ public class MainActivity extends SlidingActivity
         super.onResume();
         ThemeHue.setThemeOnResume(MainActivity.this, fragStuff, oncreatejustcalled);
 
-        if(!oncreatejustcalled)
+        if (!oncreatejustcalled)
         {
             mRequestFactory.get("http://google.com", true, new RequestFactory.Listener()
             {
@@ -361,7 +363,8 @@ public class MainActivity extends SlidingActivity
                 CookieSyncManager.createInstance(MainActivity.this);
                 CookieManager cookieManager = CookieManager.getInstance();
                 cookieManager.setAcceptCookie(true);
-                if (authToken != null) {
+                if (authToken != null)
+                {
                     cookieManager.removeSessionCookie();
                     cookieManager.setCookie("https://stackexchange.com", authToken);
                     CookieSyncManager.getInstance().sync();
@@ -477,7 +480,7 @@ public class MainActivity extends SlidingActivity
 
         mCloseAnimSet.play(closeAnimator);
         mCloseAnimSet.setInterpolator(new AnticipateInterpolator());
-        mCloseAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+        mCloseAnimSet.setDuration((long) Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
         ObjectAnimator openAnimator = ObjectAnimator.ofFloat(
                 mDrawerButton,
@@ -487,7 +490,7 @@ public class MainActivity extends SlidingActivity
 
         mOpenAnimSet.play(openAnimator);
         mOpenAnimSet.setInterpolator(new OvershootInterpolator());
-        mOpenAnimSet.setDuration((long)Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
+        mOpenAnimSet.setDuration((long) Utils.getAnimDuration(getResources().getInteger(R.integer.animation_duration_ms), MainActivity.this));
 
         mDrawerButton.setOnClickListener(new View.OnClickListener()
         {
@@ -542,16 +545,19 @@ public class MainActivity extends SlidingActivity
         oncreatejustcalled = true;
 
         //forces options menu overflow icon to show on devices with physical menu keys
-        try {
+        try
+        {
             ViewConfiguration config = ViewConfiguration.get(this);
             Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
 
-            if (menuKeyField != null) {
+            if (menuKeyField != null)
+            {
                 menuKeyField.setAccessible(true);
                 menuKeyField.setBoolean(config, false);
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             // presumably, not relevant
         }
     }
@@ -740,7 +746,7 @@ public class MainActivity extends SlidingActivity
         return mChatroomSlidingMenu;
     }
 
-        /**
+    /**
      * Handle user press of Home button in ActionBar
      *
      * @return true
@@ -788,37 +794,44 @@ public class MainActivity extends SlidingActivity
         return mCookieString;
     }
 
-    public android.support.v7.widget.ActionMenuView getActionMenu() {
+    public android.support.v7.widget.ActionMenuView getActionMenu()
+    {
         return mActionMenuView;
     }
 
-    void removeIdFromSEList(String id) {
+    void removeIdFromSEList(String id)
+    {
         chatDataBundle.mSEChatIDs.remove(id);
         setSEStringSet();
     }
 
-    void addIdToSEList(String id) {
+    void addIdToSEList(String id)
+    {
         Log.e("IDS", id);
         chatDataBundle.mSEChatIDs.add(id);
         setSEStringSet();
     }
 
-    private void setSEStringSet() {
+    private void setSEStringSet()
+    {
         mEditor.remove("SEChatIDs").apply();
         mEditor.putStringSet("SEChatIDs", chatDataBundle.mSEChatIDs).apply();
     }
 
-    void removeIdFromSOList(String id) {
+    void removeIdFromSOList(String id)
+    {
         chatDataBundle.mSOChatIDs.remove(id);
         setSOStringSet();
     }
 
-    void addIdToSOList(String id) {
+    void addIdToSOList(String id)
+    {
         chatDataBundle.mSOChatIDs.add(id);
         setSOStringSet();
     }
 
-    private void setSOStringSet() {
+    private void setSOStringSet()
+    {
         mEditor.remove("SOChatIDs").apply();
         mEditor.putStringSet("SOChatIDs", chatDataBundle.mSOChatIDs).apply();
     }

@@ -45,7 +45,7 @@ public class ChatFragFabsHue
         if (activity != null)
         {
             int initialColor = -1;
-            if(mSharedPreferences.getBoolean("same_fab_color", false))
+            if (mSharedPreferences.getBoolean("same_fab_color", false))
             {
                 initialColor = mSharedPreferences.getInt("default_color", activity.getResources().getColor(R.color.colorPrimary));
             }
@@ -93,7 +93,8 @@ public class ChatFragFabsHue
             setColorsOnFabs(stars, colorStateList, activity, R.drawable.ic_star_black_24dp);
         }
 
-        if (browser != null) {
+        if (browser != null)
+        {
             setColorsOnFabs(browser, colorStateList, activity, R.drawable.ic_open_in_browser_black_24dp);
         }
 

@@ -51,12 +51,14 @@ public class ChatDataBundle
         mSOChatColors = new SparseIntArray();
     }
 
-    private void setSEStringSet(SharedPreferences.Editor mEditor) {
+    private void setSEStringSet(SharedPreferences.Editor mEditor)
+    {
         mEditor.remove("SEChatIDs").apply();
         mEditor.putStringSet("SEChatIDs", mSEChatIDs).apply();
     }
 
-    private void setSOStringSet(SharedPreferences.Editor mEditor) {
+    private void setSOStringSet(SharedPreferences.Editor mEditor)
+    {
         mEditor.remove("SOChatIDs").apply();
         mEditor.putStringSet("SOChatIDs", mSOChatIDs).apply();
     }

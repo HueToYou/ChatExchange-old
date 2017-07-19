@@ -116,7 +116,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onSetSwipeBackground(MyViewHolder holder, int position, int type)
-    {}
+    {
+    }
 
     @Override
     public SwipeResultAction onSwipeItem(MyViewHolder holder, int position, int result)
@@ -125,19 +126,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         ChatroomRecyclerObject item;
 
-        try {
+        try
+        {
             item = mChatroomObjects.get(position);
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e)
+        {
             e.printStackTrace();
             item = null;
         }
 
-        switch (result) {
+        switch (result)
+        {
             // swipe left --- pin
             case Swipeable.RESULT_SWIPED_RIGHT:
-                if (!holder.isCloseButtonRevealed()) holder.revealCloseButton();
+                if (!holder.isCloseButtonRevealed())
+                {
+                    holder.revealCloseButton();
+                }
 
-                if (item != null && !item.isPinned()) {
+                if (item != null && !item.isPinned())
+                {
                     item.setIsPinned(true);
                     notifyItemChanged(position);
                 }
@@ -146,7 +155,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             case Swipeable.RESULT_SWIPED_LEFT:
             case Swipeable.RESULT_CANCELED:
             default:
-                if (item != null && item.isPinned()) {
+                if (item != null && item.isPinned())
+                {
                     item.setIsPinned(false);
                     notifyItemChanged(position);
                 }
@@ -162,20 +172,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public void addItem(ChatroomRecyclerObject hueObject)
     {
-        for (int i = 0; i < mChatroomObjects.size(); i++) {
-            if (mChatroomObjects.get(i).getId() == hueObject.getId()) {
+        for (int i = 0; i < mChatroomObjects.size(); i++)
+        {
+            if (mChatroomObjects.get(i).getId() == hueObject.getId())
+            {
                 return;
             }
         }
 
         int pos;
 
-        if (mChatroomObjects.size() <= hueObject.getPosition()) {
+        if (mChatroomObjects.size() <= hueObject.getPosition())
+        {
             mChatroomObjects.add(hueObject);
             pos = mChatroomObjects.indexOf(hueObject);
             mChatroomObjects.get(pos).setPosition(pos);
             notifyItemInserted(pos);
-        } else {
+        }
+        else
+        {
             pos = hueObject.getPosition();
             mChatroomObjects.add(pos, hueObject);
 
@@ -189,7 +204,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return mChatroomObjects.get(position);
     }
 
-    public RecyclerViewSwipeManager getSwipeManager() {
+    public RecyclerViewSwipeManager getSwipeManager()
+    {
         return mSwipeManager;
     }
 
@@ -213,7 +229,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if (mChatroomObjects.size() > position && mChatroomObjects.get(position) != null)
         {
             final ChatroomRecyclerObject item = mChatroomObjects.remove(position);
-            if (mVHs.size() > position && mVHs.get(position) != null) mVHs.remove(position);
+            if (mVHs.size() > position && mVHs.get(position) != null)
+            {
+                mVHs.remove(position);
+            }
             resetPositions();
             notifyItemRemoved(position);
             return item;
@@ -244,16 +263,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 final SpannableStringBuilder snackTextRestoreSSB = new SpannableStringBuilder().append(snackTextRestore);
 
 
-                if(mSharedPrefs.getBoolean("darkTheme", false))
+                if (mSharedPrefs.getBoolean("darkTheme", false))
                 {
-                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)),0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)),0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)), 0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorDark)), 0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
 
                 else
                 {
-                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)),0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)),0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextDelSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)), 0, snackTextDel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    snackTextRestoreSSB.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.white)), 0, snackTextRestore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
 
                 final View parentLayout = activity.findViewById(android.R.id.content);
@@ -266,7 +285,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                             {
                                 Snackbar hue = Snackbar.make(parentLayout, snackTextRestoreSSB, Snackbar.LENGTH_SHORT);
 
-                                if(mSharedPrefs.getBoolean("darkTheme", false))
+                                if (mSharedPrefs.getBoolean("darkTheme", false))
                                 {
                                     hue.getView().setBackgroundColor(Color.WHITE);
                                 }
@@ -277,7 +296,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                             }
                         });
 
-                if(mSharedPrefs.getBoolean("darkTheme", false))
+                if (mSharedPrefs.getBoolean("darkTheme", false))
                 {
                     snackbar.getView().setBackgroundColor(activity.getResources().getColor(R.color.white));
                 }
@@ -288,7 +307,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event)
                     {
-                        switch (event) {
+                        switch (event)
+                        {
                             case DISMISS_EVENT_TIMEOUT:
                                 listener.onUndoExpire(huehuehue.getUrl());
                                 break;
@@ -299,8 +319,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    private void resetPositions() {
-        for (int i = 0; i < mChatroomObjects.size(); i++) {
+    private void resetPositions()
+    {
+        for (int i = 0; i < mChatroomObjects.size(); i++)
+        {
             mChatroomObjects.get(i).setPosition(i);
         }
     }
@@ -312,8 +334,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         void onCloseClick(View view, int position);
     }
 
-    public interface SnackbarListener {
+    public interface SnackbarListener
+    {
         void onUndo();
+
         void onUndoExpire(String url);
     }
 
@@ -399,7 +423,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonRevealSet.play(revealAnimatorX);
             mCloseButtonRevealSet.play(revealAnimatorY);
             mCloseButtonRevealSet.setInterpolator(new OvershootInterpolator());
-            mCloseButtonRevealSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
+            mCloseButtonRevealSet.setDuration((long) Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
             mCloseButtonRevealSet.addListener(mRevealListener);
 
             ObjectAnimator hideAnimatorX = ObjectAnimator.ofFloat(
@@ -419,18 +443,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mCloseButtonHideSet.play(hideAnimatorX);
             mCloseButtonHideSet.play(hideAnimatorY);
             mCloseButtonHideSet.setInterpolator(new AnticipateInterpolator());
-            mCloseButtonHideSet.setDuration((long)Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
+            mCloseButtonHideSet.setDuration((long) Utils.getAnimDuration(mContext.getResources().getInteger(R.integer.animation_duration_ms) - 200, mContext));
             mCloseButtonHideSet.addListener(mHideListener);
         }
 
         @Override
         public void onSlideAmountUpdated(float horizontalAmount, float verticalAmount, boolean isSwiping)
         {
-            if (horizontalAmount >= 1.0f && isSwiping) {
+            if (horizontalAmount >= 1.0f && isSwiping)
+            {
                 clickClose();
-            } else if (horizontalAmount >= 0.0f && isSwiping) {
+            }
+            else if (horizontalAmount >= 0.0f && isSwiping)
+            {
                 mChatroomObjects.get(getLayoutPosition()).setIsPinned(true);
-                if (!isCloseButtonRevealed()) revealCloseButton();
+                if (!isCloseButtonRevealed())
+                {
+                    revealCloseButton();
+                }
             }
 
             super.onSlideAmountUpdated(horizontalAmount, verticalAmount, isSwiping);
@@ -494,13 +524,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             });
         }
 
-        public void revealCloseButton() {
+        public void revealCloseButton()
+        {
             mCloseButtonHideSet.cancel();
             mCloseButtonRevealSet.start();
             setCloseButtonRevealed(true);
         }
 
-        public void hideCloseButton() {
+        public void hideCloseButton()
+        {
             mCloseButtonRevealSet.cancel();
             mCloseButtonHideSet.start();
             setCloseButtonRevealed(false);
@@ -518,18 +550,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             });
         }
 
-        public void clickClose() {
+        public void clickClose()
+        {
             if (onItemClicked != null)
             {
                 onItemClicked.onCloseClick(mCloseChat, getLayoutPosition());
             }
         }
 
-        public boolean isCloseButtonRevealed() {
+        public boolean isCloseButtonRevealed()
+        {
             return closeButtonRevealed;
         }
 
-        public void setCloseButtonRevealed(boolean set) {
+        public void setCloseButtonRevealed(boolean set)
+        {
             closeButtonRevealed = set;
         }
     }

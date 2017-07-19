@@ -28,14 +28,17 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -458,7 +461,10 @@ class MainActivityUtils
                 seId = id;
             }
 
-            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment)) mainActivity.fragStuff.setFragmentByTag("home");
+            if (mainActivity.mWrappedAdapter.getItemAt(position).getUrl().equals(mainActivity.mCurrentFragment))
+            {
+                mainActivity.fragStuff.setFragmentByTag("home");
+            }
 //            mWrappedAdapter.getSwipeManager().performFakeSwipe(mWrappedAdapter.getViewHolderAt(position), 1);
 
             final String soId1 = soId;
@@ -472,7 +478,8 @@ class MainActivityUtils
                     if (!soId1.isEmpty())
                     {
                         mainActivity.addIdToSOList(soId1);
-                    } else if (!seId1.isEmpty())
+                    }
+                    else if (!seId1.isEmpty())
                     {
                         mainActivity.addIdToSEList(seId1);
                     }

@@ -265,7 +265,8 @@ public class ChatFragment extends Fragment
         return view;
     }
 
-    private void doUserParse() {
+    private void doUserParse()
+    {
         mRequestFactory.get(mChatUrl, true, new RequestFactory.Listener()
         {
             @Override
@@ -276,10 +277,12 @@ public class ChatFragment extends Fragment
                     @Override
                     public void onSuccess(String usersJson)
                     {
-                        for (int i = 0; i < mFragmentManager.getFragments().size(); i++) {
+                        for (int i = 0; i < mFragmentManager.getFragments().size(); i++)
+                        {
                             Fragment fragment = mFragmentManager.getFragments().get(i);
 
-                            if (fragment.getTag() != null && fragment.getTag().contains("user")) {
+                            if (fragment.getTag() != null && fragment.getTag().contains("user"))
+                            {
                                 mFragmentManager.beginTransaction().hide(fragment).commit();
                             }
                         }
@@ -311,7 +314,9 @@ public class ChatFragment extends Fragment
                                 if (mFragmentManager.findFragmentByTag("user_" + id) == null)
                                 {
                                     addUser(name, icon, id, lastPost, rep, isMod, isOwner, mChatUrl);
-                                } else {
+                                }
+                                else
+                                {
                                     mFragmentManager.beginTransaction().attach(mFragmentManager.findFragmentByTag("user_" + id)).show(mFragmentManager.findFragmentByTag("user_" + id)).commit();
                                 }
                             }
@@ -780,7 +785,10 @@ public class ChatFragment extends Fragment
     {
         super.onResume();
 
-        if (view.findViewById(R.id.chat_menu).getVisibility() != View.VISIBLE) showThatFam();
+        if (view.findViewById(R.id.chat_menu).getVisibility() != View.VISIBLE)
+        {
+            showThatFam();
+        }
 
         System.out.println("Chat Frag OnResume");
 
@@ -788,7 +796,8 @@ public class ChatFragment extends Fragment
 
     }
 
-    private void showThatFam() {
+    private void showThatFam()
+    {
         FloatingActionMenu fam = view.findViewById(R.id.chat_menu);
         fam.hideMenuButton(false);
         fam.showMenuButton(true);
@@ -1010,6 +1019,7 @@ public class ChatFragment extends Fragment
 
     /**
      * Access the current chat's ID from elsewhere
+     *
      * @return the chat ID as Integer
      */
 

@@ -12,15 +12,18 @@ import android.util.AttributeSet;
 
 public class CustomRecyclerView extends RecyclerView
 {
-    public CustomRecyclerView(Context context) {
+    public CustomRecyclerView(Context context)
+    {
         super(context);
     }
 
-    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
     }
 

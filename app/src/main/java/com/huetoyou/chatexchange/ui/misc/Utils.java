@@ -160,11 +160,13 @@ public class Utils
         return null;
     }
 
-    public static int spToPixels(int sp, Activity activity) {
+    public static int spToPixels(int sp, Activity activity)
+    {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, activity.getResources().getDisplayMetrics());
     }
 
-    public static float getAnimDuration(float origDuration, Context context) {
+    public static float getAnimDuration(float origDuration, Context context)
+    {
         float systemAnimScale = 1.0f;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -176,6 +178,6 @@ public class Utils
             systemAnimScale = Settings.System.getFloat(context.getContentResolver(), Settings.System.ANIMATOR_DURATION_SCALE, 1.0f);
         }
 
-        return origDuration/systemAnimScale;
+        return origDuration / systemAnimScale;
     }
 }

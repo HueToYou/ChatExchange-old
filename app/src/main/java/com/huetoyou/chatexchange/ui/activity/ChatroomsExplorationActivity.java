@@ -73,8 +73,8 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             @Override
             public void onSucceeded(URL url, String data)
             {
-                ((SE_ChatroomsFrag)mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 0)).proceedToWebpageLoading();
-                ((SO_ChatroomsFrag)mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 1)).proceedToWebpageLoading();
+                ((SE_ChatroomsFrag) mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 0)).proceedToWebpageLoading();
+                ((SO_ChatroomsFrag) mSectionsPagerAdapter.getFragmentForPosition(mViewPager, 1)).proceedToWebpageLoading();
                 internetConfirmed = true;
             }
 
@@ -96,7 +96,8 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION))
+                {
                     new RequestFactory().get("http://www.google.com/", true, new RequestFactory.Listener()
                     {
                         @Override
@@ -161,10 +162,10 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         ActionBarHue.setActionBarColorToSharedPrefsValue(this);
         ActionBarHue.setTabBarColorToSharedPrefsValue(this);
 
-        if(getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
+        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
         {
             ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-            LinearLayout testb  = (LinearLayout) viewGroup.getChildAt(0);
+            LinearLayout testb = (LinearLayout) viewGroup.getChildAt(0);
             FrameLayout testc = (FrameLayout) testb.getChildAt(1);
             ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
             ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
@@ -176,7 +177,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         else //Landscape
         {
             ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-            LinearLayout testb  = (LinearLayout) viewGroup.getChildAt(0);
+            LinearLayout testb = (LinearLayout) viewGroup.getChildAt(0);
             FrameLayout testc = (FrameLayout) testb.getChildAt(1);
             ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
             ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
@@ -199,7 +200,8 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev)
+    {
         return touchesBlocked || super.dispatchTouchEvent(ev);
     }
 
@@ -281,7 +283,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         public void proceedToWebpageLoading()
         {
             WebView webView = rootView.findViewById(R.id.stars_view);
-            CustomWebView customWebView = new CustomWebView(getActivity(),rootView, webView, false);
+            CustomWebView customWebView = new CustomWebView(getActivity(), rootView, webView, false);
             customWebView.loadUrl(getResources().getText(R.string.stackexchange).toString());
 
             customWebView.setHueListener(new CustomWebView.HueListener()
@@ -301,7 +303,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_se, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            if(internetConfirmed)
+            if (internetConfirmed)
             {
                 proceedToWebpageLoading();
                 System.out.println("HUE-247");
@@ -359,7 +361,7 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
             rootView = inflater.inflate(R.layout.fragment_chatrooms_exploration_so, container, false);
             rootView.findViewById(R.id.webview_parent).setVisibility(View.GONE);
 
-            if(internetConfirmed)
+            if (internetConfirmed)
             {
                 proceedToWebpageLoading();
                 System.out.println("HUE-248");
