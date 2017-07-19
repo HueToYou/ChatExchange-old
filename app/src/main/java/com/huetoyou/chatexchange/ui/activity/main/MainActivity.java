@@ -829,15 +829,15 @@ public class MainActivity extends SlidingActivity
      * @param v the view calling this function
      */
 
-    public void removeAllChats(final MainActivity mainActivity, View v)
+    public void removeAllChats(View v)
     {
-        final FloatingActionMenu fam = mainActivity.findViewById(R.id.chat_slide_menu);
+        final FloatingActionMenu fam = findViewById(R.id.chat_slide_menu);
         fam.close(true);
 
-        new AlertDialog.Builder(mainActivity)
+        new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("Are you sure you want to remove all chats?")
-                .setPositiveButton(mainActivity.getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
+                .setPositiveButton(getResources().getText(R.string.generic_yes), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
@@ -846,7 +846,7 @@ public class MainActivity extends SlidingActivity
                         fragStuff.setFragmentByTag("home");
                     }
                 })
-                .setNegativeButton(mainActivity.getResources().getText(R.string.generic_no), null)
+                .setNegativeButton(getResources().getText(R.string.generic_no), null)
                 .show();
     }
 }
