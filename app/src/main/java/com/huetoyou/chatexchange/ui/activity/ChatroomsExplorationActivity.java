@@ -16,6 +16,7 @@ import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.ActionBarOverlayLayout;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.ScrollingTabContainerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
@@ -162,34 +164,32 @@ public class ChatroomsExplorationActivity extends AppCompatActivity implements a
         ActionBarHue.setActionBarColorToSharedPrefsValue(this);
         ActionBarHue.setTabBarColorToSharedPrefsValue(this);
 
+        ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
+        LinearLayout testb = (LinearLayout) viewGroup.getChildAt(0);
+        FrameLayout testc = (FrameLayout) testb.getChildAt(1);
+        ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
+        ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
+
+        LinearLayoutCompat testg;
+
         if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
         {
-            ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-            LinearLayout testb = (LinearLayout) viewGroup.getChildAt(0);
-            FrameLayout testc = (FrameLayout) testb.getChildAt(1);
-            ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
-            ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
             ScrollingTabContainerView testf = (ScrollingTabContainerView) teste.getChildAt(2);
-            LinearLayoutCompat testg = (LinearLayoutCompat) testf.getChildAt(0);
-
-            TutorialStuff.chatsExplorationTutorial(this, testg);
+            testg = (LinearLayoutCompat) testf.getChildAt(0);
         }
         else //Landscape
         {
-            ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-            LinearLayout testb = (LinearLayout) viewGroup.getChildAt(0);
-            FrameLayout testc = (FrameLayout) testb.getChildAt(1);
-            ActionBarOverlayLayout testd = (ActionBarOverlayLayout) testc.getChildAt(0);
-            ActionBarContainer teste = (ActionBarContainer) testd.getChildAt(1);
             Toolbar teste2 = (Toolbar) teste.getChildAt(0);
             ScrollingTabContainerView testf = (ScrollingTabContainerView) teste2.getChildAt(0);
-            LinearLayoutCompat testg = (LinearLayoutCompat) testf.getChildAt(0);
-
-            TutorialStuff.chatsExplorationTutorial(this, testg);
+            testg = (LinearLayoutCompat) testf.getChildAt(0);
         }
 
-        //Toast.makeText(this, "ARRl " + ((TextView) huelist.get(0)).getText(), Toast.LENGTH_LONG).show();
-        //System.out.println("Hueyishi: " + test5.getText());
+        testg.setId(android.R.id.tabcontent);
+
+//        String IdAsString = testg.getResources().getResourceName(testg.getId());
+//        Log.e("TestG", IdAsString);
+
+        TutorialStuff.chatsExplorationTutorial(this, testg);
     }
 
     @Override
