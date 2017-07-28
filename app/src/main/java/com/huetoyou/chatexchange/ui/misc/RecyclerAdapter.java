@@ -172,16 +172,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public void addItem(ChatroomRecyclerObject hueObject)
     {
-        for (int i = 0; i < mChatroomObjects.size(); i++)
+        if (!chatroomObjectsContainsID(hueObject.getId()))
         {
-            /*
-             * Only add it if it isn't already in the list
-             */
-            if (mChatroomObjects.get(i).getId() == hueObject.getId())
-            {
-                return;
-            }
-
             int pos;
 
             if (mChatroomObjects.size() <= hueObject.getPosition())
@@ -200,6 +192,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             notifyItemInserted(pos);
             resetPositions();
         }
+    }
+
+    private boolean chatroomObjectsContainsID(long id)
+    {
+        for (int i = 0; i < mChatroomObjects.size(); i++)
+        {
+            if(mChatroomObjects.get(i).getId() == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public ChatroomRecyclerObject getItemAt(int position)
