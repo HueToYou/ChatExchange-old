@@ -177,26 +177,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             /*
              * Only add it if it isn't already in the list
              */
-            if (!(mChatroomObjects.get(i).getId() == hueObject.getId()))
+            if (mChatroomObjects.get(i).getId() == hueObject.getId())
             {
-                int pos;
-
-                if (mChatroomObjects.size() <= hueObject.getPosition())
-                {
-                    mChatroomObjects.add(hueObject);
-                    pos = mChatroomObjects.indexOf(hueObject);
-                    mChatroomObjects.get(pos).setPosition(pos);
-                    notifyItemInserted(pos);
-                }
-                else
-                {
-                    pos = hueObject.getPosition();
-                    mChatroomObjects.add(pos, hueObject);
-
-                }
-                notifyItemInserted(pos);
-                resetPositions();
+                return;
             }
+
+            int pos;
+
+            if (mChatroomObjects.size() <= hueObject.getPosition())
+            {
+                mChatroomObjects.add(hueObject);
+                pos = mChatroomObjects.indexOf(hueObject);
+                mChatroomObjects.get(pos).setPosition(pos);
+                notifyItemInserted(pos);
+            }
+            else
+            {
+                pos = hueObject.getPosition();
+                mChatroomObjects.add(pos, hueObject);
+
+            }
+            notifyItemInserted(pos);
+            resetPositions();
         }
     }
 
