@@ -174,29 +174,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         for (int i = 0; i < mChatroomObjects.size(); i++)
         {
-            if (mChatroomObjects.get(i).getId() == hueObject.getId())
+            /*
+             * Only add it if it isn't already in the list
+             */
+            if (!(mChatroomObjects.get(i).getId() == hueObject.getId()))
             {
-                return;
+                int pos;
+
+                if (mChatroomObjects.size() <= hueObject.getPosition())
+                {
+                    mChatroomObjects.add(hueObject);
+                    pos = mChatroomObjects.indexOf(hueObject);
+                    mChatroomObjects.get(pos).setPosition(pos);
+                    notifyItemInserted(pos);
+                }
+                else
+                {
+                    pos = hueObject.getPosition();
+                    mChatroomObjects.add(pos, hueObject);
+
+                }
+                notifyItemInserted(pos);
+                resetPositions();
             }
         }
-
-        int pos;
-
-        if (mChatroomObjects.size() <= hueObject.getPosition())
-        {
-            mChatroomObjects.add(hueObject);
-            pos = mChatroomObjects.indexOf(hueObject);
-            mChatroomObjects.get(pos).setPosition(pos);
-            notifyItemInserted(pos);
-        }
-        else
-        {
-            pos = hueObject.getPosition();
-            mChatroomObjects.add(pos, hueObject);
-
-        }
-        notifyItemInserted(pos);
-        resetPositions();
     }
 
     public ChatroomRecyclerObject getItemAt(int position)
