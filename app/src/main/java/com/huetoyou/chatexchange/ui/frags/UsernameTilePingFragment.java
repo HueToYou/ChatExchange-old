@@ -17,10 +17,6 @@ import com.huetoyou.chatexchange.R;
 
 public class UsernameTilePingFragment extends Fragment
 {
-    private View mView;
-    private Bundle mArgs;
-    private TextView usernameTextView;
-    private ImageView userAvatar;
     private UserTileFragment mUserTileFragment;
     private String mUsername;
     private ChatFragment.SetTabCompleteName mSetTabCompleteName;
@@ -37,10 +33,10 @@ public class UsernameTilePingFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        mView = inflater.inflate(R.layout.username_tile_for_ping_suggestions, container, false);
-        usernameTextView = mView.findViewById(R.id.username_tile_ping_suggestion_name);
-        userAvatar = mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
-        mArgs = getArguments();
+        View mView = inflater.inflate(R.layout.username_tile_for_ping_suggestions, container, false);
+        TextView usernameTextView = mView.findViewById(R.id.username_tile_ping_suggestion_name);
+        ImageView userAvatar = mView.findViewById(R.id.username_tile_ping_suggestion_avatar);
+        Bundle mArgs = getArguments();
 
         mUsername = mArgs.getString(ChatFragment.USER_NAME_KEY, "huetoyou");
 

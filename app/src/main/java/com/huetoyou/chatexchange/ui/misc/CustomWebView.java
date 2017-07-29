@@ -1,34 +1,20 @@
 package com.huetoyou.chatexchange.ui.misc;
 
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.huetoyou.chatexchange.R;
-import com.huetoyou.chatexchange.auth.Authenticator;
-import com.huetoyou.chatexchange.net.RequestFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/**
- * Created by Zacha on 7/4/2017.
- */
 
 public class CustomWebView
 {

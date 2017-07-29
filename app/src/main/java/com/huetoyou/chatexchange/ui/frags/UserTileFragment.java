@@ -1,9 +1,7 @@
 package com.huetoyou.chatexchange.ui.frags;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,11 +22,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.activity.WebViewActivity;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -42,14 +38,9 @@ import java.util.TimeZone;
 
 import android.text.Html;
 
-/**
- * Created by Zacha on 5/31/2017.
- */
-
 public class UserTileFragment extends Fragment
 {
     private View mView;
-    private SharedPreferences mSharedPreferences;
     private TextView mUserInfo;
 
     private String mChatUrl;
@@ -66,7 +57,6 @@ public class UserTileFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         mView = inflater.inflate(R.layout.user_tile, container, false);
-        mSharedPreferences = getActivity().getSharedPreferences(getResources().getText(R.string.app_name).toString(), Context.MODE_PRIVATE);
 
         mUserInfo = mView.findViewById(R.id.user_info_tile);
         mLoading = mView.findViewById(R.id.avatar_loading);
@@ -191,10 +181,8 @@ public class UserTileFragment extends Fragment
                     }
                 }
 
-                int p = mSize;
-
                 Resources r = getResources();
-                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, p, r.getDisplayMetrics());
+                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mSize, r.getDisplayMetrics());
 
                 drawable = new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(mIconBitmap, px, px, true));
             }

@@ -11,18 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.ui.misc.hue.ActionBarHue;
 import com.huetoyou.chatexchange.ui.misc.hue.OtherFabsHue;
 
 public class HomeFragment extends Fragment
 {
-
-    private AccountManager mAccountManager;
     private View view;
     private boolean oncreateHasBeenCalled = false;
-    private SharedPreferences mSharedPreferences;
 
     public HomeFragment()
     {
@@ -36,27 +32,9 @@ public class HomeFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
         getActivity().setTitle(getResources().getText(R.string.app_name));
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        mAccountManager = AccountManager.get(getActivity());
-
         oncreateHasBeenCalled = true;
 
         return view;
-    }
-
-    @Nullable
-    @Override
-    public View getView()
-    {
-        return view;
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
     }
 
     @Override
@@ -70,7 +48,6 @@ public class HomeFragment extends Fragment
     /*
      * Set appropriate colors
      */
-
     public void hueTest()
     {
         System.out.println("Hue");

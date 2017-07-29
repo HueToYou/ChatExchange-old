@@ -14,18 +14,22 @@ public class HelpActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        //Set the theme
         ThemeHue.setTheme(HelpActivity.this);
 
+        //Normal OnCreate stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
+        //Theme the action bar
         ActionBarHue.setActionBarColorToSharedPrefsValue(this);
-
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Help");
     }
 
+    /*
+     * This method is hooked to the "Show Tutorial" button through the XML onClick attribute
+     */
     public void showTutorial(View v)
     {
         TutorialStuff.resetSpotlights(this);

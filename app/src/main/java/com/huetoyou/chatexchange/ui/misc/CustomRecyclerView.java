@@ -6,10 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-/**
- * Created by Zacha on 7/17/2017.
- */
-
 public class CustomRecyclerView extends RecyclerView
 {
     public CustomRecyclerView(Context context)
