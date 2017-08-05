@@ -45,7 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
 
     private HueDatabase hueDatabase = null;
-    private ArrayList<Chatroom> mChatroomObjects = new ArrayList<>();
+    //private ArrayList<Chatroom> mChatroomObjects = new ArrayList<>();
 
     private RecyclerViewSwipeManager mSwipeManager;
 
@@ -55,6 +55,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.hueDatabase = hueDatabase;
         this.onItemClicked = onItemClicked;
         this.mSwipeManager = swipeManager;
+        hueDatabase = new HueDatabase(activity);
 
         // SwipeableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
@@ -82,17 +83,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        //mViewHolder = holder;
         holder.setClickListener();
-//        holder.setOnLongClickListener(position);
         holder.setCloseClickListener();
         holder.setText();
         holder.setImage();
         mVHs.add(position, holder);
-
-//        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
-//        holder.mCloseChat.setOnClickListener(mUnderSwipeableViewButtonOnClickListener);
-
         holder.setMaxLeftSwipeAmount(0f);
         holder.setMaxRightSwipeAmount(1.0f);
         holder.setSwipeItemHorizontalSlideAmount(mChatroomObjects.get(position).isPinned() ? 0.25f : 0);
@@ -104,8 +99,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatroom_list_item, parent, false);
 
-        MyViewHolder myViewHolder = new MyViewHolder(mView);
-        return myViewHolder;
+        return new MyViewHolder(mView);
     }
 
     @Override
@@ -147,7 +141,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
                 if (item != null && !item.isPinned())
                 {
-                    item.setIsPinned(true);
+                    item.setPinned(true);
                     notifyItemChanged(position);
                 }
                 return null;
@@ -157,7 +151,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             default:
                 if (item != null && item.isPinned())
                 {
-                    item.setIsPinned(false);
+                    item.setPinned(false);
                     notifyItemChanged(position);
                 }
                 holder.hideCloseButton();
@@ -212,12 +206,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return mChatroomObjects.get(position);
     }
 
-    public RecyclerViewSwipeManager getSwipeManager()
+    RecyclerViewSwipeManager getSwipeManager()
     {
         return mSwipeManager;
     }
 
-    public MyViewHolder getViewHolderAt(int position)
+    MyViewHolder getViewHolderAt(int position)
     {
         return mVHs.get(position);
     }
@@ -262,7 +256,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             {
                 final SharedPreferences mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
-                huehuehue.setIsPinned(false);
+                huehuehue.setPinned(false);
                 String chatroomName = huehuehue.getName();
                 String snackTextDel = "Deleted " + chatroomName;
                 final String snackTextRestore = "Chatroom restored!";
@@ -353,8 +347,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
     }
 
-    public class MyViewHolder extends AbstractSwipeableItemViewHolder
-            implements SwipeableItemViewHolder
+    public class MyViewHolder extends AbstractSwipeableItemViewHolder implements SwipeableItemViewHolder
     {
         // TODO: whatever views you need to bind
         TextView mTextView;
@@ -464,7 +457,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
             else if (horizontalAmount >= 0.0f && isSwiping)
             {
-                mChatroomObjects.get(getLayoutPosition()).setIsPinned(true);
+                mChatroomObjects.get(getLayoutPosition()).setPinned(true);
                 if (!isCloseButtonRevealed())
                 {
                     revealCloseButton();
@@ -485,12 +478,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             return mItem;
         }
 
-        public ImageView getCloseChatButton()
+        ImageView getCloseChatButton()
         {
             return mCloseChat;
         }
 
-        public void setText()
+        void setText()
         {
             if (mChatroomObjects.size() > getLayoutPosition())
             {
@@ -498,7 +491,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
         }
 
-        public void setImage()
+        void setImage()
         {
             if (mChatroomObjects.size() > getLayoutPosition())
             {
@@ -506,7 +499,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
         }
 
-        public void setClickListener()
+        void setClickListener()
         {
             mItem.setOnClickListener(new View.OnClickListener()
             {
@@ -532,21 +525,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             });
         }
 
-        public void revealCloseButton()
+        void revealCloseButton()
         {
             mCloseButtonHideSet.cancel();
             mCloseButtonRevealSet.start();
             setCloseButtonRevealed(true);
         }
 
-        public void hideCloseButton()
+        void hideCloseButton()
         {
             mCloseButtonRevealSet.cancel();
             mCloseButtonHideSet.start();
             setCloseButtonRevealed(false);
         }
 
-        public void setCloseClickListener()
+        void setCloseClickListener()
         {
             mCloseChat.setOnClickListener(new View.OnClickListener()
             {
@@ -558,7 +551,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             });
         }
 
-        public void clickClose()
+        void clickClose()
         {
             if (onItemClicked != null)
             {
@@ -566,12 +559,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
         }
 
-        public boolean isCloseButtonRevealed()
+        boolean isCloseButtonRevealed()
         {
             return closeButtonRevealed;
         }
 
-        public void setCloseButtonRevealed(boolean set)
+        void setCloseButtonRevealed(boolean set)
         {
             closeButtonRevealed = set;
         }
