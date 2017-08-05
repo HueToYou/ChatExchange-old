@@ -10,7 +10,7 @@ buildscript {
         }
         maven { url "https://jitpack.io" }
 
-        maven(){
+        maven() {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
     }
@@ -35,7 +35,7 @@ repositories {
         url "https://s3.amazonaws.com/repo.commonsware.com"
     }
     maven { url "https://jitpack.io" }
-    maven(){
+    maven() {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
