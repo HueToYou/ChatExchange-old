@@ -131,6 +131,11 @@ public class HueDatabase extends SQLiteOpenHelper
                 Integer.parseInt(cursor.getString(0)),  // ID
                 cursor.getString(2));                   // URL
 
+         /*
+         * Android Studio said to do this...
+         */
+        cursor.close();
+
         /*
          * Alright, we've got everything, now return it
          */
@@ -178,6 +183,11 @@ public class HueDatabase extends SQLiteOpenHelper
 
             } while (cursor.moveToNext());
         }
+
+        /*
+         * Android Studio said to do this...
+         */
+        cursor.close();
 
         /*
          * Alright, we've gone through all the rows, now return the ArrayList
