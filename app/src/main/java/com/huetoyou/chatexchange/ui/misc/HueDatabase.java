@@ -127,8 +127,8 @@ public class HueDatabase extends SQLiteOpenHelper
          */
         Chatroom chatroom = new Chatroom(
 
-                cursor.getString(1),                    // ID
-                Integer.parseInt(cursor.getString(0)),  // Name
+                cursor.getString(1),                    // Name
+                Integer.parseInt(cursor.getString(0)),  // ID
                 cursor.getString(2));                   // URL
 
         /*
@@ -166,8 +166,8 @@ public class HueDatabase extends SQLiteOpenHelper
             {
                 currentChat = new Chatroom(
 
-                        cursor.getString(1),                    // ID
-                        Integer.parseInt(cursor.getString(0)),  // Name
+                        cursor.getString(1),                    // Name
+                        Integer.parseInt(cursor.getString(0)),  // ID
                         cursor.getString(2));                   // URL
 
                 /*
