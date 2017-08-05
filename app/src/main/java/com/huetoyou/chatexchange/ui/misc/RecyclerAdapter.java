@@ -37,20 +37,22 @@ import com.huetoyou.chatexchange.R;
 
 import java.util.ArrayList;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
-        implements SwipeableItemAdapter<RecyclerAdapter.MyViewHolder>
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> implements SwipeableItemAdapter<RecyclerAdapter.MyViewHolder>
 {
     private Activity mContext;
     private OnItemClicked onItemClicked;
 
     private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
-    private ArrayList<ChatroomRecyclerObject> mChatroomObjects = new ArrayList<>();
+
+    private HueDatabase hueDatabase = null;
+    private ArrayList<Chatroom> mChatroomObjects = new ArrayList<>();
 
     private RecyclerViewSwipeManager mSwipeManager;
 
-    public RecyclerAdapter(Activity activity, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
+    public RecyclerAdapter(Activity activity, HueDatabase hueDatabase, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
     {
         this.mContext = activity;
+        this.hueDatabase = hueDatabase;
         this.onItemClicked = onItemClicked;
         this.mSwipeManager = swipeManager;
 
@@ -80,8 +82,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        ChatroomRecyclerObject item = mChatroomObjects.get(position);
-
         //mViewHolder = holder;
         holder.setClickListener();
 //        holder.setOnLongClickListener(position);
@@ -95,7 +95,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         holder.setMaxLeftSwipeAmount(0f);
         holder.setMaxRightSwipeAmount(1.0f);
-        holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0.25f : 0);
+        holder.setSwipeItemHorizontalSlideAmount(mChatroomObjects.get(position).isPinned() ? 0.25f : 0);
         holder.setProportionalSwipeAmountModeEnabled(true);
     }
 
@@ -124,7 +124,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         Log.d("SWIPED", "onSwipeItem(position = " + position + ", result = " + result + ")");
 
-        ChatroomRecyclerObject item;
+        Chatroom item;
 
         try
         {
@@ -170,7 +170,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    public void addItem(ChatroomRecyclerObject hueObject)
+    public void addItem(Chatroom hueObject)
     {
         if (!chatroomObjectsContainsID(hueObject.getId()))
         {
@@ -207,7 +207,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return false;
     }
 
-    public ChatroomRecyclerObject getItemAt(int position)
+    public Chatroom getItemAt(int position)
     {
         return mChatroomObjects.get(position);
     }
@@ -225,18 +225,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     //Move an item at fromPosition to toPosition and notify changes.
     public void moveItem(int fromPosition, int toPosition)
     {
-        final ChatroomRecyclerObject object = mChatroomObjects.remove(fromPosition);
+        final Chatroom object = mChatroomObjects.remove(fromPosition);
         mChatroomObjects.add(toPosition, object);
 
         notifyItemMoved(fromPosition, toPosition);
     }
 
     //Remove an item at position and notify changes.
-    public ChatroomRecyclerObject removeItem(int position)
+    public Chatroom removeItem(int position)
     {
         if (mChatroomObjects.size() > position && mChatroomObjects.get(position) != null)
         {
-            final ChatroomRecyclerObject item = mChatroomObjects.remove(position);
+            final Chatroom item = mChatroomObjects.remove(position);
             if (mVHs.size() > position && mVHs.get(position) != null)
             {
                 mVHs.remove(position);
@@ -256,7 +256,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         if (mChatroomObjects.get(position) != null)
         {
-            final ChatroomRecyclerObject huehuehue = removeItem(position);
+            final Chatroom huehuehue = removeItem(position);
 
             if (huehuehue != null)
             {
