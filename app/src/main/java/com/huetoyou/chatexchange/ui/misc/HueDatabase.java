@@ -61,13 +61,13 @@ public class HueDatabase extends SQLiteOpenHelper
          */
         String CREATE_CHAT_TABLE = "CREATE TABLE " + TABLE_CHATS + " ( " +
 
-                KEY_ROOM_ID + " INTEGER PRIMARY KEY, " +
-                KEY_NAME + " TEXT, " +
-                KEY_URL + " TEXT, " +
-                KEY_ICON + " BLOB, " +
-                KEY_COLOR + " INTEGER, " +
-                KEY_VIEW_TYPE + " INTEGER, " +
-                KEY_RECYCLERVIEW_POSITION + " INTEGER )";
+                KEY_ROOM_ID               + " INTEGER PRIMARY KEY, " +
+                KEY_NAME                  + " TEXT, "                +
+                KEY_URL                   + " TEXT, "                +
+                KEY_ICON                  + " BLOB, "                +
+                KEY_COLOR                 + " INTEGER, "             +
+                KEY_VIEW_TYPE             + " INTEGER, "             +
+                KEY_RECYCLERVIEW_POSITION + " INTEGER )"             ;
 
         /*
          * Execute the command
