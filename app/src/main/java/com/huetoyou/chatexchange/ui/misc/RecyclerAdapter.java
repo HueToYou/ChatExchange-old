@@ -34,6 +34,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.database.HueDatabase;
 
 import java.util.ArrayList;
 
@@ -65,19 +66,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public int getItemCount()
     {
-        return mChatroomObjects.size();
+        return hueDatabase.getAllChatrooms().size();
     }
 
     @Override
     public long getItemId(int position)
     {
-        return mChatroomObjects.get(position).getId();
+        return sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position).getId();
+    }
+
+    private ArrayList<Chatroom> sortChatroomsArrayList(ArrayList<Chatroom> unsorted)
+    {
+        ArrayList<Chatroom> sorted = new ArrayList<>();
+
+        for (int i = 0; i < unsorted.size(); i++)
+        {
+            sorted.add(unsorted.get(i).getRecyclerViewPosition(), unsorted.get(i));
+        }
+
+        return sorted;
     }
 
     @Override
     public int getItemViewType(int position)
     {
-        return mChatroomObjects.get(position).getViewType();
+        return sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position).getViewType();
     }
 
     @Override
@@ -90,7 +103,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         mVHs.add(position, holder);
         holder.setMaxLeftSwipeAmount(0f);
         holder.setMaxRightSwipeAmount(1.0f);
-        holder.setSwipeItemHorizontalSlideAmount(mChatroomObjects.get(position).isPinned() ? 0.25f : 0);
+        holder.setSwipeItemHorizontalSlideAmount(sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position).isPinned() ? 0.25f : 0);
         holder.setProportionalSwipeAmountModeEnabled(true);
     }
 
@@ -122,7 +135,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         try
         {
-            item = mChatroomObjects.get(position);
+            item = sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position);
         }
         catch (IndexOutOfBoundsException e)
         {
@@ -164,35 +177,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
+    public void update()
+    {
+        ArrayList<Chatroom> mChatrooms = hueDatabase.getAllChatrooms();
+
+        for (int i = 0; i < mChatrooms.size(); i++)
+        {
+
+        }
+    }
+
     public void addItem(Chatroom hueObject)
     {
         if (!chatroomObjectsContainsID(hueObject.getId()))
         {
-            int pos;
+            hueDatabase.addChatroom(hueObject);
 
-            if (mChatroomObjects.size() <= hueObject.getPosition())
-            {
-                mChatroomObjects.add(hueObject);
-                pos = mChatroomObjects.indexOf(hueObject);
-                mChatroomObjects.get(pos).setPosition(pos);
-                notifyItemInserted(pos);
-            }
-            else
-            {
-                pos = hueObject.getPosition();
-                mChatroomObjects.add(pos, hueObject);
-
-            }
-            notifyItemInserted(pos);
-            resetPositions();
+            notifyDataSetChanged();
         }
     }
 
     private boolean chatroomObjectsContainsID(long id)
     {
-        for (int i = 0; i < mChatroomObjects.size(); i++)
+        for (int i = 0; i < hueDatabase.getAllChatrooms().size(); i++)
         {
-            if(mChatroomObjects.get(i).getId() == id)
+            if(hueDatabase.getAllChatrooms().get(i).getId() == id)
             {
                 return true;
             }
@@ -203,7 +212,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public Chatroom getItemAt(int position)
     {
-        return mChatroomObjects.get(position);
+        return sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position);
     }
 
     RecyclerViewSwipeManager getSwipeManager()
@@ -216,27 +225,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return mVHs.get(position);
     }
 
-    //Move an item at fromPosition to toPosition and notify changes.
+    /*//Move an item at fromPosition to toPosition and notify changes.
     public void moveItem(int fromPosition, int toPosition)
     {
         final Chatroom object = mChatroomObjects.remove(fromPosition);
         mChatroomObjects.add(toPosition, object);
 
         notifyItemMoved(fromPosition, toPosition);
-    }
+    }*/
 
     //Remove an item at position and notify changes.
     public Chatroom removeItem(int position)
     {
-        if (mChatroomObjects.size() > position && mChatroomObjects.get(position) != null)
+        if (hueDatabase.getAllChatrooms().size() > position && sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position) != null)
         {
-            final Chatroom item = mChatroomObjects.remove(position);
+            final Chatroom item = sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position);
             if (mVHs.size() > position && mVHs.get(position) != null)
             {
                 mVHs.remove(position);
             }
-            resetPositions();
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
             return item;
         }
 
@@ -248,7 +256,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     {
         getSwipeManager().performFakeSwipe(mVHs.get(position), SwipeableItemConstants.RESULT_SWIPED_LEFT);
 
-        if (mChatroomObjects.get(position) != null)
+        if (sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position) != null)
         {
             final Chatroom huehuehue = removeItem(position);
 
@@ -321,13 +329,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    private void resetPositions()
+    /*private void resetPositions()
     {
         for (int i = 0; i < mChatroomObjects.size(); i++)
         {
             mChatroomObjects.get(i).setPosition(i);
         }
-    }
+    }*/
 
     public interface OnItemClicked
     {
@@ -457,7 +465,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             }
             else if (horizontalAmount >= 0.0f && isSwiping)
             {
-                mChatroomObjects.get(getLayoutPosition()).setPinned(true);
+                sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(getLayoutPosition()).setPinned(true);
                 if (!isCloseButtonRevealed())
                 {
                     revealCloseButton();
@@ -485,17 +493,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         void setText()
         {
-            if (mChatroomObjects.size() > getLayoutPosition())
+            if (hueDatabase.getAllChatrooms().size() > getLayoutPosition())
             {
-                mTextView.setText(mChatroomObjects.get(getLayoutPosition()).getName());
+                mTextView.setText(sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(getLayoutPosition()).getName());
             }
         }
 
         void setImage()
         {
-            if (mChatroomObjects.size() > getLayoutPosition())
+            if (hueDatabase.getAllChatrooms().size() > getLayoutPosition())
             {
-                mImageView.setImageDrawable(mChatroomObjects.get(getLayoutPosition()).getIcon());
+                mImageView.setImageDrawable(sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(getLayoutPosition()).getIcon());
             }
         }
 

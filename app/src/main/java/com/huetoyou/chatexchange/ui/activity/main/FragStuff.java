@@ -8,14 +8,11 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
-import com.huetoyou.chatexchange.ui.misc.ChatroomRecyclerObject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
 import java.net.URL;
 
 public class FragStuff

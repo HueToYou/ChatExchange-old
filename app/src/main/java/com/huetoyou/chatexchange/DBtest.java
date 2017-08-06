@@ -2,11 +2,10 @@ package com.huetoyou.chatexchange;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.ui.misc.Chatroom;
-import com.huetoyou.chatexchange.ui.misc.HueDatabase;
+import com.huetoyou.chatexchange.backend.database.HueDatabase;
 
 public class DBtest extends Activity
 {

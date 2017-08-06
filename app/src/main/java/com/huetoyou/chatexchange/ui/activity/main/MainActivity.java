@@ -50,6 +50,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.Util;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.auth.Authenticator;
+import com.huetoyou.chatexchange.backend.database.HueDatabase;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.AboutActivity;
 import com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity;
@@ -71,6 +72,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -101,7 +103,7 @@ public class MainActivity extends SlidingActivity
 
     RequestFactory mRequestFactory;
 
-    public ChatDataBundle chatDataBundle = new ChatDataBundle();
+    public HueDatabase hueDatabase = null;
 
     private String mCookieString = null;
 
@@ -163,6 +165,8 @@ public class MainActivity extends SlidingActivity
         this.registerReceiver(hueNetworkStatusChanged, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         ThemeHue.setTheme(this);
+
+        hueDatabase = new HueDatabase(this);
 
         super.onCreate(null);
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
