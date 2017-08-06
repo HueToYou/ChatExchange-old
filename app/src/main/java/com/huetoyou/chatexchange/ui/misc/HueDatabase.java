@@ -20,17 +20,17 @@ public class HueDatabase extends SQLiteOpenHelper
      */
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "HueDB";
-    private static final String TABLE_CHATS = "chats";
+    private static final String TABLE_CHATS   = "chats";
 
     /*
      * Chats table column names constants
      */
-    private static final String KEY_ROOM_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_URL = "url";
-    private static final String KEY_ICON = "icon";
-    private static final String KEY_COLOR = "color";
-    private static final String KEY_VIEW_TYPE = "viewType";
+    private static final String KEY_ROOM_ID               = "id";
+    private static final String KEY_NAME                  = "name";
+    private static final String KEY_URL                   = "url";
+    private static final String KEY_ICON                  = "icon";
+    private static final String KEY_COLOR                 = "color";
+    private static final String KEY_VIEW_TYPE             = "viewType";
     private static final String KEY_RECYCLERVIEW_POSITION = "recyclerViewPos";
 
     /*
