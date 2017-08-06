@@ -21,9 +21,6 @@ public class CustomWebView
     private Activity mContext;
     private WebView mWebView;
     private boolean mOverrideTitle;
-    private final Button mOpenInWV;
-    private final Button mBack;
-    private final Button mForward;
     private HueListener listener;
 
     public CustomWebView(Activity context, View view, WebView webView, boolean shouldOverrideTitle)
@@ -32,6 +29,9 @@ public class CustomWebView
         mWebView = webView;
         mOverrideTitle = shouldOverrideTitle;
 
+        /*
+         * Webview settings
+         */
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -40,10 +40,12 @@ public class CustomWebView
         webView.getSettings().setAppCacheEnabled(true);
         client();
 
-
-        mOpenInWV = view.findViewById(R.id.open_in_webview);
-        mBack = view.findViewById(R.id.go_back);
-        mForward = view.findViewById(R.id.go_forward);
+        /*
+         * Navigation buttons
+         */
+        Button mOpenInWV = view.findViewById(R.id.open_in_webview);
+        Button mBack = view.findViewById(R.id.go_back);
+        Button mForward = view.findViewById(R.id.go_forward);
 
         mOpenInWV.setVisibility(View.GONE);
 
@@ -52,6 +54,10 @@ public class CustomWebView
             @Override
             public void onClick(View v)
             {
+                /*
+                 * The user pressed the back button.
+                 * Go back, if we can
+                 */
                 if (mWebView.canGoBack())
                 {
                     mWebView.goBack();
@@ -64,6 +70,10 @@ public class CustomWebView
             @Override
             public void onClick(View v)
             {
+                /*
+                 * The user pressed the forward button.
+                 * Go forward, if we can
+                 */
                 if (mWebView.canGoForward())
                 {
                     mWebView.goForward();
@@ -104,6 +114,12 @@ public class CustomWebView
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
+                /*
+                 * If the URL that is about to be loaded contains the "/rooms/"
+                 * string, then it is a URL for a chatroom and we need to override
+                 * the normal loading procedure so that we can close the web view,
+                 * and add that room to the database.
+                 */
                 if (url.contains("/rooms/"))
                 {
                     String id = "";
@@ -130,14 +146,32 @@ public class CustomWebView
                     if (!id.isEmpty())
                     {
                         String key = "id";
+
+                        /*
+                         * This is a regular SE room
+                         */
                         if (url.contains("exchange"))
                         {
                             key = key.concat("SE");
+
+                            /*
+                             * Show a toast to let the user know that we've
+                             * started the process of adding the room
+                             */
                             Toast.makeText(mContext, "Adding SE room #" + id, Toast.LENGTH_LONG).show();
                         }
+
+                        /*
+                         * This is an SO room
+                         */
                         else if (url.contains("overflow"))
                         {
                             key = key.concat("SO");
+
+                            /*
+                             * Show a toast to let the user know that we've
+                             * started the process of adding the room
+                             */
                             Toast.makeText(mContext, "Adding SO room #" + id, Toast.LENGTH_LONG).show();
                         }
 
@@ -146,6 +180,12 @@ public class CustomWebView
                         mContext.finish();
                     }
                 }
+
+                /*
+                 * Well, it doesn't appear that this is a URL for
+                 * a chatroom, so just continue with the normal
+                 * loading procedure
+                 */
                 else
                 {
                     view.loadUrl(url);
@@ -171,7 +211,7 @@ public class CustomWebView
 
     public interface HueListener
     {
-        public void onFinishedLoading();
+        void onFinishedLoading();
     }
 
     public void setHueListener(HueListener listener)
