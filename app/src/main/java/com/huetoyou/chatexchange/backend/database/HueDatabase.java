@@ -15,7 +15,7 @@ import com.huetoyou.chatexchange.ui.misc.Chatroom;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class HueDatabase extends SQLiteOpenHelper
+class HueDatabase extends SQLiteOpenHelper
 {
     /*
      * Database constants
@@ -50,7 +50,7 @@ public class HueDatabase extends SQLiteOpenHelper
     /*
      * Constructor
      */
-    public HueDatabase(Context context)
+    HueDatabase(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -94,7 +94,7 @@ public class HueDatabase extends SQLiteOpenHelper
     /*
      * Method to add a new chatroom to the database
      */
-    public void addChatroom(Chatroom chatroom)
+    void addChatroom(Chatroom chatroom)
     {
         /*
          * Get a reference to a writable database
@@ -136,7 +136,7 @@ public class HueDatabase extends SQLiteOpenHelper
     /*
      * Method to get a single chatroom from the database
      */
-    public Chatroom getChatroom(int chatroomID)
+    Chatroom getChatroom(int chatroomID)
     {
 
         /*
@@ -193,7 +193,7 @@ public class HueDatabase extends SQLiteOpenHelper
     /*
      * Method to return an ArrayList containing all of the chatrooms that were retrieved from the database
      */
-    public ArrayList<Chatroom> getAllChatrooms()
+    ArrayList<Chatroom> getAllChatrooms()
     {
         ArrayList<Chatroom> chats = new ArrayList<>();
 
@@ -257,7 +257,7 @@ public class HueDatabase extends SQLiteOpenHelper
      * I don't really think we will ever need to do this,
      * but this method is here just in case :D
      */
-    public int updateChatroom(Chatroom chatroom)
+    int updateChatroom(Chatroom chatroom)
     {
         /*
          * Get a writable reference to the database
@@ -303,7 +303,7 @@ public class HueDatabase extends SQLiteOpenHelper
     /*
      * Method to delete a single chatroom from the database
      */
-    public void deleteChatroom(int chatroomID)
+    void deleteChatroom(int chatroomID)
     {
 
         /*

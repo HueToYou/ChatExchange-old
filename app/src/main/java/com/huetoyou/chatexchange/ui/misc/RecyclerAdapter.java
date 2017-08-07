@@ -44,8 +44,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private OnItemClicked onItemClicked;
 
     private ArrayList<MyViewHolder> mVHs = new ArrayList<>();
-
-    private HueDatabase hueDatabase = null;
     //private ArrayList<Chatroom> mChatroomObjects = new ArrayList<>();
 
     private RecyclerViewSwipeManager mSwipeManager;
@@ -56,7 +54,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.hueDatabase = hueDatabase;
         this.onItemClicked = onItemClicked;
         this.mSwipeManager = swipeManager;
-        hueDatabase = new HueDatabase(activity);
 
         // SwipeableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
@@ -186,8 +183,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             notifyDataSetChanged();
         }
     }
-
-
 
     public Chatroom getItemAt(int position)
     {
