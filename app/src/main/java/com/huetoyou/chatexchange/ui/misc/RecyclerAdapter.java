@@ -75,17 +75,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return sortChatroomsArrayList(hueDatabase.getAllChatrooms()).get(position).getId();
     }
 
-    private ArrayList<Chatroom> sortChatroomsArrayList(ArrayList<Chatroom> unsorted)
-    {
-        ArrayList<Chatroom> sorted = new ArrayList<>();
 
-        for (int i = 0; i < unsorted.size(); i++)
-        {
-            sorted.add(unsorted.get(i).getRecyclerViewPosition(), unsorted.get(i));
-        }
-
-        return sorted;
-    }
 
     @Override
     public int getItemViewType(int position)
@@ -197,18 +187,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    private boolean chatroomObjectsContainsID(long id)
-    {
-        for (int i = 0; i < hueDatabase.getAllChatrooms().size(); i++)
-        {
-            if(hueDatabase.getAllChatrooms().get(i).getId() == id)
-            {
-                return true;
-            }
-        }
 
-        return false;
-    }
 
     public Chatroom getItemAt(int position)
     {

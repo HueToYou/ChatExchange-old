@@ -257,7 +257,7 @@ public class HueDatabase extends SQLiteOpenHelper
      * I don't really think we will ever need to do this,
      * but this method is here just in case :D
      */
-    public int updateChatrooms(Chatroom chatroom)
+    public int updateChatroom(Chatroom chatroom)
     {
         /*
          * Get a writable reference to the database
