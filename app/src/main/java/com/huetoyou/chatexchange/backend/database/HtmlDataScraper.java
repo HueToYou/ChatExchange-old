@@ -6,10 +6,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
@@ -20,8 +23,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class HtmlDataScraper extends AsyncTask<String, Void, Void>
 {
@@ -135,6 +143,104 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
         {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static int getColorInt(Activity activity, String url)
+    {
+
+        if (mSharedPreferences == null)
+        {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        }
+
+        try
+        {
+            Document doc = Jsoup.connect(url).get();
+
+            Elements styles = doc.select("link");
+            Element element = new Element("hue");
+
+            for (int i = 0; i < styles.size(); i++)
+            {
+                Element current = styles.get(i);
+
+                if (current.hasAttr("href") && current.attr("rel").equals("stylesheet"))
+                {
+                    element = current;
+                    break;
+                }
+            }
+
+            String link = "";
+            if (element.hasAttr("href"))
+            {
+                link = element.attr("href");
+                if (!(link.contains("http://") || link.contains("https://")))
+                {
+                    link = "https:".concat(link);
+                }
+            }
+
+
+//                Log.e("UR", link);
+            URL url1 = new URL(link);
+
+            InputStream inStr = url1.openStream();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStr));
+            String line;
+            String css = "";
+
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                css = css.concat(line);
+            }
+
+
+            Pattern p = Pattern.compile("\\.msparea\\{(.+?)\\}");
+            Matcher m = p.matcher(css);
+            String a = "";
+
+            if (m.find())
+            {
+                a = m.group();
+            }
+
+            p = Pattern.compile("color:(.*?);");
+            m = p.matcher(a);
+
+            String colorHex = "#000000";
+
+            if (m.find())
+            {
+                colorHex = m.group().replace("color", "").replace(":", "").replace(";", "").replaceAll(" ", "");
+            }
+
+            try
+            {
+                mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                Log.e("UNKNOWN COLOR", url);
+                String threeChar = colorHex.replace("#", "");
+                String one = threeChar.substring(0, 1);
+                String two = threeChar.substring(1, 2);
+                String three = threeChar.substring(2);
+
+                colorHex = "#".concat(one).concat(one).concat(two).concat(two).concat(three).concat(three);
+
+                mSharedPreferences.edit().putInt(url + "Color", Color.parseColor(colorHex)).apply();
+                return Color.parseColor(colorHex);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return Color.parseColor("#000000");
         }
     }
 }
