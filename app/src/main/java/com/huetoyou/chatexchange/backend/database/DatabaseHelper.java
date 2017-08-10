@@ -1,7 +1,17 @@
 package com.huetoyou.chatexchange.backend.database;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.huetoyou.chatexchange.net.RequestFactory;
+import com.huetoyou.chatexchange.ui.activity.main.MainActivity;
 import com.huetoyou.chatexchange.ui.misc.Chatroom;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 public class DatabaseHelper
@@ -68,6 +78,72 @@ public class DatabaseHelper
      */
     public Chatroom addChatroomByURL(String url)
     {
+        /*
+         * The RequestFactory we'll be using to get the html data from the webpage
+         */
+        RequestFactory requestFactory = new RequestFactory();
+
+        /*
+         * This is the listener that we pass as a parameter to the RequestFactory constructor
+         */
+        RequestFactory.Listener rfl = new RequestFactory.Listener()
+        {
+            @Override
+            public void onSucceeded(URL url, String data)
+            {
+                mainActivity.chatDataBundle.mSEChatUrls.put(Integer.decode(id), chatUrl);
+                mainActivity.mAddList = mainActivityUtils.new AddList(mainActivity, mainActivity.mSharedPrefs, data, id, chatUrl, new MainActivity.AddListListener()
+                {
+
+                    private Fragment fragment;
+
+                    @Override
+                    public void onStart()
+                    {
+
+                    }
+
+                    @Override
+                    public void onProgress(String name, Drawable icon, Integer color)
+                    {
+                        fragment = addFragment(chatUrl, name, color, Integer.decode(id));
+                        Log.e("RRR", fragment.getArguments().getString("chatUrl", "").concat("HUE"));
+                        mainActivity.chatDataBundle.mSEChats.put(Integer.decode(id), fragment);
+                        mainActivity.chatDataBundle.mSEChatColors.put(Integer.decode(id), color);
+                        mainActivity.chatDataBundle.mSEChatIcons.put(Integer.decode(id), icon);
+                        mainActivity.chatDataBundle.mSEChatNames.put(Integer.decode(id), name);
+                    }
+
+                    @Override
+                    public void onFinish(String name, String url, Drawable icon, Integer color)
+                    {
+                        addFragmentToList(name, url, icon, color, id);
+                        initiateFragment(fragment);
+                    }
+                });
+
+                mainActivity.mAddList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+
+            @Override
+            public void onFailed(String message)
+            {
+                Toast.makeText(mainActivity, "Failed to load chat ".concat(id).concat(": ").concat(message), Toast.LENGTH_LONG).show();
+
+                Log.e("Couldn't load SE chat ".concat(id), message);
+
+                if (message.toLowerCase().contains("not found"))
+                {
+                    Log.e("Couldn't load SE chat", "Removing SE ".concat(id).concat(" from list"));
+                    mainActivity.removeIdFromSEList(id);
+                }
+            }
+        };
+
+        /*
+         * Go grab the HTML data
+         */
+        requestFactory.get(url, true, rfl);
         return null;
     }
 
