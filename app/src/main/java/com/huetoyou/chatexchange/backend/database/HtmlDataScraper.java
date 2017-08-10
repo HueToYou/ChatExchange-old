@@ -1,3 +1,5 @@
+package com.huetoyou.chatexchange.backend.database;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,19 +28,19 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
     private final String mHtmlData;
     private final String mChatId;
     private final String mChatUrl;
-    private final MainActivity.AddListListener mAddListListener;
+    private final HtmlDataScraper mAddListListener;
     private final SharedPreferences mSharedPreferences;
-    private Activity mainActivity;
+    //private Activity mainActivity;
     private String mName;
     private Drawable mIcon;
     private Integer mColor;
 
-    MainActivityUtils.AddList newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
+    HtmlDataScraper newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, HtmlDataScraper addListListener)
     {
-        return new MainActivityUtils.AddList(mainActivity, sharedPreferences, data, id, url, addListListener);
+        return new HtmlDataScraper(mainActivity, sharedPreferences, data, id, url, addListListener);
     }
 
-    HtmlDataScraper(Activity mainActivityHue, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
+    HtmlDataScraper(Activity mainActivityHue, SharedPreferences sharedPreferences, String data, String id, String url, HtmlDataScraper addListListener)
     {
         mSharedPreferences = sharedPreferences;
         mHtmlData = data;
