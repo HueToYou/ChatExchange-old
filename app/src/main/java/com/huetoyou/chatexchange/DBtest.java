@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.ui.misc.Chatroom;
-import com.huetoyou.chatexchange.backend.database.HueDatabase;
 
 public class DBtest extends Activity
 {

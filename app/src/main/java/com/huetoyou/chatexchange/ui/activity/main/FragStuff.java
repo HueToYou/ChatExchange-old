@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.database.DatabaseHelper;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.ui.frags.HomeFragment;
@@ -19,6 +20,7 @@ public class FragStuff
 {
     private MainActivityUtils mainActivityUtils;
     private MainActivity mainActivity;
+    private DatabaseHelper databaseHelper;
 
     FragStuff(MainActivity mainActivity, MainActivityUtils mainActivityUtils)
     {
@@ -44,7 +46,7 @@ public class FragStuff
             }
         });
 //        Looper.prepare();
-        Log.e("IDS", mainActivity.chatDataBundle.mSEChatIDs.toString().concat(mainActivity.chatDataBundle.mSOChatIDs.toString()));
+        //Log.e("IDS", mainActivity.chatDataBundle.mSEChatIDs.toString().concat(mainActivity.chatDataBundle.mSOChatIDs.toString()));
 
         for (String s : mainActivity.chatDataBundle.mSEChatIDs)
         {
