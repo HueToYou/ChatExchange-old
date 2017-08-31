@@ -36,35 +36,23 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
     private final String mHtmlData;
     private final String mChatId;
     private final String mChatUrl;
-    private final HtmlDataScraper mAddListListener;
-    private final SharedPreferences mSharedPreferences;
-    //private Activity mainActivity;
     private String mName;
     private Drawable mIcon;
     private Integer mColor;
 
-    HtmlDataScraper newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, HtmlDataScraper addListListener)
+    HtmlDataScraper(String data, String id, String url)
     {
-        return new HtmlDataScraper(mainActivity, sharedPreferences, data, id, url, addListListener);
-    }
-
-    HtmlDataScraper(Activity mainActivityHue, SharedPreferences sharedPreferences, String data, String id, String url, HtmlDataScraper addListListener)
-    {
-        mSharedPreferences = sharedPreferences;
         mHtmlData = data;
         mChatId = id;
         mChatUrl = url;
-        mAddListListener = addListListener;
-        mainActivity = mainActivityHue;
     }
 
     @Override
     protected Void doInBackground(String... strings)
     {
-        mAddListListener.onStart();
         mName = getName(mHtmlData, mChatUrl);
         mIcon = getIcon(mHtmlData, mChatUrl);
-        mColor = Utils.getColorInt(mainActivity, mChatUrl);
+        mColor = getColorInt(mChatUrl);
 
         publishProgress();
         return null;
@@ -73,14 +61,12 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
     @Override
     protected void onPostExecute(Void aVoid)
     {
-        mAddListListener.onFinish(mName, mChatUrl, mIcon, mColor);
         super.onPostExecute(aVoid);
     }
 
     @Override
     protected void onProgressUpdate(Void... values)
     {
-        mAddListListener.onProgress(mName, mIcon, mColor);
         super.onProgressUpdate(values);
     }
 
@@ -146,14 +132,8 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
         }
     }
 
-    public static int getColorInt(Activity activity, String url)
+    public static int getColorInt(String url)
     {
-
-        if (mSharedPreferences == null)
-        {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        }
-
         try
         {
             Document doc = Jsoup.connect(url).get();
