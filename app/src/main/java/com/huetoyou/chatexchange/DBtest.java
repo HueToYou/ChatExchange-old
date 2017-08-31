@@ -15,7 +15,7 @@ public class DBtest extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dbtest);
 
-        Chatroom chat = new Chatroom("Ask Ubuntu General Room", 201, "https://chat.stackexchange.com/rooms/201");
+        /*Chatroom chat = new Chatroom("Ask Ubuntu General Room", 201, "https://chat.stackexchange.com/rooms/201");
 
         HueDatabase database = new HueDatabase(this);
 
@@ -23,6 +23,8 @@ public class DBtest extends Activity
         database.deleteChatroom(1);
 
         Toast.makeText(this, String.valueOf(database.getChatroom(1).getId()),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_LONG).show();*/
+
+
     }
 }

@@ -62,6 +62,7 @@ class HtmlDataScraper extends AsyncTask<String, Void, Void>
     protected void onPostExecute(Void aVoid)
     {
         super.onPostExecute(aVoid);
+        //TODO Create a broadcast
     }
 
     @Override

@@ -50,7 +50,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.Util;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.huetoyou.chatexchange.auth.Authenticator;
-import com.huetoyou.chatexchange.backend.database.HueDatabase;
+import com.huetoyou.chatexchange.backend.database.DatabaseHelper;
 import com.huetoyou.chatexchange.net.RequestFactory;
 import com.huetoyou.chatexchange.ui.activity.AboutActivity;
 import com.huetoyou.chatexchange.ui.activity.ChatroomsExplorationActivity;
@@ -62,7 +62,6 @@ import com.huetoyou.chatexchange.ui.frags.HomeFragment;
 import com.huetoyou.chatexchange.ui.frags.ChatFragment;
 import com.huetoyou.chatexchange.R;
 import com.huetoyou.chatexchange.auth.AuthenticatorActivity;
-import com.huetoyou.chatexchange.ui.misc.ChatDataBundle;
 import com.huetoyou.chatexchange.ui.misc.CustomRecyclerView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.TutorialStuff;
@@ -103,7 +102,7 @@ public class MainActivity extends SlidingActivity
 
     RequestFactory mRequestFactory;
 
-    public HueDatabase hueDatabase = null;
+    public DatabaseHelper hueDatabaseHelper = null;
 
     private String mCookieString = null;
 
@@ -166,7 +165,7 @@ public class MainActivity extends SlidingActivity
 
         ThemeHue.setTheme(this);
 
-        hueDatabase = new HueDatabase(this);
+        hueDatabaseHelper = new DatabaseHelper(this);
 
         super.onCreate(null);
         //Fabric.with(this, new Crashlytics()); //TODO: Remember to uncomment this for production
@@ -378,12 +377,6 @@ public class MainActivity extends SlidingActivity
             }
         };
 
-        Set<String> seChatsTemp = mSharedPrefs.getStringSet("SEChatIDs", new HashSet<String>());
-        Set<String> soChatsTemp = mSharedPrefs.getStringSet("SOChatIDs", new HashSet<String>());
-
-        chatDataBundle.mSOChatIDs = new HashSet<>(soChatsTemp);
-        chatDataBundle.mSEChatIDs = new HashSet<>(seChatsTemp);
-
         if (mSharedPrefs.getBoolean("isFirstRun", true))
         {
             Intent intent = new Intent(this, IntroActivity.class);
@@ -439,7 +432,7 @@ public class MainActivity extends SlidingActivity
 
         mSwipeManager = new RecyclerViewSwipeManager();
 
-        mWrappedAdapter = new RecyclerAdapter(this, mItemClickedListener, mSwipeManager);
+        mWrappedAdapter = new RecyclerAdapter(this, hueDatabaseHelper, mItemClickedListener, mSwipeManager);
         mAdapter = mSwipeManager.createWrappedAdapter(mWrappedAdapter);
 
         chatroomsList.setAdapter(mAdapter);
@@ -585,15 +578,6 @@ public class MainActivity extends SlidingActivity
         mOpenAnimSet.start();
     }
 
-    interface NHInterface
-    {
-        boolean seContainsId();
-
-        boolean soContainsId();
-
-        void onFinish();
-    }
-
     /**
      * Needed to convert some SparseArrays to ArrayLists
      *
@@ -637,16 +621,6 @@ public class MainActivity extends SlidingActivity
      * Handles the actual data parsing for chats
      * (in the background to avoid ANRs)
      */
-
-
-    interface AddListListener
-    {
-        void onStart();
-
-        void onProgress(String name, Drawable icon, Integer color);
-
-        void onFinish(String name, String url, Drawable icon, Integer color);
-    }
 
     /**
      * Setup current users {@link SlidingMenu}
@@ -801,43 +775,6 @@ public class MainActivity extends SlidingActivity
     public android.support.v7.widget.ActionMenuView getActionMenu()
     {
         return mActionMenuView;
-    }
-
-    void removeIdFromSEList(String id)
-    {
-        chatDataBundle.mSEChatIDs.remove(id);
-        setSEStringSet();
-    }
-
-    void addIdToSEList(String id)
-    {
-        Log.e("IDS", id);
-        chatDataBundle.mSEChatIDs.add(id);
-        setSEStringSet();
-    }
-
-    private void setSEStringSet()
-    {
-        mEditor.remove("SEChatIDs").apply();
-        mEditor.putStringSet("SEChatIDs", chatDataBundle.mSEChatIDs).apply();
-    }
-
-    void removeIdFromSOList(String id)
-    {
-        chatDataBundle.mSOChatIDs.remove(id);
-        setSOStringSet();
-    }
-
-    void addIdToSOList(String id)
-    {
-        chatDataBundle.mSOChatIDs.add(id);
-        setSOStringSet();
-    }
-
-    private void setSOStringSet()
-    {
-        mEditor.remove("SOChatIDs").apply();
-        mEditor.putStringSet("SOChatIDs", chatDataBundle.mSOChatIDs).apply();
     }
 
     /**

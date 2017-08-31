@@ -34,6 +34,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.database.DatabaseHelper;
 import com.huetoyou.chatexchange.backend.database.HueDatabase;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     private RecyclerViewSwipeManager mSwipeManager;
 
-    public RecyclerAdapter(Activity activity, HueDatabase hueDatabase, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
+    public RecyclerAdapter(Activity activity, DatabaseHelper hueDatabase, OnItemClicked onItemClicked, RecyclerViewSwipeManager swipeManager)
     {
         this.mContext = activity;
         this.hueDatabase = hueDatabase;
