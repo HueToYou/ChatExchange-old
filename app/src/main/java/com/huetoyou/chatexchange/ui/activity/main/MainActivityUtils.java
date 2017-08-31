@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.huetoyou.chatexchange.R;
+import com.huetoyou.chatexchange.backend.database.DatabaseHelper;
 import com.huetoyou.chatexchange.ui.misc.CustomWebView;
 import com.huetoyou.chatexchange.ui.misc.RecyclerAdapter;
 import com.huetoyou.chatexchange.ui.misc.Utils;
@@ -47,130 +48,14 @@ import java.util.regex.Pattern;
 class MainActivityUtils
 {
     private MainActivity mainActivity;
+    private DatabaseHelper databaseHelper;
 
     MainActivityUtils(MainActivity mainActivity)
     {
         this.mainActivity = mainActivity;
     }
 
-    @SuppressLint("StaticFieldLeak")
-    class AddList extends AsyncTask<String, Void, Void>
-    {
-        private final String mHtmlData;
-        private final String mChatId;
-        private final String mChatUrl;
-        private final MainActivity.AddListListener mAddListListener;
-        private final SharedPreferences mSharedPreferences;
-        private Activity mainActivity;
-        private String mName;
-        private Drawable mIcon;
-        private Integer mColor;
-
-        AddList newInstance(Activity mainActivity, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
-        {
-            return new AddList(mainActivity, sharedPreferences, data, id, url, addListListener);
-        }
-
-        AddList(Activity mainActivityHue, SharedPreferences sharedPreferences, String data, String id, String url, MainActivity.AddListListener addListListener)
-        {
-            mSharedPreferences = sharedPreferences;
-            mHtmlData = data;
-            mChatId = id;
-            mChatUrl = url;
-            mAddListListener = addListListener;
-            mainActivity = mainActivityHue;
-        }
-
-        @Override
-        protected Void doInBackground(String... strings)
-        {
-            mAddListListener.onStart();
-            mName = getName(mHtmlData, mChatUrl);
-            mIcon = getIcon(mHtmlData, mChatUrl);
-            mColor = Utils.getColorInt(mainActivity, mChatUrl);
-
-            publishProgress();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            mAddListListener.onFinish(mName, mChatUrl, mIcon, mColor);
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values)
-        {
-            mAddListListener.onProgress(mName, mIcon, mColor);
-            super.onProgressUpdate(values);
-        }
-
-        @Nullable
-        private String getName(String html, String url)
-        {
-            try
-            {
-                Elements spans = Jsoup.parse(html).select("span");
-
-                for (Element e : spans)
-                {
-                    if (e.hasAttr("id") && e.attr("id").equals("roomname"))
-                    {
-                        mSharedPreferences.edit().putString(url + "Name", e.ownText()).apply();
-                        return e.ownText();
-                    }
-                }
-                String ret = Jsoup.connect(url).get().title().replace("<title>", "").replace("</title>", "").replace(" | chat.stackexchange.com", "").replace(" | chat.stackoverflow.com", "");
-                mSharedPreferences.edit().putString(url + "Name", ret).apply();
-                return ret;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Nullable
-        private Drawable getIcon(String html, String chatUrl)
-        {
-            try
-            {
-                Document document = Jsoup.parse(html);
-                Element head = document.head();
-                Element link = head.select("link").first();
-
-                String fav = link.attr("href");
-                if (!fav.contains("http"))
-                {
-                    fav = "https:".concat(fav);
-                }
-                URL url = new URL(fav);
-
-                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                String FILENAME = "FAVICON_" + chatUrl.replace("/", "");
-                FileOutputStream fos = mainActivity.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.close();
-
-                Resources r = mainActivity.getResources();
-                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-
-                return new BitmapDrawable(Resources.getSystem(), Bitmap.createScaledBitmap(bmp, px, px, true));
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
+    /*@SuppressLint("StaticFieldLeak")
     class NotificationHandler extends AsyncTask<Void, Void, Void>
     {
         final MainActivity.NHInterface mInterface;
@@ -216,7 +101,7 @@ class MainActivityUtils
             mInterface.onFinish();
             super.onPostExecute(aVoid);
         }
-    }
+    }*/
 
     /**
      * BroadcastReceiver listening for click on chat URL from WebViewActivity
@@ -225,7 +110,7 @@ class MainActivityUtils
      */
     void setupACBR()
     {
-        mainActivity.mAddChatReceiver = new BroadcastReceiver()
+        /*mainActivity.mAddChatReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
@@ -315,7 +200,7 @@ class MainActivityUtils
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("idAdd");
 
-        LocalBroadcastManager.getInstance(mainActivity).registerReceiver(mainActivity.mAddChatReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(mainActivity).registerReceiver(mainActivity.mAddChatReceiver, intentFilter);*/
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -371,7 +256,7 @@ class MainActivityUtils
 
     void respondToNotificationClick()
     {
-        if (mainActivity.getIntent().getExtras() != null)
+        /*if (mainActivity.getIntent().getExtras() != null)
         {
             Log.e("NOTIF", "NOTIF");
             final String chatId = mainActivity.mIntent.getExtras().getString("chatId");
@@ -400,7 +285,7 @@ class MainActivityUtils
                     }
                 }, chatDomain).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
-        }
+        }*/
     }
 
 
@@ -452,12 +337,12 @@ class MainActivityUtils
         {
             if (domain.contains("overflow"))
             {
-                mainActivity.removeIdFromSOList(id);
+                databaseHelper.deleteChatroomByRoomID(-Integer.parseInt(id));
                 soId = id;
             }
             else if (domain.contains("exchange"))
             {
-                mainActivity.removeIdFromSEList(id);
+                databaseHelper.deleteChatroomByRoomID(Integer.parseInt(id));
                 seId = id;
             }
 
@@ -477,11 +362,11 @@ class MainActivityUtils
                 {
                     if (!soId1.isEmpty())
                     {
-                        mainActivity.addIdToSOList(soId1);
+                        databaseHelper.addChatroomByURL("https://chat.stackoverflow.com/rooms/" + soId1);
                     }
                     else if (!seId1.isEmpty())
                     {
-                        mainActivity.addIdToSEList(seId1);
+                        databaseHelper.addChatroomByURL("https://chat.stackexchange.com/rooms/" + seId1);
                     }
                 }
 
@@ -546,12 +431,12 @@ class MainActivityUtils
                     if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackoverflow).toString()))
                     {
                         Log.e("IDS", "SO");
-                        mainActivity.addIdToSOList(inputText);
+                        databaseHelper.addChatroomByURL("https://chat.stackoverflow.com/rooms/" + inputText);
                     }
                     else if (domains.getSelectedItem().toString().equals(mainActivity.getResources().getText(R.string.stackexchange).toString()))
                     {
                         Log.e("IDS", "SE");
-                        mainActivity.addIdToSEList(inputText);
+                        databaseHelper.addChatroomByURL("https://chat.stackexchange.com/rooms/" + inputText);
                     }
 
                     mainActivity.fragStuff.doFragmentStuff();
